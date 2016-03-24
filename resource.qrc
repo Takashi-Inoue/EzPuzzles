@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/ico">
+        <file>currentImage.png</file>
+        <file>openImage.png</file>
+        <file>window.png</file>
+    </qresource>
+</RCC>
