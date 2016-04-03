@@ -33,13 +33,15 @@ SOURCES += main.cpp\
     mine/EmptyPiece.cpp \
     mine/GameMineSweeper.cpp \
     mine/MinePiece.cpp \
-    mine/WallPiece.cpp
+    mine/WallPiece.cpp \
+    Dragger.cpp \
+    SubFrame.cpp \
+    mine/GraduallyDrawer.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
     DialogSettingsFifteen.h \
     ImageWidget.h \
-    IPainter.h \
     SplitPainter.h \
     GameWidget.h \
     IGame.h \
@@ -59,7 +61,12 @@ HEADERS  += MainWindow.h \
     mine/EmptyPiece.h \
     mine/GameMineSweeper.h \
     mine/MinePiece.h \
-    mine/WallPiece.h
+    mine/WallPiece.h \
+    ISubWidget.h \
+    Dragger.h \
+    SubFrame.h \
+    IDrawer.h \
+    mine/GraduallyDrawer.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

@@ -31,6 +31,8 @@ public:
 
     bool isMine() const override;
     bool isNearMine() const override;
+    bool isWall() const override;
+    int numberOfAroundMines() const override;
 
     void drawOpenPiece(QPainter &painter, const QPoint &pos) override;
     void drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;

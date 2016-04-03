@@ -75,7 +75,7 @@ void PiecesGame::draw(QPainter &dest)
 
         if (!changedIndex.isEmpty()) {
             QPainter painterBuffer(&backBuffer);
-            SplitPainter(QPen(Qt::darkGray, 1), size.width() - 1, size.height() - 1).exec(painterBuffer);
+            SplitPainter(QPen(Qt::darkGray, 1), size.width() - 1, size.height() - 1).draw(painterBuffer);
         }
     }
 

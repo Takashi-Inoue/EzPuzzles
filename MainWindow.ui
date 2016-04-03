@@ -48,7 +48,7 @@
        <property name="geometry">
         <rect>
          <x>111</x>
-         <y>108</y>
+         <y>120</y>
          <width>400</width>
          <height>276</height>
         </rect>
@@ -57,33 +57,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>707</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu_File">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="action_Open"/>
-    <addaction name="actionNew_Game_Current_image"/>
-    <addaction name="separator"/>
-    <addaction name="actionE_xit"/>
-   </widget>
-   <widget class="QMenu" name="menu_Window">
-    <property name="title">
-     <string>&amp;Window</string>
-    </property>
-    <addaction name="action_Final_image"/>
-   </widget>
-   <addaction name="menu_File"/>
-   <addaction name="menu_Window"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="allowedAreas">
@@ -119,6 +92,9 @@
    <addaction name="action_Open"/>
    <addaction name="actionNew_Game_Current_image"/>
    <addaction name="action_Final_image"/>
+   <addaction name="separator"/>
+   <addaction name="action_Restart"/>
+   <addaction name="actionE_xit"/>
   </widget>
   <action name="action_Open">
    <property name="icon">
@@ -130,6 +106,10 @@
    </property>
   </action>
   <action name="actionE_xit">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/ico/close.png</normaloff>:/ico/close.png</iconset>
+   </property>
    <property name="text">
     <string>E&amp;xit</string>
    </property>
@@ -156,6 +136,18 @@
    </property>
    <property name="text">
     <string>New Game (&amp;current image)</string>
+   </property>
+  </action>
+  <action name="action_Restart">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/ico/restart.png</normaloff>:/ico/restart.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Restart</string>
    </property>
   </action>
  </widget>

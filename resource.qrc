@@ -3,5 +3,7 @@
         <file>currentImage.png</file>
         <file>openImage.png</file>
         <file>window.png</file>
+        <file>close.png</file>
+        <file>restart.png</file>
     </qresource>
 </RCC>

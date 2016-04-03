@@ -28,18 +28,20 @@ public:
     SwitchPiece();
     ~SwitchPiece() = default;
 
-    void open();
-    void close();
-    bool isOpen() const;
-
     void draw(QPainter &painter, const QPoint &pos) override;
     void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
 
     void setSize(const QSize &pieceSize) override;
-    void setOpenPieceOpacity(double opacity) override;
+
+    void open();
+    void close();
+    void lock();
+    bool isOpen() const;
+    bool isLock() const;
+
+    void setOpenPieceOpacity(double opacity);
 
 protected:
-    virtual void createClosedPixmap(const QSize &pieceSize);
     virtual void drawOpenPiece(QPainter &painter, const QPoint &pos);
     virtual void drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize);
     virtual void drawClosedPiece(QPainter &painter, const QPoint &pos);
@@ -51,8 +53,9 @@ protected:
     const QColor lightLine  = QColor(192, 192, 192);
     const QColor darkLine   = QColor( 96,  96,  96);
 
-    bool isPieceOpen;
-    QPixmap closedPixmap;
+    bool isOpened;
+    bool isLocked;
+    QSize size;
     double opacity;
 };
 

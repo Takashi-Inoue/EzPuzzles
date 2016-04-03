@@ -28,15 +28,15 @@ const QList<QColor> NumColor = {
     QColor(  0,   0, 128),
     QColor(128,   0,   0),
     QColor(  0, 128, 128),
-    QColor(128, 128,   0),
+    QColor( 64,  64,   0),
     QColor(  0,   0,   0),
 };
 
-EmptyPiece::EmptyPiece(QPixmap pixmap, int aroundMineCount) :
+EmptyPiece::EmptyPiece(QPixmap pixmap, int numberAroundMines) :
     pixmap(pixmap),
-    aroundMineCount(aroundMineCount)
+    numberAroundMines(numberAroundMines)
 {
-    Q_ASSERT(aroundMineCount >= 0 && aroundMineCount < 9);
+    Q_ASSERT(numberAroundMines >= 0 && numberAroundMines < 9);
 }
 
 bool EmptyPiece::isMine() const
@@ -46,7 +46,17 @@ bool EmptyPiece::isMine() const
 
 bool EmptyPiece::isNearMine() const
 {
-    return aroundMineCount > 0;
+    return numberAroundMines > 0;
+}
+
+bool EmptyPiece::isWall() const
+{
+    return false;
+}
+
+int EmptyPiece::numberOfAroundMines() const
+{
+    return numberAroundMines;
 }
 
 void EmptyPiece::drawOpenPiece(QPainter &painter, const QPoint &pos)
@@ -70,7 +80,7 @@ void EmptyPiece::drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize
     painter.setOpacity(1);
 
     if (isNearMine()) {
-        QString numberText = QString("%1").arg(aroundMineCount);
+        QString numberText = QString("%1").arg(numberAroundMines);
 
         QFont font = painter.font();
         font.setPixelSize(pixmap.height() * 0.8);
@@ -95,7 +105,7 @@ void EmptyPiece::drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize
         font.setBold(true);
 
         painter.setFont(font);
-        painter.setPen(QPen(NumColor.at(aroundMineCount - 1), 1));
+        painter.setPen(QPen(NumColor.at(numberAroundMines - 1), 1));
         painter.drawText(QRect(pos, targetSize), Qt::AlignCenter, numberText);
     }
 }

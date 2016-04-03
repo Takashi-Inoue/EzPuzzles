@@ -16,25 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ABSTRACTMINEPIECE_H
-#define ABSTRACTMINEPIECE_H
+#ifndef GRADUALLYDRAWER_H
+#define GRADUALLYDRAWER_H
 
-#include "SwitchPiece.h"
+#include "IDrawer.h"
+#include <QPixmap>
 
-namespace MineSweeper {
-
-class AbstractMinePiece : public SwitchPiece
+class GraduallyDrawer : public IDrawer
 {
 public:
-    AbstractMinePiece() = default;
-    ~AbstractMinePiece() = default;
+    enum Direction {
+        LeftToRight,
+        RightToLeft,
+        TopToBottom,
+        BottomToTop,
+    };
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    GraduallyDrawer(const QPixmap &pixmap, Direction dir, int times);
+    ~GraduallyDrawer() = default;
+
+    void draw(QPainter &dest) override;
+
+private:
+    void drawLeftToRight(QPainter &dest);
+    void drawRightToLeft(QPainter &dest);
+    void drawTopToBottom(QPainter &dest);
+    void drawBottomToTop(QPainter &dest);
+
+    QPixmap pixmap;
+    Direction direction;
+    int times;
+    int counter;
 };
 
-} // MineSweeper
-
-#endif // ABSTRACTMINEPIECE_H
+#endif // GRADUALLYDRAWER_H

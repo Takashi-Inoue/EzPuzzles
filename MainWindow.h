@@ -44,15 +44,16 @@ protected:
     void closeEvent(QCloseEvent *) override;
 
 private slots:
-    void onMenuWindowAboutToShow();
     void on_action_Open_triggered();
     void on_actionNew_Game_Current_image_triggered();
     void on_action_Final_image_triggered(bool checked);
+    void on_action_Restart_triggered();
     void on_actionE_xit_triggered();
 
 private:
     void createFinalImageWidget();
-    void startNewGame(QPixmap sourcePixmap);
+    IGame *createNewGame(const QPixmap &sourcePixmap);
+    void startNewGame(IGame *newGame);
 
     Ui::MainWindow *ui;
 

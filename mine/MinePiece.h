@@ -31,14 +31,20 @@ public:
 
     bool isMine() const override;
     bool isNearMine() const override;
+    bool isWall() const override;
+    int numberOfAroundMines() const override;
 
+    void drawClosedPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
     void drawOpenPiece(QPainter &painter, const QPoint &pos) override;
     void drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
 
 private:
-    QColor explodeForeground = QColor(224, 128, 128);
-    QColor explodeLightLine  = QColor(192,  96,  96);
-    QColor explodeDarkLine   = QColor( 96,   0,   0);
+    const QColor explodeForeground = QColor(224, 128, 128);
+    const QColor explodeLightLine  = QColor(192,  96,  96);
+    const QColor explodeDarkLine   = QColor( 96,   0,   0);
+    const QColor lockedForeground  = QColor(160, 160, 255);
+    const QColor lockedLightLine   = QColor(128, 128, 224);
+    const QColor lockedDarkLine    = QColor( 32,  32, 128);
 };
 
 } // MineSweeper

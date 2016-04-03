@@ -19,24 +19,10 @@
 #include "SwitchPiece.h"
 
 SwitchPiece::SwitchPiece() :
-    isPieceOpen(false),
+    isOpened(false),
+    isLocked(false),
     opacity(1)
 {
-}
-
-void SwitchPiece::open()
-{
-    isPieceOpen = true;
-}
-
-void SwitchPiece::close()
-{
-    isPieceOpen = false;
-}
-
-bool SwitchPiece::isOpen() const
-{
-    return isPieceOpen;
 }
 
 void SwitchPiece::draw(QPainter &painter, const QPoint &pos)
@@ -53,26 +39,41 @@ void SwitchPiece::draw(QPainter &painter, const QPoint &pos, const QSize &target
 
 void SwitchPiece::setSize(const QSize &pieceSize)
 {
-    if (pieceSize != closedPixmap.size())
-        createClosedPixmap(pieceSize);
+    Q_ASSERT(pieceSize.isValid());
+    size = pieceSize;
+}
+
+void SwitchPiece::open()
+{
+    if (!isLocked)
+        isOpened = true;
+}
+
+void SwitchPiece::close()
+{
+    if (!isLocked)
+        isOpened = false;
+}
+
+void SwitchPiece::lock()
+{
+    isLocked = true;
+}
+
+bool SwitchPiece::isOpen() const
+{
+    return isOpened;
+}
+
+bool SwitchPiece::isLock() const
+{
+    return isLocked;
 }
 
 void SwitchPiece::setOpenPieceOpacity(double opacity)
 {
     Q_ASSERT(opacity >= 0 && opacity <= 1);
     this->opacity = opacity;
-}
-
-void SwitchPiece::createClosedPixmap(const QSize &pieceSize)
-{
-    closedPixmap = QPixmap(pieceSize);
-
-    QPainter painter(&closedPixmap);
-
-    drawClosedPiece(painter, QPoint(0, 0), pieceSize);
-
-//    painter.setRenderHints(QPainter::Antialiasing);
-//    drawCrossLine(painter);
 }
 
 void SwitchPiece::drawOpenPiece(QPainter &/*painter*/, const QPoint &/*pos*/)
@@ -87,11 +88,13 @@ void SwitchPiece::drawOpenPiece(QPainter &/*painter*/, const QPoint &/*pos*/, co
 
 void SwitchPiece::drawClosedPiece(QPainter &painter, const QPoint &pos)
 {
-    painter.drawPixmap(pos, closedPixmap);
+    drawClosedPiece(painter, pos, size);
 }
 
 void SwitchPiece::drawClosedPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
 {
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
+
     painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), foreground);
 
     painter.setPen(darkLine);
@@ -103,7 +106,7 @@ void SwitchPiece::drawClosedPiece(QPainter &painter, const QPoint &pos, const QS
 
 void SwitchPiece::drawCrossLine(QPainter &painter, const QPoint &pos)
 {
-    drawCrossLine(painter, pos, closedPixmap.size());
+    drawCrossLine(painter, pos, size);
 }
 
 void SwitchPiece::drawCrossLine(QPainter &painter, const QPoint &pos, const QSize &targetSize)

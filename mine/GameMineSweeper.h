@@ -20,12 +20,14 @@
 #define GAMEMINESWEEPER_H
 
 #include "IGame.h"
+#include "IDrawer.h"
 
 #include <QList>
 #include <QVector>
 #include <QPainter>
 #include <QPixmap>
 #include <QSize>
+#include <QTimer>
 
 #include <memory>
 #include <random>
@@ -38,7 +40,7 @@ class GameMineSweeper : public IGame
 {
     Q_OBJECT
 public:
-    GameMineSweeper(const QPixmap &sourcePixmap, const QSize &fieldSize, const QSize &xyCount, int mineCount, QObject *parent = 0);
+    GameMineSweeper(const QPixmap &sourcePixmap, const QSize &fieldSize, const QSize &xyCount, int mineCount, bool isAutoLock, QObject *parent = 0);
     ~GameMineSweeper() = default;
 
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
@@ -49,12 +51,20 @@ public:
     QPixmap pixmap() const override;
 
 protected:
+    typedef std::shared_ptr<AbstractMinePiece> MinePiecePointer;
+    typedef std::shared_ptr<IDrawer> DrawerPointer;
+
     void initPieces();
-    int aroundMineCount(int x, int y) const;
+
+    QList<MinePiecePointer> aroundPieces(int x, int y) const;
+    QList<QPoint> aroundPositions(const QPoint &pos) const;
+    MinePiecePointer &getPiece(const QPoint &pos);
+
     void drawAll();
     void drawChanged();
     void drawPiece(QPainter &painterBuffer, int x, int y);
     void openChaining(int x, int y);
+    void checkMinesForLock();
 
     template<typename T> T emptyPieceCount() const
     {
@@ -66,9 +76,13 @@ protected:
 
     const QSize xy;
     const int mineCount;
+    const bool isAutoLock;
 
-    QVector<QVector<std::shared_ptr<AbstractMinePiece>>> pieces;
-    QList<QPoint> changed;
+    QVector<QVector<MinePiecePointer>> pieces;
+    QList<QPoint> changedPositions;
+    QList<QPoint> indeterminateMinesPostions;
+
+    DrawerPointer drawer;
 
     int opendCount;
     int missedCount;
@@ -76,6 +90,7 @@ protected:
     bool isStarted;
 
     std::mt19937 mt;
+    QTimer timer;
 };
 
 } // MineSweeper

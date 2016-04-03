@@ -22,6 +22,9 @@
 #include "IGameBuilder.h"
 #include <QDialog>
 #include <QSize>
+#include <memory>
+
+class ISubWidget;
 
 namespace Ui {
 class DialogSettingsMineSweeper;
@@ -37,13 +40,26 @@ public:
 
     IGame *buildGame() const override;
 
+protected:
+    void showEvent(QShowEvent *) override;
+
 private slots:
     void updateLabels();
     void updateMineMax();
+    void updateSubFrame();
+
+    void on_pushButtonEasy_clicked();
+    void on_pushButtonNormal_clicked();
+    void on_pushButtonHard_clicked();
+    void on_pushButtonMax_clicked();
 
 private:
     QSize xyCount() const;
+    int numberOfAllCells() const;
+
     Ui::DialogSettingsMineSweeper *ui;
+
+    ISubWidget *subFrame;
 };
 
 #endif // DIALOGSETTINGSMINESWEEPER_H

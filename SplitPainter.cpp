@@ -81,7 +81,7 @@ double SplitPainter::horizontalSplitterPos(int height, int splitterCount, int nu
 //        painter.setPen(QPen(QColor(64, 64, 64, 160), 1));
 //        painter.drawLine(QPointF(dx, 0), QPointF(dx, rect.bottom()));
 
-void SplitPainter::exec(QPainter &painter)
+void SplitPainter::draw(QPainter &painter)
 {
     painter.setPen(pen);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
@@ -103,4 +103,24 @@ void SplitPainter::exec(QPainter &painter)
         y += rect.top();
         painter.drawLine(QPointF(0, y), QPointF(rect.right(), y));
     }
+}
+
+void SplitPainter::mousePress(const QPoint &)
+{
+    // empty
+}
+
+void SplitPainter::mouseRelease(const QPoint &)
+{
+    // empty
+}
+
+void SplitPainter::mouseMove(const QPoint &)
+{
+    // empty
+}
+
+QPoint SplitPainter::pos() const
+{
+    return QPoint(0, 0);
 }

@@ -26,18 +26,20 @@ namespace MineSweeper {
 class EmptyPiece : public AbstractMinePiece
 {
 public:
-    EmptyPiece(QPixmap pixmap, int aroundMineCount);
+    EmptyPiece(QPixmap pixmap, int numberAroundMines);
     ~EmptyPiece() = default;
 
     bool isMine() const override;
     bool isNearMine() const override;
+    bool isWall() const override;
+    int numberOfAroundMines() const override;
 
     void drawOpenPiece(QPainter &painter, const QPoint &pos) override;
     void drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
 
 private:
     QPixmap pixmap;
-    int aroundMineCount;
+    int numberAroundMines;
 };
 
 } // MineSweeper

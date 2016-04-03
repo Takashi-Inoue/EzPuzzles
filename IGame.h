@@ -38,6 +38,8 @@ public:
 
     virtual ~IGame() = default;
 
+//    virtual IGame *cloneAsNewGame() const = 0;
+
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
     virtual void draw(QPainter &dest) = 0;
     virtual QSize maxFieldSize() const = 0;

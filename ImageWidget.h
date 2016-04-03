@@ -28,7 +28,7 @@ namespace Ui {
 class ImageWidget;
 }
 
-class IPainter;
+class ISubWidget;
 
 class ImageWidget : public QFrame
 {
@@ -39,20 +39,28 @@ public:
     ~ImageWidget();
 
     virtual void setPixmap(const QPixmap &pixmap);
-    void appendExtraPainter(IPainter *painter);
-    void replaceExtraPainter(int index, IPainter *painter);
+    void addSubWidget(ISubWidget *subWidget);
+    void replaceSubWidget(int index, ISubWidget *subWidget);
 
     const QPixmap &originalPixmap() const;
+    QRect imageRect() const;
+    double imageScale() const;
 
 protected:
     void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
 
     QPixmap pixmap;
-    QPoint imagePos;
+    QRect imageRectangle;
 
 private:
+    void calcImageRect();
+
     Ui::ImageWidget *ui;
-    QList<std::shared_ptr<IPainter>> painters;
+    QList<std::shared_ptr<ISubWidget>> subWidgets;
 };
 
 #endif // IMAGEWIDGET_H

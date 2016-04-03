@@ -19,11 +19,11 @@
 #ifndef SPLITPAINTER_H
 #define SPLITPAINTER_H
 
-#include "IPainter.h"
+#include "ISubWidget.h"
 #include <QList>
 #include <QPen>
 
-class SplitPainter : public IPainter
+class SplitPainter : public ISubWidget
 {
 public:
     SplitPainter(int xSplitterCount, int ySplitterCount);
@@ -35,7 +35,11 @@ public:
     static double verticalSplitterPos(int width, int splitterCount, int number);
     static double horizontalSplitterPos(int height, int splitterCount, int number);
 
-    void exec(QPainter &) override;
+    void draw(QPainter &) override;
+    void mousePress(const QPoint &) override;
+    void mouseRelease(const QPoint &) override;
+    void mouseMove(const QPoint &) override;
+    QPoint pos() const override;
 
 private:
     QPen pen;

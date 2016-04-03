@@ -21,16 +21,18 @@
 #include "EmptyPiece.h"
 #include "MinePiece.h"
 #include "WallPiece.h"
+#include "GraduallyDrawer.h"
 
 #include <QDebug>
 
 namespace MineSweeper {
 
-GameMineSweeper::GameMineSweeper(const QPixmap &sourcePixmap, const QSize &fieldSize, const QSize &xyCount, int bombCount, QObject *parent) :
+GameMineSweeper::GameMineSweeper(const QPixmap &sourcePixmap, const QSize &fieldSize, const QSize &xyCount, int bombCount, bool isAutoLock, QObject *parent) :
     IGame(parent),
     sourcePixmap(sourcePixmap),
     backBuffer(QPixmap(fieldSize)),
     mineCount(bombCount),
+    isAutoLock(isAutoLock),
     xy(xyCount),
     opendCount(0),
     missedCount(0),
@@ -47,6 +49,7 @@ void GameMineSweeper::click(const QSize &/*fieldSize*/, const QPoint &cursorPos)
         initPieces();
 
         emit screenUpdated();
+        emit informationUpdated();
 
         return;
     }
@@ -60,11 +63,11 @@ void GameMineSweeper::click(const QSize &/*fieldSize*/, const QPoint &cursorPos)
     int x = (cursorPos.x() / pieceW) + 1;
     int y = (cursorPos.y() / pieceH) + 1;
 
-    if (pieces[y][x]->isOpen())
+    if (pieces[y][x]->isOpen() || pieces[y][x]->isLock())
         return;
 
     pieces[y][x]->open();
-    changed << QPoint(x, y);
+    changedPositions << QPoint(x, y);
 
     pieces[y][x]->isMine() ? ++missedCount
                            : ++opendCount;
@@ -72,7 +75,18 @@ void GameMineSweeper::click(const QSize &/*fieldSize*/, const QPoint &cursorPos)
     if (!pieces[y][x]->isNearMine())
         openChaining(x, y);
 
+    if (isAutoLock)
+        checkMinesForLock();
+
     emit screenUpdated();
+    emit informationUpdated();
+
+    if (opendCount == emptyPieceCount<int>() && missedCount == 0) {
+        drawer = std::make_shared<GraduallyDrawer>(sourcePixmap, GraduallyDrawer::TopToBottom, 200);
+        connect(&timer, SIGNAL(timeout()), this, SIGNAL(screenUpdated()));
+        timer.setSingleShot(false);
+        timer.start(16);
+    }
 }
 
 void GameMineSweeper::draw(QPainter &dest)
@@ -80,6 +94,9 @@ void GameMineSweeper::draw(QPainter &dest)
     drawChanged();
 
     dest.drawPixmap(0, 0, backBuffer);
+
+    if (drawer)
+        drawer->draw(dest);
 }
 
 QSize GameMineSweeper::maxFieldSize() const
@@ -98,7 +115,7 @@ void GameMineSweeper::drawFinalImage(QPainter &dest) const
 
     int defaultBottom = destRect.bottom();
 
-    destRect.setBottom((destRect.height() * missedCount) / 10);
+    destRect.setBottom((destRect.height() * missedCount) / 10 - 1);
 
     dest.fillRect(destRect, Qt::black);
 
@@ -119,7 +136,7 @@ QString GameMineSweeper::shortInformation() const
     return QString("MineSweeper %1/%2 %3% opend.  %4 missed.").arg(opendCount)
                                                               .arg(emptyCount)
                                                               .arg((opendCount * 100.0) / emptyCount, 0, 'f', 2)
-            .arg(missedCount);
+                                                              .arg(missedCount);
 }
 
 QPixmap GameMineSweeper::pixmap() const
@@ -129,13 +146,15 @@ QPixmap GameMineSweeper::pixmap() const
 
 void GameMineSweeper::initPieces()
 {
+    pieces.clear();
+
     int cx = xy.width() + 2;
     int cy = xy.height() + 2;
 
     QSize pieceSize(backBuffer.width()  / xy.width(), backBuffer.height() / xy.height());
 
     for (int y = 0; y < cy; ++y)
-        pieces << QVector<std::shared_ptr<AbstractMinePiece>>(cx);
+        pieces << QVector<MinePiecePointer>(cx);
 
     auto wallPiece = std::make_shared<WallPiece>();
 
@@ -152,6 +171,8 @@ void GameMineSweeper::initPieces()
         pieces[y][cx - 1] = wallPiece;
     }
 
+    indeterminateMinesPostions.clear();
+
     for (int i = 0; i < mineCount; ++i) {
         int x = (mt() % xy.width())  + 1;
         int y = (mt() % xy.height()) + 1;
@@ -161,6 +182,7 @@ void GameMineSweeper::initPieces()
 
             minePiece->setSize(pieceSize);
             pieces[y][x] = minePiece;
+            indeterminateMinesPostions << QPoint(x, y);
         } else {
             --i;
         }
@@ -175,7 +197,14 @@ void GameMineSweeper::initPieces()
 
             sourceRect.moveLeft(pieceSize.width() * (x - 1));
 
-            auto emptyPiece = std::make_shared<EmptyPiece>(sourcePixmap.copy(sourceRect), aroundMineCount(x, y));
+            auto arounds = aroundPieces(x, y);
+
+            int numberOfAroundMines = std::count_if(arounds.begin(), arounds.end(), [](MinePiecePointer &piece) {
+                return piece != nullptr ? piece->isMine()
+                                        : false;
+            });
+
+            auto emptyPiece = std::make_shared<EmptyPiece>(sourcePixmap.copy(sourceRect), numberOfAroundMines);
 
             emptyPiece->setSize(pieceSize);
             emptyPiece->setOpenPieceOpacity(0.5);
@@ -186,26 +215,50 @@ void GameMineSweeper::initPieces()
     }
 }
 
-int GameMineSweeper::aroundMineCount(int x, int y) const
+QList<GameMineSweeper::MinePiecePointer> GameMineSweeper::aroundPieces(int x, int y) const
 {
     Q_ASSERT(x >= 1 && x < xy.width()  + 1);
     Q_ASSERT(y >= 1 && y < xy.height() + 1);
 
-    int count = 0;
+    QList<std::shared_ptr<AbstractMinePiece>> result;
 
     for (int dy = -1; dy <= 1; ++dy) {
         for (int dx = -1; dx <= 1; ++dx) {
             if ((dx | dy) == 0)
                 continue;
 
-            auto &piece = pieces[y + dy][x + dx];
-
-            if (piece != nullptr && piece->isMine())
-                ++count;
+            result << pieces[y + dy][x + dx];
         }
     }
 
-    return count;
+    return result;
+}
+
+QList<QPoint> GameMineSweeper::aroundPositions(const QPoint &pos) const
+{
+    Q_ASSERT(pos.x() >= 1 && pos.x() < xy.width()  + 1);
+    Q_ASSERT(pos.y() >= 1 && pos.y() < xy.height() + 1);
+
+    QList<QPoint> result;
+
+    for (int dy = -1; dy <= 1; ++dy) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            if ((dx | dy) == 0)
+                continue;
+
+            result << pos + QPoint(dx, dy);
+        }
+    }
+
+    return result;
+}
+
+GameMineSweeper::MinePiecePointer &GameMineSweeper::getPiece(const QPoint &pos)
+{
+    Q_ASSERT(pos.x() >= 0 && pos.x() < xy.width()  + 2);
+    Q_ASSERT(pos.y() >= 0 && pos.y() < xy.height() + 2);
+
+    return pieces[pos.y()][pos.x()];
 }
 
 void GameMineSweeper::drawAll()
@@ -223,10 +276,10 @@ void GameMineSweeper::drawChanged()
 {
     QPainter painterBuffer(&backBuffer);
 
-    for (auto &pos : changed)
+    for (auto &pos : changedPositions)
         drawPiece(painterBuffer, pos.x(), pos.y());
 
-    changed.clear();
+    changedPositions.clear();
 }
 
 void GameMineSweeper::drawPiece(QPainter &painterBuffer, int x, int y)
@@ -252,13 +305,13 @@ void GameMineSweeper::openChaining(int x, int y)
 
                 QPoint checkPos(center + QPoint(dx, dy));
 
-                auto &piece = pieces[checkPos.y()][checkPos.x()];
+                auto &piece = getPiece(checkPos);
 
                 if (piece->isOpen() || piece->isMine())
                     continue;
 
                 piece->open();
-                changed << checkPos;
+                changedPositions << checkPos;
                 ++opendCount;
 
                 if (!piece->isNearMine())
@@ -275,19 +328,86 @@ void GameMineSweeper::openChaining(int x, int y)
 
             if (!piece->isNearMine() && piece->isOpen()) {
                 piece->setOpenPieceOpacity(opacity);
-                changed << QPoint(x, y);
+                changedPositions << QPoint(x, y);
             }
         }
     }
 
-    std::sort(changed.begin(), changed.end(), [](const QPoint &lhs, const QPoint &rhs) {
+    std::sort(changedPositions.begin(), changedPositions.end(), [](const QPoint &lhs, const QPoint &rhs) {
         if (lhs.x() != rhs.x())
             return lhs.x() < rhs.x();
 
         return lhs.y() < rhs.y();
     });
 
-    changed.erase(std::unique(changed.begin(), changed.end()), changed.end());
+    changedPositions.erase(std::unique(changedPositions.begin(), changedPositions.end()), changedPositions.end());
+}
+
+void GameMineSweeper::checkMinesForLock()
+{
+    QList<QPoint> lockedPostions;
+
+    int i = 0;
+    int max = indeterminateMinesPostions.size();
+
+    for (; i < max; ++i) {
+        auto &mine = getPiece(indeterminateMinesPostions.at(i));
+
+        if (mine->isLock()) {
+            indeterminateMinesPostions.removeAt(i--);
+            --max;
+
+            continue;
+        }
+
+        auto openedPiecesPos = aroundPositions(indeterminateMinesPostions.at(i));
+
+        auto itr = std::remove_if(openedPiecesPos.begin(), openedPiecesPos.end(), [&](const QPoint &aroundPos) {
+            auto &piece = getPiece(aroundPos);
+
+            return !piece->isOpen() || piece->numberOfAroundMines() == 0;
+        });
+        openedPiecesPos.erase(itr, openedPiecesPos.end());
+
+        for (const auto &openedPos : openedPiecesPos) {
+            auto aroundPoses = aroundPositions(openedPos);
+
+            int numberOfOpened = std::count_if(aroundPoses.begin(), aroundPoses.end(), [&](const QPoint &aroundPos) {
+                auto &piece = getPiece(aroundPos);
+
+                return !piece->isMine() && piece->isOpen();
+            });
+
+            auto centerPiece = getPiece(openedPos);
+
+            if (numberOfOpened == 8 - centerPiece->numberOfAroundMines()) {
+                for (auto &aroundPos : aroundPoses) {
+                    auto &piece = getPiece(aroundPos);
+
+                    if (piece->isMine()) {
+                        piece->lock();
+                        lockedPostions << aroundPos;
+                    }
+                }
+            }
+        }
+
+        if (mine->isLock()) {
+            indeterminateMinesPostions.removeAt(i--);
+            --max;
+        }
+    }
+
+    std::sort(lockedPostions.begin(), lockedPostions.end(), [](const QPoint &lhs, const QPoint &rhs) {
+        if (lhs.x() != rhs.x())
+            return lhs.x() < rhs.x();
+
+        return lhs.y() < rhs.y();
+    });
+
+    lockedPostions.erase(std::unique(lockedPostions.begin(), lockedPostions.end()), lockedPostions.end());
+
+    changedPositions += lockedPostions;
 }
 
 } // MineSweeper

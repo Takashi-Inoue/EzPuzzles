@@ -16,18 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IPAINTER_H
-#define IPAINTER_H
+#ifndef SUBFRAME_H
+#define SUBFRAME_H
 
-class QPainter;
+#include "ISubWidget.h"
+#include "Dragger.h"
 
-class IPainter
+#include <QRect>
+
+class SubFrame : public ISubWidget
 {
 public:
-    IPainter() = default;
-    virtual ~IPainter() = default;
+    SubFrame(const QRect &rect);
 
-    virtual void exec(QPainter &) = 0;
+    void draw(QPainter &) override;
+    void mousePress(const QPoint &) override;
+    void mouseRelease(const QPoint &) override;
+    void mouseMove(const QPoint &) override;
+    QPoint pos() const override;
+
+protected:
+    void correctPosition();
+
+    QRect rect;
+    QRect maxRect;
+    Dragger dragger;
 };
 
-#endif // IPAINTER_H
+#endif // SUBFRAME_H

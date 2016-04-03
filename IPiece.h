@@ -31,7 +31,6 @@ public:
     virtual void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) = 0;
 
     virtual void setSize(const QSize &pieceSize) = 0;
-    virtual void setOpenPieceOpacity(double opacity) = 0;
 };
 
 #endif // IPIECE_H

@@ -34,13 +34,43 @@ bool MinePiece::isNearMine() const
     return true;
 }
 
+bool MinePiece::isWall() const
+{
+    return false;
+}
+
+int MinePiece::numberOfAroundMines() const
+{
+    return 0;
+}
+
+void MinePiece::drawClosedPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+{
+    if (!isLocked) {
+        SwitchPiece::drawClosedPiece(painter, pos, targetSize);
+        return;
+    }
+
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
+
+    painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), lockedForeground);
+
+    painter.setPen(lockedDarkLine);
+    painter.drawRect(QRect(pos, targetSize - QSize(1, 1)));
+
+    painter.setPen(lockedLightLine);
+    painter.drawRect(QRect(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
+}
+
 void MinePiece::drawOpenPiece(QPainter &painter, const QPoint &pos)
 {
-    drawOpenPiece(painter, pos, closedPixmap.size());
+    drawOpenPiece(painter, pos, size);
 }
 
 void MinePiece::drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
 {
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
+
     painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), explodeForeground);
 
     painter.setPen(explodeDarkLine);

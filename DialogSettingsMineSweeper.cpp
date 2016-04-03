@@ -20,22 +20,27 @@
 #include "ui_DialogSettingsMineSweeper.h"
 
 #include "mine/GameMineSweeper.h"
+#include "SubFrame.h"
+
+#include <QDebug>
 
 DialogSettingsMineSweeper::DialogSettingsMineSweeper(const QPixmap &sourcePixmap, bool showOkButton, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DialogSettingsMineSweeper)
+    ui(new Ui::DialogSettingsMineSweeper),
+    subFrame(nullptr)
 {
     ui->setupUi(this);
 
     ui->buttonBox->setVisible(showOkButton);
-
     ui->imageWidget->setPixmap(sourcePixmap);
 
     updateLabels();
     updateMineMax();
 
     connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateLabels()));
-    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateMineMax()));}
+    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateMineMax()));
+    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSubFrame()));
+}
 
 DialogSettingsMineSweeper::~DialogSettingsMineSweeper()
 {
@@ -48,7 +53,27 @@ IGame *DialogSettingsMineSweeper::buildGame() const
     QSize xy(xyCount());
     QSize fieldSize(xy * cellSize);
 
-    return new MineSweeper::GameMineSweeper(ui->imageWidget->originalPixmap(), fieldSize, xy, ui->spinBox->value());
+    QPoint tl = subFrame->pos() / ui->imageWidget->imageScale();
+
+    QRect pixRect(tl, fieldSize);
+    QSize originalSize = ui->imageWidget->originalPixmap().size();
+
+    if (pixRect.right() > originalSize.width())
+        pixRect.moveRight(originalSize.width() - 1);
+
+    if (pixRect.bottom() > originalSize.height())
+        pixRect.moveBottom(originalSize.height() - 1);
+
+    QPixmap pixmap = ui->imageWidget->originalPixmap().copy(pixRect);
+
+    return new MineSweeper::GameMineSweeper(pixmap, fieldSize, xy, ui->spinBox->value(), ui->checkBoxAutoLock->isChecked());
+}
+
+void DialogSettingsMineSweeper::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent(event);
+
+    updateSubFrame();
 }
 
 void DialogSettingsMineSweeper::updateLabels()
@@ -67,7 +92,37 @@ void DialogSettingsMineSweeper::updateMineMax()
     int cellnX = pixmapSize.width()  / cellSize;
     int cellnY = pixmapSize.height() / cellSize;
 
-    ui->spinBox->setMaximum(cellnX * cellnY - 1);
+    ui->spinBox->setMaximum(cellnX * cellnY * 0.2);
+}
+
+void DialogSettingsMineSweeper::updateSubFrame()
+{
+    QSize frameSize = (xyCount() * ui->horizontalSlider->value()) * ui->imageWidget->imageScale();
+    QRect frameRect(QPoint(0, 0), frameSize);
+
+    subFrame = new SubFrame(frameRect);
+
+    ui->imageWidget->replaceSubWidget(0, subFrame);
+}
+
+void DialogSettingsMineSweeper::on_pushButtonEasy_clicked()
+{
+    ui->spinBox->setValue(numberOfAllCells() * 6 / 100);
+}
+
+void DialogSettingsMineSweeper::on_pushButtonNormal_clicked()
+{
+    ui->spinBox->setValue(numberOfAllCells() * 10 / 100);
+}
+
+void DialogSettingsMineSweeper::on_pushButtonHard_clicked()
+{
+    ui->spinBox->setValue(numberOfAllCells() * 15 / 100);
+}
+
+void DialogSettingsMineSweeper::on_pushButtonMax_clicked()
+{
+    ui->spinBox->setValue(ui->spinBox->maximum());
 }
 
 QSize DialogSettingsMineSweeper::xyCount() const
@@ -77,3 +132,11 @@ QSize DialogSettingsMineSweeper::xyCount() const
 
     return QSize(pixmapSize.width() / cellSize, pixmapSize.height() / cellSize);
 }
+
+int DialogSettingsMineSweeper::numberOfAllCells() const
+{
+    auto &xy = xyCount();
+
+    return xy.width() * xy.height();
+}
+

@@ -30,6 +30,16 @@ bool WallPiece::isNearMine() const
     return true;
 }
 
+bool WallPiece::isWall() const
+{
+    return true;
+}
+
+int WallPiece::numberOfAroundMines() const
+{
+    return 0;
+}
+
 void WallPiece::drawOpenPiece(QPainter &painter, const QPoint &pos)
 {
     AbstractMinePiece::drawClosedPiece(painter, pos);

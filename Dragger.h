@@ -16,25 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ABSTRACTMINEPIECE_H
-#define ABSTRACTMINEPIECE_H
+#ifndef DRAGGER_H
+#define DRAGGER_H
 
-#include "SwitchPiece.h"
+#include <QPoint>
 
-namespace MineSweeper {
-
-class AbstractMinePiece : public SwitchPiece
+class Dragger
 {
 public:
-    AbstractMinePiece() = default;
-    ~AbstractMinePiece() = default;
+    Dragger();
+    ~Dragger() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    void mouseDown(const QPoint &pos);
+    void mouseRelease(const QPoint &);
+    void mouseMove(const QPoint &pos);
+    const QPoint &sub() const;
+    bool isDragging() const;
+
+private:
+    QPoint pos;
+    QPoint subPos;
+    bool isDrag;
 };
 
-} // MineSweeper
-
-#endif // ABSTRACTMINEPIECE_H
+#endif // DRAGGER_H

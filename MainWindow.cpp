@@ -46,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->action_Final_image->setChecked(ui->dockWidget->isVisible());
 
-    connect(ui->menu_Window, SIGNAL(aboutToShow()), this, SLOT(onMenuWindowAboutToShow()));
     connect(ui->dockWidget, SIGNAL(visibilityChanged(bool)), ui->action_Final_image, SLOT(setChecked(bool)));
 }
 
@@ -58,11 +57,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *)
 {
-}
-
-void MainWindow::onMenuWindowAboutToShow()
-{
-    ui->action_Final_image->setEnabled(ui->dockWidget->isHidden());
 }
 
 void MainWindow::on_action_Open_triggered()
@@ -77,17 +71,28 @@ void MainWindow::on_action_Open_triggered()
     if (image.isNull())
         return;
 
-    startNewGame(QPixmap::fromImage(image));
+    auto newGame = createNewGame(QPixmap::fromImage(image));
+
+    if (newGame != nullptr)
+        startNewGame(newGame);
 }
 
 void MainWindow::on_actionNew_Game_Current_image_triggered()
 {
-    startNewGame(game->pixmap());
+    auto newGame = createNewGame(game->pixmap());
+
+    if (newGame != nullptr)
+        startNewGame(newGame);
 }
 
 void MainWindow::on_action_Final_image_triggered(bool checked)
 {
     ui->dockWidget->setVisible(checked);
+}
+
+void MainWindow::on_action_Restart_triggered()
+{
+
 }
 
 void MainWindow::on_actionE_xit_triggered()
@@ -107,17 +112,24 @@ void MainWindow::createFinalImageWidget()
     connect(finalImageWidget.get(), SIGNAL(windowTitleChanged(QString)), ui->dockWidget, SLOT(setWindowTitle(QString)));
 }
 
-void MainWindow::startNewGame(QPixmap sourcePixmap)
+IGame *MainWindow::createNewGame(const QPixmap &sourcePixmap)
 {
     DialogGameStart dialog(sourcePixmap, this);
 
     if (dialog.exec() == QDialog::Rejected)
-        return;
+        return nullptr;
+
+    return dialog.buildGame();
+}
+
+void MainWindow::startNewGame(IGame *newGame)
+{
+    Q_CHECK_PTR(newGame);
 
     if (game != nullptr)
         game->disconnect();
 
-    game.reset(dialog.buildGame());
+    game.reset(newGame);
 
     if (finalImageWidget == nullptr)
         createFinalImageWidget();
@@ -125,7 +137,7 @@ void MainWindow::startNewGame(QPixmap sourcePixmap)
     finalImageWidget->setGame(game);
     finalImageWidget->repaint();
 
-    connect(game.get(), SIGNAL(screenUpdated()), finalImageWidget.get(), SLOT(repaint()));
+    connect(game.get(), SIGNAL(informationUpdated()), finalImageWidget.get(), SLOT(repaint()));
 
     gameWidget->resize(game->maxFieldSize());
     gameWidget->setGame(game);
@@ -133,4 +145,6 @@ void MainWindow::startNewGame(QPixmap sourcePixmap)
     gameWidget->repaint();
 
     ui->actionNew_Game_Current_image->setEnabled(true);
+    ui->action_Restart->setEnabled(true);
 }
+
