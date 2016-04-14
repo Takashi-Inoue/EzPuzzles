@@ -18,10 +18,57 @@
  */
 #include "MinePiece.h"
 
+#include "BlockPiece.h"
+
 namespace MineSweeper {
 
-MinePiece::MinePiece()
+MinePiece::MinePiece(const QSize &size) :
+    blockPiece(new BlockPiece(size)),
+    isOpened(false),
+    isLocked(false),
+    size(size)
 {
+}
+
+void MinePiece::draw(QPainter &painter, const QPoint &pos)
+{
+    blockPiece->draw(painter, pos);
+}
+
+void MinePiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+{
+    blockPiece->draw(painter, pos, targetSize);
+}
+
+void MinePiece::open()
+{
+    blockPiece.reset(new BlockPiece(size, QColor(224, 128, 128), QColor(192, 96, 96), QColor(96, 0, 0)));
+    isOpened = true;
+}
+
+void MinePiece::close()
+{
+    blockPiece.reset(new BlockPiece(size));
+    isOpened = false;
+}
+
+void MinePiece::lock()
+{
+    if (isOpen())
+        return;
+
+    blockPiece.reset(new BlockPiece(size, QColor(160, 160, 255), QColor(128, 128, 224), QColor(32, 32, 128)));
+    isLocked = true;
+}
+
+bool MinePiece::isOpen() const
+{
+    return isOpened;
+}
+
+bool MinePiece::isLock() const
+{
+    return isLocked;
 }
 
 bool MinePiece::isMine() const
@@ -42,42 +89,6 @@ bool MinePiece::isWall() const
 int MinePiece::numberOfAroundMines() const
 {
     return 0;
-}
-
-void MinePiece::drawClosedPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
-{
-    if (!isLocked) {
-        SwitchPiece::drawClosedPiece(painter, pos, targetSize);
-        return;
-    }
-
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
-
-    painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), lockedForeground);
-
-    painter.setPen(lockedDarkLine);
-    painter.drawRect(QRect(pos, targetSize - QSize(1, 1)));
-
-    painter.setPen(lockedLightLine);
-    painter.drawRect(QRect(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
-}
-
-void MinePiece::drawOpenPiece(QPainter &painter, const QPoint &pos)
-{
-    drawOpenPiece(painter, pos, size);
-}
-
-void MinePiece::drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
-{
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
-
-    painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), explodeForeground);
-
-    painter.setPen(explodeDarkLine);
-    painter.drawRect(QRect(pos, targetSize - QSize(1, 1)));
-
-    painter.setPen(explodeLightLine);
-    painter.drawRect(QRect(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
 }
 
 } // MineSweeper

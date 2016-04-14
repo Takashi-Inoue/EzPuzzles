@@ -1,33 +1,33 @@
 ﻿/*
- * Copyright 2016 Takashi Inoue
+ * Copyright YEAR Takashi Inoue
  *
- * This file is part of EzPuzzles.
+ * This file is part of APPNAME.
  *
- * EzPuzzles is free software: you can redistribute it and/or modify
+ * APPNAME is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * EzPuzzles is distributed in the hope that it will be useful,
+ * APPNAME is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
+ * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ABSTRACTMINEPIECE_H
-#define ABSTRACTMINEPIECE_H
+#ifndef IMINEPIECE_H
+#define IMINEPIECE_H
 
-#include "SwitchPiece.h"
+#include "ISwitchPiece.h"
 
 namespace MineSweeper {
 
-class AbstractMinePiece : public SwitchPiece
+class IMinePiece : public ISwitchPiece
 {
 public:
-    AbstractMinePiece() = default;
-    ~AbstractMinePiece() = default;
+    IMinePiece() = default;
+    virtual ~IMinePiece() = default;
 
     virtual bool isMine() const = 0;
     virtual bool isNearMine() const = 0;
@@ -37,4 +37,4 @@ public:
 
 } // MineSweeper
 
-#endif // ABSTRACTMINEPIECE_H
+#endif // IMINEPIECE_H

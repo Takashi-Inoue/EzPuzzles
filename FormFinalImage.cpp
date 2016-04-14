@@ -25,13 +25,13 @@
 #include <QPaintEvent>
 #include <QDebug>
 
-FormFinalImage::FormFinalImage(std::shared_ptr<IGame> game, QWidget *parent) :
+FormFinalImage::FormFinalImage(IGame *game, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::FormFinalImage),
     game(game),
     grabbedEdges(0)
 {
-    Q_CHECK_PTR(game.get());
+    Q_CHECK_PTR(game);
 
     ui->setupUi(this);
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -42,7 +42,7 @@ FormFinalImage::~FormFinalImage()
     delete ui;
 }
 
-void FormFinalImage::setGame(std::shared_ptr<IGame> game)
+void FormFinalImage::setGame(IGame *game)
 {
     this->game = game;
 }

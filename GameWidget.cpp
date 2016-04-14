@@ -24,15 +24,19 @@
 #include <QDebug>
 
 GameWidget::GameWidget(QWidget *parent) :
-    ImageWidget(parent)
+    ImageWidget(parent),
+    game(nullptr)
 {
 }
 
-void GameWidget::setGame(std::shared_ptr<IGame> game)
+void GameWidget::setGame(IGame *game)
 {
+    if (this->game != nullptr)
+        this->game->disconnect();
+
     this->game = game;
 
-    connect(game.get(), SIGNAL(screenUpdated()), this, SLOT(repaint()));
+    connect(game, SIGNAL(screenUpdated()), this, SLOT(repaint()));
 }
 
 void GameWidget::paintEvent(QPaintEvent *event)

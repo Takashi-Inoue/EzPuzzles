@@ -20,6 +20,16 @@
 
 namespace MineSweeper {
 
+bool WallPiece::isOpen() const
+{
+    return true;
+}
+
+bool WallPiece::isLock() const
+{
+    return true;
+}
+
 bool WallPiece::isMine() const
 {
     return false;
@@ -38,16 +48,6 @@ bool WallPiece::isWall() const
 int WallPiece::numberOfAroundMines() const
 {
     return 0;
-}
-
-void WallPiece::drawOpenPiece(QPainter &painter, const QPoint &pos)
-{
-    AbstractMinePiece::drawClosedPiece(painter, pos);
-}
-
-void WallPiece::drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
-{
-    AbstractMinePiece::drawClosedPiece(painter, pos, targetSize);
 }
 
 } // MineSweeper

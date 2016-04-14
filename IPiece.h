@@ -30,7 +30,11 @@ public:
     virtual void draw(QPainter &painter, const QPoint &pos) = 0;
     virtual void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) = 0;
 
-    virtual void setSize(const QSize &pieceSize) = 0;
+private:
+    IPiece(const IPiece &) = delete;
+    IPiece(IPiece &&) = delete;
+    IPiece &operator=(const IPiece &) = delete;
+    IPiece &operator=(IPiece &&) = delete;
 };
 
 #endif // IPIECE_H

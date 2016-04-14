@@ -20,7 +20,6 @@
 #define GAMEWIDGET_H
 
 #include "ImageWidget.h"
-#include <memory>
 
 class IGame;
 
@@ -30,13 +29,13 @@ public:
     explicit GameWidget(QWidget *parent = 0);
     ~GameWidget() = default;
 
-    void setGame(std::shared_ptr<IGame> game);
+    void setGame(IGame *game);
 
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *) override;
 
-    std::shared_ptr<IGame> game;
+    IGame *game;
 };
 
 #endif // GAMEWIDGET_H

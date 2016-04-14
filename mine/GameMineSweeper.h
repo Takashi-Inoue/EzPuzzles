@@ -34,7 +34,7 @@
 
 namespace MineSweeper {
 
-class AbstractMinePiece;
+class IMinePiece;
 
 class GameMineSweeper : public IGame
 {
@@ -51,13 +51,17 @@ public:
     QPixmap pixmap() const override;
 
 protected:
-    typedef std::shared_ptr<AbstractMinePiece> MinePiecePointer;
+    typedef std::shared_ptr<IMinePiece> MinePiecePointer;
     typedef std::shared_ptr<IDrawer> DrawerPointer;
 
     void initPieces();
+    void createWallPieces();
+    void createMinePieces();
+    void createMinePieces(int minX, int maxX, int minY, int maxY, int numberOfMines);
+    void createSafePieces();
 
-    QList<MinePiecePointer> aroundPieces(int x, int y) const;
-    QList<QPoint> aroundPositions(const QPoint &pos) const;
+    QList<MinePiecePointer> getAroundPieces(int x, int y) const;
+    QList<QPoint> getAroundPositions(const QPoint &pos) const;
     MinePiecePointer &getPiece(const QPoint &pos);
 
     void drawAll();
@@ -66,7 +70,7 @@ protected:
     void openChaining(int x, int y);
     void checkMinesForLock();
 
-    template<typename T> T emptyPieceCount() const
+    template<typename T> T safePieceCount() const
     {
         return static_cast<T>(xy.width() * xy.height() - mineCount);
     }
@@ -80,7 +84,7 @@ protected:
 
     QVector<QVector<MinePiecePointer>> pieces;
     QList<QPoint> changedPositions;
-    QList<QPoint> indeterminateMinesPostions;
+    QList<QPoint> notLockedMinesPos;
 
     DrawerPointer drawer;
 

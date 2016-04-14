@@ -21,7 +21,6 @@
 
 #include <QWidget>
 #include <QPixmap>
-#include <memory>
 
 namespace Ui {
 class FormFinalImage;
@@ -34,10 +33,10 @@ class FormFinalImage : public QWidget
     Q_OBJECT
 
 public:
-    explicit FormFinalImage(std::shared_ptr<IGame> game, QWidget *parent = 0);
+    explicit FormFinalImage(IGame *game, QWidget *parent = 0);
     ~FormFinalImage();
 
-    void setGame(std::shared_ptr<IGame> game);
+    void setGame(IGame *game);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -46,7 +45,7 @@ protected:
 
 private:
     Ui::FormFinalImage *ui;
-    std::shared_ptr<IGame> game;
+    IGame *game;
     int grabbedEdges;
     QSize newSize;
 };

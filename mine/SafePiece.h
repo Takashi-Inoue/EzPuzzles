@@ -1,36 +1,34 @@
 ﻿/*
- * Copyright 2016 Takashi Inoue
+ * Copyright YEAR Takashi Inoue
  *
- * This file is part of EzPuzzles.
+ * This file is part of APPNAME.
  *
- * EzPuzzles is free software: you can redistribute it and/or modify
+ * APPNAME is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * EzPuzzles is distributed in the hope that it will be useful,
+ * APPNAME is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
+ * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MAINPIECE_H
-#define MAINPIECE_H
+#ifndef SAFEPIECE_H
+#define SAFEPIECE_H
 
 #include "IMinePiece.h"
-#include <memory>
 
-class BlockPiece;
+#include <memory>
 
 namespace MineSweeper {
 
-class MinePiece : public IMinePiece
+class SafePiece : public IMinePiece
 {
 public:
-    MinePiece(const QSize &size);
-    ~MinePiece() = default;
+    SafePiece(int numOfAroundMines, const QPixmap &pixmap, const QRect &sourceRect = QRect());
 
     // IPiece
     void draw(QPainter &painter, const QPoint &pos) override;
@@ -42,7 +40,7 @@ public:
     void lock() override;
     bool isOpen() const override;
     bool isLock() const override;
-    void setOpenPieceOpacity(double /*opacity*/) override {}
+    void setOpenPieceOpacity(double opacity) override;
 
     // IMinePiece
     bool isMine() const override;
@@ -50,13 +48,16 @@ public:
     bool isWall() const override;
     int numberOfAroundMines() const override;
 
-private:
-    std::unique_ptr<IPiece> blockPiece;
-    bool isOpened;
-    bool isLocked;
+protected:
+    void fillRect(QPainter &painter, const QPoint &pos, const QSize &targetSize);
+
+    std::unique_ptr<ISwitchPiece> switchImagePiece;
+    IPiece *numberPiece;
+
+    int numOfAroundMines;
     QSize size;
 };
 
 } // MineSweeper
 
-#endif // MAINPIECE_H
+#endif // SAFEPIECE_H

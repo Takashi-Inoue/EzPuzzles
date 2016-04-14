@@ -19,23 +19,33 @@
 #ifndef ABSTRACTWALLPIECE_H
 #define ABSTRACTWALLPIECE_H
 
-#include "AbstractMinePiece.h"
+#include "IMinePiece.h"
 
 namespace MineSweeper {
 
-class WallPiece : public AbstractMinePiece
+class WallPiece : public IMinePiece
 {
 public:
     WallPiece() = default;
     ~WallPiece() = default;
 
+    // IPiece
+    void draw(QPainter &/*painter*/, const QPoint &/*pos*/) override {}
+    void draw(QPainter &/*painter*/, const QPoint &/*pos*/, const QSize &/*targetSize*/) override {}
+
+    // ISwitchPiece
+    void open() override {}
+    void close() override {}
+    void lock() override {}
+    bool isOpen() const override;
+    bool isLock() const override;
+    void setOpenPieceOpacity(double /*opacity*/) override {}
+
+    // IMinePiece
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;
     int numberOfAroundMines() const override;
-
-    void drawOpenPiece(QPainter &painter, const QPoint &pos) override;
-    void drawOpenPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
 };
 
 } // MineSweeper

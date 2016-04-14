@@ -24,6 +24,8 @@
 #include <QPixmap>
 #include <memory>
 
+#include "GarbageCollector.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -51,18 +53,19 @@ private slots:
     void on_actionE_xit_triggered();
 
 private:
-    void createFinalImageWidget();
+    void createFinalImageWidget(IGame *game);
     IGame *createNewGame(const QPixmap &sourcePixmap);
     void startNewGame(IGame *newGame);
 
     Ui::MainWindow *ui;
 
     QPixmap originalPixmap;
-    std::shared_ptr<IGame> game;
+    IGame *game;
     std::shared_ptr<QPixmap> backBuffer;
     std::shared_ptr<FormFinalImage> finalImageWidget;
 
     GameWidget *gameWidget;
+    GarbageCollector garbageCollector;
 };
 
 #endif // MAINWINDOW_H

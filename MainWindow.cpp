@@ -28,14 +28,21 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QImage>
+#include <QThread>
 #include <QDebug>
+
+QThread garbageThread;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    game(nullptr),
     gameWidget(new GameWidget())
 {
     ui->setupUi(this);
+
+    garbageCollector.moveToThread(&garbageThread);
+    garbageThread.start();
 
     gameWidget->resize(1, 1);
     ui->scrollArea->setWidget(gameWidget);
@@ -51,6 +58,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    garbageCollector.stop();
+    garbageCollector.wait();
+
+    garbageThread.quit();
+
     delete gameWidget;
     delete ui;
 }
@@ -100,9 +112,9 @@ void MainWindow::on_actionE_xit_triggered()
     close();
 }
 
-void MainWindow::createFinalImageWidget()
+void MainWindow::createFinalImageWidget(IGame *game)
 {
-    Q_CHECK_PTR(game.get());
+    Q_CHECK_PTR(game);
     Q_ASSERT(finalImageWidget == nullptr);
 
     finalImageWidget = std::make_shared<FormFinalImage>(game);
@@ -129,22 +141,30 @@ void MainWindow::startNewGame(IGame *newGame)
     if (game != nullptr)
         game->disconnect();
 
-    game.reset(newGame);
-
     if (finalImageWidget == nullptr)
-        createFinalImageWidget();
+        createFinalImageWidget(newGame);
 
-    finalImageWidget->setGame(game);
+    finalImageWidget->setGame(newGame);
     finalImageWidget->repaint();
 
-    connect(game.get(), SIGNAL(informationUpdated()), finalImageWidget.get(), SLOT(repaint()));
+    connect(newGame, SIGNAL(informationUpdated()), finalImageWidget.get(), SLOT(repaint()));
 
-    gameWidget->resize(game->maxFieldSize());
-    gameWidget->setGame(game);
+    gameWidget->resize(newGame->maxFieldSize());
+    gameWidget->setGame(newGame);
 
     gameWidget->repaint();
 
     ui->actionNew_Game_Current_image->setEnabled(true);
     ui->action_Restart->setEnabled(true);
+
+    auto oldGame = game;
+    game = newGame;
+
+//    qDebug() << "MainThreadID :" << this->thread()->currentThreadId();
+
+    if (oldGame != nullptr) {
+        garbageCollector.push(oldGame);
+        garbageCollector.start();
+    }
 }
 

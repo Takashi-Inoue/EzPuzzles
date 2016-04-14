@@ -11,8 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EzPuzzles
 TEMPLATE = app
 
-DEFINES += Q_COMPILER_INITIALIZER_LISTS
-
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -27,16 +25,23 @@ SOURCES += main.cpp\
     PiecesGame.cpp \
     GameSwap.cpp \
     SwapShuffler.cpp \
-    SwitchPiece.cpp \
     DialogGameStart.cpp \
     DialogSettingsMineSweeper.cpp \
-    mine/EmptyPiece.cpp \
     mine/GameMineSweeper.cpp \
     mine/MinePiece.cpp \
     mine/WallPiece.cpp \
     Dragger.cpp \
     SubFrame.cpp \
-    mine/GraduallyDrawer.cpp
+    mine/GraduallyDrawer.cpp \
+    ImagePiece.cpp \
+    NumberPiece.cpp \
+    BlockPiece.cpp \
+    SwitchImagePiece.cpp \
+    mine/SafePiece.cpp \
+    mine/NumberPieceFactory.cpp \
+    ThreadOperation.cpp \
+    GarbageCollector.cpp \
+    ImageFragmentPiece.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -53,12 +58,9 @@ HEADERS  += MainWindow.h \
     GameSwap.h \
     SwapShuffler.h \
     IPiece.h \
-    SwitchPiece.h \
     DialogGameStart.h \
     DialogSettingsMineSweeper.h \
     IGameBuilder.h \
-    mine/AbstractMinePiece.h \
-    mine/EmptyPiece.h \
     mine/GameMineSweeper.h \
     mine/MinePiece.h \
     mine/WallPiece.h \
@@ -66,7 +68,18 @@ HEADERS  += MainWindow.h \
     Dragger.h \
     SubFrame.h \
     IDrawer.h \
-    mine/GraduallyDrawer.h
+    mine/GraduallyDrawer.h \
+    ImagePiece.h \
+    NumberPiece.h \
+    ISwitchPiece.h \
+    BlockPiece.h \
+    SwitchImagePiece.h \
+    mine/IMinePiece.h \
+    mine/SafePiece.h \
+    mine/NumberPieceFactory.h \
+    ThreadOperation.h \
+    GarbageCollector.h \
+    ImageFragmentPiece.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
@@ -77,3 +90,6 @@ FORMS    += MainWindow.ui \
 
 RESOURCES += \
     resource.qrc
+
+DISTFILES += \
+    model.qmodel
