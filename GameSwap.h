@@ -30,8 +30,13 @@ class GameSwap : public PiecesGame
 {
     Q_OBJECT
 public:
-    GameSwap(const QPixmap &sourcePixmap, const QSize &xyCount, QObject *parent = 0);
+    static QString savedataExtension();
+    static QString gameName();
+
+    GameSwap(const SourceImage &sourceImage, const QSize &xyCount, QObject *parent = 0);
     ~GameSwap() = default;
+
+    IGame *cloneAsNewGame() const override;
 
     QString shortInformation() const override;
 

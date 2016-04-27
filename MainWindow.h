@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "GarbageCollector.h"
+#include "ToolIconWindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +34,7 @@ class MainWindow;
 class FormFinalImage;
 class GameWidget;
 class IGame;
+class SourceImage;
 
 class MainWindow : public QMainWindow
 {
@@ -48,20 +50,29 @@ protected:
 private slots:
     void on_action_Open_triggered();
     void on_actionNew_Game_Current_image_triggered();
-    void on_action_Final_image_triggered(bool checked);
+    void on_actionSave_Load_triggered();
     void on_action_Restart_triggered();
+    void on_action_Final_image_triggered(bool checked);
     void on_actionE_xit_triggered();
 
+    void startGameWithNewImage();
+    void startGameFromImageHistory();
+    void saveGame();
+    void loadGame();
+
 private:
+    void initToolBoxies();
+    void updateImageHistory(const QString &lastImagePath) const;
     void createFinalImageWidget(IGame *game);
-    IGame *createNewGame(const QPixmap &sourcePixmap);
+    IGame *createNewGame(const SourceImage &sourceImage);
     void startNewGame(IGame *newGame);
 
     Ui::MainWindow *ui;
 
-    QPixmap originalPixmap;
+    ToolIconWindow newGameToolBox;
+    ToolIconWindow diskToolBox;
+
     IGame *game;
-    std::shared_ptr<QPixmap> backBuffer;
     std::shared_ptr<FormFinalImage> finalImageWidget;
 
     GameWidget *gameWidget;

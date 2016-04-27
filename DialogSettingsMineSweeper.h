@@ -25,6 +25,7 @@
 #include <memory>
 
 class ISubWidget;
+class SourceImage;
 
 namespace Ui {
 class DialogSettingsMineSweeper;
@@ -35,7 +36,7 @@ class DialogSettingsMineSweeper : public QDialog, public IGameBuilder
     Q_OBJECT
 
 public:
-    explicit DialogSettingsMineSweeper(const QPixmap &sourcePixmap, bool showOkButton = true, QWidget *parent = 0);
+    explicit DialogSettingsMineSweeper(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = 0);
     ~DialogSettingsMineSweeper();
 
     IGame *buildGame() const override;
@@ -60,6 +61,7 @@ private:
     Ui::DialogSettingsMineSweeper *ui;
 
     ISubWidget *subFrame;
+    const SourceImage &sourceImage;
 };
 
 #endif // DIALOGSETTINGSMINESWEEPER_H

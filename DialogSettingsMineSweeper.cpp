@@ -21,18 +21,20 @@
 
 #include "mine/GameMineSweeper.h"
 #include "SubFrame.h"
+#include "SourceImage.h"
 
 #include <QDebug>
 
-DialogSettingsMineSweeper::DialogSettingsMineSweeper(const QPixmap &sourcePixmap, bool showOkButton, QWidget *parent) :
+DialogSettingsMineSweeper::DialogSettingsMineSweeper(const SourceImage &sourceImage, bool showOkButton, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettingsMineSweeper),
-    subFrame(nullptr)
+    subFrame(nullptr),
+    sourceImage(sourceImage)
 {
     ui->setupUi(this);
 
     ui->buttonBox->setVisible(showOkButton);
-    ui->imageWidget->setPixmap(sourcePixmap);
+    ui->imageWidget->setPixmap(sourceImage.pixmap);
 
     updateLabels();
     updateMineMax();
@@ -65,8 +67,9 @@ IGame *DialogSettingsMineSweeper::buildGame() const
         pixRect.moveBottom(originalSize.height() - 1);
 
     QPixmap pixmap = ui->imageWidget->originalPixmap().copy(pixRect);
+    SourceImage sourceImg(sourceImage.fullPath, pixmap);
 
-    return new MineSweeper::GameMineSweeper(pixmap, fieldSize, xy, ui->spinBox->value(), ui->checkBoxAutoLock->isChecked());
+    return new MineSweeper::GameMineSweeper(sourceImg, xy, ui->spinBox->value(), ui->checkBoxAutoLock->isChecked());
 }
 
 void DialogSettingsMineSweeper::showEvent(QShowEvent *event)

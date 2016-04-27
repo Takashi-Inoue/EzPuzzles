@@ -22,6 +22,7 @@
 class QPixmap;
 class QPainter;
 class QPoint;
+class SourceImage;
 
 #include <QObject>
 #include <QSize>
@@ -38,14 +39,16 @@ public:
 
     virtual ~IGame() = default;
 
-//    virtual IGame *cloneAsNewGame() const = 0;
+    virtual IGame *cloneAsNewGame() const = 0;
+    virtual void save(const QString &savePath) const = 0;
+    virtual bool load(const QString &loadPath) = 0;
 
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
     virtual void draw(QPainter &dest) = 0;
     virtual QSize maxFieldSize() const = 0;
     virtual void drawFinalImage(QPainter &dest) const = 0;
     virtual QString shortInformation() const = 0;
-    virtual QPixmap pixmap() const = 0;
+    virtual SourceImage sourceImage() const = 0;
 
 signals:
     void screenUpdated();

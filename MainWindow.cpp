@@ -21,13 +21,21 @@
 #include "ui_MainWindow.h"
 
 #include "DialogGameStart.h"
+#include "DialogImageHistory.h"
+#include "DialogSavedata.h"
 #include "FormFinalImage.h"
+
 #include "IGame.h"
 #include "GameWidget.h"
+
+#include "EzPuzzles.h"
+#include "StringListHistory.h"
+#include "SourceImage.h"
 
 #include <QFileDialog>
 #include <QLabel>
 #include <QImage>
+#include <QPushButton>
 #include <QThread>
 #include <QDebug>
 
@@ -36,10 +44,14 @@ QThread garbageThread;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    newGameToolBox(this),
+    diskToolBox(this),
     game(nullptr),
     gameWidget(new GameWidget())
 {
     ui->setupUi(this);
+
+    initToolBoxies();
 
     garbageCollector.moveToThread(&garbageThread);
     garbageThread.start();
@@ -62,6 +74,7 @@ MainWindow::~MainWindow()
     garbageCollector.wait();
 
     garbageThread.quit();
+    garbageThread.wait();
 
     delete gameWidget;
     delete ui;
@@ -73,28 +86,25 @@ void MainWindow::closeEvent(QCloseEvent *)
 
 void MainWindow::on_action_Open_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open image..."), "", tr("Images (*.png *.bmp *.jpg *.jpeg)"));
+    newGameToolBox.show(QCursor::pos());
+}
 
-    if (fileName.isNull())
-        return;
-
-    QImage image(fileName);
-
-    if (image.isNull())
-        return;
-
-    auto newGame = createNewGame(QPixmap::fromImage(image));
+void MainWindow::on_actionNew_Game_Current_image_triggered()
+{
+    auto newGame = createNewGame(game->sourceImage());
 
     if (newGame != nullptr)
         startNewGame(newGame);
 }
 
-void MainWindow::on_actionNew_Game_Current_image_triggered()
+void MainWindow::on_actionSave_Load_triggered()
 {
-    auto newGame = createNewGame(game->pixmap());
+    diskToolBox.show(QCursor::pos());
+}
 
-    if (newGame != nullptr)
-        startNewGame(newGame);
+void MainWindow::on_action_Restart_triggered()
+{
+    startNewGame(game->cloneAsNewGame());
 }
 
 void MainWindow::on_action_Final_image_triggered(bool checked)
@@ -102,14 +112,96 @@ void MainWindow::on_action_Final_image_triggered(bool checked)
     ui->dockWidget->setVisible(checked);
 }
 
-void MainWindow::on_action_Restart_triggered()
-{
-
-}
-
 void MainWindow::on_actionE_xit_triggered()
 {
     close();
+}
+
+void MainWindow::startGameWithNewImage()
+{
+    QString imagePath = QFileDialog::getOpenFileName(this, tr("Open image..."), "", tr("Images (*.png *.bmp *.jpg *.jpeg)"));
+
+    SourceImage sourceImage(imagePath);
+
+    if (sourceImage.isNull())
+        return;
+
+    auto newGame = createNewGame(sourceImage);
+
+    if (newGame == nullptr)
+        return;
+
+    startNewGame(newGame);
+    updateImageHistory(imagePath);
+}
+
+void MainWindow::startGameFromImageHistory()
+{
+    DialogImageHistory dialog(this);
+
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    QString imagePath = dialog.selectedImagePath();
+
+    SourceImage sourceImage(imagePath);
+
+    if (sourceImage.isNull())
+        return;
+
+    auto newGame = createNewGame(sourceImage);
+
+    if (newGame == nullptr)
+        return;
+
+    startNewGame(newGame);
+    updateImageHistory(imagePath);
+}
+
+void MainWindow::saveGame()
+{
+    diskToolBox.close();
+
+    if (game == nullptr)
+        return;
+
+    EzPuzzles::createSaveDirPath();
+    game->save(EzPuzzles::saveDirPath());
+}
+
+void MainWindow::loadGame()
+{
+    DialogSavedata dialog(this);
+
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+}
+
+void MainWindow::initToolBoxies()
+{
+    auto buttonOpenImage = newGameToolBox.addIcon(QIcon(":/ico/openImage"), "Open new image");
+    auto buttonHistory = newGameToolBox.addIcon(QIcon(":/ico/historyImage"), "Select an image from history");
+
+    connect(buttonOpenImage, SIGNAL(pressed()), this, SLOT(startGameWithNewImage()));
+    connect(buttonHistory,   SIGNAL(pressed()), this, SLOT(startGameFromImageHistory()));
+
+    auto buttonSaveGame = diskToolBox.addIcon(QIcon(":/ico/save"), "Save");
+    auto buttonLoadGame = diskToolBox.addIcon(QIcon(":/ico/load"), "Load");
+
+    connect(buttonSaveGame, SIGNAL(pressed()), this, SLOT(saveGame()));
+    connect(buttonLoadGame, SIGNAL(pressed()), this, SLOT(loadGame()));
+
+    buttonSaveGame->setObjectName("pushButtonSaveGame");
+    buttonSaveGame->setEnabled(false);
+}
+
+void MainWindow::updateImageHistory(const QString &lastImagePath) const
+{
+    StringListHistory history;
+
+    history.load(EzPuzzles::imageHistoryPath());
+    history.addString(lastImagePath);
+    history.save(EzPuzzles::imageHistoryPath());
 }
 
 void MainWindow::createFinalImageWidget(IGame *game)
@@ -124,9 +216,9 @@ void MainWindow::createFinalImageWidget(IGame *game)
     connect(finalImageWidget.get(), SIGNAL(windowTitleChanged(QString)), ui->dockWidget, SLOT(setWindowTitle(QString)));
 }
 
-IGame *MainWindow::createNewGame(const QPixmap &sourcePixmap)
+IGame *MainWindow::createNewGame(const SourceImage &sourceImage)
 {
-    DialogGameStart dialog(sourcePixmap, this);
+    DialogGameStart dialog(sourceImage, this);
 
     if (dialog.exec() == QDialog::Rejected)
         return nullptr;
@@ -156,6 +248,8 @@ void MainWindow::startNewGame(IGame *newGame)
 
     ui->actionNew_Game_Current_image->setEnabled(true);
     ui->action_Restart->setEnabled(true);
+
+    diskToolBox.setChildEnabled("pushButtonSaveGame", true);
 
     auto oldGame = game;
     game = newGame;

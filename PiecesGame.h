@@ -20,6 +20,7 @@
 #define PIECESGAME_H
 
 #include "IGame.h"
+#include "SourceImage.h"
 
 #include <QList>
 #include <QPixmap>
@@ -34,14 +35,17 @@ class PiecesGame : public IGame
 {
     Q_OBJECT
 public:
-    PiecesGame(const QPixmap &sourcePixmap, const QSize &xyCount, IShuffler *shuffler, QObject *parent = 0);
+    PiecesGame(const SourceImage &sourceImage, const QSize &xyCount, IShuffler *shuffler, QObject *parent = 0);
     ~PiecesGame() = default;
+
+    void save(const QString &savePath) const {}
+    bool load(const QString &savePath) {return false;}
 
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
     void draw(QPainter &dest) override;
     QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
-    QPixmap pixmap() const override;
+    SourceImage sourceImage() const override;
 
 protected:
     virtual void clickOperation(const QSize &fieldSize, const QPoint &cursorPos);
@@ -52,7 +56,7 @@ protected:
     void drawBlackPiece(QPainter &painterBuffer, int pieceIndex);
 
     QList<int> pieces;
-    const QSize size;
+    const QSize xy;
     QList<int> changedIndex;
 
 private slots:
@@ -64,7 +68,7 @@ private:
     void calcSourceSplitterPos();
     void calcDestSplitterPos();
 
-    QPixmap sourcePixmap;
+    SourceImage sourceImg;
     QPixmap backBuffer;
 
     bool isStarted;

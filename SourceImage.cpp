@@ -16,28 +16,48 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#include "SourceImage.h"
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QFileInfo>
 
-namespace MineSweeper {
-
-class IMinePiece : public ISwitchPiece
+SourceImage::SourceImage(const QString &imagePath) :
+    fullPath(imagePath),
+    pixmap(QPixmap::fromImage(QImage(imagePath)))
 {
-public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+}
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
-};
+SourceImage::SourceImage(const QString &imagePath, const QPixmap &pixmap) :
+    fullPath(imagePath),
+    pixmap(pixmap)
+{
+}
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
+bool SourceImage::isNull() const
+{
+    return pixmap.isNull();
+}
 
-} // MineSweeper
+QString SourceImage::baseName() const
+{
+    return QFileInfo(fullPath).baseName();
+}
 
-#endif // IMINEPIECE_H
+QSize SourceImage::size() const
+{
+    return pixmap.size();
+}
+
+QRect SourceImage::rect() const
+{
+    return pixmap.rect();
+}
+
+int SourceImage::width() const
+{
+    return pixmap.width();
+}
+
+int SourceImage::height() const
+{
+    return pixmap.height();
+}

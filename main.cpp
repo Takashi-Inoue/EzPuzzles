@@ -18,10 +18,37 @@
  */
 
 #include "MainWindow.h"
+#include "EzPuzzles.h"
+
 #include <QApplication>
+#include <QDir>
+#include <QFontDatabase>
+#include <QTranslator>
+#include <QLibraryInfo>
+#include <QTextCodec>
+
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName("tino");
+    QCoreApplication::setApplicationName("EzPuzzles");
+
     QApplication a(argc, argv);
+
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
+
+    QTranslator translator1;
+    translator1.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+
+    QTranslator translator2;
+    translator2.load("ezpz_" + QLocale::system().name(), QApplication::applicationDirPath());
+
+    a.installTranslator(&translator1);
+    a.installTranslator(&translator2);
+
+    QApplication::setFont(QFont("Meiryo UI", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize()));
+
+    QDir().mkpath(EzPuzzles::saveDirPath());
+
     MainWindow w;
     w.show();
 

@@ -22,7 +22,7 @@
 #include "DialogSettingsFifteen.h"
 #include "DialogSettingsMineSweeper.h"
 
-DialogGameStart::DialogGameStart(const QPixmap &pixmap, QWidget *parent) :
+DialogGameStart::DialogGameStart(const SourceImage &sourceImage, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogGameStart)
 {
@@ -31,8 +31,8 @@ DialogGameStart::DialogGameStart(const QPixmap &pixmap, QWidget *parent) :
     ui->tabLikeFifteen->setLayout(new QVBoxLayout());
     ui->tabMineSweeper->setLayout(new QVBoxLayout());
 
-    ui->tabLikeFifteen->layout()->addWidget(new DialogSettingsFifteen(pixmap, false));
-    ui->tabMineSweeper->layout()->addWidget(new DialogSettingsMineSweeper(pixmap, false));
+    ui->tabLikeFifteen->layout()->addWidget(new DialogSettingsFifteen(sourceImage, false));
+    ui->tabMineSweeper->layout()->addWidget(new DialogSettingsMineSweeper(sourceImage, false));
 }
 
 DialogGameStart::~DialogGameStart()

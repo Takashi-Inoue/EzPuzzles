@@ -16,28 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#ifndef STRINGLISTHISTORY_H
+#define STRINGLISTHISTORY_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QStringList>
 
-namespace MineSweeper {
-
-class IMinePiece : public ISwitchPiece
+class StringListHistory
 {
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    StringListHistory() = default;
+    ~StringListHistory() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    void load(const QString &iniFilePath);
+    void save(const QString &iniFilePath);
+
+    void addString(const QString &string, bool isUnique = true);
+    void addStrings(const QStringList &strings, bool isUnique = true);
+
+    const QStringList &stringList() const;
+
+private:
+    QStringList strings;
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // STRINGLISTHISTORY_H

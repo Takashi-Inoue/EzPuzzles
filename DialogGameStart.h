@@ -22,6 +22,7 @@
 #include <QDialog>
 
 class IGame;
+class SourceImage;
 
 namespace Ui {
 class DialogGameStart;
@@ -32,7 +33,7 @@ class DialogGameStart : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogGameStart(const QPixmap &pixmap, QWidget *parent = 0);
+    explicit DialogGameStart(const SourceImage &sourceImage, QWidget *parent = 0);
     ~DialogGameStart();
 
     IGame *buildGame() const;

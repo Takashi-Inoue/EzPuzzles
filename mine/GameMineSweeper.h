@@ -21,6 +21,8 @@
 
 #include "IGame.h"
 #include "IDrawer.h"
+#include "IMinePiece.h"
+#include "SourceImage.h"
 
 #include <QList>
 #include <QVector>
@@ -30,71 +32,77 @@
 #include <QTimer>
 
 #include <memory>
-#include <random>
 
 namespace MineSweeper {
 
-class IMinePiece;
+class MineLocker;
 
 class GameMineSweeper : public IGame
 {
     Q_OBJECT
 public:
-    GameMineSweeper(const QPixmap &sourcePixmap, const QSize &fieldSize, const QSize &xyCount, int mineCount, bool isAutoLock, QObject *parent = 0);
+    static QString savedataExtension();
+    static QString gameName();
+
+    GameMineSweeper();
+    GameMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock, QObject *parent = 0);
     ~GameMineSweeper() = default;
+
+    IGame *cloneAsNewGame() const override;
+    void save(const QString &saveDirPath) const override;
+    bool load(const QString &loadPath) override;
 
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
     void draw(QPainter &dest) override;
     QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
     QString shortInformation() const override;
-    QPixmap pixmap() const override;
+    SourceImage sourceImage() const override;
 
 protected:
-    typedef std::shared_ptr<IMinePiece> MinePiecePointer;
     typedef std::shared_ptr<IDrawer> DrawerPointer;
 
     void initPieces();
-    void createWallPieces();
-    void createMinePieces();
-    void createMinePieces(int minX, int maxX, int minY, int maxY, int numberOfMines);
-    void createSafePieces();
 
-    QList<MinePiecePointer> getAroundPieces(int x, int y) const;
-    QList<QPoint> getAroundPositions(const QPoint &pos) const;
     MinePiecePointer &getPiece(const QPoint &pos);
+    const MinePiecePointer &getPiece(const QPoint &pos) const;
 
     void drawAll();
     void drawChanged();
     void drawPiece(QPainter &painterBuffer, int x, int y);
     void openChaining(int x, int y);
-    void checkMinesForLock();
 
     template<typename T> T safePieceCount() const
     {
         return static_cast<T>(xy.width() * xy.height() - mineCount);
     }
 
-    QPixmap sourcePixmap;
+    QString gameID;
+
+    SourceImage sourceImg;
     QPixmap backBuffer;
 
-    const QSize xy;
-    const int mineCount;
-    const bool isAutoLock;
+    QSize xy;
+    int mineCount;
 
     QVector<QVector<MinePiecePointer>> pieces;
     QList<QPoint> changedPositions;
-    QList<QPoint> notLockedMinesPos;
 
     DrawerPointer drawer;
+    std::unique_ptr<MineLocker> mineLocker;
 
-    int opendCount;
+    int openedCount;
     int missedCount;
 
-    bool isStarted;
+    bool isInited;
 
-    std::mt19937 mt;
     QTimer timer;
+
+private:
+    GameMineSweeper(const GameMineSweeper &) = delete;
+    GameMineSweeper(GameMineSweeper &&) = delete;
+    GameMineSweeper &operator=(const GameMineSweeper &) = delete;
+    GameMineSweeper &operator=(GameMineSweeper &&) = delete;
 };
 
 } // MineSweeper

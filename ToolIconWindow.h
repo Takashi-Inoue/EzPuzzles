@@ -16,28 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#ifndef TOOLICONWINDOW_H
+#define TOOLICONWINDOW_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QScrollArea>
+#include <QPushButton>
 
-namespace MineSweeper {
-
-class IMinePiece : public ISwitchPiece
+class ToolIconWindow
 {
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    ToolIconWindow(QWidget *parent = 0);
+    ~ToolIconWindow() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    QPushButton *addIcon(const QIcon &icon, const QString &toolTip = "");
+
+    void show(const QPoint &pos);
+    void close();
+
+    void setChildEnabled(const QString &objectName, bool isEnable);
+
+private:
+    QWidget widget;
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // TOOLICONWINDOW_H

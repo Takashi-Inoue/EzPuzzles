@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EzPuzzles
 TEMPLATE = app
 
+TRANSLATIONS += ezpz_ja.ts
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -41,7 +42,18 @@ SOURCES += main.cpp\
     mine/NumberPieceFactory.cpp \
     ThreadOperation.cpp \
     GarbageCollector.cpp \
-    ImageFragmentPiece.cpp
+    ImageFragmentPiece.cpp \
+    mine/MineLocker.cpp \
+    mine/PiecesFactory.cpp \
+    DialogImageHistory.cpp \
+    ImageLoader.cpp \
+    StringListHistory.cpp \
+    EzPuzzles.cpp \
+    ToolIconWindow.cpp \
+    SaveManager.cpp \
+    DialogSavedata.cpp \
+    SourceImage.cpp \
+    SaveInfoLoader.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -79,14 +91,28 @@ HEADERS  += MainWindow.h \
     mine/NumberPieceFactory.h \
     ThreadOperation.h \
     GarbageCollector.h \
-    ImageFragmentPiece.h
+    ImageFragmentPiece.h \
+    mine/MineLocker.h \
+    Utility.h \
+    mine/PiecesFactory.h \
+    DialogImageHistory.h \
+    ImageLoader.h \
+    StringListHistory.h \
+    EzPuzzles.h \
+    ToolIconWindow.h \
+    SaveManager.h \
+    DialogSavedata.h \
+    SourceImage.h \
+    SaveInfoLoader.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
     DialogSettingsFifteen.ui \
     ImageWidget.ui \
     DialogGameStart.ui \
-    DialogSettingsMineSweeper.ui
+    DialogSettingsMineSweeper.ui \
+    DialogImageHistory.ui \
+    DialogSavedata.ui
 
 RESOURCES += \
     resource.qrc

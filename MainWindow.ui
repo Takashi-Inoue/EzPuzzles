@@ -91,15 +91,17 @@
    </attribute>
    <addaction name="action_Open"/>
    <addaction name="actionNew_Game_Current_image"/>
-   <addaction name="action_Final_image"/>
+   <addaction name="actionSave_Load"/>
    <addaction name="separator"/>
    <addaction name="action_Restart"/>
+   <addaction name="action_Final_image"/>
+   <addaction name="separator"/>
    <addaction name="actionE_xit"/>
   </widget>
   <action name="action_Open">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/openImage.png</normaloff>:/ico/openImage.png</iconset>
+     <normaloff>:/ico/openImage</normaloff>:/ico/openImage</iconset>
    </property>
    <property name="text">
     <string>New Game (&amp;open new image)</string>
@@ -108,7 +110,7 @@
   <action name="actionE_xit">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/close.png</normaloff>:/ico/close.png</iconset>
+     <normaloff>:/ico/exit</normaloff>:/ico/exit</iconset>
    </property>
    <property name="text">
     <string>E&amp;xit</string>
@@ -148,6 +150,18 @@
    </property>
    <property name="text">
     <string>&amp;Restart</string>
+   </property>
+  </action>
+  <action name="actionSave_Load">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/ico/hdd</normaloff>:/ico/hdd</iconset>
+   </property>
+   <property name="text">
+    <string>Save/Load</string>
+   </property>
+   <property name="toolTip">
+    <string>Save/Load game</string>
    </property>
   </action>
  </widget>

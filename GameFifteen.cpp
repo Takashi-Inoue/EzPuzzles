@@ -24,10 +24,25 @@
 #include <QPainter>
 #include <QDebug>
 
-GameFifteen::GameFifteen(const QPixmap &sourcePixmap, const QSize &xyCount, QObject *parent) :
-    PiecesGame(sourcePixmap, xyCount, new SlideShuffler(pieces, xyCount, QPoint(xyCount.width() - 1, xyCount.height() - 1)), parent),
+QString GameFifteen::savedataExtension()
+{
+    return "gft";
+}
+
+QString GameFifteen::gameName()
+{
+    return "Slide";
+}
+
+GameFifteen::GameFifteen(const SourceImage &sourceImage, const QSize &xyCount, QObject *parent) :
+    PiecesGame(sourceImage, xyCount, new SlideShuffler(pieces, xyCount, QPoint(xyCount.width() - 1, xyCount.height() - 1)), parent),
     blankPos(-1, -1)
 {
+}
+
+IGame *GameFifteen::cloneAsNewGame() const
+{
+    return new GameFifteen(sourceImage(), xy, parent());
 }
 
 QString GameFifteen::shortInformation() const
@@ -38,14 +53,14 @@ QString GameFifteen::shortInformation() const
 void GameFifteen::clickOperation(const QSize &fieldSize, const QPoint &cursorPos)
 {
     if (blankPos.x() == -1) {
-        int blankIndex = pieces.indexOf(size.width() * size.height() - 1);
-        blankPos = QPoint(blankIndex % size.width(), blankIndex / size.width());
+        int blankIndex = pieces.indexOf(xy.width() * xy.height() - 1);
+        blankPos = QPoint(blankIndex % xy.width(), blankIndex / xy.width());
     }
 
     changedIndex.clear();
 
-    QList<double> splitterXs = SplitPainter::verticalSplitterPos(fieldSize.width(), size.width() - 1);
-    QList<double> splitterYs = SplitPainter::horizontalSplitterPos(fieldSize.height(), size.height() - 1);
+    QList<double> splitterXs = SplitPainter::verticalSplitterPos(fieldSize.width(), xy.width() - 1);
+    QList<double> splitterYs = SplitPainter::horizontalSplitterPos(fieldSize.height(), xy.height() - 1);
 
     QPoint pos(std::distance(splitterXs.begin(), std::upper_bound(splitterXs.begin(), splitterXs.end(), cursorPos.x())),
                std::distance(splitterYs.begin(), std::upper_bound(splitterYs.begin(), splitterYs.end(), cursorPos.y())));
@@ -54,10 +69,10 @@ void GameFifteen::clickOperation(const QSize &fieldSize, const QPoint &cursorPos
         return;
 
     if (pos.x() == blankPos.x()) {
-        changedIndex = PieceMover(pieces, size).slideVertical(blankPos, pos);
+        changedIndex = PieceMover(pieces, xy).slideVertical(blankPos, pos);
         blankPos = pos;
     } else if (pos.y() == blankPos.y()) {
-        changedIndex = PieceMover(pieces, size).slideHorizontal(blankPos, pos);
+        changedIndex = PieceMover(pieces, xy).slideHorizontal(blankPos, pos);
         blankPos = pos;
     }
 }
@@ -66,7 +81,7 @@ void GameFifteen::drawPiece(QPainter &painterBuffer, int pieceIndex)
 {
     int originalPos = pieces.at(pieceIndex);
 
-    if (originalPos == size.width() * size.height() - 1) {
+    if (originalPos == xy.width() * xy.height() - 1) {
         drawBlackPiece(painterBuffer, pieceIndex);
         return;
     }

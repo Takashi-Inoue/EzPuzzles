@@ -26,12 +26,19 @@
 #include <QPoint>
 #include <QSize>
 
+class SourceImage;
+
 class GameFifteen : public PiecesGame
 {
     Q_OBJECT
 public:
-    GameFifteen(const QPixmap &sourcePixmap, const QSize &xyCount, QObject *parent = 0);
+    static QString savedataExtension();
+    static QString gameName();
+
+    GameFifteen(const SourceImage &sourceImage, const QSize &xyCount, QObject *parent = 0);
     ~GameFifteen() = default;
+
+    IGame *cloneAsNewGame() const override;
 
     QString shortInformation() const override;
 

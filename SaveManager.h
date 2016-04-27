@@ -16,28 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#ifndef SAVEMANAGER_H
+#define SAVEMANAGER_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QStringList>
 
-namespace MineSweeper {
+class IGame;
 
-class IMinePiece : public ISwitchPiece
+class SaveManager
 {
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    SaveManager() = default;
+    ~SaveManager() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    static QStringList filterExtensions();
+
+    static void save(IGame *game);
+    static IGame *load(const QString &savedataPath);
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // SAVEMANAGER_H

@@ -24,10 +24,10 @@
 #include <QPainter>
 #include <QDebug>
 
-PiecesGame::PiecesGame(const QPixmap &sourcePixmap, const QSize &xyCount, IShuffler *shuffler, QObject *parent) :
+PiecesGame::PiecesGame(const SourceImage &sourceImg, const QSize &xyCount, IShuffler *shuffler, QObject *parent) :
     IGame(parent),
-    size(xyCount),
-    sourcePixmap(sourcePixmap),
+    xy(xyCount),
+    sourceImg(sourceImg),
     backBuffer(0, 0),
     isStarted(false),
     shuffler(shuffler)
@@ -75,7 +75,7 @@ void PiecesGame::draw(QPainter &dest)
 
         if (!changedIndex.isEmpty()) {
             QPainter painterBuffer(&backBuffer);
-            SplitPainter(QPen(Qt::darkGray, 1), size.width() - 1, size.height() - 1).draw(painterBuffer);
+            SplitPainter(QPen(Qt::darkGray, 1), xy.width() - 1, xy.height() - 1).draw(painterBuffer);
         }
     }
 
@@ -84,18 +84,18 @@ void PiecesGame::draw(QPainter &dest)
 
 QSize PiecesGame::maxFieldSize() const
 {
-    return sourcePixmap.size();
+    return sourceImg.size();
 }
 
 void PiecesGame::drawFinalImage(QPainter &dest) const
 {
-    QSize destSize = sourcePixmap.size().scaled(dest.viewport().size(), Qt::KeepAspectRatio);
-    dest.drawPixmap(QRect(QPoint(0, 0), destSize), sourcePixmap, sourcePixmap.rect());
+    QSize destSize = sourceImg.size().scaled(dest.viewport().size(), Qt::KeepAspectRatio);
+    dest.drawPixmap(QRect(QPoint(0, 0), destSize), sourceImg.pixmap, sourceImg.rect());
 }
 
-QPixmap PiecesGame::pixmap() const
+SourceImage PiecesGame::sourceImage() const
 {
-    return sourcePixmap;
+    return sourceImg;
 }
 
 void PiecesGame::clickOperation(const QSize &/*fieldSize*/, const QPoint &/*cursorPos*/)
@@ -107,19 +107,19 @@ void PiecesGame::drawPiece(QPainter &painterBuffer, int pieceIndex)
 {
     int originalPos = pieces.at(pieceIndex);
 
-    QPoint destPos(pieceIndex % size.width(), pieceIndex / size.width());
+    QPoint destPos(pieceIndex % xy.width(), pieceIndex / xy.width());
 
     QPointF destTL(destSplitterXs.at(destPos.x()), destSplitterYs.at(destPos.y()));
     QPointF destBR(destSplitterXs.at(destPos.x() + 1), destSplitterYs.at(destPos.y() + 1));
     QRectF destRect(destTL, destBR);
 
-    QPoint sourcePos(originalPos % size.width(), originalPos / size.width());
+    QPoint sourcePos(originalPos % xy.width(), originalPos / xy.width());
 
     QPointF sourceTL(sourceSplitterXs.at(sourcePos.x()), sourceSplitterYs.at(sourcePos.y()));
     QPointF sourceBR(sourceSplitterXs.at(sourcePos.x() + 1), sourceSplitterYs.at(sourcePos.y() + 1));
     QRectF sourceRect(sourceTL, sourceBR);
 
-    painterBuffer.drawPixmap(destRect, sourcePixmap, sourceRect);
+    painterBuffer.drawPixmap(destRect, sourceImg.pixmap, sourceRect);
 }
 
 bool PiecesGame::isGameClear() const
@@ -139,7 +139,7 @@ void PiecesGame::gameOver()
 
 void PiecesGame::drawBlackPiece(QPainter &painterBuffer, int pieceIndex)
 {
-    QPoint destPos(pieceIndex % size.width(), pieceIndex / size.width());
+    QPoint destPos(pieceIndex % xy.width(), pieceIndex / xy.width());
 
     QPointF destTL(destSplitterXs.at(destPos.x()), destSplitterYs.at(destPos.y()));
     QPointF destBR(destSplitterXs.at(destPos.x() + 1), destSplitterYs.at(destPos.y() + 1));
@@ -160,7 +160,7 @@ void PiecesGame::drawAll()
     QPainter painterBuffer(&backBuffer);
 
     painterBuffer.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    painterBuffer.drawPixmap(backBuffer.rect(), sourcePixmap, sourcePixmap.rect());
+    painterBuffer.drawPixmap(backBuffer.rect(), sourceImg.pixmap, sourceImg.rect());
 }
 
 void PiecesGame::drawChanged()
@@ -178,8 +178,8 @@ void PiecesGame::calcSourceSplitterPos()
     sourceSplitterXs.push_back(0);
     sourceSplitterYs.push_back(0);
 
-    sourceSplitterXs << SplitPainter::verticalSplitterPos(sourcePixmap.width(), size.width() - 1) << sourcePixmap.width();
-    sourceSplitterYs << SplitPainter::horizontalSplitterPos(sourcePixmap.height(), size.height() - 1) << sourcePixmap.height();
+    sourceSplitterXs << SplitPainter::verticalSplitterPos(sourceImg.width(), xy.width() - 1) << sourceImg.width();
+    sourceSplitterYs << SplitPainter::horizontalSplitterPos(sourceImg.height(), xy.height() - 1) << sourceImg.height();
 }
 
 void PiecesGame::calcDestSplitterPos()
@@ -189,7 +189,7 @@ void PiecesGame::calcDestSplitterPos()
     destSplitterXs.push_back(0);
     destSplitterYs.push_back(0);
 
-    destSplitterXs << SplitPainter::verticalSplitterPos(backBuffer.width(), size.width() - 1) << backBuffer.width();
-    destSplitterYs << SplitPainter::horizontalSplitterPos(backBuffer.height(), size.height() - 1) << backBuffer.height();
+    destSplitterXs << SplitPainter::verticalSplitterPos(backBuffer.width(), xy.width() - 1) << backBuffer.width();
+    destSplitterYs << SplitPainter::horizontalSplitterPos(backBuffer.height(), xy.height() - 1) << backBuffer.height();
 }
 

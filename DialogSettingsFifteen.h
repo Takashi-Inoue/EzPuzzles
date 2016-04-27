@@ -23,6 +23,7 @@
 #include <QDialog>
 
 class IGame;
+class SourceImage;
 
 namespace Ui {
 class DialogSettingsFifteen;
@@ -33,7 +34,7 @@ class DialogSettingsFifteen : public QDialog, public IGameBuilder
     Q_OBJECT
 
 public:
-    explicit DialogSettingsFifteen(const QPixmap &pixmap, bool showOkButton = true, QWidget *parent = 0);
+    explicit DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = 0);
     ~DialogSettingsFifteen();
 
     IGame *buildGame() const override;
@@ -49,6 +50,8 @@ private:
     IGame *buildGameSwap() const;
 
     Ui::DialogSettingsFifteen *ui;
+
+    const SourceImage &sourceImage;
 };
 
 #endif // DIALOGSETTINGSFIFTEEN_H

@@ -16,28 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#ifndef EZPUZZLES_H
+#define EZPUZZLES_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QString>
 
-namespace MineSweeper {
-
-class IMinePiece : public ISwitchPiece
+class EzPuzzles
 {
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    EzPuzzles() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    static QString imageHistoryPath();
+    static QString saveDirPath();
+    static void createSaveDirPath();
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // EZPUZZLES_H

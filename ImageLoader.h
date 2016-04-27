@@ -16,28 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#ifndef IMAGELOADER_H
+#define IMAGELOADER_H
 
-namespace MineSweeper {
+#include "ThreadOperation.h"
+#include <QReadWriteLock>
+#include <QStringList>
+#include <QVariant>
 
-class IMinePiece : public ISwitchPiece
+class ImageLoader : public ThreadOperation
 {
+    Q_OBJECT
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    ImageLoader() = default;
+    ~ImageLoader() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    void append(const QString &fileName);
+
+public slots:
+
+signals:
+    void loaded(const QString &fileName, const QPixmap &pixmap);
+    void failedToLoad(const QString &fileName);
+
+protected:
+    QString className() const override;
+    void execImpl() override;
+
+private:
+    QReadWriteLock lock;
+
+    QStringList fileNames;
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // IMAGELOADER_H

@@ -24,9 +24,24 @@
 #include <QPainter>
 #include <QDebug>
 
-GameSwap::GameSwap(const QPixmap &sourcePixmap, const QSize &xyCount, QObject *parent) :
-    PiecesGame(sourcePixmap, xyCount, new SwapShuffler(pieces, xyCount), parent)
+QString GameSwap::savedataExtension()
 {
+    return "gsw";
+}
+
+QString GameSwap::gameName()
+{
+    return "Swap";
+}
+
+GameSwap::GameSwap(const SourceImage &sourceImage, const QSize &xyCount, QObject *parent) :
+    PiecesGame(sourceImage, xyCount, new SwapShuffler(pieces, xyCount), parent)
+{
+}
+
+IGame *GameSwap::cloneAsNewGame() const
+{
+    return new GameSwap(sourceImage(), xy, parent());
 }
 
 QString GameSwap::shortInformation() const
@@ -38,15 +53,15 @@ void GameSwap::clickOperation(const QSize &fieldSize, const QPoint &cursorPos)
 {
     changedIndex.clear();
 
-    QList<double> splitterXs = SplitPainter::verticalSplitterPos(fieldSize.width(), size.width() - 1);
-    QList<double> splitterYs = SplitPainter::horizontalSplitterPos(fieldSize.height(), size.height() - 1);
+    QList<double> splitterXs = SplitPainter::verticalSplitterPos(fieldSize.width(), xy.width() - 1);
+    QList<double> splitterYs = SplitPainter::horizontalSplitterPos(fieldSize.height(), xy.height() - 1);
 
     QPoint pos(std::distance(splitterXs.begin(), std::upper_bound(splitterXs.begin(), splitterXs.end(), cursorPos.x())),
                std::distance(splitterYs.begin(), std::upper_bound(splitterYs.begin(), splitterYs.end(), cursorPos.y())));
 
-    PieceMover(pieces, size).swap(QPoint(0, 0), pos);
+    PieceMover(pieces, xy).swap(QPoint(0, 0), pos);
 
-    int index = pos.y() * size.width() + pos.x();
+    int index = pos.y() * xy.width() + pos.x();
 
     changedIndex << 0 << index;
 }

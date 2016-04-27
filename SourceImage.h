@@ -16,28 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#ifndef SOURCEIMAGE_H
+#define SOURCEIMAGE_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QString>
+#include <QPixmap>
 
-namespace MineSweeper {
-
-class IMinePiece : public ISwitchPiece
+class SourceImage
 {
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    SourceImage() = default;
+    SourceImage(const QString &imagePath);
+    SourceImage(const QString &imagePath, const QPixmap &pixmap);
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    ~SourceImage() = default;
+
+    bool isNull() const;
+    QString baseName() const;
+    QSize size() const;
+    QRect rect() const;
+    int width() const;
+    int height() const;
+
+    QString fullPath;
+    QPixmap pixmap;
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // SOURCEIMAGE_H

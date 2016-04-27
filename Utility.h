@@ -16,28 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IMINEPIECE_H
-#define IMINEPIECE_H
+#ifndef UTILITY_H
+#define UTILITY_H
 
-#include "ISwitchPiece.h"
-#include <memory>
+#include <QList>
+#include <QPoint>
 
-namespace MineSweeper {
-
-class IMinePiece : public ISwitchPiece
+class Utility
 {
 public:
-    IMinePiece() = default;
-    virtual ~IMinePiece() = default;
+    Utility() = default;
+    ~Utility() = default;
 
-    virtual bool isMine() const = 0;
-    virtual bool isNearMine() const = 0;
-    virtual bool isWall() const = 0;
-    virtual int numberOfAroundMines() const = 0;
+    static QList<QPoint> getAroundPositions(const QPoint &center)
+    {
+        int x = center.x();
+        int y = center.y();
+
+        QList<QPoint> result = {
+            QPoint(x - 1, y - 1),
+            QPoint(x - 1, y    ),
+            QPoint(x - 1, y + 1),
+            QPoint(x    , y - 1),
+            QPoint(x    , y + 1),
+            QPoint(x + 1, y - 1),
+            QPoint(x + 1, y    ),
+            QPoint(x + 1, y + 1),
+        };
+
+        return result;
+    }
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
-
-} // MineSweeper
-
-#endif // IMINEPIECE_H
+#endif // UTILITY_H
