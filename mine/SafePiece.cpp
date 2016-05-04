@@ -41,7 +41,7 @@ SafePiece::SafePiece(int numOfAroundMines, const QPixmap &pixmap, const QRect &s
         numberPiece = NumberPieceFactory::getPiece(numOfAroundMines, size);
 }
 
-void SafePiece::draw(QPainter &painter, const QPoint &pos)
+void SafePiece::draw(QPainter &painter, const QPointF &pos)
 {
     if (isOpen())
         fillRect(painter, pos, size);
@@ -52,7 +52,7 @@ void SafePiece::draw(QPainter &painter, const QPoint &pos)
         numberPiece->draw(painter, pos);
 }
 
-void SafePiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void SafePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     if (isOpen())
         fillRect(painter, pos, targetSize);
@@ -114,12 +114,12 @@ int SafePiece::numberOfAroundMines() const
     return numOfAroundMines;
 }
 
-void SafePiece::fillRect(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void SafePiece::fillRect(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     painter.setOpacity(1);
 
-    isNearMine() ? painter.fillRect(QRect(pos, targetSize), Qt::white)
-                 : painter.fillRect(QRect(pos, targetSize), Qt::black);
+    isNearMine() ? painter.fillRect(QRectF(pos, targetSize), Qt::white)
+                 : painter.fillRect(QRectF(pos, targetSize), Qt::black);
 }
 
 } // MineSweeper

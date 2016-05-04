@@ -21,6 +21,11 @@
 #include <QCoreApplication>
 #include <QDir>
 
+QSize EzPuzzles::screenshotSize()
+{
+    return QSize(256, 256);
+}
+
 QString EzPuzzles::imageHistoryPath()
 {
     return QCoreApplication::applicationDirPath() + "/" + "imageHistory.ini";

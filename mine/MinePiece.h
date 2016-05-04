@@ -33,8 +33,8 @@ public:
     ~MinePiece() = default;
 
     // IPiece
-    void draw(QPainter &painter, const QPoint &pos) override;
-    void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
+    void draw(QPainter &painter, const QPointF &pos) override;
+    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
 
     // ISwitchPiece
     void open() override;

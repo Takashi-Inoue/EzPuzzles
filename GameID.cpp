@@ -16,29 +16,45 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NUMBERPIECE_H
-#define NUMBERPIECE_H
+#include "GameID.h"
 
-#include <IPiece.h>
-#include <QFont>
+#include <QDateTime>
 
-class NumberPiece : public IPiece
+GameID::GameID() :
+    gameID(QString::number(QDateTime::currentMSecsSinceEpoch(), 16))
 {
-public:
-    NumberPiece(int number, QColor color = Qt::black, QSize size = QSize(0, 0));
+}
 
-    void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+GameID GameID::fromQString(const QString &string)
+{
+    return GameID(string);
+}
 
-    int number() const;
+void GameID::swap(GameID &other)
+{
+    if (this == &other)
+        return;
 
-protected:
-    void init();
-    QPointF calcOutlinePos(const QFont &font);
+    gameID.swap(other.gameID);
+}
 
-    int num;
-    QColor color;
-    QPixmap pixmap;
-};
+const QString &GameID::toString() const
+{
+    return gameID;
+}
 
-#endif // NUMBERPIECE_H
+void GameID::save(QDataStream &stream) const
+{
+    stream << gameID;
+}
+
+void GameID::load(QDataStream &stream)
+{
+    stream >> gameID;
+}
+
+// private constructor
+GameID::GameID(const QString &string) :
+    gameID(string)
+{
+}

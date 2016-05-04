@@ -16,29 +16,39 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NUMBERPIECE_H
-#define NUMBERPIECE_H
+#ifndef PUZZLEPIECE_H
+#define PUZZLEPIECE_H
 
-#include <IPiece.h>
-#include <QFont>
+#include "IPuzzlePiece.h"
+#include <memory>
 
-class NumberPiece : public IPiece
+class ImageFragmentPiece;
+class QPixmap;
+
+namespace Fifteen {
+
+class PuzzlePiece : public IPuzzlePiece
 {
 public:
-    NumberPiece(int number, QColor color = Qt::black, QSize size = QSize(0, 0));
+    PuzzlePiece(const QPoint &pos, const QPixmap &sourceImage, const QRectF &sourceRect);
+    ~PuzzlePiece() = default;
 
+    // IPiece
     void draw(QPainter &painter, const QPointF &pos) override;
     void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
 
-    int number() const;
+    // IPuzzlePiece
+    void setPos(const QPoint &position) override;
+    void swapPos(IPuzzlePiece *) override;
+    QPoint pos() const override;
+    bool isPosCorrect() const override;
 
 protected:
-    void init();
-    QPointF calcOutlinePos(const QFont &font);
-
-    int num;
-    QColor color;
-    QPixmap pixmap;
+    std::unique_ptr<IPiece> imagePiece;
+    QPoint position;
+    const QPoint defaultPosition;
 };
 
-#endif // NUMBERPIECE_H
+} // Fifteen
+
+#endif // PUZZLEPIECE_H

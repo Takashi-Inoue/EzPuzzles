@@ -19,12 +19,15 @@
 #ifndef EZPUZZLES_H
 #define EZPUZZLES_H
 
+#include <QSize>
 #include <QString>
 
 class EzPuzzles
 {
 public:
     EzPuzzles() = default;
+
+    static QSize screenshotSize();
 
     static QString imageHistoryPath();
     static QString saveDirPath();

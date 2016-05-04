@@ -46,33 +46,33 @@ BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, Q
     pixmapMap[key] = pixmap;
 }
 
-void BlockPiece::draw(QPainter &painter, const QPoint &pos)
+void BlockPiece::draw(QPainter &painter, const QPointF &pos)
 {
     Q_ASSERT(!pixmap.isNull());
 
     draw(painter, pos, pixmap.size());
 }
 
-void BlockPiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void BlockPiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     painter.setOpacity(1.0);
 
     pixmap.isNull() ? drawPiece(painter, pos, targetSize)
-                    : painter.drawPixmap(QRect(pos, targetSize), pixmap);
+                    : painter.drawPixmap(QRectF(pos, targetSize), pixmap, pixmap.rect());
 }
 
-void BlockPiece::drawPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void BlockPiece::drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
     painter.setOpacity(1.0);
 
-    painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), foregroundColor);
+    painter.fillRect(QRectF(pos, targetSize - QSize(1, 1)), foregroundColor);
 
     painter.setPen(darkLineColor);
-    painter.drawRect(QRect(pos, targetSize - QSize(1, 1)));
+    painter.drawRect(QRectF(pos, targetSize - QSize(1, 1)));
 
     painter.setPen(lightLineColor);
-    painter.drawRect(QRect(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
+    painter.drawRect(QRectF(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
 }
 
 BlockPiece::Key::Key(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3) :

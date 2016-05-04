@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "SplitPainter.h"
+#include "GridSplitter.h"
 
 #include <QPainter>
 #include <QDebug>
 
-SplitPainter::SplitPainter(int xSplitterCount, int ySplitterCount) :
+GridSplitter::GridSplitter(int xSplitterCount, int ySplitterCount) :
     pen(QColor(255, 0, 0, 128), 1),
     xSplitterCount(xSplitterCount),
     ySplitterCount(ySplitterCount)
@@ -29,7 +29,7 @@ SplitPainter::SplitPainter(int xSplitterCount, int ySplitterCount) :
     Q_ASSERT(xSplitterCount >= 0 && ySplitterCount >= 0);
 }
 
-SplitPainter::SplitPainter(const QPen &pen, int xSplitterCount, int ySplitterCount) :
+GridSplitter::GridSplitter(const QPen &pen, int xSplitterCount, int ySplitterCount) :
     pen(pen),
     xSplitterCount(xSplitterCount),
     ySplitterCount(ySplitterCount)
@@ -37,7 +37,7 @@ SplitPainter::SplitPainter(const QPen &pen, int xSplitterCount, int ySplitterCou
     Q_ASSERT(xSplitterCount >= 0 && ySplitterCount >= 0);
 }
 
-QList<double> SplitPainter::verticalSplitterPos(int width, int splitterCount)
+QList<double> GridSplitter::verticalSplitterPos(int width, int splitterCount)
 {
     QList<double> result;
 
@@ -49,7 +49,7 @@ QList<double> SplitPainter::verticalSplitterPos(int width, int splitterCount)
     return result;
 }
 
-QList<double> SplitPainter::horizontalSplitterPos(int height, int splitterCount)
+QList<double> GridSplitter::horizontalSplitterPos(int height, int splitterCount)
 {
     QList<double> result;
 
@@ -61,14 +61,14 @@ QList<double> SplitPainter::horizontalSplitterPos(int height, int splitterCount)
     return result;
 }
 
-double SplitPainter::verticalSplitterPos(int width, int splitterCount, int number)
+double GridSplitter::verticalSplitterPos(int width, int splitterCount, int number)
 {
     double partV = (width - splitterCount) / static_cast<double>(splitterCount + 1);
 
     return number * partV + number - 1;
 }
 
-double SplitPainter::horizontalSplitterPos(int height, int splitterCount, int number)
+double GridSplitter::horizontalSplitterPos(int height, int splitterCount, int number)
 {
     double partH = (height - splitterCount) / static_cast<double>(splitterCount + 1);
 
@@ -81,7 +81,7 @@ double SplitPainter::horizontalSplitterPos(int height, int splitterCount, int nu
 //        painter.setPen(QPen(QColor(64, 64, 64, 160), 1));
 //        painter.drawLine(QPointF(dx, 0), QPointF(dx, rect.bottom()));
 
-void SplitPainter::draw(QPainter &painter)
+void GridSplitter::draw(QPainter &painter)
 {
     painter.setPen(pen);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
@@ -105,22 +105,22 @@ void SplitPainter::draw(QPainter &painter)
     }
 }
 
-void SplitPainter::mousePress(const QPoint &)
+void GridSplitter::mousePress(const QPoint &)
 {
     // empty
 }
 
-void SplitPainter::mouseRelease(const QPoint &)
+void GridSplitter::mouseRelease(const QPoint &)
 {
     // empty
 }
 
-void SplitPainter::mouseMove(const QPoint &)
+void GridSplitter::mouseMove(const QPoint &)
 {
     // empty
 }
 
-QPoint SplitPainter::pos() const
+QPoint GridSplitter::pos() const
 {
     return QPoint(0, 0);
 }

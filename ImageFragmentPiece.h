@@ -24,15 +24,15 @@
 class ImageFragmentPiece : public IPiece
 {
 public:
-    ImageFragmentPiece(const QPixmap &sourcePixmap, const QRect &sourceRect);
+    ImageFragmentPiece(const QPixmap &sourcePixmap, const QRectF &sourceRect);
     ~ImageFragmentPiece() = default;
 
-    void draw(QPainter &painter, const QPoint &pos) override;
-    void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
+    void draw(QPainter &painter, const QPointF &pos) override;
+    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
 
 protected:
     QPixmap sourcePixmap;
-    QRect sourceRect;
+    QRectF sourceRect;
 };
 
 #endif // IMAGEFRAGMENTPIECE_H

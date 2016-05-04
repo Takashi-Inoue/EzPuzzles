@@ -16,31 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIECEMOVER_H
-#define PIECEMOVER_H
+#ifndef FIFTEENISHUFFLER_H
+#define FIFTEENISHUFFLER_H
 
+#include <QObject>
 #include <QList>
 #include <QPoint>
-#include <QSize>
 
-class PieceMover
+namespace Fifteen {
+
+class IShuffler : public QObject
 {
+    Q_OBJECT
 public:
-    PieceMover(QList<int> &pieces, QSize xy);
-    ~PieceMover() = default;
+    explicit IShuffler(QObject *parent = 0) :
+        QObject(parent)
+    {
+    }
 
-    QList<int> slideVertical(const QPoint &oldPos, const QPoint &newPos);
-    QList<int> slideHorizontal(const QPoint &oldPos, const QPoint &newPos);
-    void swap(const QPoint &p1, const QPoint &p2);
+    virtual ~IShuffler() = default;
 
-private:
-    QList<int> &pieces;
-    QSize xy;
+    virtual void shufflePieces() = 0;
 
-    PieceMover(const PieceMover &) = delete;
-    PieceMover(PieceMover &&) = delete;
-    PieceMover &operator=(const PieceMover &) = delete;
-    PieceMover &operator=(PieceMover &&) = delete;
+signals:
+    void update(QList<QPoint> &changed);
 };
 
-#endif // PIECEMOVER_H
+} // Fifteen
+
+#endif // FIFTEENISHUFFLER_H

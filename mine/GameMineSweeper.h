@@ -49,7 +49,7 @@ public:
     ~GameMineSweeper() = default;
 
     IGame *cloneAsNewGame() const override;
-    void save(const QString &saveDirPath) const override;
+    void save(const QString &saveDirPath, const QSize &screenshotSize) const override;
     bool load(const QString &loadPath) override;
 
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
@@ -77,7 +77,7 @@ protected:
         return static_cast<T>(xy.width() * xy.height() - mineCount);
     }
 
-    QString gameID;
+    mutable QString gameID;
 
     SourceImage sourceImg;
     QPixmap backBuffer;

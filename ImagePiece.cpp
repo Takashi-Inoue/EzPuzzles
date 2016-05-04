@@ -24,14 +24,14 @@ ImagePiece::ImagePiece(const QPixmap &pixmap) :
     Q_ASSERT(!pixmap.isNull());
 }
 
-void ImagePiece::draw(QPainter &painter, const QPoint &pos)
+void ImagePiece::draw(QPainter &painter, const QPointF &pos)
 {
     draw(painter, pos, pixmap.size());
 }
 
-void ImagePiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void ImagePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    painter.drawPixmap(QRect(pos, targetSize), pixmap, pixmap.rect());
+    painter.drawPixmap(QRectF(pos, targetSize), pixmap, pixmap.rect());
 }

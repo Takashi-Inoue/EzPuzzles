@@ -166,7 +166,7 @@ void MainWindow::saveGame()
         return;
 
     EzPuzzles::createSaveDirPath();
-    game->save(EzPuzzles::saveDirPath());
+    game->save(EzPuzzles::saveDirPath(), EzPuzzles::screenshotSize());
 }
 
 void MainWindow::loadGame()

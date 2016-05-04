@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SPLITPAINTER_H
-#define SPLITPAINTER_H
+#ifndef GRIDSPLITTER_H
+#define GRIDSPLITTER_H
 
 #include "ISubWidget.h"
 #include <QList>
 #include <QPen>
 
-class SplitPainter : public ISubWidget
+class GridSplitter : public ISubWidget
 {
 public:
-    SplitPainter(int xSplitterCount, int ySplitterCount);
-    SplitPainter(const QPen &pen, int xSplitterCount, int ySplitterCount);
-    ~SplitPainter() = default;
+    GridSplitter(int xSplitterCount, int ySplitterCount);
+    GridSplitter(const QPen &pen, int xSplitterCount, int ySplitterCount);
+    ~GridSplitter() = default;
 
     static QList<double> verticalSplitterPos(int width, int splitterCount);
     static QList<double> horizontalSplitterPos(int height, int splitterCount);
@@ -47,4 +47,4 @@ private:
     int ySplitterCount;
 };
 
-#endif // SPLITPAINTER_H
+#endif // GRIDSPLITTER_H

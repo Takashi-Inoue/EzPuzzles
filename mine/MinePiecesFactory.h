@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIECESFACTORY_H
-#define PIECESFACTORY_H
+#ifndef MINEPIECESFACTORY_H
+#define MINEPIECESFACTORY_H
 
 #include "IMinePiece.h"
 #include <QList>
@@ -68,4 +68,4 @@ private:
 
 } // MineSweeper
 
-#endif // PIECESFACTORY_H
+#endif // MINEPIECESFACTORY_H

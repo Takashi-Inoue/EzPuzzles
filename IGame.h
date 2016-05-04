@@ -40,8 +40,8 @@ public:
     virtual ~IGame() = default;
 
     virtual IGame *cloneAsNewGame() const = 0;
-    virtual void save(const QString &savePath) const = 0;
-    virtual bool load(const QString &loadPath) = 0;
+    virtual void save(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
+    virtual bool load(const QString &loadFilePath) = 0;
 
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
     virtual void draw(QPainter &dest) = 0;

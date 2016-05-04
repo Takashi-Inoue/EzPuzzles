@@ -16,23 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SAVEMANAGER_H
-#define SAVEMANAGER_H
+#ifndef IPUZZLEPIECE_H
+#define IPUZZLEPIECE_H
 
-#include <QStringList>
+#include "IPiece.h"
+#include <memory>
 
-class IGame;
+class QDataStream;
 
-class SaveManager
+namespace Fifteen {
+
+class IPuzzlePiece : public IPiece
 {
 public:
-    SaveManager() = default;
-    ~SaveManager() = default;
+    IPuzzlePiece() = default;
+    virtual ~IPuzzlePiece() = default;
 
-    static QStringList filterExtensions();
-
-    static void save(IGame *game);
-    static IGame *load(const QString &savedataPath);
+    virtual void setPos(const QPoint &position) = 0;
+    virtual void swapPos(IPuzzlePiece *) = 0;
+    virtual QPoint pos() const = 0;
+    virtual bool isPosCorrect() const = 0;
 };
 
-#endif // SAVEMANAGER_H
+typedef std::shared_ptr<IPuzzlePiece> PuzzlePiecePointer;
+
+} // Fifteen
+
+#endif // IPUZZLEPIECE_H

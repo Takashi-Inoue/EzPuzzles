@@ -28,18 +28,18 @@ NumberPiece::NumberPiece(int number, QColor color, QSize pieceSize) :
         init();
 }
 
-void NumberPiece::draw(QPainter &painter, const QPoint &pos)
+void NumberPiece::draw(QPainter &painter, const QPointF &pos)
 {
     draw(painter, pos, pixmap.size());
 }
 
-void NumberPiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void NumberPiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     if (targetSize.isEmpty())
         return;
 
     if (targetSize != pixmap.size()) {
-        pixmap = QPixmap(targetSize);
+        pixmap = QPixmap(targetSize.toSize());
         init();
     }
 

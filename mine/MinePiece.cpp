@@ -30,12 +30,12 @@ MinePiece::MinePiece(const QSize &size) :
 {
 }
 
-void MinePiece::draw(QPainter &painter, const QPoint &pos)
+void MinePiece::draw(QPainter &painter, const QPointF &pos)
 {
     blockPiece->draw(painter, pos);
 }
 
-void MinePiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void MinePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     blockPiece->draw(painter, pos, targetSize);
 }

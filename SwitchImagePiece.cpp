@@ -38,7 +38,7 @@ SwitchImagePiece::SwitchImagePiece(const QPixmap &pixmap, const QRect sourceRect
     }
 }
 
-void SwitchImagePiece::draw(QPainter &painter, const QPoint &pos)
+void SwitchImagePiece::draw(QPainter &painter, const QPointF &pos)
 {
     if (isOpen()) {
         painter.setOpacity(openOpacity);
@@ -51,7 +51,7 @@ void SwitchImagePiece::draw(QPainter &painter, const QPoint &pos)
     }
 }
 
-void SwitchImagePiece::draw(QPainter &painter, const QPoint &pos, const QSize &targetSize)
+void SwitchImagePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
 {
     if (isOpen()) {
         painter.setOpacity(openOpacity);

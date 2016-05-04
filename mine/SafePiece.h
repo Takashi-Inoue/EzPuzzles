@@ -31,8 +31,8 @@ public:
     SafePiece(int numOfAroundMines, const QPixmap &pixmap, const QRect &sourceRect = QRect());
 
     // IPiece
-    void draw(QPainter &painter, const QPoint &pos) override;
-    void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
+    void draw(QPainter &painter, const QPointF &pos) override;
+    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
 
     // ISwitchPiece
     void open() override;
@@ -49,7 +49,7 @@ public:
     int numberOfAroundMines() const override;
 
 protected:
-    void fillRect(QPainter &painter, const QPoint &pos, const QSize &targetSize);
+    void fillRect(QPainter &painter, const QPointF &pos, const QSizeF &targetSize);
 
     std::unique_ptr<ISwitchPiece> switchImagePiece;
     IPiece *numberPiece;

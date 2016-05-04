@@ -27,6 +27,7 @@ namespace Ui {
 class DialogSavedata;
 }
 
+class IGame;
 class SaveInfoLoader;
 
 class DialogSavedata : public QDialog
@@ -36,6 +37,8 @@ class DialogSavedata : public QDialog
 public:
     explicit DialogSavedata(QWidget *parent = 0);
     ~DialogSavedata();
+
+    IGame *loadGame() const;
 
 private slots:
     void saveInfoLoaded(QString savedataName, QString gameName, QString imageBaseName);

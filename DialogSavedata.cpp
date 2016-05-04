@@ -20,12 +20,11 @@
 #include "ui_DialogSavedata.h"
 
 #include "EzPuzzles.h"
-#include "SaveManager.h"
 #include "ThreadOperation.h"
 #include "SaveInfoLoader.h"
 
-#include "GameFifteen.h"
-#include "GameSwap.h"
+#include "fifteen/GameSimpleSlide.h"
+#include "fifteen/GameSimpleSwap.h"
 #include "mine/GameMineSweeper.h"
 
 #include <QDateTime>
@@ -126,6 +125,46 @@ DialogSavedata::~DialogSavedata()
     delete ui;
 }
 
+IGame *DialogSavedata::loadGame() const
+{
+    if (!ui->listWidget->selectionModel()->hasSelection())
+        return nullptr;
+
+    int row = ui->listWidget->selectionModel()->selectedIndexes().first().row();
+
+    QString savedataPath = EzPuzzles::saveDirPath() + "/" + savedataNames.at(row);
+
+    QFile file(savedataPath);
+
+    if (!file.open(QIODevice::ReadOnly))
+        return nullptr;
+
+    QDataStream stream(&file);
+
+    QString gameName;
+
+    stream >> gameName;
+
+    IGame *game = nullptr;
+
+//    if (gameName == GameFifteen::gameName())
+//        game = new GameFifteen();
+
+//    if (gameName == GameSwap::gameName())
+//        game = new GameSwap();
+
+    if (gameName == MineSweeper::GameMineSweeper::gameName())
+        game = new MineSweeper::GameMineSweeper();
+
+    if (!game->load(savedataPath)) {
+        delete game;
+
+        return nullptr;
+    }
+
+    return game;
+}
+
 void DialogSavedata::saveInfoLoaded(QString savedataName, QString gameName, QString imageBaseName)
 {
     int index = savedataNames.indexOf(savedataName);
@@ -139,10 +178,10 @@ void DialogSavedata::saveInfoLoaded(QString savedataName, QString gameName, QStr
 
     item->setText(gameName + "|" + created + "|" + imageBaseName);
 
-    if (gameName == GameFifteen::gameName())
+    if (gameName == Fifteen::GameSimpleSlide::gameName())
         item->setIcon(QIcon(":/ico/gameSimpleSlide"));
 
-    if (gameName == GameSwap::gameName())
+    if (gameName == Fifteen::GameSimpleSwap::gameName())
         item->setIcon(QIcon(":/ico/gameSwap"));
 
     if (gameName == MineSweeper::GameMineSweeper::gameName())
@@ -189,7 +228,7 @@ void DialogSavedata::initListWidget()
 {
     QDir saveDir(EzPuzzles::saveDirPath());
 
-    savedataNames = saveDir.entryList(SaveManager::filterExtensions(), QDir::Files, QDir::Time);
+    savedataNames = saveDir.entryList({"*.dat"}, QDir::Files, QDir::Time);
 
     ui->listWidget->setItemDelegate(new SaveInfoDelegate());
     ui->listWidget->setWordWrap(true);

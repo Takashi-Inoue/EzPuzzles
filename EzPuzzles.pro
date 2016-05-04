@@ -18,14 +18,7 @@ SOURCES += main.cpp\
     FormFinalImage.cpp \
     DialogSettingsFifteen.cpp \
     ImageWidget.cpp \
-    SplitPainter.cpp \
     GameWidget.cpp \
-    GameFifteen.cpp \
-    SlideShuffler.cpp \
-    PieceMover.cpp \
-    PiecesGame.cpp \
-    GameSwap.cpp \
-    SwapShuffler.cpp \
     DialogGameStart.cpp \
     DialogSettingsMineSweeper.cpp \
     mine/GameMineSweeper.cpp \
@@ -44,31 +37,33 @@ SOURCES += main.cpp\
     GarbageCollector.cpp \
     ImageFragmentPiece.cpp \
     mine/MineLocker.cpp \
-    mine/PiecesFactory.cpp \
     DialogImageHistory.cpp \
     ImageLoader.cpp \
     StringListHistory.cpp \
     EzPuzzles.cpp \
     ToolIconWindow.cpp \
-    SaveManager.cpp \
     DialogSavedata.cpp \
     SourceImage.cpp \
-    SaveInfoLoader.cpp
+    SaveInfoLoader.cpp \
+    fifteen/PuzzlePiece.cpp \
+    mine/MinePiecesFactory.cpp \
+    GridSplitter.cpp \
+    fifteen/GameLikeFifteen.cpp \
+    fifteen/SimplePiecesFactory.cpp \
+    fifteen/GameSimpleSlide.cpp \
+    fifteen/FifteenSlideShuffler.cpp \
+    fifteen/FifteenPieceMover.cpp \
+    GameID.cpp \
+    fifteen/GameSimpleSwap.cpp \
+    fifteen/FifteenSwapShuffler.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
     DialogSettingsFifteen.h \
     ImageWidget.h \
-    SplitPainter.h \
     GameWidget.h \
     IGame.h \
-    GameFifteen.h \
     IShuffler.h \
-    SlideShuffler.h \
-    PieceMover.h \
-    PiecesGame.h \
-    GameSwap.h \
-    SwapShuffler.h \
     IPiece.h \
     DialogGameStart.h \
     DialogSettingsMineSweeper.h \
@@ -94,16 +89,28 @@ HEADERS  += MainWindow.h \
     ImageFragmentPiece.h \
     mine/MineLocker.h \
     Utility.h \
-    mine/PiecesFactory.h \
     DialogImageHistory.h \
     ImageLoader.h \
     StringListHistory.h \
     EzPuzzles.h \
     ToolIconWindow.h \
-    SaveManager.h \
     DialogSavedata.h \
     SourceImage.h \
-    SaveInfoLoader.h
+    SaveInfoLoader.h \
+    fifteen/IPuzzlePiece.h \
+    fifteen/PuzzlePiece.h \
+    mine/MinePiecesFactory.h \
+    GridSplitter.h \
+    fifteen/GameLikeFifteen.h \
+    fifteen/IPiecesFactory.h \
+    fifteen/SimplePiecesFactory.h \
+    fifteen/GameSimpleSlide.h \
+    fifteen/FifteenIShuffler.h \
+    fifteen/FifteenSlideShuffler.h \
+    fifteen/FifteenPieceMover.h \
+    GameID.h \
+    fifteen/GameSimpleSwap.h \
+    fifteen/FifteenSwapShuffler.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
@@ -118,4 +125,5 @@ RESOURCES += \
     resource.qrc
 
 DISTFILES += \
-    model.qmodel
+    GameLikeFifteen.qmodel \
+    Pieces.qmodel

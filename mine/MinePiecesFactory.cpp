@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "PiecesFactory.h"
+#include "MinePiecesFactory.h"
 #include "MinePiece.h"
 #include "SafePiece.h"
 #include "WallPiece.h"

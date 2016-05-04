@@ -16,29 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NUMBERPIECE_H
-#define NUMBERPIECE_H
+#ifndef GAMEID_H
+#define GAMEID_H
 
-#include <IPiece.h>
-#include <QFont>
+#include <QDataStream>
+#include <QString>
 
-class NumberPiece : public IPiece
+class GameID
 {
 public:
-    NumberPiece(int number, QColor color = Qt::black, QSize size = QSize(0, 0));
+    GameID();
+    ~GameID() = default;
 
-    void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+    static GameID fromQString(const QString &string);
 
-    int number() const;
+    void swap(GameID &other);
 
-protected:
-    void init();
-    QPointF calcOutlinePos(const QFont &font);
+    const QString &toString() const;
 
-    int num;
-    QColor color;
-    QPixmap pixmap;
+    void save(QDataStream &stream) const;
+    void load(QDataStream &stream);
+
+private:
+    GameID(const QString &string);
+
+    QString gameID;
 };
 
-#endif // NUMBERPIECE_H
+#endif // GAMEID_H

@@ -30,8 +30,8 @@ public:
     ~BlockPiece() = default;
 
     // IPiece
-    void draw(QPainter &painter, const QPoint &pos) override;
-    void draw(QPainter &painter, const QPoint &pos, const QSize &targetSize) override;
+    void draw(QPainter &painter, const QPointF &pos) override;
+    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
 
 protected:
     class Key
@@ -50,7 +50,7 @@ protected:
 
     static QMap<Key, QPixmap> pixmapMap;
 
-    void drawPiece(QPainter &painter, const QPoint &pos, const QSize &targetSize);
+    void drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &targetSize);
 
     QColor foregroundColor;
     QColor lightLineColor;

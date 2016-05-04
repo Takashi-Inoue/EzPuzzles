@@ -19,7 +19,7 @@
 
 #include "GameMineSweeper.h"
 #include "MineLocker.h"
-#include "PiecesFactory.h"
+#include "MinePiecesFactory.h"
 #include "GraduallyDrawer.h"
 #include "SourceImage.h"
 #include "Utility.h"
@@ -74,10 +74,14 @@ GameMineSweeper::GameMineSweeper(const SourceImage &sourceImage, const QSize &xy
 
 IGame *GameMineSweeper::cloneAsNewGame() const
 {
-    return new GameMineSweeper(sourceImg, xy, mineCount, mineLocker != nullptr, parent());
+    auto game = new GameMineSweeper(sourceImg, xy, mineCount, mineLocker != nullptr, parent());
+
+    gameID.swap(game->gameID);
+
+    return game;
 }
 
-void GameMineSweeper::save(const QString &saveDirPath) const
+void GameMineSweeper::save(const QString &saveDirPath, const QSize &screenshotSize) const
 {
     QFile file(saveDirPath + "/" + gameID + "." + savedataExtension());
 
@@ -100,7 +104,7 @@ void GameMineSweeper::save(const QString &saveDirPath) const
 
     QString ssPath = saveDirPath + "/" + gameID + ".png";
 
-    backBuffer.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
+    backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
 }
 
 bool GameMineSweeper::load(const QString &loadPath)

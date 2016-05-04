@@ -1,49 +1,55 @@
 ﻿/*
- * Copyright 2016 Takashi Inoue
+ * Copyright YEAR Takashi Inoue
  *
- * This file is part of EzPuzzles.
+ * This file is part of APPNAME.
  *
- * EzPuzzles is free software: you can redistribute it and/or modify
+ * APPNAME is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * EzPuzzles is distributed in the hope that it will be useful,
+ * APPNAME is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
+ * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "SlideShuffler.h"
-#include "PieceMover.h"
-#include <QDebug>
+#include "FifteenSlideShuffler.h"
+#include "FifteenPieceMover.h"
 
-SlideShuffler::SlideShuffler(QList<int> &pieces, const QSize &xy, const QPoint &blankPos, QObject *parent) :
-    IShuffler(parent),
+namespace Fifteen {
+
+SlideShuffler::SlideShuffler(QList<QList<PuzzlePiecePointer>> &pieces, QPoint &blankPos) :
     pieces(pieces),
-    xy(xy),
     blankPos(blankPos),
     mt(std::random_device()())
 {
 }
 
-void SlideShuffler::exec()
+void SlideShuffler::shufflePieces()
 {
+    Q_ASSERT(!pieces.isEmpty());
+
+    width  = pieces.front().size();
+    height = pieces.size();
+
+    QList<QPoint> changedPos;
+
     Direction from = right;
 
-    for (int i = 0, lim = xy.width() * xy.height() * 8; i < lim; ++i) {
+    for (int i = 0, lim = width * height * 8; i < lim; ++i) {
         Direction to = nextDirection(from);
         QPoint nextPos = nextBlankPosition(to);
 
-        changedIndex = isHorizontal(to) ? PieceMover(pieces, xy).slideHorizontal(blankPos, nextPos)
-                                        : PieceMover(pieces, xy).slideVertical(blankPos, nextPos);
+        changedPos = isHorizontal(to) ? PieceMover(pieces).slideHorizontal(blankPos, nextPos)
+                                      : PieceMover(pieces).slideVertical(blankPos, nextPos);
 
         blankPos = nextPos;
         from = reverse(to);
 
-        emit update(changedIndex);
+        emit update(changedPos);
     }
 }
 
@@ -57,7 +63,7 @@ SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction f
         if (blankPos.x() > 0)
             dirs << left;
 
-        if (blankPos.x() < xy.width() - 1)
+        if (blankPos.x() < width - 1)
             dirs << right;
 
         break;
@@ -67,7 +73,7 @@ SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction f
         if (blankPos.y() > 0)
             dirs << top;
 
-        if (blankPos.y() < xy.height() - 1)
+        if (blankPos.y() < height - 1)
             dirs << bottom;
 
         break;
@@ -99,7 +105,7 @@ QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
     }
 
     if (to == right) {
-        next.rx() += (mt() % (xy.width() - blankPos.x() - 1) + 1);
+        next.rx() += (mt() % (width - blankPos.x() - 1) + 1);
         return next;
     }
 
@@ -108,6 +114,9 @@ QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
         return next;
     }
 
-    next.ry() += (mt() % (xy.height() - blankPos.y() - 1) + 1);
+    // bottom
+    next.ry() += (mt() % (height - blankPos.y() - 1) + 1);
     return next;
 }
+
+} // Fifteen

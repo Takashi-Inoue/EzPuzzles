@@ -16,29 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NUMBERPIECE_H
-#define NUMBERPIECE_H
+#ifndef SIMPLEPIECESFACTORY_H
+#define SIMPLEPIECESFACTORY_H
 
-#include <IPiece.h>
-#include <QFont>
+#include "IPiecesFactory.h"
+#include <QPixmap>
 
-class NumberPiece : public IPiece
+namespace Fifteen {
+
+class SimplePiecesFactory : public IPiecesFactory
 {
 public:
-    NumberPiece(int number, QColor color = Qt::black, QSize size = QSize(0, 0));
+    static PuzzlePiecePointer createPiece(const QPoint &posInArray, const QPixmap &pixmap);
 
-    void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+    SimplePiecesFactory(const QPixmap &sourcePixmap, const QSize &xy);
+    ~SimplePiecesFactory() = default;
 
-    int number() const;
+    // IPiecesFactory
+    QList<QList<PuzzlePiecePointer>> createPieces() const override;
 
-protected:
-    void init();
-    QPointF calcOutlinePos(const QFont &font);
+private:
+    QPixmap sourcePixmap;
 
-    int num;
-    QColor color;
-    QPixmap pixmap;
+    QList<double> splitterXs;
+    QList<double> splitterYs;
 };
 
-#endif // NUMBERPIECE_H
+} // Fifteen
+
+#endif // SIMPLEPIECESFACTORY_H

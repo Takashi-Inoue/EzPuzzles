@@ -19,10 +19,10 @@
 #include "DialogSettingsFifteen.h"
 #include "ui_DialogSettingsFifteen.h"
 
-#include "SplitPainter.h"
-#include "GameFifteen.h"
-#include "GameSwap.h"
+#include "GridSplitter.h"
 #include "SourceImage.h"
+#include "fifteen/GameSimpleSlide.h"
+#include "fifteen/GameSimpleSwap.h"
 
 #include <QDebug>
 
@@ -41,7 +41,7 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
     ui->comboBoxGameType->addItem("Swap for TopLeft", idSwap);
 
     ui->imageWidget->setPixmap(sourceImage.pixmap);
-    ui->imageWidget->addSubWidget(new SplitPainter(1, 1));
+    ui->imageWidget->addSubWidget(new GridSplitter(1, 1));
 
     connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), ui->spinBoxSplitX, SLOT(setValue(int)));
     connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), ui->spinBoxSplitY, SLOT(setValue(int)));
@@ -71,17 +71,23 @@ IGame *DialogSettingsFifteen::buildGame() const
 
 void DialogSettingsFifteen::updateSplitPainter() const
 {
-    SplitPainter *painter = new SplitPainter(ui->hSliderSplitX->value() - 1, ui->hSliderSplitY->value() - 1);
+    GridSplitter *painter = new GridSplitter(ui->hSliderSplitX->value() - 1, ui->hSliderSplitY->value() - 1);
     ui->imageWidget->replaceSubWidget(0, painter);
     ui->imageWidget->update();
 }
 
 IGame *DialogSettingsFifteen::buildGameFifteen() const
 {
-    return new GameFifteen(sourceImage, QSize(ui->hSliderSplitX->value(), ui->hSliderSplitY->value()));
+    QSize numXY(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
+    QPoint blankPos(numXY.width() - 1, numXY.height() - 1);
+
+    return new Fifteen::GameSimpleSlide(sourceImage, numXY, blankPos);
 }
 
 IGame *DialogSettingsFifteen::buildGameSwap() const
 {
-    return new GameSwap(sourceImage, QSize(ui->hSliderSplitX->value(), ui->hSliderSplitY->value()));
+    QSize numXY(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
+    QPoint swapTargetPos(0, 0);
+
+    return new Fifteen::GameSimpleSwap(sourceImage, numXY, swapTargetPos);
 }
