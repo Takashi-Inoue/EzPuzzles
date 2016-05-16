@@ -175,6 +175,14 @@ void MainWindow::loadGame()
 
     if (dialog.exec() != QDialog::Accepted)
         return;
+
+    auto game = dialog.loadGame();
+
+    if (game == nullptr)
+        return;
+
+    startNewGame(game);
+    updateImageHistory(game->sourceImage().fullPath);
 }
 
 void MainWindow::initToolBoxies()
@@ -182,14 +190,14 @@ void MainWindow::initToolBoxies()
     auto buttonOpenImage = newGameToolBox.addIcon(QIcon(":/ico/openImage"), "Open new image");
     auto buttonHistory = newGameToolBox.addIcon(QIcon(":/ico/historyImage"), "Select an image from history");
 
-    connect(buttonOpenImage, SIGNAL(pressed()), this, SLOT(startGameWithNewImage()));
-    connect(buttonHistory,   SIGNAL(pressed()), this, SLOT(startGameFromImageHistory()));
+    connect(buttonOpenImage, SIGNAL(clicked(bool)), this, SLOT(startGameWithNewImage()));
+    connect(buttonHistory,   SIGNAL(clicked(bool)), this, SLOT(startGameFromImageHistory()));
 
     auto buttonSaveGame = diskToolBox.addIcon(QIcon(":/ico/save"), "Save");
     auto buttonLoadGame = diskToolBox.addIcon(QIcon(":/ico/load"), "Load");
 
-    connect(buttonSaveGame, SIGNAL(pressed()), this, SLOT(saveGame()));
-    connect(buttonLoadGame, SIGNAL(pressed()), this, SLOT(loadGame()));
+    connect(buttonSaveGame, SIGNAL(clicked(bool)), this, SLOT(saveGame()));
+    connect(buttonLoadGame, SIGNAL(clicked(bool)), this, SLOT(loadGame()));
 
     buttonSaveGame->setObjectName("pushButtonSaveGame");
     buttonSaveGame->setEnabled(false);

@@ -44,7 +44,6 @@ SOURCES += main.cpp\
     ToolIconWindow.cpp \
     DialogSavedata.cpp \
     SourceImage.cpp \
-    SaveInfoLoader.cpp \
     fifteen/PuzzlePiece.cpp \
     mine/MinePiecesFactory.cpp \
     GridSplitter.cpp \
@@ -55,7 +54,14 @@ SOURCES += main.cpp\
     fifteen/FifteenPieceMover.cpp \
     GameID.cpp \
     fifteen/GameSimpleSwap.cpp \
-    fifteen/FifteenSwapShuffler.cpp
+    fifteen/FifteenSwapShuffler.cpp \
+    GameInfoLoader.cpp \
+    BrokenSaveData.cpp \
+    UnknownSaveData.cpp \
+    mine/MineSweeperSaveData.cpp \
+    fifteen/SimpleSwapSaveData.cpp \
+    fifteen/SimpleSlideSaveData.cpp \
+    MoveToTrashBox.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -67,7 +73,6 @@ HEADERS  += MainWindow.h \
     IPiece.h \
     DialogGameStart.h \
     DialogSettingsMineSweeper.h \
-    IGameBuilder.h \
     mine/GameMineSweeper.h \
     mine/MinePiece.h \
     mine/WallPiece.h \
@@ -96,13 +101,11 @@ HEADERS  += MainWindow.h \
     ToolIconWindow.h \
     DialogSavedata.h \
     SourceImage.h \
-    SaveInfoLoader.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
     mine/MinePiecesFactory.h \
     GridSplitter.h \
     fifteen/GameLikeFifteen.h \
-    fifteen/IPiecesFactory.h \
     fifteen/SimplePiecesFactory.h \
     fifteen/GameSimpleSlide.h \
     fifteen/FifteenIShuffler.h \
@@ -110,7 +113,16 @@ HEADERS  += MainWindow.h \
     fifteen/FifteenPieceMover.h \
     GameID.h \
     fifteen/GameSimpleSwap.h \
-    fifteen/FifteenSwapShuffler.h
+    fifteen/FifteenSwapShuffler.h \
+    IDialogGameSettings.h \
+    GameInfoLoader.h \
+    ISaveData.h \
+    BrokenSaveData.h \
+    UnknownSaveData.h \
+    mine/MineSweeperSaveData.h \
+    fifteen/SimpleSwapSaveData.h \
+    fifteen/SimpleSlideSaveData.h \
+    MoveToTrashBox.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
@@ -126,4 +138,5 @@ RESOURCES += \
 
 DISTFILES += \
     GameLikeFifteen.qmodel \
-    Pieces.qmodel
+    Pieces.qmodel \
+    gameCore.qmodel

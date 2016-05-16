@@ -1,20 +1,20 @@
 ﻿/*
- * Copyright YEAR Takashi Inoue
+ * Copyright 2016 Takashi Inoue
  *
- * This file is part of APPNAME.
+ * This file is part of EzPuzzles.
  *
- * APPNAME is free software: you can redistribute it and/or modify
+ * EzPuzzles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * APPNAME is distributed in the hope that it will be useful,
+ * EzPuzzles is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
+ * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "SimplePiecesFactory.h"
 
@@ -51,17 +51,47 @@ QList<QList<PuzzlePiecePointer>> SimplePiecesFactory::createPieces() const
     for (int y = 0; y < ylim; ++y) {
         QList<PuzzlePiecePointer> horizontal;
 
-        for (int x = 0; x < xlim; ++x) {
-            QPointF sourceTL(splitterXs.at(x    ), splitterYs.at(y    ));
-            QPointF sourceBR(splitterXs.at(x + 1), splitterYs.at(y + 1));
+        for (int x = 0; x < xlim; ++x)
+            horizontal << createPiece(QPoint(x, y));
 
-            horizontal << std::make_shared<PuzzlePiece>(QPoint(x, y), sourcePixmap, QRectF(sourceTL, sourceBR));
+        pieces << horizontal;
+    }
+
+    return pieces;
+}
+
+QList<QList<PuzzlePiecePointer>> SimplePiecesFactory::createPieces(const QList<QPoint> &defaultPositions) const
+{
+    QList<QList<PuzzlePiecePointer>> pieces;
+
+    int ylim = splitterYs.size() - 1;
+    int xlim = splitterXs.size() - 1;
+
+    for (int y = 0; y < ylim; ++y) {
+        QList<PuzzlePiecePointer> horizontal;
+
+        for (int x = 0; x < xlim; ++x) {
+            QPoint defaultPos = defaultPositions.at(y * xlim + x);
+
+            auto &piece = createPiece(defaultPos);
+
+            piece->setPos(QPoint(x, y));
+
+            horizontal << piece;
         }
 
         pieces << horizontal;
     }
 
     return pieces;
+}
+
+PuzzlePiecePointer SimplePiecesFactory::createPiece(const QPoint &defaultPos) const
+{
+    QPointF sourceTL(splitterXs.at(defaultPos.x()    ), splitterYs.at(defaultPos.y()    ));
+    QPointF sourceBR(splitterXs.at(defaultPos.x() + 1), splitterYs.at(defaultPos.y() + 1));
+
+    return std::make_shared<PuzzlePiece>(defaultPos, sourcePixmap, QRectF(sourceTL, sourceBR));
 }
 
 } // Fifteen

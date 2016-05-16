@@ -16,19 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IGAMEBUILDER_H
-#define IGAMEBUILDER_H
+#ifndef BROKENSAVEDATA_H
+#define BROKENSAVEDATA_H
 
-class IGame;
-class QSize;
+#include "ISaveData.h"
 
-class IGameBuilder
+class BrokenSaveData : public ISaveData
 {
 public:
-    IGameBuilder() = default;
-    virtual ~IGameBuilder() = default;
+    BrokenSaveData() = default;
+    ~BrokenSaveData() = default;
 
-    virtual IGame *buildGame() const = 0;
+    QString gameName() const override;
+    QString imageFilePath() const override;
+    QStringList informations() const override;
+
+    IGame *loadGame() const override;
+    bool loadInfo() override;
+    bool isValid() const override;
+    QIcon gameTypeIcon() const override;
 };
 
-#endif // IGAMEBUILDER_H
+#endif // BROKENSAVEDATA_H

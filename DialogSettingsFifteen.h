@@ -19,7 +19,7 @@
 #ifndef DIALOGSETTINGSFIFTEEN_H
 #define DIALOGSETTINGSFIFTEEN_H
 
-#include "IGameBuilder.h"
+#include "IDialogGameSettings.h"
 #include <QDialog>
 
 class IGame;
@@ -29,7 +29,7 @@ namespace Ui {
 class DialogSettingsFifteen;
 }
 
-class DialogSettingsFifteen : public QDialog, public IGameBuilder
+class DialogSettingsFifteen : public QDialog, public IDialogGameSettings
 {
     Q_OBJECT
 
@@ -46,8 +46,8 @@ private:
     const int idFifteen = 0;
     const int idSwap = 1;
 
-    IGame *buildGameFifteen() const;
-    IGame *buildGameSwap() const;
+    IGame *buildSimpleSlide() const;
+    IGame *buildSimpleSwap() const;
 
     Ui::DialogSettingsFifteen *ui;
 

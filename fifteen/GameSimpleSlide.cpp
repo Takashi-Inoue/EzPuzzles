@@ -1,20 +1,20 @@
 ﻿/*
- * Copyright YEAR Takashi Inoue
+ * Copyright 2016 Takashi Inoue
  *
- * This file is part of APPNAME.
+ * This file is part of EzPuzzles.
  *
- * APPNAME is free software: you can redistribute it and/or modify
+ * EzPuzzles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * APPNAME is distributed in the hope that it will be useful,
+ * EzPuzzles is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
+ * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "GameSimpleSlide.h"
 #include "SimplePiecesFactory.h"
@@ -35,6 +35,7 @@ QString GameSimpleSlide::gameName()
 
 GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos) :
     GameLikeFifteen(sourceImg, xy, new SlideShuffler(pieces, this->blankPos)),
+    defaultBlankPos(blankPos),
     blankPos(blankPos)
 {
     Q_ASSERT(!sourceImg.isNull());
@@ -48,26 +49,44 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
 
 IGame *GameSimpleSlide::cloneAsNewGame() const
 {
-    return nullptr;
+    auto game = new GameSimpleSlide(sourceImg, xy, defaultBlankPos);
+
+    const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
+
+    return game;
 }
 
 void GameSimpleSlide::save(const QString &saveDirPath, const QSize &screenshotSize) const
 {
-    QFile file(saveDirPath + "/" + gameID.toString() + ".dat");
+    QFile file(saveDirPath + "/" + gameId.toString() + ".dat");
 
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << file.errorString();
         return;
     }
 
+    // 以下の書き込み順はこの2関数に影響するので注意すること
+    // GameSimpleSlide::load()
+    // SimpleSlideGameInfo::load()
+
     QDataStream stream(&file);
 
     stream << gameName();
     stream << sourceImg.fullPath;
     stream << xy;
-    stream << isStarted;
+    stream << defaultBlankPos;
     stream << blankPos;
+    stream << isStarted;
     stream << sourceImg.pixmap;
+
+    QList<QPoint> defaultPositions;
+
+    for (auto &horizontal : pieces) {
+        for (auto &piece : horizontal)
+            defaultPositions << piece->defaultPos();
+    }
+
+    stream << defaultPositions;
 
     saveScreenshot(saveDirPath, screenshotSize);
 }
@@ -89,20 +108,19 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
     if (name != gameName())
         return false;
 
-    gameID = GameID::fromQString(QFileInfo(loadFilePath).baseName());
-
-    QString sourceImgFullPath;
-    QPixmap sourceImgPixmap;
+    gameId = GameID::fromQString(QFileInfo(loadFilePath).baseName());
 
     stream >> sourceImg.fullPath;
     stream >> xy;
-    stream >> isStarted;
+    stream >> defaultBlankPos;
     stream >> blankPos;
+    stream >> isStarted;
     stream >> sourceImg.pixmap;
 
-    initPieces();
+    QList<QPoint> defaultPositions;
+    stream >> defaultPositions;
 
-    // ここでpiece読み込み
+    pieces = SimplePiecesFactory(sourceImg.pixmap, xy).createPieces(defaultPositions);
 
     initBlankPiece();
 
@@ -139,6 +157,11 @@ void GameSimpleSlide::initBlankPiece()
     pixmapBlank.fill(Qt::black);
 
     pieces[blankPos.y()][blankPos.x()] = SimplePiecesFactory::createPiece(blankPos, pixmapBlank);
+}
+
+GameSimpleSlide::GameSimpleSlide() :
+    GameLikeFifteen(new SlideShuffler(pieces, this->blankPos))
+{
 }
 
 } // Fifteen

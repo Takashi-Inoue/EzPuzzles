@@ -21,6 +21,8 @@
 
 #include <QPainter>
 
+class QDataStream;
+
 class IPiece
 {
 public:

@@ -1,31 +1,34 @@
 ﻿/*
- * Copyright YEAR Takashi Inoue
+ * Copyright 2016 Takashi Inoue
  *
- * This file is part of APPNAME.
+ * This file is part of EzPuzzles.
  *
- * APPNAME is free software: you can redistribute it and/or modify
+ * EzPuzzles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * APPNAME is distributed in the hope that it will be useful,
+ * EzPuzzles is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
+ * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "DialogSavedata.h"
 #include "ui_DialogSavedata.h"
 
 #include "EzPuzzles.h"
 #include "ThreadOperation.h"
-#include "SaveInfoLoader.h"
+#include "GameInfoLoader.h"
+#include "ISaveData.h"
 
 #include "fifteen/GameSimpleSlide.h"
 #include "fifteen/GameSimpleSwap.h"
 #include "mine/GameMineSweeper.h"
+
+#include "MoveToTrashBox.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -64,9 +67,9 @@ public:
             drawRect.setLeft(drawRect.left() + ico.actualSize(drawRect.size()).width() + 2);
         }
 
-        QStringList strings = index.data().toString().split("|");
+        auto gameInfo = reinterpret_cast<ISaveData *>(index.data(Qt::UserRole).toULongLong());
 
-        if (strings.size() < 3)
+        if (gameInfo == nullptr)
             return;
 
         painter->save();
@@ -84,10 +87,10 @@ public:
 
         painter->setFont(gameNameFont);
 
-        painter->drawText(drawRect, Qt::AlignLeft | Qt::AlignTop, strings.front());
+        painter->drawText(drawRect, Qt::AlignLeft | Qt::AlignTop, gameInfo->gameName());
 
         painter->setFont(defaultFont);
-        painter->drawText(drawRect, Qt::AlignRight | Qt::AlignBottom, strings.at(1) + "\n" + strings.back());
+        painter->drawText(drawRect, Qt::AlignRight | Qt::AlignBottom, index.data().toString() + "\n" + QFileInfo(gameInfo->imageFilePath()).baseName());
 
         painter->restore();
     }
@@ -102,13 +105,17 @@ DialogSavedata::DialogSavedata(QWidget *parent) :
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
+    gameTypeMap[Fifteen::GameSimpleSlide::gameName()] = OnlySimpleSlide;
+    gameTypeMap[Fifteen::GameSimpleSwap::gameName()] = OnlySwap;
+    gameTypeMap[MineSweeper::GameMineSweeper::gameName()] = OnlyMineSweeper;
+
     initComboBox();
     initListWidget();
 
-    infoLoader = new SaveInfoLoader(savedataNames);
+    infoLoader = new GameInfoLoader(savedataNames);
     infoLoader->moveToThread(&loadThread);
 
-    connect(infoLoader, SIGNAL(loaded(QString,QString,QString)), this, SLOT(saveInfoLoaded(QString,QString,QString)));
+    connect(infoLoader, SIGNAL(loaded(QString,ISaveData*)), this, SLOT(saveInfoLoaded(QString,ISaveData*)));
 
     loadThread.start();
     infoLoader->start();
@@ -127,45 +134,20 @@ DialogSavedata::~DialogSavedata()
 
 IGame *DialogSavedata::loadGame() const
 {
-    if (!ui->listWidget->selectionModel()->hasSelection())
+    auto selectedItems = ui->listWidget->selectedItems();
+
+    if (selectedItems.isEmpty())
         return nullptr;
 
-    int row = ui->listWidget->selectionModel()->selectedIndexes().first().row();
+    auto savedata = getSaveDataFromListItem(selectedItems.first());
 
-    QString savedataPath = EzPuzzles::saveDirPath() + "/" + savedataNames.at(row);
-
-    QFile file(savedataPath);
-
-    if (!file.open(QIODevice::ReadOnly))
+    if (savedata == nullptr)
         return nullptr;
 
-    QDataStream stream(&file);
-
-    QString gameName;
-
-    stream >> gameName;
-
-    IGame *game = nullptr;
-
-//    if (gameName == GameFifteen::gameName())
-//        game = new GameFifteen();
-
-//    if (gameName == GameSwap::gameName())
-//        game = new GameSwap();
-
-    if (gameName == MineSweeper::GameMineSweeper::gameName())
-        game = new MineSweeper::GameMineSweeper();
-
-    if (!game->load(savedataPath)) {
-        delete game;
-
-        return nullptr;
-    }
-
-    return game;
+    return savedata->loadGame();
 }
 
-void DialogSavedata::saveInfoLoaded(QString savedataName, QString gameName, QString imageBaseName)
+void DialogSavedata::saveInfoLoaded(QString savedataName, ISaveData *gameInfo)
 {
     int index = savedataNames.indexOf(savedataName);
 
@@ -174,38 +156,110 @@ void DialogSavedata::saveInfoLoaded(QString savedataName, QString gameName, QStr
 
     auto item = ui->listWidget->item(index);
 
-    QString created = QFileInfo(EzPuzzles::saveDirPath() + "/" + savedataName).created().toString(Qt::SystemLocaleLongDate);
+    QString lastModified = QFileInfo(EzPuzzles::saveDirPath() + "/" + savedataName).lastModified().toString(Qt::SystemLocaleLongDate);
 
-    item->setText(gameName + "|" + created + "|" + imageBaseName);
-
-    if (gameName == Fifteen::GameSimpleSlide::gameName())
-        item->setIcon(QIcon(":/ico/gameSimpleSlide"));
-
-    if (gameName == Fifteen::GameSimpleSwap::gameName())
-        item->setIcon(QIcon(":/ico/gameSwap"));
-
-    if (gameName == MineSweeper::GameMineSweeper::gameName())
-        item->setIcon(QIcon(":/ico/gameMine"));
+    item->setText(lastModified);
+    item->setIcon(gameInfo->gameTypeIcon());
+    item->setData(Qt::UserRole, reinterpret_cast<uintptr_t>(gameInfo));
+    item->setData(Qt::UserRole + 1, gameTypeMap.value(gameInfo->gameName()));
 }
 
 void DialogSavedata::on_listWidget_itemSelectionChanged()
 {
-    bool hasSelection = ui->listWidget->selectionModel()->hasSelection();
+    ui->labelInformations->setVisible(true);
+    ui->imageWidget->setVisible(true);
 
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(hasSelection);
+    auto selectionModel = ui->listWidget->selectionModel();
 
-    if (!hasSelection) {
-        ui->imageWidget->setPixmap(QPixmap());
+    selectionModel->hasSelection() ? onDataSelected(selectionModel->selectedRows().first().row()) // single select
+                                   : onDataSelectionCleared();
+}
 
-        return;
+void DialogSavedata::on_comboBox_currentIndexChanged(int index)
+{
+    ShownDataType shownDataType = static_cast<ShownDataType>(ui->comboBox->itemData(index).toInt());
+
+    shownDataType == ShowAll ? showAllSaveData()
+                             : showSelectedTypeData(shownDataType);
+
+    auto items = ui->listWidget->selectedItems();
+
+    if (!items.isEmpty()) {
+        bool isVisible = !items.first()->isHidden(); // single select
+
+        ui->pushButtonRemove->setEnabled(isVisible);
+        ui->imageWidget->setVisible(isVisible);
+        ui->labelInformations->setVisible(isVisible);
     }
+}
 
-    int row = ui->listWidget->selectionModel()->selectedRows().first().row();
+void DialogSavedata::on_pushButtonRemove_clicked()
+{
+    auto selectedIndexes = ui->listWidget->selectionModel()->selectedRows();
 
-    QString ssPath = EzPuzzles::saveDirPath() + "/" + QFileInfo(savedataNames.at(row)).baseName() + ".png";
+    if (selectedIndexes.isEmpty())
+        return;
+
+    int row = selectedIndexes.first().row();
+    QString savedataName = savedataNames.at(row);
+
+    QString savedataPath = EzPuzzles::saveDirPath() + "/" + savedataName;
+    QString ssPath = savedataPath.left(savedataPath.size() - 3) + "png";
+
+    MoveToTrashBox(savedataPath).exec();
+    MoveToTrashBox(ssPath).exec();
+
+    ui->listWidget->model()->removeRow(row);
+    savedataNames.removeAt(row);
+}
+
+ISaveData *DialogSavedata::getSaveDataFromListItem(const QListWidgetItem *item) const
+{
+    return reinterpret_cast<ISaveData *>(item->data(Qt::UserRole).toULongLong());
+}
+
+void DialogSavedata::onDataSelectionCleared()
+{
+    ui->pushButtonRemove->setEnabled(false);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    ui->labelInformations->clear();
+    ui->imageWidget->setPixmap(QPixmap());
+}
+
+void DialogSavedata::onDataSelected(int row)
+{
+    ui->pushButtonRemove->setEnabled(true);
+
+    QString dataname = savedataNames.at(row);
+    QString ssPath = EzPuzzles::saveDirPath() + "/" + dataname.left(dataname.size() - 3) + "png";
 
     ui->imageWidget->setPixmap(QPixmap::fromImage(QImage(ssPath)));
     ui->imageWidget->repaint();
+
+    auto savedata = getSaveDataFromListItem(ui->listWidget->item(row));
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(savedata != nullptr && savedata->isValid()); // savedata == null のとき false を与えるように
+
+    if (savedata != nullptr)
+        ui->labelInformations->setText(savedata->informations().join('\n'));
+}
+
+void DialogSavedata::showAllSaveData()
+{
+    for (int i = 0, lim = ui->listWidget->model()->rowCount(); i < lim; ++i)
+        ui->listWidget->item(i)->setHidden(false);
+}
+
+void DialogSavedata::showSelectedTypeData(ShownDataType shownDataType)
+{
+    Q_ASSERT(shownDataType != ShowAll);
+
+    for (int i = 0, lim = ui->listWidget->model()->rowCount(); i < lim; ++i) {
+        auto item = ui->listWidget->item(i);
+        auto type = static_cast<ShownDataType>(item->data(Qt::UserRole + 1).toInt());
+
+        item->setHidden(type != shownDataType);
+    }
 }
 
 void DialogSavedata::initComboBox()

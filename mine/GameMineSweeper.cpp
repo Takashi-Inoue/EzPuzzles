@@ -18,6 +18,7 @@
  */
 
 #include "GameMineSweeper.h"
+#include "MineSweeperSaveData.h"
 #include "MineLocker.h"
 #include "MinePiecesFactory.h"
 #include "GraduallyDrawer.h"
@@ -34,29 +35,12 @@
 
 namespace MineSweeper {
 
-QString GameMineSweeper::savedataExtension()
-{
-    return "gms";
-}
-
 QString GameMineSweeper::gameName()
 {
     return "MineSweeper";
 }
 
-GameMineSweeper::GameMineSweeper() :
-    IGame(nullptr),
-    mineCount(0),
-    mineLocker(nullptr),
-    openedCount(0),
-    missedCount(0),
-    isInited(false)
-{
-}
-
-GameMineSweeper::GameMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock, QObject *parent) :
-    IGame(parent),
-    gameID(QString::number(QDateTime::currentMSecsSinceEpoch(), 16)),
+GameMineSweeper::GameMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock) :
     sourceImg(sourceImage),
     backBuffer(QPixmap(sourceImage.size())),
     mineCount(mineCount),
@@ -65,6 +49,10 @@ GameMineSweeper::GameMineSweeper(const SourceImage &sourceImage, const QSize &xy
     missedCount(0),
     isInited(true)
 {
+    Q_ASSERT(!sourceImage.isNull());
+    Q_ASSERT(!xyCount.isEmpty());
+    Q_ASSERT(mineCount > 0 && mineCount < xyCount.width() * xyCount.height());
+
     if (isAutoLock)
         mineLocker = std::make_unique<MineLocker>(pieces);
 
@@ -72,23 +60,32 @@ GameMineSweeper::GameMineSweeper(const SourceImage &sourceImage, const QSize &xy
     drawAll();
 }
 
+GameID GameMineSweeper::gameID() const
+{
+    return gameId;
+}
+
 IGame *GameMineSweeper::cloneAsNewGame() const
 {
-    auto game = new GameMineSweeper(sourceImg, xy, mineCount, mineLocker != nullptr, parent());
+    auto game = new GameMineSweeper(sourceImg, xy, mineCount, mineLocker != nullptr);
 
-    gameID.swap(game->gameID);
+    const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
     return game;
 }
 
 void GameMineSweeper::save(const QString &saveDirPath, const QSize &screenshotSize) const
 {
-    QFile file(saveDirPath + "/" + gameID + "." + savedataExtension());
+    QFile file(saveDirPath + "/" + gameId.toString() + ".dat");
 
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << file.errorString();
         return;
     }
+
+    // 以下の書き込み順は、この2関数に影響するので注意すること
+    // GameMineSweeper::load()
+    // MineSweeperGameInfo::load()
 
     QDataStream stream(&file);
 
@@ -102,7 +99,7 @@ void GameMineSweeper::save(const QString &saveDirPath, const QSize &screenshotSi
     stream << PiecesFactory::toIntList(pieces);
     stream << sourceImg.pixmap;
 
-    QString ssPath = saveDirPath + "/" + gameID + ".png";
+    QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
 
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
 }
@@ -115,6 +112,8 @@ bool GameMineSweeper::load(const QString &loadPath)
         return false;
     }
 
+    // GameMineSweeper::save() の書き込み順と同調すること
+
     QDataStream stream(&file);
 
     QString name;
@@ -124,7 +123,7 @@ bool GameMineSweeper::load(const QString &loadPath)
     if (name != gameName())
         return false;
 
-    gameID = QFileInfo(loadPath).baseName();
+    gameId = GameID::fromQString(QFileInfo(loadPath).baseName());
 
     QString sourceImgFullPath;
     bool isAutoLock;
@@ -147,10 +146,14 @@ bool GameMineSweeper::load(const QString &loadPath)
 
     QSize pieceSize(backBuffer.width() / xy.width(), backBuffer.height() / xy.height());
 
-    pieces = PiecesFactory(sourceImg.pixmap, pieceSize, xy, mineCount, isAutoLock).toPieces(intList);
+    PiecesFactory factory(sourceImg.pixmap, pieceSize, xy, mineCount, isAutoLock);
 
-    if (isAutoLock)
+    pieces = factory.toPieces(intList);
+
+    if (isAutoLock) {
         mineLocker = std::make_unique<MineLocker>(pieces);
+        mineLocker->addMinesPositions(factory.getMinesPositions());
+    }
 
     drawAll();
 
@@ -250,11 +253,7 @@ void GameMineSweeper::drawFinalImage(QPainter &dest) const
 
 QString GameMineSweeper::shortInformation() const
 {
-    int safeCount = safePieceCount<int>();
-    return QString("MineSweeper %1/%2 %3% opend.  %4 missed.").arg(openedCount)
-                                                              .arg(safeCount)
-                                                              .arg((openedCount * 100.0) / safeCount, 0, 'f', 2)
-                                                              .arg(missedCount);
+    return "MineSweeper " + openedDescription();
 }
 
 SourceImage GameMineSweeper::sourceImage() const
@@ -378,6 +377,25 @@ void GameMineSweeper::openChaining(int x, int y)
     });
 
     changedPositions.erase(std::unique(changedPositions.begin(), changedPositions.end()), changedPositions.end());
+}
+
+QString GameMineSweeper::openedDescription() const
+{
+    int safeCount = safePieceCount<int>();
+
+    return QString("%1/%2 %3% opend, %4 missed").arg(openedCount)
+                                                .arg(safeCount)
+                                                .arg((openedCount * 100.0) / safeCount, 0, 'f', 2)
+                                                .arg(missedCount);
+}
+
+GameMineSweeper::GameMineSweeper() :
+    mineCount(0),
+    mineLocker(nullptr),
+    openedCount(0),
+    missedCount(0),
+    isInited(false)
+{
 }
 
 } // MineSweeper

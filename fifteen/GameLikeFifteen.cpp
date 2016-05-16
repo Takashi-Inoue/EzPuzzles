@@ -1,20 +1,20 @@
 ﻿/*
- * Copyright YEAR Takashi Inoue
+ * Copyright 2016 Takashi Inoue
  *
- * This file is part of APPNAME.
+ * This file is part of EzPuzzles.
  *
- * APPNAME is free software: you can redistribute it and/or modify
+ * EzPuzzles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * APPNAME is distributed in the hope that it will be useful,
+ * EzPuzzles is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
+ * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "GameLikeFifteen.h"
 #include "GridSplitter.h"
@@ -31,18 +31,27 @@ GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, 
 {
     Q_ASSERT(!sourceImg.pixmap.isNull());
     Q_ASSERT(!xy.isEmpty());
+    Q_ASSERT(shuffler != nullptr);
 
-    if (shuffler != nullptr)
-        connect(shuffler, SIGNAL(update(QList<QPoint>&)), this, SLOT(piecesUpdated(QList<QPoint>&)));
+    connect(shuffler, SIGNAL(update(QList<QPoint>&)), this, SLOT(piecesUpdated(QList<QPoint>&)));
+}
+
+GameLikeFifteen::GameLikeFifteen(IShuffler *shuffler) :
+    shuffler(shuffler)
+{
+    Q_ASSERT(shuffler != nullptr);
+}
+
+GameID GameLikeFifteen::gameID() const
+{
+    return gameId;
 }
 
 void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
     if (!isStarted) {
         isStarted = true;
-
-        if (shuffler != nullptr)
-            shuffler->shufflePieces();
+        shuffler->shufflePieces();
 
         return;
     }
@@ -66,19 +75,19 @@ void GameLikeFifteen::draw(QPainter &dest)
     if (backBuffer.isNull()) {
         backBuffer = QPixmap(sourceImg.size());
 
-        if (isStarted)
+        if (isStarted) {
             drawAll();
+            GridSplitter(QPen(Qt::darkGray, 1), xy.width() - 1, xy.height() - 1).draw(QPainter(&backBuffer));
+        }
     }
 
     if (!isStarted) {
-        drawAll();
+        drawFinalImage(QPainter(&backBuffer));
     } else {
         drawChanged();
 
-        if (!changedPos.isEmpty()) {
-            QPainter painterBuffer(&backBuffer);
-            GridSplitter(QPen(Qt::darkGray, 1), xy.width() - 1, xy.height() - 1).draw(painterBuffer);
-        }
+        if (!changedPos.isEmpty())
+            GridSplitter(QPen(Qt::darkGray, 1), xy.width() - 1, xy.height() - 1).draw(QPainter(&backBuffer));
     }
 
     dest.drawPixmap(dest.viewport(), backBuffer, backBuffer.rect());
@@ -114,7 +123,7 @@ bool GameLikeFifteen::isGameCleared() const
 
 void GameLikeFifteen::saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const
 {
-    QString ssPath = saveDirPath + "/" + gameID.toString() + ".png";
+    QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
 }
 

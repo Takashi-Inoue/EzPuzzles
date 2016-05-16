@@ -24,20 +24,20 @@ class QPainter;
 class QPoint;
 class SourceImage;
 
+#include "GameID.h"
+
 #include <QObject>
 #include <QSize>
-#include <QString>
+#include <QStringList>
 
 class IGame : public QObject
 {
     Q_OBJECT
 public:
-    IGame(QObject *parent = 0) :
-        QObject(parent)
-    {
-    }
-
+    IGame() = default;
     virtual ~IGame() = default;
+
+    virtual GameID gameID() const = 0;
 
     virtual IGame *cloneAsNewGame() const = 0;
     virtual void save(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
@@ -53,6 +53,12 @@ public:
 signals:
     void screenUpdated();
     void informationUpdated();
+
+private:
+    IGame(const IGame &) = delete;
+    IGame(IGame &&) = delete;
+    IGame &operator=(const IGame &) = delete;
+    IGame &operator=(IGame &&) = delete;
 };
 
 #endif // IGAME_H

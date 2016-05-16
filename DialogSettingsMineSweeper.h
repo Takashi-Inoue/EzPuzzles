@@ -19,7 +19,7 @@
 #ifndef DIALOGSETTINGSMINESWEEPER_H
 #define DIALOGSETTINGSMINESWEEPER_H
 
-#include "IGameBuilder.h"
+#include "IDialogGameSettings.h"
 #include <QDialog>
 #include <QSize>
 #include <memory>
@@ -31,7 +31,7 @@ namespace Ui {
 class DialogSettingsMineSweeper;
 }
 
-class DialogSettingsMineSweeper : public QDialog, public IGameBuilder
+class DialogSettingsMineSweeper : public QDialog, public IDialogGameSettings
 {
     Q_OBJECT
 
@@ -39,6 +39,7 @@ public:
     explicit DialogSettingsMineSweeper(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = 0);
     ~DialogSettingsMineSweeper();
 
+    // IDialogGameSettings
     IGame *buildGame() const override;
 
 protected:

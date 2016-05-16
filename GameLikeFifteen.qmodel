@@ -67,33 +67,6 @@
                         <DObject>
                          <base-DElement>
                           <DElement>
-                           <uid>{62812708-dfed-4891-b6cc-c0f8ad54e2ea}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{c9a2a823-d8d6-43db-8dbf-1b63e5d88150}</object>
-                         <stereotypes>
-                          <qlist>
-                           <item>interface</item>
-                          </qlist>
-                         </stereotypes>
-                         <name>IPiecesFactory</name>
-                         <pos>x:30;y:70</pos>
-                         <rect>x:-20;y:-20;w:40;h:40</rect>
-                         <visual-role>0</visual-role>
-                        </DObject>
-                       </base-DObject>
-                       <namespace>Fifteen</namespace>
-                       <show-all-members>true</show-all-members>
-                      </DClass>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DClass">
-                      <DClass>
-                       <base-DObject>
-                        <DObject>
-                         <base-DElement>
-                          <DElement>
                            <uid>{fc27791c-1a79-4e53-8476-65da03036515}</uid>
                           </DElement>
                          </base-DElement>
@@ -387,50 +360,10 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1462269379100</last-modified>
+                  <last-modified>1462525120308</last-modified>
                  </MDiagram>
                 </base-MDiagram>
                </MCanvasDiagram>
-              </instance>
-             </target>
-            </handle>
-           </item>
-           <item>
-            <handle>
-             <uid>{c9a2a823-d8d6-43db-8dbf-1b63e5d88150}</uid>
-             <target>
-              <instance type="MClass">
-               <MClass>
-                <base-MObject>
-                 <MObject>
-                  <base-MElement>
-                   <MElement>
-                    <uid>{c9a2a823-d8d6-43db-8dbf-1b63e5d88150}</uid>
-                    <stereotypes>
-                     <qlist>
-                      <item>interface</item>
-                     </qlist>
-                    </stereotypes>
-                   </MElement>
-                  </base-MElement>
-                  <name>IPiecesFactory</name>
-                 </MObject>
-                </base-MObject>
-                <namespace>Fifteen</namespace>
-                <members>
-                 <qlist>
-                  <item>
-                   <MClassMember>
-                    <uid>{891d61f8-f581-4847-8958-fbd0ad53cebd}</uid>
-                    <visibility>1</visibility>
-                    <type>2</type>
-                    <properties>7</properties>
-                    <declaration>PuzzlePiecePointerList createPieces()</declaration>
-                   </MClassMember>
-                  </item>
-                 </qlist>
-                </members>
-               </MClass>
               </instance>
              </target>
             </handle>

@@ -59,10 +59,10 @@ DialogSettingsFifteen::~DialogSettingsFifteen()
 IGame *DialogSettingsFifteen::buildGame() const
 {
     if (ui->comboBoxGameType->currentData() == idFifteen)
-        return buildGameFifteen();
+        return buildSimpleSlide();
 
     if (ui->comboBoxGameType->currentData() == idSwap)
-        return buildGameSwap();
+        return buildSimpleSwap();
 
     Q_ASSERT(false);
 
@@ -76,7 +76,7 @@ void DialogSettingsFifteen::updateSplitPainter() const
     ui->imageWidget->update();
 }
 
-IGame *DialogSettingsFifteen::buildGameFifteen() const
+IGame *DialogSettingsFifteen::buildSimpleSlide() const
 {
     QSize numXY(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
     QPoint blankPos(numXY.width() - 1, numXY.height() - 1);
@@ -84,7 +84,7 @@ IGame *DialogSettingsFifteen::buildGameFifteen() const
     return new Fifteen::GameSimpleSlide(sourceImage, numXY, blankPos);
 }
 
-IGame *DialogSettingsFifteen::buildGameSwap() const
+IGame *DialogSettingsFifteen::buildSimpleSwap() const
 {
     QSize numXY(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
     QPoint swapTargetPos(0, 0);

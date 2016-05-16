@@ -41,12 +41,12 @@ class GameMineSweeper : public IGame
 {
     Q_OBJECT
 public:
-    static QString savedataExtension();
     static QString gameName();
 
-    GameMineSweeper();
-    GameMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock, QObject *parent = 0);
+    GameMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock);
     ~GameMineSweeper() = default;
+
+    GameID gameID() const override;
 
     IGame *cloneAsNewGame() const override;
     void save(const QString &saveDirPath, const QSize &screenshotSize) const override;
@@ -71,13 +71,14 @@ protected:
     void drawChanged();
     void drawPiece(QPainter &painterBuffer, int x, int y);
     void openChaining(int x, int y);
+    QString openedDescription() const;
 
     template<typename T> T safePieceCount() const
     {
         return static_cast<T>(xy.width() * xy.height() - mineCount);
     }
 
-    mutable QString gameID;
+    GameID gameId;
 
     SourceImage sourceImg;
     QPixmap backBuffer;
@@ -99,10 +100,8 @@ protected:
     QTimer timer;
 
 private:
-    GameMineSweeper(const GameMineSweeper &) = delete;
-    GameMineSweeper(GameMineSweeper &&) = delete;
-    GameMineSweeper &operator=(const GameMineSweeper &) = delete;
-    GameMineSweeper &operator=(GameMineSweeper &&) = delete;
+    friend class MineSweeperSaveData;
+    GameMineSweeper();
 };
 
 } // MineSweeper

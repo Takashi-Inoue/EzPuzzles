@@ -19,9 +19,9 @@
 #include "DialogSettingsMineSweeper.h"
 #include "ui_DialogSettingsMineSweeper.h"
 
-#include "mine/GameMineSweeper.h"
 #include "SubFrame.h"
 #include "SourceImage.h"
+#include "mine/GameMineSweeper.h"
 
 #include <QDebug>
 
@@ -67,9 +67,8 @@ IGame *DialogSettingsMineSweeper::buildGame() const
         pixRect.moveBottom(originalSize.height() - 1);
 
     QPixmap pixmap = ui->imageWidget->originalPixmap().copy(pixRect);
-    SourceImage sourceImg(sourceImage.fullPath, pixmap);
 
-    return new MineSweeper::GameMineSweeper(sourceImg, xy, ui->spinBox->value(), ui->checkBoxAutoLock->isChecked());
+    return new MineSweeper::GameMineSweeper(SourceImage(sourceImage.fullPath, pixmap), xy, ui->spinBox->value(), ui->checkBoxAutoLock->isChecked());
 }
 
 void DialogSettingsMineSweeper::showEvent(QShowEvent *event)

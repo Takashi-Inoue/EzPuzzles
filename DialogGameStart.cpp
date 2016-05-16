@@ -42,16 +42,16 @@ DialogGameStart::~DialogGameStart()
 
 IGame *DialogGameStart::buildGame() const
 {
-    IGameBuilder *builder = nullptr;
+    IDialogGameSettings *dialog = nullptr;
 
     if (ui->tabWidget->currentWidget() == ui->tabLikeFifteen)
-        builder = static_cast<IGameBuilder *>(ui->tabLikeFifteen->findChild<DialogSettingsFifteen *>());
+        dialog = static_cast<IDialogGameSettings *>(ui->tabLikeFifteen->findChild<DialogSettingsFifteen *>());
 
     if (ui->tabWidget->currentWidget() == ui->tabMineSweeper)
-        builder = static_cast<IGameBuilder *>(ui->tabMineSweeper->findChild<DialogSettingsMineSweeper *>());
+        dialog = static_cast<IDialogGameSettings *>(ui->tabMineSweeper->findChild<DialogSettingsMineSweeper *>());
 
-    if (builder)
-        return builder->buildGame();
+    if (dialog)
+        return dialog->buildGame();
 
     Q_ASSERT(false);
 

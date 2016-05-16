@@ -7,11 +7,12 @@
         <file alias="historyImage">edit-history.png</file>
         <file alias="exit">application-exit-4.png</file>
         <file alias="save">document-save-2.png</file>
-        <file alias="hdd">drive-harddisk-4.png</file>
         <file alias="load">load.png</file>
         <file alias="gameMine">iconMine.png</file>
         <file alias="gameSimpleSlide">iconSimpleSlide.png</file>
         <file alias="gameSwap">iconSwap.png</file>
         <file alias="gameAll">iconAll.png</file>
+        <file alias="saveload">saveload.png</file>
+        <file alias="x">x.png</file>
     </qresource>
 </RCC>
