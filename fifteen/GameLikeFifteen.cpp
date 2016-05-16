@@ -56,8 +56,12 @@ void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
         return;
     }
 
-    QSize fieldCellSize(fieldSize.width() / xy.width(), fieldSize.height() / xy.height());
-    QPoint posInArray(cursorPos.x() / fieldCellSize.width(), cursorPos.y() / fieldCellSize.height());
+    double mag = static_cast<double>(backBuffer.width()) / fieldSize.width();
+
+    auto xitr = std::lower_bound(splitterXs.begin(), splitterXs.end(), cursorPos.x() * mag);
+    auto yitr = std::lower_bound(splitterYs.begin(), splitterYs.end(), cursorPos.y() * mag);
+
+    QPoint posInArray(std::distance(splitterXs.begin(), xitr) - 1, std::distance(splitterYs.begin(), yitr) - 1);
 
     click(posInArray);
 

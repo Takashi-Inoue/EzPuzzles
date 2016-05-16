@@ -39,7 +39,7 @@ void SlideShuffler::shufflePieces()
 
     Direction from = right;
 
-    for (int i = 0, lim = width * height * 8; i < lim; ++i) {
+    for (int i = 0, lim = width * height * 4; i < lim; ++i) {
         Direction to = nextDirection(from);
         QPoint nextPos = nextBlankPosition(to);
 
