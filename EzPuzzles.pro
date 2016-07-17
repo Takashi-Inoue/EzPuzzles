@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = EzPuzzles
 TEMPLATE = app
 
+QMAKE_LFLAGS_DEBUG += /LTCG
+QMAKE_LFLAGS_RELEASE += /LTCG
+
 TRANSLATIONS += ezpz_ja.ts
 
 SOURCES += main.cpp\
@@ -61,7 +64,13 @@ SOURCES += main.cpp\
     mine/MineSweeperSaveData.cpp \
     fifteen/SimpleSwapSaveData.cpp \
     fifteen/SimpleSlideSaveData.cpp \
-    MoveToTrashBox.cpp
+    MoveToTrashBox.cpp \
+    fifteen/boardinformation.cpp \
+    AnimationObject/AbstractAnimationObject.cpp \
+    AnimationObject/Animation/AnimationLineMove.cpp \
+    AnimationObject/Animation/AnimationWarpMove.cpp \
+    AnimationObject/Effect/EffectSimpleFrame.cpp \
+    AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -122,7 +131,16 @@ HEADERS  += MainWindow.h \
     mine/MineSweeperSaveData.h \
     fifteen/SimpleSwapSaveData.h \
     fifteen/SimpleSlideSaveData.h \
-    MoveToTrashBox.h
+    MoveToTrashBox.h \
+    fifteen/boardinformation.h \
+    AnimationObject/AbstractAnimationObject.h \
+    AnimationObject/IAnimationObject.h \
+    AnimationObject/Animation/AbstractAnimation.h \
+    AnimationObject/Effect/AbstractEffect.h \
+    AnimationObject/Animation/AnimationLineMove.h \
+    AnimationObject/Animation/AnimationWarpMove.h \
+    AnimationObject/Effect/EffectSimpleFrame.h \
+    AnimationObject/Effect/EffectGraduallyBlinkFrame.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
