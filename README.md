@@ -15,7 +15,7 @@ This app includes 3 type games with an image.
 - Mine Sweeper : You know it. But it is little bit different than the "Windows Minesweeper". Right click has same action that left click. An image is gradually visible while pieces are opened. If you missed, you can play the game continually, but you can't watch a perfect image.
 
 ##**tools**
-Qt Creator 3.6.0 + Qt 5.5.1 + MSVC2013 EE
+Qt Creator 4.0.3 + Qt 5.7.0 + MSVC2015 EE
 
 
 ##**License** 
