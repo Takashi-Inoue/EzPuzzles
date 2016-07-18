@@ -14,6 +14,7 @@ public:
     bool isFinishedAnimation() override;
 
 protected:
+    void resetFrame();
     int totalFrames() const;
     int nowFrame() const;
 

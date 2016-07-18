@@ -31,7 +31,7 @@ public:
 
     // IPiece
     void draw(QPainter &/*painter*/, const QPointF &/*pos*/) override {}
-    void draw(QPainter &/*painter*/, const QPointF &/*pos*/, const QSizeF &/*targetSize*/) override {}
+    void draw(QPainter &/*painter*/, const QRectF &/*targetSize*/) override {}
 
     // ISwitchPiece
     void open() override {}

@@ -35,9 +35,9 @@ void MinePiece::draw(QPainter &painter, const QPointF &pos)
     blockPiece->draw(painter, pos);
 }
 
-void MinePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void MinePiece::draw(QPainter &painter, const QRectF &rect)
 {
-    blockPiece->draw(painter, pos, targetSize);
+    blockPiece->draw(painter, rect);
 }
 
 void MinePiece::open()

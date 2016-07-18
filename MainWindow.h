@@ -44,6 +44,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void finishFrameOperation();
+
 protected:
     void closeEvent(QCloseEvent *) override;
 
@@ -59,6 +62,7 @@ private slots:
     void startGameFromImageHistory();
     void saveGame();
     void loadGame();
+    void onTickFrameTimer(QMutex *);
 
 private:
     void initToolBoxies();

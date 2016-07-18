@@ -23,6 +23,7 @@
 namespace Fifteen {
 
 GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, IShuffler *shuffler) :
+    boardInfo(std::make_shared<BoardInformation>(xy, sourceImg.size())),
     sourceImg(sourceImg),
     xy(xy),
     isStarted(false),
@@ -36,7 +37,7 @@ GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, 
     connect(shuffler, SIGNAL(update(QList<QPoint>&)), this, SLOT(piecesUpdated(QList<QPoint>&)));
 }
 
-GameLikeFifteen::GameLikeFifteen(IShuffler *shuffler) :
+GameLikeFifteen::GameLikeFifteen(IShuffler *shuffler) : // protected constructor
     shuffler(shuffler)
 {
     Q_ASSERT(shuffler != nullptr);
@@ -67,8 +68,6 @@ void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
 
     if (isGameCleared())
         isStarted = false;
-
-    emit screenUpdated();
 }
 
 void GameLikeFifteen::draw(QPainter &dest)
@@ -134,8 +133,6 @@ void GameLikeFifteen::saveScreenshot(const QString &saveDirPath, const QSize &sc
 void GameLikeFifteen::piecesUpdated(QList<QPoint> &changedPos)
 {
     this->changedPos = changedPos;
-
-    emit screenUpdated();
 }
 
 void GameLikeFifteen::drawAll()

@@ -28,12 +28,12 @@ ImageFragmentPiece::ImageFragmentPiece(const QPixmap &sourcePixmap, const QRectF
 
 void ImageFragmentPiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, pos, sourceRect.size());
+    draw(painter, QRectF(pos, sourceRect.size()));
 }
 
-void ImageFragmentPiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void ImageFragmentPiece::draw(QPainter &painter, const QRectF &rect)
 {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    painter.drawPixmap(QRectF(pos, targetSize), sourcePixmap, sourceRect);
+    painter.drawPixmap(rect, sourcePixmap, sourceRect);
 }

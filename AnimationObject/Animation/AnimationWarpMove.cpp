@@ -2,11 +2,17 @@
 
 namespace Animation {
 
-WarpMove::WarpMove(const QRectF &from, const QRectF &to, int waitFrameCount) :
+WarpMove::WarpMove(int waitFrameCount) :
     AbstractAnimation(waitFrameCount, false)
 {
-    Q_ASSERT((from.width() >= 0) & (from.height() >= 0));
-    Q_ASSERT((to.width()   >= 0) & (to.height()   >= 0));
+}
+
+void WarpMove::start(const QRectF &from, const QRectF &to)
+{
+    rectFrom = from;
+    rectTo = to;
+
+    AbstractAnimationObject::resetFrame();
 }
 
 QRectF WarpMove::rect()

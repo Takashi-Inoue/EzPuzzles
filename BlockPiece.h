@@ -31,16 +31,16 @@ public:
 
     // IPiece
     void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+    void draw(QPainter &painter, const QRectF &rect) override;
 
 protected:
-    class Key
+    class Info
     {
     public:
-        Key(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3);
-        ~Key() = default;
+        Info(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3);
+        ~Info() = default;
 
-        bool operator<(const Key &other) const;
+        bool operator<(const Info &other) const;
 
     private:
         uint64_t sizeInt;
@@ -48,7 +48,7 @@ protected:
         uint color2;
     };
 
-    static QMap<Key, QPixmap> pixmapMap;
+    static QMap<Info, QPixmap> pixmapMap;
 
     void drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &targetSize);
 

@@ -22,50 +22,88 @@
 
 namespace Fifteen {
 
-PuzzlePiece::PuzzlePiece(const QPoint &pos, const QPixmap &sourceImage, const QRectF &sourceRect) :
-    imagePiece(std::make_unique<ImageFragmentPiece>(sourceImage, sourceRect)),
-    position(pos),
-    defaultPosition(pos)
+PuzzlePiece::PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage) :
+    imagePiece(std::make_unique<ImageFragmentPiece>(sourceImage, boardInfo->rectFromPiecePos(pieceDefaultPos))),
+    boardInfo(boardInfo),
+    position(pieceDefaultPos)
 {
 }
 
-void PuzzlePiece::draw(QPainter &painter, const QPointF &pos)
+void PuzzlePiece::draw(QPainter &painter)
 {
-    imagePiece->draw(painter, pos);
+    if (animation != nullptr) {
+        auto rect = animation->rect();
+
+        if (!rect.isNull())
+            drawRect = rect;
+    }
+
+    imagePiece->draw(painter, drawRect);
 }
 
-void PuzzlePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void PuzzlePiece::setPos(const QPoint &pos)
 {
-    imagePiece->draw(painter, pos, targetSize);
+    if (animation == nullptr) {
+        setPosWithoutAnimation(pos);
+
+        return;
+    }
+
+    position.setPos(pos);
+
+    animation->start(drawRect, boardInfo->rectFromPiecePos(pos));
 }
 
-void PuzzlePiece::setPos(const QPoint &position)
+void PuzzlePiece::setPosWithoutAnimation(const QPoint &pos)
 {
-    this->position = position;
+    position.setPos(pos);
+
+    drawRect = boardInfo->rectFromPiecePos(pos);
 }
 
-void PuzzlePiece::swapPos(IPuzzlePiece *other)
+void PuzzlePiece::setAnimation(AnimationPointer animation)
 {
-    QPoint otherPos = other->currentPos();
-
-    other->setPos(position);
-
-    position = otherPos;
+    this->animation = animation;
 }
 
-QPoint PuzzlePiece::currentPos() const
+void PuzzlePiece::setEffect(EffectPointer effect)
+{
+    this->effect = effect;
+}
+
+const Position &PuzzlePiece::pos() const
 {
     return position;
 }
 
-QPoint PuzzlePiece::defaultPos() const
+void PuzzlePiece::onTickFrame()
 {
-    return defaultPosition;
+    if (animation != nullptr)
+        animation->onTickFrame();
+
+    if (effect != nullptr)
+        effect->onTickFrame();
 }
 
-bool PuzzlePiece::isPosCorrect() const
+void PuzzlePiece::skipAnimation()
 {
-    return position == defaultPosition;
+    if (animation != nullptr) {
+        animation->skipAnimation();
+        drawRect = animation->rect();
+    }
+
+    if (effect != nullptr)
+        effect->skipAnimation();
+}
+
+bool PuzzlePiece::isLoopAnimation()
+{
+    return false;
+}
+
+bool PuzzlePiece::isFinishedAnimation()
+{
+    return false;
 }
 
 } // Fifteen

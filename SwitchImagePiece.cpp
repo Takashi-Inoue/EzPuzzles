@@ -51,16 +51,16 @@ void SwitchImagePiece::draw(QPainter &painter, const QPointF &pos)
     }
 }
 
-void SwitchImagePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void SwitchImagePiece::draw(QPainter &painter, const QRectF &rect)
 {
     if (isOpen()) {
         painter.setOpacity(openOpacity);
 
-        imagePiece->draw(painter, pos, targetSize);
+        imagePiece->draw(painter, rect);
     } else {
         painter.setOpacity(1.0);
 
-        blockPiece->draw(painter, pos, targetSize);
+        blockPiece->draw(painter, rect);
     }
 }
 

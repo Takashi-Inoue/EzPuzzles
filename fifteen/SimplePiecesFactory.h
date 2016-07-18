@@ -20,30 +20,27 @@
 #define SIMPLEPIECESFACTORY_H
 
 #include "IPuzzlePiece.h"
+#include "BoardInformation.h"
 #include <QPixmap>
 
-class QDataStream;
+class BoardInformation;
 
 namespace Fifteen {
 
 class SimplePiecesFactory
 {
 public:
-    static PuzzlePiecePointer createPiece(const QPoint &posInArray, const QPixmap &pixmap);
-
-    SimplePiecesFactory(const QPixmap &sourcePixmap, const QSize &xy);
+    SimplePiecesFactory(BoardInfoPointer boardInfo, const QPixmap &sourcePixmap);
     ~SimplePiecesFactory() = default;
 
-    QList<QList<PuzzlePiecePointer>> createPieces() const;
-    QList<QList<PuzzlePiecePointer>> createPieces(const QList<QPoint> &defaultPositions) const;
+    QList<PuzzlePiecePointer> createPieces() const;
+    QList<PuzzlePiecePointer> createPieces(const QList<QPoint> &defaultPositions) const;
 
 private:
     PuzzlePiecePointer createPiece(const QPoint &defaultPos) const;
 
+    std::shared_ptr<BoardInformation> boardInfo;
     QPixmap sourcePixmap;
-
-    QList<double> splitterXs;
-    QList<double> splitterYs;
 };
 
 } // Fifteen

@@ -23,6 +23,7 @@
 #include "IPuzzlePiece.h"
 #include "GameID.h"
 #include "SourceImage.h"
+#include "BoardInformation.h"
 
 #include <QList>
 #include <memory>
@@ -36,7 +37,6 @@ class GameLikeFifteen : public IGame
     Q_OBJECT
 public:
     GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, IShuffler *shuffler);
-    GameLikeFifteen(IShuffler *shuffler);
     ~GameLikeFifteen() = default;
 
     // IGame
@@ -49,12 +49,15 @@ public:
     SourceImage sourceImage() const override;
 
 protected:
+    GameLikeFifteen(IShuffler *shuffler);
     virtual void click(const QPoint &posInArray) = 0;
 
     bool isGameCleared() const;
     void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const;
 
     GameID gameId;
+    BoardInfoPointer boardInfo;
+
     QList<QList<PuzzlePiecePointer>> pieces;
     QList<QPoint> changedPos;
 

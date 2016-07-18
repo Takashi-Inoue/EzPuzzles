@@ -2,7 +2,9 @@
 #define ABSTRACTEFFECT_H
 
 #include "AnimationObject/AbstractAnimationObject.h"
+
 #include <QPainter>
+#include <memory>
 
 namespace Effect {
 
@@ -20,5 +22,7 @@ public:
 };
 
 } // Effect
+
+typedef std::shared_ptr<Effect::AbstractEffect> EffectPointer;
 
 #endif // ABSTRACTEFFECT_H

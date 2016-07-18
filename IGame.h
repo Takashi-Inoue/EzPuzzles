@@ -51,7 +51,6 @@ public:
     virtual SourceImage sourceImage() const = 0;
 
 signals:
-    void screenUpdated();
     void informationUpdated();
 
 private:

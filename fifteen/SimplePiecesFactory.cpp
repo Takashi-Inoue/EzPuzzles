@@ -17,81 +17,42 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "SimplePiecesFactory.h"
-
-#include "GridSplitter.h"
 #include "PuzzlePiece.h"
 
 namespace Fifteen {
 
-PuzzlePiecePointer SimplePiecesFactory::createPiece(const QPoint &posInArray, const QPixmap &pixmap)
-{
-    return std::make_shared<PuzzlePiece>(posInArray, pixmap, pixmap.rect());
-}
-
-SimplePiecesFactory::SimplePiecesFactory(const QPixmap &sourcePixmap, const QSize &xy) :
+SimplePiecesFactory::SimplePiecesFactory(BoardInfoPointer boardInfo, const QPixmap &sourcePixmap) :
+    boardInfo(boardInfo),
     sourcePixmap(sourcePixmap)
 {
     Q_ASSERT(!sourcePixmap.isNull());
-    Q_ASSERT(!xy.isEmpty());
-
-    splitterXs.push_back(0);
-    splitterYs.push_back(0);
-
-    splitterXs << GridSplitter::verticalSplitterPos(sourcePixmap.width(), xy.width() - 1) << sourcePixmap.width();
-    splitterYs << GridSplitter::horizontalSplitterPos(sourcePixmap.height(), xy.height() - 1) << sourcePixmap.height();
 }
 
-QList<QList<PuzzlePiecePointer>> SimplePiecesFactory::createPieces() const
+QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces() const
 {
-    QList<QList<PuzzlePiecePointer>> pieces;
+    QList<PuzzlePiecePointer> pieces;
 
-    int ylim = splitterYs.size() - 1;
-    int xlim = splitterXs.size() - 1;
+    int xCount = boardInfo->xCount();
 
-    for (int y = 0; y < ylim; ++y) {
-        QList<PuzzlePiecePointer> horizontal;
-
-        for (int x = 0; x < xlim; ++x)
-            horizontal << createPiece(QPoint(x, y));
-
-        pieces << horizontal;
-    }
+    for (int i = 0, lim = xCount * boardInfo->yCount(); i < lim; ++i)
+        pieces << createPiece(QPoint(i % xCount, i / xCount));
 
     return pieces;
 }
 
-QList<QList<PuzzlePiecePointer>> SimplePiecesFactory::createPieces(const QList<QPoint> &defaultPositions) const
+QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces(const QList<QPoint> &defaultPositions) const
 {
-    QList<QList<PuzzlePiecePointer>> pieces;
+    QList<PuzzlePiecePointer> pieces;
 
-    int ylim = splitterYs.size() - 1;
-    int xlim = splitterXs.size() - 1;
-
-    for (int y = 0; y < ylim; ++y) {
-        QList<PuzzlePiecePointer> horizontal;
-
-        for (int x = 0; x < xlim; ++x) {
-            QPoint defaultPos = defaultPositions.at(y * xlim + x);
-
-            auto &piece = createPiece(defaultPos);
-
-            piece->setPos(QPoint(x, y));
-
-            horizontal << piece;
-        }
-
-        pieces << horizontal;
-    }
+    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount(); i < lim; ++i)
+        pieces << createPiece(defaultPositions.at(i));
 
     return pieces;
 }
 
 PuzzlePiecePointer SimplePiecesFactory::createPiece(const QPoint &defaultPos) const
 {
-    QPointF sourceTL(splitterXs.at(defaultPos.x()    ), splitterYs.at(defaultPos.y()    ));
-    QPointF sourceBR(splitterXs.at(defaultPos.x() + 1), splitterYs.at(defaultPos.y() + 1));
-
-    return std::make_shared<PuzzlePiece>(defaultPos, sourcePixmap, QRectF(sourceTL, sourceBR));
+    return std::make_shared<PuzzlePiece>(boardInfo, defaultPos, sourcePixmap);
 }
 
 } // Fifteen

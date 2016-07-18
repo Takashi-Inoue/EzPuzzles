@@ -19,24 +19,28 @@
 #ifndef IPUZZLEPIECE_H
 #define IPUZZLEPIECE_H
 
-#include "IPiece.h"
+#include "AnimationObject/IAnimationObject.h"
+#include "AnimationObject/Animation/AbstractAnimation.h"
+#include "AnimationObject/Effect/AbstractEffect.h"
 #include <memory>
 
-class QDataStream;
+class Position;
 
 namespace Fifteen {
 
-class IPuzzlePiece : public IPiece
+class IPuzzlePiece : public IAnimationObject
 {
 public:
     IPuzzlePiece() = default;
     virtual ~IPuzzlePiece() = default;
 
-    virtual void setPos(const QPoint &position) = 0;
-    virtual void swapPos(IPuzzlePiece *) = 0;
-    virtual QPoint currentPos() const = 0;
-    virtual QPoint defaultPos() const = 0;
-    virtual bool isPosCorrect() const = 0;
+    virtual void draw(QPainter &) = 0;
+    virtual void setPos(const QPoint &pos) = 0;
+    virtual void setPosWithoutAnimation(const QPoint &pos) = 0;
+    virtual void setAnimation(AnimationPointer) = 0;
+    virtual void setEffect(EffectPointer) = 0;
+
+    virtual const Position &pos() const = 0;
 };
 
 typedef std::shared_ptr<IPuzzlePiece> PuzzlePiecePointer;

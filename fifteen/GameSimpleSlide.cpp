@@ -117,10 +117,12 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
     stream >> isStarted;
     stream >> sourceImg.pixmap;
 
+    boardInfo = std::make_shared<BoardInformation>(xy, sourceImg.size());
+
     QList<QPoint> defaultPositions;
     stream >> defaultPositions;
 
-    pieces = SimplePiecesFactory(sourceImg.pixmap, xy).createPieces(defaultPositions);
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap, xy).createPieces(defaultPositions);
 
     initBlankPiece();
 
@@ -148,7 +150,7 @@ void GameSimpleSlide::click(const QPoint &posInArray)
 
 void GameSimpleSlide::initPieces()
 {
-    pieces = SimplePiecesFactory(sourceImg.pixmap, xy).createPieces();
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap, xy).createPieces();
 }
 
 void GameSimpleSlide::initBlankPiece()
@@ -156,7 +158,7 @@ void GameSimpleSlide::initBlankPiece()
     QPixmap pixmapBlank(1, 1);
     pixmapBlank.fill(Qt::black);
 
-    pieces[blankPos.y()][blankPos.x()] = SimplePiecesFactory::createPiece(blankPos, pixmapBlank);
+    pieces[blankPos.y()][blankPos.x()] = SimplePiecesFactory::createPiece(boardInfo, blankPos, pixmapBlank);
 }
 
 GameSimpleSlide::GameSimpleSlide() :

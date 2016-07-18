@@ -21,7 +21,7 @@
 #include <QPainter>
 #include <QDebug>
 
-QMap<BlockPiece::Key, QPixmap> BlockPiece::pixmapMap;
+QMap<BlockPiece::Info, QPixmap> BlockPiece::pixmapMap;
 
 BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, QColor darkLine) :
     foregroundColor(foreground),
@@ -31,9 +31,9 @@ BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, Q
     if (size.isEmpty())
         return;
 
-    Key key(size, foreground.rgba(), lightLine.rgba(), darkLine.rgba());
+    Info info(size, foreground.rgba(), lightLine.rgba(), darkLine.rgba());
 
-    pixmap = pixmapMap[key];
+    pixmap = pixmapMap[info];
 
     if (!pixmap.isNull())
         return;
@@ -43,22 +43,20 @@ BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, Q
     QPainter painter(&pixmap);
     drawPiece(painter, QPoint(0, 0), pixmap.size());
 
-    pixmapMap[key] = pixmap;
+    pixmapMap[info] = pixmap;
 }
 
 void BlockPiece::draw(QPainter &painter, const QPointF &pos)
 {
-    Q_ASSERT(!pixmap.isNull());
-
-    draw(painter, pos, pixmap.size());
+    draw(painter, QRectF(pos, pixmap.size()));
 }
 
-void BlockPiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void BlockPiece::draw(QPainter &painter, const QRectF &rect)
 {
     painter.setOpacity(1.0);
 
-    pixmap.isNull() ? drawPiece(painter, pos, targetSize)
-                    : painter.drawPixmap(QRectF(pos, targetSize), pixmap, pixmap.rect());
+    pixmap.isNull() ? drawPiece(painter, rect.topLeft(), rect.size())
+                    : painter.drawPixmap(rect, pixmap, pixmap.rect());
 }
 
 void BlockPiece::drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
@@ -75,7 +73,7 @@ void BlockPiece::drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &
     painter.drawRect(QRectF(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
 }
 
-BlockPiece::Key::Key(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3) :
+BlockPiece::Info::Info(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3) :
     sizeInt(size.width()),
     color1(rgba1),
     color2(rgba3)
@@ -89,7 +87,7 @@ BlockPiece::Key::Key(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3) :
     color1 |= rgba2;
 }
 
-bool BlockPiece::Key::operator<(const BlockPiece::Key &other) const
+bool BlockPiece::Info::operator<(const BlockPiece::Info &other) const
 {
     if (sizeInt != other.sizeInt)
         return sizeInt < other.sizeInt;

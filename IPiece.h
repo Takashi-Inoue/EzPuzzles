@@ -30,7 +30,7 @@ public:
     virtual ~IPiece() = default;
 
     virtual void draw(QPainter &painter, const QPointF &pos) = 0;
-    virtual void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) = 0;
+    virtual void draw(QPainter &painter, const QRectF &rect) = 0;
 
 private:
     IPiece(const IPiece &) = delete;

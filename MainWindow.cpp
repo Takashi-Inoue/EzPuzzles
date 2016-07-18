@@ -25,6 +25,8 @@
 #include "DialogSavedata.h"
 #include "FormFinalImage.h"
 
+#include "TimerThread.h"
+
 #include "IGame.h"
 #include "GameWidget.h"
 
@@ -40,6 +42,7 @@
 #include <QDebug>
 
 QThread garbageThread;
+TimerThread timerThread;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
     game(nullptr),
     gameWidget(new GameWidget())
 {
+    qDebug() << "MainThread :" << thread()->currentThreadId();
+
     ui->setupUi(this);
 
     initToolBoxies();
@@ -66,6 +71,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->action_Final_image->setChecked(ui->dockWidget->isVisible());
 
     connect(ui->dockWidget, SIGNAL(visibilityChanged(bool)), ui->action_Final_image, SLOT(setChecked(bool)));
+
+    connect(&timerThread, SIGNAL(tick(QMutex*)), this, SLOT(onTickFrameTimer(QMutex*)));
+    connect(this, SIGNAL(finishFrameOperation()), &timerThread, SLOT(onOperationFinished()));
+
+    timerThread.start();
 }
 
 MainWindow::~MainWindow()
@@ -75,6 +85,9 @@ MainWindow::~MainWindow()
 
     garbageThread.quit();
     garbageThread.wait();
+
+    timerThread.stop();
+    timerThread.wait();
 
     delete gameWidget;
     delete ui;
@@ -183,6 +196,15 @@ void MainWindow::loadGame()
 
     startNewGame(game);
     updateImageHistory(game->sourceImage().fullPath);
+}
+
+void MainWindow::onTickFrameTimer(QMutex *mutex)
+{
+    mutex->lock();
+
+    gameWidget->repaint();
+
+    emit finishFrameOperation();
 }
 
 void MainWindow::initToolBoxies()

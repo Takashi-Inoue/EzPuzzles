@@ -198,7 +198,6 @@ void GameMineSweeper::click(const QSize &/*fieldSize*/, const QPoint &cursorPos)
     if (mineLocker != nullptr)
         changedPositions += mineLocker->lockMines();
 
-    emit screenUpdated();
     emit informationUpdated();
 
     if (openedCount == safePieceCount<int>() && missedCount == 0) {

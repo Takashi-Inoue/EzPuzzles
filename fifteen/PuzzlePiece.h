@@ -19,7 +19,10 @@
 #ifndef PUZZLEPIECE_H
 #define PUZZLEPIECE_H
 
+#include "IPiece.h"
 #include "IPuzzlePiece.h"
+#include "BoardInformation.h"
+#include "Position.h"
 #include <memory>
 
 class ImageFragmentPiece;
@@ -30,24 +33,32 @@ namespace Fifteen {
 class PuzzlePiece : public IPuzzlePiece
 {
 public:
-    PuzzlePiece(const QPoint &pos, const QPixmap &sourceImage, const QRectF &sourceRect);
+    PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage);
     ~PuzzlePiece() = default;
 
-    // IPiece
-    void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
-
     // IPuzzlePiece
-    void setPos(const QPoint &position) override;
-    void swapPos(IPuzzlePiece *) override;
-    QPoint currentPos() const override;
-    QPoint defaultPos() const override;
-    bool isPosCorrect() const override;
+    void draw(QPainter &painter) override;
+    void setPos(const QPoint &pos) override;
+    void setPosWithoutAnimation(const QPoint &pos) override;
+    void setAnimation(AnimationPointer animation) override;
+    void setEffect(EffectPointer effect) override;
+
+    const Position &pos() const override;
+
+    // IAnimationObject
+    void onTickFrame() override;
+    void skipAnimation() override;
+    bool isLoopAnimation() override;
+    bool isFinishedAnimation() override;
 
 protected:
     std::unique_ptr<IPiece> imagePiece;
-    QPoint position;
-    const QPoint defaultPosition;
+    BoardInfoPointer boardInfo;
+    Position position;
+    QRectF drawRect;
+
+    AnimationPointer animation;
+    EffectPointer effect;
 };
 
 } // Fifteen

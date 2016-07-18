@@ -26,12 +26,12 @@ ImagePiece::ImagePiece(const QPixmap &pixmap) :
 
 void ImagePiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, pos, pixmap.size());
+    draw(painter, QRectF(pos, pixmap.size()));
 }
 
-void ImagePiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void ImagePiece::draw(QPainter &painter, const QRectF &rect)
 {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    painter.drawPixmap(QRectF(pos, targetSize), pixmap, pixmap.rect());
+    painter.drawPixmap(rect, pixmap, pixmap.rect());
 }

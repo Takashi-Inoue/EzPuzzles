@@ -28,7 +28,7 @@ public:
     ImagePiece(const QPixmap &pixmap);
 
     void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+    void draw(QPainter &painter, const QRectF &rect) override;
 
 protected:
     QPixmap pixmap;

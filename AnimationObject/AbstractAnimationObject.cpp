@@ -31,6 +31,11 @@ bool AbstractAnimationObject::isFinishedAnimation()
     return !isLoop & (nowFrameCount >= totalFrameCount);
 }
 
+void AbstractAnimationObject::resetFrame()
+{
+    nowFrameCount = 0;
+}
+
 int AbstractAnimationObject::totalFrames() const
 {
     return totalFrameCount;

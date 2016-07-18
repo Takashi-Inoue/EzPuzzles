@@ -113,10 +113,12 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
     stream >> isStarted;
     stream >> sourceImg.pixmap;
 
+    boardInfo = std::make_shared<BoardInformation>(xy, sourceImg.size());
+
     QList<QPoint> defaultPositions;
     stream >> defaultPositions;
 
-    pieces = SimplePiecesFactory(sourceImg.pixmap, xy).createPieces(defaultPositions);
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap, xy).createPieces(defaultPositions);
 
     return true;
 }
@@ -143,7 +145,7 @@ void GameSimpleSwap::click(const QPoint &posInArray)
 
 void GameSimpleSwap::initPieces()
 {
-    SimplePiecesFactory factory(sourceImg.pixmap, xy);
+    SimplePiecesFactory factory(boardInfo, sourceImg.pixmap, xy);
 
     pieces = factory.createPieces();
 }

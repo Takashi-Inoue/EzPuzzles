@@ -65,12 +65,14 @@ SOURCES += main.cpp\
     fifteen/SimpleSwapSaveData.cpp \
     fifteen/SimpleSlideSaveData.cpp \
     MoveToTrashBox.cpp \
-    fifteen/boardinformation.cpp \
     AnimationObject/AbstractAnimationObject.cpp \
     AnimationObject/Animation/AnimationLineMove.cpp \
     AnimationObject/Animation/AnimationWarpMove.cpp \
     AnimationObject/Effect/EffectSimpleFrame.cpp \
-    AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp
+    AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp \
+    TimerThread.cpp \
+    BoardInformation.cpp \
+    Position.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -132,7 +134,6 @@ HEADERS  += MainWindow.h \
     fifteen/SimpleSwapSaveData.h \
     fifteen/SimpleSlideSaveData.h \
     MoveToTrashBox.h \
-    fifteen/boardinformation.h \
     AnimationObject/AbstractAnimationObject.h \
     AnimationObject/IAnimationObject.h \
     AnimationObject/Animation/AbstractAnimation.h \
@@ -140,7 +141,10 @@ HEADERS  += MainWindow.h \
     AnimationObject/Animation/AnimationLineMove.h \
     AnimationObject/Animation/AnimationWarpMove.h \
     AnimationObject/Effect/EffectSimpleFrame.h \
-    AnimationObject/Effect/EffectGraduallyBlinkFrame.h
+    AnimationObject/Effect/EffectGraduallyBlinkFrame.h \
+    TimerThread.h \
+    BoardInformation.h \
+    Position.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
@@ -156,5 +160,4 @@ RESOURCES += \
 
 DISTFILES += \
     GameLikeFifteen.qmodel \
-    Pieces.qmodel \
     gameCore.qmodel

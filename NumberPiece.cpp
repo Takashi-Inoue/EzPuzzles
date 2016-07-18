@@ -30,21 +30,21 @@ NumberPiece::NumberPiece(int number, QColor color, QSize pieceSize) :
 
 void NumberPiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, pos, pixmap.size());
+    draw(painter, QRectF(pos, pixmap.size()));
 }
 
-void NumberPiece::draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void NumberPiece::draw(QPainter &painter, const QRectF &rect)
 {
-    if (targetSize.isEmpty())
+    if (rect.isEmpty())
         return;
 
-    if (targetSize != pixmap.size()) {
-        pixmap = QPixmap(targetSize.toSize());
+    if (rect.size() != pixmap.size()) {
+        pixmap = QPixmap(rect.size().toSize());
         init();
     }
 
     painter.setOpacity(1.0);
-    painter.drawPixmap(pos, pixmap);
+    painter.drawPixmap(rect.topLeft(), pixmap);
 }
 
 int NumberPiece::number() const

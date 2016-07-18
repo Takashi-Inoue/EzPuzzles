@@ -32,7 +32,7 @@ public:
 
     // IPiece
     void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+    void draw(QPainter &painter, const QRectF &rect) override;
 
     // ISwitchPiece
     void open() override;
@@ -49,7 +49,7 @@ public:
     int numberOfAroundMines() const override;
 
 protected:
-    void fillRect(QPainter &painter, const QPointF &pos, const QSizeF &targetSize);
+    void fillRect(QPainter &painter, const QRectF &rect);
 
     std::unique_ptr<ISwitchPiece> switchImagePiece;
     IPiece *numberPiece;

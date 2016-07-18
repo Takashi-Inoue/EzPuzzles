@@ -2,13 +2,17 @@
 
 namespace Animation {
 
-LineMove::LineMove(const QRectF &from, const QRectF &to, int totalFrameCount, bool isLoop) :
-    AbstractAnimation(totalFrameCount, isLoop),
-    rectFrom(from),
-    rectTo(to)
+LineMove::LineMove(int totalFrameCount, bool isLoop) :
+    AbstractAnimation(totalFrameCount, isLoop)
 {
-    Q_ASSERT((from.width() >= 0) & (from.height() >= 0));
-    Q_ASSERT((to.width()   >= 0) & (to.height()   >= 0));
+}
+
+void LineMove::start(const QRectF &from, const QRectF &to)
+{
+    rectFrom = from;
+    rectTo = to;
+
+    AbstractAnimationObject::resetFrame();
 }
 
 QRectF LineMove::rect()

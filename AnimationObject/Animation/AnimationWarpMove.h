@@ -8,10 +8,11 @@ namespace Animation {
 class WarpMove : public AbstractAnimation
 {
 public:
-    WarpMove(const QRectF &from, const QRectF &to, int waitFrameCount);
+    WarpMove(int waitFrameCount);
     ~WarpMove() = default;
 
     // AbstractAnimation
+    void start(const QRectF &from, const QRectF &to) override;
     QRectF rect() override;
 
 protected:

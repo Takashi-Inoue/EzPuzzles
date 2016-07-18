@@ -28,7 +28,7 @@ public:
     NumberPiece(int number, QColor color = Qt::black, QSize size = QSize(0, 0));
 
     void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QPointF &pos, const QSizeF &targetSize) override;
+    void draw(QPainter &painter, const QRectF &rect) override;
 
     int number() const;
 
