@@ -19,7 +19,7 @@
 #ifndef FIFTEENSWAPSHUFFLER_H
 #define FIFTEENSWAPSHUFFLER_H
 
-#include "FifteenIShuffler.h"
+#include "FifteenAbstractShuffler.h"
 #include "IPuzzlePiece.h"
 #include "BoardInformation.h"
 
@@ -27,16 +27,16 @@
 
 namespace Fifteen {
 
-class SwapShuffler : public IShuffler
+class SwapShuffler : public AbstractShuffler
 {
 public:
     SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo);
     ~SwapShuffler() = default;
 
+    // AbstractShuffler
     void shufflePieces() override;
 
 private:
-    QList<PuzzlePiecePointer> &pieces;
     const BoardInfoPointer &boardInfo;
     mutable std::mt19937 mt;
 };

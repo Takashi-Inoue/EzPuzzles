@@ -16,32 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef FIFTEENISHUFFLER_H
-#define FIFTEENISHUFFLER_H
+#ifndef FIFTEENABSTRACTSHUFFLER_H
+#define FIFTEENABSTRACTSHUFFLER_H
 
+#include "IPuzzlePiece.h"
 #include <QObject>
 #include <QList>
 #include <QPoint>
 
 namespace Fifteen {
 
-class IShuffler : public QObject
+class AbstractShuffler : public QObject
 {
     Q_OBJECT
 public:
-    explicit IShuffler(QObject *parent = 0) :
-        QObject(parent)
+    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, QObject *parent = 0) :
+        QObject(parent),
+        pieces(pieces)
     {
+        qRegisterMetaType<QList<PuzzlePiecePointer>>("QList<PuzzlePiecePointer>");
     }
 
-    virtual ~IShuffler() = default;
+    virtual ~AbstractShuffler() = default;
 
     virtual void shufflePieces() = 0;
 
 signals:
-    void update(QList<QPoint> &changed);
+    void update(QList<PuzzlePiecePointer> changed);
+
+protected:
+    QList<PuzzlePiecePointer> &pieces;
 };
 
 } // Fifteen
 
-#endif // FIFTEENISHUFFLER_H
+#endif // FIFTEENABSTRACTSHUFFLER_H

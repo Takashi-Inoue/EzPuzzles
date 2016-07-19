@@ -29,8 +29,8 @@ public:
     PieceMover(QList<PuzzlePiecePointer> &pieces, int xCount);
     ~PieceMover() = default;
 
-    QList<QPoint> slideVertical(const QPoint &from, const QPoint &to);
-    QList<QPoint> slideHorizontal(const QPoint &from, const QPoint &to);
+    QList<PuzzlePiecePointer> slideVertical(const QPoint &from, const QPoint &to);
+    QList<PuzzlePiecePointer> slideHorizontal(const QPoint &from, const QPoint &to);
 
 private:
     QList<PuzzlePiecePointer> &pieces;

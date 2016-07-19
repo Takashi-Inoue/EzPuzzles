@@ -17,11 +17,11 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "GameLikeFifteen.h"
-#include "FifteenIShuffler.h"
+#include "FifteenAbstractShuffler.h"
 
 namespace Fifteen {
 
-GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, IShuffler *shuffler) :
+GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, AbstractShuffler *shuffler) :
     boardInfo(std::make_shared<BoardInformation>(xy, sourceImg.size())),
     sourceImg(sourceImg),
     isStarted(false),
@@ -35,10 +35,19 @@ GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, 
     connect(shuffler, SIGNAL(update(QList<QPoint>&)), this, SLOT(piecesUpdated(QList<QPoint>&)));
 }
 
-GameLikeFifteen::GameLikeFifteen(IShuffler *shuffler) : // protected constructor
+GameLikeFifteen::GameLikeFifteen(AbstractShuffler *shuffler) : // protected constructor
     shuffler(shuffler)
 {
     Q_ASSERT(shuffler != nullptr);
+}
+
+void GameLikeFifteen::addChangedPieces(QList<PuzzlePiecePointer> changed)
+{
+    changedPieces += changed;
+
+    qSort(changedPieces);
+
+    changedPieces.erase(std::unique(changedPieces.begin(), changedPieces.end()), changedPieces.end());
 }
 
 GameID GameLikeFifteen::gameID() const
@@ -110,9 +119,9 @@ void GameLikeFifteen::saveScreenshot(const QString &saveDirPath, const QSize &sc
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
 }
 
-void GameLikeFifteen::piecesUpdated(QList<QPoint> &changedPos)
+void GameLikeFifteen::piecesUpdated(QList<PuzzlePiecePointer> &changedPieces)
 {
-    this->changedPos = changedPos;
+    this->changedPieces += changedPieces;
 }
 
 void GameLikeFifteen::drawAll()
@@ -131,8 +140,8 @@ void GameLikeFifteen::drawChanged()
 
     painterBuffer.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    for (auto &pos : changedPos)
-        pieces[pos.y() * boardInfo->xCount() + pos.x()]->draw(painterBuffer);
+    for (auto &piece : changedPieces)
+        piece->draw(painterBuffer);
 }
 
 } // Fifteen

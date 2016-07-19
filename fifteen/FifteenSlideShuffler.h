@@ -19,7 +19,7 @@
 #ifndef FIFTEENSLIDESHUFFLER_H
 #define FIFTEENSLIDESHUFFLER_H
 
-#include "FifteenIShuffler.h"
+#include "FifteenAbstractShuffler.h"
 #include "IPuzzlePiece.h"
 #include "BoardInformation.h"
 
@@ -27,12 +27,13 @@
 
 namespace Fifteen {
 
-class SlideShuffler : public IShuffler
+class SlideShuffler : public AbstractShuffler
 {
 public:
     SlideShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QPoint &blankPos);
     ~SlideShuffler() = default;
 
+    // AbstractShuffler
     void shufflePieces() override;
 
 private:
@@ -48,7 +49,6 @@ private:
     bool isHorizontal(Direction dir) const;
     QPoint nextBlankPosition(Direction to) const;
 
-    QList<PuzzlePiecePointer> &pieces;
     const BoardInfoPointer &boardInfo;
     QPoint &blankPos;
 

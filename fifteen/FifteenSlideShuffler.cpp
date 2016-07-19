@@ -18,11 +18,12 @@
  */
 #include "FifteenSlideShuffler.h"
 #include "FifteenPieceMover.h"
+#include "Utility.h"
 
 namespace Fifteen {
 
 SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QPoint &blankPos) :
-    pieces(pieces),
+    AbstractShuffler(pieces),
     boardInfo(boardInfo),
     blankPos(blankPos),
     mt(std::random_device()())
@@ -42,13 +43,22 @@ void SlideShuffler::shufflePieces()
         Direction to = nextDirection(from);
         QPoint nextPos = nextBlankPosition(to);
 
-        changedPos = isHorizontal(to) ? PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, nextPos)
-                                      : PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, nextPos);
-
+        changedPos = isHorizontal(to) ? Utility::slideHorizontal2Dlist<PuzzlePiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos)
+                                      : Utility::slideVertical2Dlist<PuzzlePiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos);
         blankPos = nextPos;
         from = reverse(to);
 
-        emit update(changedPos);
+        QList<PuzzlePiecePointer> changedPieces;
+
+        for (const auto &pos : changedPos) {
+            auto &piece = pieces[pos.y() * boardInfo->xCount() + pos.x()];
+
+            piece->setPosWithoutAnimation(pos);
+
+            changedPieces << piece;
+        }
+
+        emit update(changedPieces);
     }
 }
 

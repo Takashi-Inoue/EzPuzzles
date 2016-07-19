@@ -120,7 +120,6 @@ HEADERS  += MainWindow.h \
     fifteen/GameLikeFifteen.h \
     fifteen/SimplePiecesFactory.h \
     fifteen/GameSimpleSlide.h \
-    fifteen/FifteenIShuffler.h \
     fifteen/FifteenSlideShuffler.h \
     fifteen/FifteenPieceMover.h \
     GameID.h \
@@ -146,7 +145,8 @@ HEADERS  += MainWindow.h \
     TimerThread.h \
     BoardInformation.h \
     Position.h \
-    fifteen/SlideBlankPiece.h
+    fifteen/SlideBlankPiece.h \
+    fifteen/FifteenAbstractShuffler.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

@@ -144,8 +144,9 @@ void GameSimpleSlide::click(const QPoint &posInArray)
     if ((posInArray.x() != blankPos.x()) & (posInArray.y() != blankPos.y()))
         return;
 
-    changedPos = posInArray.x() == blankPos.x() ? PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, posInArray)
-                                                : PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, posInArray);
+    addChangedPieces(posInArray.x() == blankPos.x() ? PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, posInArray)
+                                                    : PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, posInArray)
+                    );
 
     blankPos = posInArray;
 }

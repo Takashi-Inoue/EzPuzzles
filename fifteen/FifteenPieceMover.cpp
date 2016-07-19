@@ -17,6 +17,7 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "FifteenPieceMover.h"
+#include "Utility.h"
 
 namespace Fifteen {
 
@@ -26,63 +27,48 @@ PieceMover::PieceMover(QList<PuzzlePiecePointer> &pieces, int xCount) :
 {
 }
 
-QList<QPoint> PieceMover::slideVertical(const QPoint &from, const QPoint &to)
+QList<PuzzlePiecePointer> PieceMover::slideVertical(const QPoint &from, const QPoint &to)
 {
     if (from == to || pieces.isEmpty())
-        return QList<QPoint>();
+        return QList<PuzzlePiecePointer>();
 
     Q_ASSERT(from.x() == to.x());
 
-    QList<QPoint> changedPos = {from};
+    auto changedPos = Utility::slideVertical2Dlist<PuzzlePiecePointer>(pieces, xCount, from, to);
 
-    int dy = to.y() > from.y() ? 1 : -1;
-    int currentY = from.y();
+    QList<PuzzlePiecePointer> changedPieces;
 
-    for (; currentY != to.y(); currentY += dy) {
-        int currentIndex = currentY * xCount + from.x();
-        int nextIndex = currentIndex + dy * xCount;
+    for (const auto &pos : changedPos) {
+        auto piece = pieces[pos.y() * xCount + pos.x()];
 
-        auto &currentPiece = pieces[currentIndex];
-        auto &nextPiece    = pieces[nextIndex];
+        piece->setPos(pos);
 
-        currentPiece.swap(nextPiece);
-
-        changedPos << QPoint(to.x(), currentY + dy);
+        changedPieces << piece;
     }
 
-    for (auto &pos : changedPos)
-        pieces[pos.y() * xCount + pos.x()]->setPos(pos);
-
-    return changedPos;
+    return changedPieces;
 }
 
-QList<QPoint> PieceMover::slideHorizontal(const QPoint &from, const QPoint &to)
+QList<PuzzlePiecePointer> PieceMover::slideHorizontal(const QPoint &from, const QPoint &to)
 {
     if (from == to || pieces.isEmpty())
-        return QList<QPoint>();
+        return QList<PuzzlePiecePointer>();
 
     Q_ASSERT(from.y() == to.y());
 
-    QList<QPoint> changedPos = {from};
+    auto changedPos = Utility::slideHorizontal2Dlist<PuzzlePiecePointer>(pieces, xCount, from, to);
 
-    int dx = to.x() > from.x() ? 1 : -1;
-    int currentX = from.x();
+    QList<PuzzlePiecePointer> changedPieces;
 
-    for (; currentX != to.x(); currentX += dx) {
-        int currentIndex = from.y() * xCount + currentX;
+    for (const auto &pos : changedPos) {
+        auto piece = pieces[pos.y() * xCount + pos.x()];
 
-        auto &currentPiece = pieces[currentIndex];
-        auto &nextPiece    = pieces[currentIndex + dx];
+        piece->setPos(pos);
 
-        currentPiece.swap(nextPiece);
-
-        changedPos << QPoint(currentX + dx, to.y());
+        changedPieces << piece;
     }
 
-    for (auto &pos : changedPos)
-        pieces[pos.y() * xCount + pos.x()]->setPos(pos);
-
-    return changedPos;
+    return changedPieces;
 }
 
 } // Fifteen

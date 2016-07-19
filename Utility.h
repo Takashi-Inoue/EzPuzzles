@@ -46,6 +46,54 @@ public:
 
         return result;
     }
+
+    template<class T>
+    static QList<QPoint> slideVertical2Dlist(QList<T> &list, int xCount, const QPoint &from, const QPoint &to)
+    {
+        if (from == to || list.isEmpty())
+            return QList<QPoint>();
+
+        Q_ASSERT(from.x() == to.x());
+
+        QList<QPoint> changedPos = {from};
+
+        int dy = to.y() > from.y() ? 1 : -1;
+        int currentY = from.y();
+
+        for (; currentY != to.y(); currentY += dy) {
+            int currentIndex = currentY * xCount + from.x();
+
+            std::swap(list[currentIndex], list[currentIndex + dy * xCount]);
+
+            changedPos << QPoint(to.x(), currentY + dy);
+        }
+
+        return changedPos;
+    }
+
+    template<class T>
+    static QList<QPoint> slideHorizontal2Dlist(QList<T> &list, int xCount, const QPoint &from, const QPoint &to)
+    {
+        if (from == to || list.isEmpty())
+            return QList<QPoint>();
+
+        Q_ASSERT(from.y() == to.y());
+
+        QList<QPoint> changedPos = {from};
+
+        int dx = to.x() > from.x() ? 1 : -1;
+        int currentX = from.x();
+
+        for (; currentX != to.x(); currentX += dx) {
+            int currentIndex = from.y() * xCount + currentX;
+
+            std::swap(list[currentIndex], list[currentIndex + dx]);
+
+            changedPos << QPoint(currentX + dx, to.y());
+        }
+
+        return changedPos;
+    }
 };
 
 #endif // UTILITY_H

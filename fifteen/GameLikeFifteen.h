@@ -30,13 +30,13 @@
 
 namespace Fifteen {
 
-class IShuffler;
+class AbstractShuffler;
 
 class GameLikeFifteen : public IGame
 {
     Q_OBJECT
 public:
-    GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, IShuffler *shuffler);
+    GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, AbstractShuffler *shuffler);
     ~GameLikeFifteen() = default;
 
     // IGame
@@ -49,8 +49,10 @@ public:
     SourceImage sourceImage() const override;
 
 protected:
-    GameLikeFifteen(IShuffler *shuffler);
+    GameLikeFifteen(AbstractShuffler *shuffler);
     virtual void click(const QPoint &posInArray) = 0;
+
+    void addChangedPieces(QList<PuzzlePiecePointer> changed);
 
     bool isGameCleared() const;
     void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const;
@@ -59,21 +61,22 @@ protected:
     BoardInfoPointer boardInfo;
 
     QList<PuzzlePiecePointer> pieces;
-    QList<QPoint> changedPos;
 
     SourceImage sourceImg;
 
     bool isStarted;
 
 private slots:
-    void piecesUpdated(QList<QPoint> &changedPos);
+    void piecesUpdated(QList<PuzzlePiecePointer> &changedPieces);
 
 private:
     void drawAll();
     void drawChanged();
 
+    QList<PuzzlePiecePointer> changedPieces;
+
     QPixmap backBuffer;
-    std::unique_ptr<IShuffler> shuffler;
+    std::unique_ptr<AbstractShuffler> shuffler;
 };
 
 } // Fifteen

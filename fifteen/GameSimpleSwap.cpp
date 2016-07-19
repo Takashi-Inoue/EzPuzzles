@@ -140,8 +140,7 @@ void GameSimpleSwap::click(const QPoint &piecePos)
     pieceClick->setPos(piecePos);
     pieceTarget->setPos(swapTargetPos);
 
-    changedPos.clear();
-    changedPos << piecePos << swapTargetPos;
+    addChangedPieces({pieceClick, pieceTarget});
 }
 
 void GameSimpleSwap::initPieces()
