@@ -15,6 +15,8 @@ public:
     int xCount() const;
     int yCount() const;
 
+    const QSize &boardSize() const;
+
 private:
     QSize xyCount;
     QSize pixelSize;

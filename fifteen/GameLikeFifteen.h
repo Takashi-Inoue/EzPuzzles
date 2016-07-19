@@ -58,16 +58,12 @@ protected:
     GameID gameId;
     BoardInfoPointer boardInfo;
 
-    QList<QList<PuzzlePiecePointer>> pieces;
+    QList<PuzzlePiecePointer> pieces;
     QList<QPoint> changedPos;
 
     SourceImage sourceImg;
-    QSize xy;
 
     bool isStarted;
-
-    QList<double> splitterXs;
-    QList<double> splitterYs;
 
 private slots:
     void piecesUpdated(QList<QPoint> &changedPos);
@@ -75,8 +71,6 @@ private slots:
 private:
     void drawAll();
     void drawChanged();
-    void drawPiece(QPainter &painterBuffer, const QPoint &posInArray) const;
-    void calcSplitterPos();
 
     QPixmap backBuffer;
     std::unique_ptr<IShuffler> shuffler;

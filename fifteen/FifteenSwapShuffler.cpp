@@ -21,8 +21,9 @@
 
 namespace Fifteen {
 
-SwapShuffler::SwapShuffler(QList<QList<PuzzlePiecePointer>> &pieces) :
+SwapShuffler::SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo) :
     pieces(pieces),
+    boardInfo(boardInfo),
     mt(std::random_device()())
 {
 }
@@ -30,27 +31,28 @@ SwapShuffler::SwapShuffler(QList<QList<PuzzlePiecePointer>> &pieces) :
 void SwapShuffler::shufflePieces()
 {
     Q_ASSERT(!pieces.isEmpty());
-
-    int width  = pieces.front().size();
-    int height = pieces.size();
+    Q_ASSERT(boardInfo != nullptr);
 
     QList<QPoint> changedPos;
 
-    for (int i = width * height - 1; i > 0; --i) {
+    int xCount = boardInfo->xCount();
+
+    for (int i = pieces.size() - 1; i > 0; --i) {
         changedPos.clear();
 
         int r = mt() % i;
 
-        int ly = i / width;
-        int lx = i % width;
-        int ry = r / width;
-        int rx = r % width;
+        auto &lhs = pieces[i];
+        auto &rhs = pieces[r];
 
-        auto &lhs = pieces[ly][lx];
-        auto &rhs = pieces[ry][rx];
+        int lx = i % xCount;
+        int ly = i / xCount;
+        int rx = r % xCount;
+        int ry = r / xCount;
 
-        lhs->swapPos(rhs.get());
         lhs.swap(rhs);
+        lhs->setPosWithoutAnimation(QPoint(lx, ly));
+        rhs->setPosWithoutAnimation(QPoint(rx, ry));
 
         changedPos << QPoint(lx, ly) << QPoint(rx, ry);
 

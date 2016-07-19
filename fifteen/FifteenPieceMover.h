@@ -26,14 +26,15 @@ namespace Fifteen {
 class PieceMover
 {
 public:
-    PieceMover(QList<QList<PuzzlePiecePointer>> &pieces);
+    PieceMover(QList<PuzzlePiecePointer> &pieces, int xCount);
     ~PieceMover() = default;
 
     QList<QPoint> slideVertical(const QPoint &from, const QPoint &to);
     QList<QPoint> slideHorizontal(const QPoint &from, const QPoint &to);
 
 private:
-    QList<QList<PuzzlePiecePointer>> &pieces;
+    QList<PuzzlePiecePointer> &pieces;
+    int xCount;
 };
 
 } // Fifteen

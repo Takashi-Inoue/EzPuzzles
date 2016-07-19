@@ -21,6 +21,7 @@
 
 #include "FifteenIShuffler.h"
 #include "IPuzzlePiece.h"
+#include "BoardInformation.h"
 
 #include <random>
 
@@ -29,13 +30,14 @@ namespace Fifteen {
 class SwapShuffler : public IShuffler
 {
 public:
-    SwapShuffler(QList<QList<PuzzlePiecePointer>> &pieces);
+    SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo);
     ~SwapShuffler() = default;
 
     void shufflePieces() override;
 
 private:
-    QList<QList<PuzzlePiecePointer>> &pieces;
+    QList<PuzzlePiecePointer> &pieces;
+    const BoardInfoPointer &boardInfo;
     mutable std::mt19937 mt;
 };
 

@@ -34,7 +34,7 @@ QString GameSimpleSwap::gameName()
 }
 
 GameSimpleSwap::GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, const QPoint &swapTargetPos) :
-    GameLikeFifteen(sourceImg, xy, new SwapShuffler(pieces)),
+    GameLikeFifteen(sourceImg, xy, new SwapShuffler(pieces, boardInfo)),
     swapTargetPos(swapTargetPos)
 {
     Q_ASSERT(!sourceImg.isNull());
@@ -47,7 +47,7 @@ GameSimpleSwap::GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, co
 
 IGame *GameSimpleSwap::cloneAsNewGame() const
 {
-    auto game = new GameSimpleSwap(sourceImg, xy, swapTargetPos);
+    auto game = new GameSimpleSwap(sourceImg, boardInfo->boardSize(), swapTargetPos);
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
@@ -71,17 +71,15 @@ void GameSimpleSwap::save(const QString &saveDirPath, const QSize &screenshotSiz
 
     stream << gameName();
     stream << sourceImg.fullPath;
-    stream << xy;
+    stream << boardInfo->boardSize();
     stream << swapTargetPos;
     stream << isStarted;
     stream << sourceImg.pixmap;
 
     QList<QPoint> defaultPositions;
 
-    for (auto &horizontal : pieces) {
-        for (auto &piece : horizontal)
-            defaultPositions << piece->defaultPos();
-    }
+    for (const auto &piece : pieces)
+        defaultPositions << piece->pos().defaultPos();
 
     stream << defaultPositions;
 
@@ -107,6 +105,8 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
 
     gameId = GameID::fromQString(QFileInfo(loadFilePath).baseName());
 
+    QSize xy;
+
     stream >> sourceImg.fullPath;
     stream >> xy;
     stream >> swapTargetPos;
@@ -118,7 +118,7 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
     QList<QPoint> defaultPositions;
     stream >> defaultPositions;
 
-    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap, xy).createPieces(defaultPositions);
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces(defaultPositions);
 
     return true;
 }
@@ -128,30 +128,29 @@ QString GameSimpleSwap::shortInformation() const
     return gameName();
 }
 
-void GameSimpleSwap::click(const QPoint &posInArray)
+void GameSimpleSwap::click(const QPoint &piecePos)
 {
-    if (posInArray == swapTargetPos)
+    if (piecePos == swapTargetPos)
         return;
 
-    auto &pieceClick  = pieces   [posInArray.y()][   posInArray.x()];
-    auto &pieceTarget = pieces[swapTargetPos.y()][swapTargetPos.x()];
+    auto &pieceClick  = pieces[piecePos.y() * boardInfo->xCount() + piecePos.x()];
+    auto &pieceTarget = pieces[swapTargetPos.y() * boardInfo->xCount() + swapTargetPos.x()];
 
-    pieceClick->swapPos(pieceTarget.get());
     pieceClick.swap(pieceTarget);
+    pieceClick->setPos(piecePos);
+    pieceTarget->setPos(swapTargetPos);
 
     changedPos.clear();
-    changedPos << posInArray << swapTargetPos;
+    changedPos << piecePos << swapTargetPos;
 }
 
 void GameSimpleSwap::initPieces()
 {
-    SimplePiecesFactory factory(boardInfo, sourceImg.pixmap, xy);
-
-    pieces = factory.createPieces();
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces();
 }
 
 GameSimpleSwap::GameSimpleSwap() :
-    GameLikeFifteen(new SwapShuffler(pieces))
+    GameLikeFifteen(new SwapShuffler(pieces, boardInfo))
 {
 }
 

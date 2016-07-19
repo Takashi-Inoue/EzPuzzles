@@ -19,12 +19,11 @@
 #ifndef IPUZZLEPIECE_H
 #define IPUZZLEPIECE_H
 
+#include "Position.h"
 #include "AnimationObject/IAnimationObject.h"
 #include "AnimationObject/Animation/AbstractAnimation.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
 #include <memory>
-
-class Position;
 
 namespace Fifteen {
 

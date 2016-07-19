@@ -44,6 +44,8 @@ protected:
     void initPieces();
     void initBlankPiece();
 
+    int slideAnimationFrames;
+
     QPoint defaultBlankPos;
     QPoint blankPos;
 

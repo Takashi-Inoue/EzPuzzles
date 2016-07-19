@@ -17,7 +17,6 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "GameLikeFifteen.h"
-#include "GridSplitter.h"
 #include "FifteenIShuffler.h"
 
 namespace Fifteen {
@@ -25,7 +24,6 @@ namespace Fifteen {
 GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, IShuffler *shuffler) :
     boardInfo(std::make_shared<BoardInformation>(xy, sourceImg.size())),
     sourceImg(sourceImg),
-    xy(xy),
     isStarted(false),
     backBuffer(sourceImg.size()),
     shuffler(shuffler)
@@ -59,12 +57,7 @@ void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
 
     double mag = static_cast<double>(backBuffer.width()) / fieldSize.width();
 
-    auto xitr = std::lower_bound(splitterXs.begin(), splitterXs.end(), cursorPos.x() * mag);
-    auto yitr = std::lower_bound(splitterYs.begin(), splitterYs.end(), cursorPos.y() * mag);
-
-    QPoint posInArray(std::distance(splitterXs.begin(), xitr) - 1, std::distance(splitterYs.begin(), yitr) - 1);
-
-    click(posInArray);
+    click(boardInfo->piecePosFromPixelPos(cursorPos * mag));
 
     if (isGameCleared())
         isStarted = false;
@@ -72,26 +65,15 @@ void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
 
 void GameLikeFifteen::draw(QPainter &dest)
 {
-    if (splitterXs.isEmpty())
-        calcSplitterPos();
-
     if (backBuffer.isNull()) {
         backBuffer = QPixmap(sourceImg.size());
 
-        if (isStarted) {
+        if (isStarted)
             drawAll();
-            GridSplitter(QPen(Qt::darkGray, 1), xy.width() - 1, xy.height() - 1).draw(QPainter(&backBuffer));
-        }
     }
 
-    if (!isStarted) {
-        drawFinalImage(QPainter(&backBuffer));
-    } else {
-        drawChanged();
-
-        if (!changedPos.isEmpty())
-            GridSplitter(QPen(Qt::darkGray, 1), xy.width() - 1, xy.height() - 1).draw(QPainter(&backBuffer));
-    }
+    isStarted ? drawChanged()
+              : drawFinalImage(QPainter(&backBuffer));
 
     dest.drawPixmap(dest.viewport(), backBuffer, backBuffer.rect());
 }
@@ -114,11 +96,9 @@ SourceImage GameLikeFifteen::sourceImage() const
 
 bool GameLikeFifteen::isGameCleared() const
 {
-    for (int y = 0, ylim = xy.height(); y < ylim; ++y) {
-        for (int x = 0, xlim = xy.width(); x < xlim; ++x) {
-            if (!pieces.at(y).at(x)->isPosCorrect())
-                return false;
-        }
+    for (const auto &piece : pieces) {
+        if (!piece->pos().isCorrect())
+            return false;
     }
 
     return true;
@@ -141,11 +121,8 @@ void GameLikeFifteen::drawAll()
 
     painterBuffer.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    for (int y = 0, ylim = xy.height(); y < ylim; ++y) {
-        for (int x = 0, xlim = xy.width(); x < xlim; ++x) {
-            drawPiece(painterBuffer, QPoint(x, y));
-        }
-    }
+    for (auto &piece : pieces)
+        piece->draw(painterBuffer);
 }
 
 void GameLikeFifteen::drawChanged()
@@ -154,26 +131,8 @@ void GameLikeFifteen::drawChanged()
 
     painterBuffer.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    for (auto &posInArray : changedPos)
-        drawPiece(painterBuffer, posInArray);
-}
-
-void GameLikeFifteen::drawPiece(QPainter &painterBuffer, const QPoint &posInArray) const
-{
-    QPointF destTL(splitterXs.at(posInArray.x()    ), splitterYs.at(posInArray.y()    ));
-    QPointF destBR(splitterXs.at(posInArray.x() + 1), splitterYs.at(posInArray.y() + 1));
-    QRectF destRect(destTL, destBR);
-
-    pieces.at(posInArray.y()).at(posInArray.x())->draw(painterBuffer, destTL, destRect.size());
-}
-
-void GameLikeFifteen::calcSplitterPos()
-{
-    splitterXs.push_back(0);
-    splitterYs.push_back(0);
-
-    splitterXs << GridSplitter::verticalSplitterPos(sourceImg.width(), xy.width() - 1) << sourceImg.width();
-    splitterYs << GridSplitter::horizontalSplitterPos(sourceImg.height(), xy.height() - 1) << sourceImg.height();
+    for (auto &pos : changedPos)
+        pieces[pos.y() * boardInfo->xCount() + pos.x()]->draw(painterBuffer);
 }
 
 } // Fifteen

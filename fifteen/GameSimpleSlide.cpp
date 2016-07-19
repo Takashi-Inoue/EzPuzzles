@@ -18,6 +18,7 @@
  */
 #include "GameSimpleSlide.h"
 #include "SimplePiecesFactory.h"
+#include "SlideBlankPiece.h"
 #include "FifteenSlideShuffler.h"
 #include "FifteenPieceMover.h"
 
@@ -34,7 +35,8 @@ QString GameSimpleSlide::gameName()
 }
 
 GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos) :
-    GameLikeFifteen(sourceImg, xy, new SlideShuffler(pieces, this->blankPos)),
+    GameLikeFifteen(sourceImg, xy, new SlideShuffler(pieces, boardInfo, this->blankPos)),
+    slideAnimationFrames(20),
     defaultBlankPos(blankPos),
     blankPos(blankPos)
 {
@@ -49,7 +51,7 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
 
 IGame *GameSimpleSlide::cloneAsNewGame() const
 {
-    auto game = new GameSimpleSlide(sourceImg, xy, defaultBlankPos);
+    auto game = new GameSimpleSlide(sourceImg, boardInfo->boardSize(), defaultBlankPos);
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
@@ -73,7 +75,7 @@ void GameSimpleSlide::save(const QString &saveDirPath, const QSize &screenshotSi
 
     stream << gameName();
     stream << sourceImg.fullPath;
-    stream << xy;
+    stream << boardInfo->boardSize();
     stream << defaultBlankPos;
     stream << blankPos;
     stream << isStarted;
@@ -81,10 +83,8 @@ void GameSimpleSlide::save(const QString &saveDirPath, const QSize &screenshotSi
 
     QList<QPoint> defaultPositions;
 
-    for (auto &horizontal : pieces) {
-        for (auto &piece : horizontal)
-            defaultPositions << piece->defaultPos();
-    }
+    for (const auto &piece : pieces)
+        defaultPositions << piece->pos().defaultPos();
 
     stream << defaultPositions;
 
@@ -110,6 +110,8 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
 
     gameId = GameID::fromQString(QFileInfo(loadFilePath).baseName());
 
+    QSize xy;
+
     stream >> sourceImg.fullPath;
     stream >> xy;
     stream >> defaultBlankPos;
@@ -122,7 +124,7 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
     QList<QPoint> defaultPositions;
     stream >> defaultPositions;
 
-    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap, xy).createPieces(defaultPositions);
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces(defaultPositions);
 
     initBlankPiece();
 
@@ -142,27 +144,25 @@ void GameSimpleSlide::click(const QPoint &posInArray)
     if ((posInArray.x() != blankPos.x()) & (posInArray.y() != blankPos.y()))
         return;
 
-    changedPos = posInArray.x() == blankPos.x() ? PieceMover(pieces).slideVertical(blankPos, posInArray)
-                                                : PieceMover(pieces).slideHorizontal(blankPos, posInArray);
+    changedPos = posInArray.x() == blankPos.x() ? PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, posInArray)
+                                                : PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, posInArray);
 
     blankPos = posInArray;
 }
 
 void GameSimpleSlide::initPieces()
 {
-    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap, xy).createPieces();
+    pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces();
 }
 
 void GameSimpleSlide::initBlankPiece()
 {
-    QPixmap pixmapBlank(1, 1);
-    pixmapBlank.fill(Qt::black);
-
-    pieces[blankPos.y()][blankPos.x()] = SimplePiecesFactory::createPiece(boardInfo, blankPos, pixmapBlank);
+    pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()] = std::make_shared<SlideBlankPiece>(boardInfo, blankPos, Qt::black, slideAnimationFrames);
 }
 
 GameSimpleSlide::GameSimpleSlide() :
-    GameLikeFifteen(new SlideShuffler(pieces, this->blankPos))
+    GameLikeFifteen(new SlideShuffler(pieces, boardInfo, this->blankPos)),
+    slideAnimationFrames(20)
 {
 }
 

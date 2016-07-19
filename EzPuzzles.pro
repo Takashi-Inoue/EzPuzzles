@@ -72,7 +72,8 @@ SOURCES += main.cpp\
     AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp \
     TimerThread.cpp \
     BoardInformation.cpp \
-    Position.cpp
+    Position.cpp \
+    fifteen/SlideBlankPiece.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -144,7 +145,8 @@ HEADERS  += MainWindow.h \
     AnimationObject/Effect/EffectGraduallyBlinkFrame.h \
     TimerThread.h \
     BoardInformation.h \
-    Position.h
+    Position.h \
+    fifteen/SlideBlankPiece.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

@@ -34,3 +34,8 @@ int BoardInformation::yCount() const
 {
     return xyCount.width();
 }
+
+const QSize &BoardInformation::boardSize() const
+{
+    return xyCount;
+}

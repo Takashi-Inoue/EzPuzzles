@@ -39,7 +39,7 @@ public:
 
 protected:
     // GameLikeFifteen
-    void click(const QPoint &posInArray) override;
+    void click(const QPoint &piecePos) override;
 
     void initPieces();
 

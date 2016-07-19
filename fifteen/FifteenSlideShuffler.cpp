@@ -21,8 +21,9 @@
 
 namespace Fifteen {
 
-SlideShuffler::SlideShuffler(QList<QList<PuzzlePiecePointer>> &pieces, QPoint &blankPos) :
+SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QPoint &blankPos) :
     pieces(pieces),
+    boardInfo(boardInfo),
     blankPos(blankPos),
     mt(std::random_device()())
 {
@@ -31,20 +32,18 @@ SlideShuffler::SlideShuffler(QList<QList<PuzzlePiecePointer>> &pieces, QPoint &b
 void SlideShuffler::shufflePieces()
 {
     Q_ASSERT(!pieces.isEmpty());
-
-    width  = pieces.front().size();
-    height = pieces.size();
+    Q_ASSERT(boardInfo != nullptr);
 
     QList<QPoint> changedPos;
 
     Direction from = right;
 
-    for (int i = 0, lim = width * height * 4; i < lim; ++i) {
+    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount() * 4; i < lim; ++i) {
         Direction to = nextDirection(from);
         QPoint nextPos = nextBlankPosition(to);
 
-        changedPos = isHorizontal(to) ? PieceMover(pieces).slideHorizontal(blankPos, nextPos)
-                                      : PieceMover(pieces).slideVertical(blankPos, nextPos);
+        changedPos = isHorizontal(to) ? PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, nextPos)
+                                      : PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, nextPos);
 
         blankPos = nextPos;
         from = reverse(to);
@@ -63,7 +62,7 @@ SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction f
         if (blankPos.x() > 0)
             dirs << left;
 
-        if (blankPos.x() < width - 1)
+        if (blankPos.x() < boardInfo->xCount() - 1)
             dirs << right;
 
         break;
@@ -73,7 +72,7 @@ SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction f
         if (blankPos.y() > 0)
             dirs << top;
 
-        if (blankPos.y() < height - 1)
+        if (blankPos.y() < boardInfo->yCount() - 1)
             dirs << bottom;
 
         break;
@@ -105,7 +104,7 @@ QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
     }
 
     if (to == right) {
-        next.rx() += (mt() % (width - blankPos.x() - 1) + 1);
+        next.rx() += (mt() % (boardInfo->xCount() - blankPos.x() - 1) + 1);
         return next;
     }
 
@@ -115,7 +114,7 @@ QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
     }
 
     // bottom
-    next.ry() += (mt() % (height - blankPos.y() - 1) + 1);
+    next.ry() += (mt() % (boardInfo->yCount() - blankPos.y() - 1) + 1);
     return next;
 }
 
