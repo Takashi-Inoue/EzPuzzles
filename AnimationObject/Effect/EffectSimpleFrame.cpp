@@ -9,7 +9,7 @@ SimpleFrame::SimpleFrame(const QColor &color) :
 }
 
 SimpleFrame::SimpleFrame(int width, const QColor &outer, const QColor &inner) :
-    GraduallyBlinkFrame(width, outer, outer, inner, inner, 0, false)
+    GraduallyBlinkFrame(width, outer, inner, outer, inner, 0, false)
 {
 }
 

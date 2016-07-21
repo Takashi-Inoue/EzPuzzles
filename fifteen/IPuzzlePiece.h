@@ -38,6 +38,8 @@ public:
     virtual void setPosWithoutAnimation(const QPoint &pos) = 0;
     virtual void setAnimation(AnimationPointer) = 0;
     virtual void setEffect(EffectPointer) = 0;
+    virtual const AnimationPointer &animation() const = 0;
+    virtual const EffectPointer &effect() const = 0;
 
     virtual const Position &pos() const = 0;
 };

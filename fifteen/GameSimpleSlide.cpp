@@ -21,6 +21,9 @@
 #include "SlideBlankPiece.h"
 #include "FifteenSlideShuffler.h"
 #include "FifteenPieceMover.h"
+#include "AnimationObject/Animation/AnimationLineMove.h"
+#include "AnimationObject/Effect/EffectSimpleFrame.h"
+#include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 
 #include <QDataStream>
 #include <QFile>
@@ -47,6 +50,7 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
 
     initPieces();
     initBlankPiece();
+    setAnimationToPieces();
 }
 
 IGame *GameSimpleSlide::cloneAsNewGame() const
@@ -78,7 +82,7 @@ void GameSimpleSlide::save(const QString &saveDirPath, const QSize &screenshotSi
     stream << boardInfo->boardSize();
     stream << defaultBlankPos;
     stream << blankPos;
-    stream << isStarted;
+    stream << static_cast<qint8>(gamePhase);
     stream << sourceImg.pixmap;
 
     QList<QPoint> defaultPositions;
@@ -111,13 +115,16 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
     gameId = GameID::fromQString(QFileInfo(loadFilePath).baseName());
 
     QSize xy;
+    qint8 phase;
 
     stream >> sourceImg.fullPath;
     stream >> xy;
     stream >> defaultBlankPos;
     stream >> blankPos;
-    stream >> isStarted;
+    stream >> phase;
     stream >> sourceImg.pixmap;
+
+    gamePhase = static_cast<GamePhase>(phase);
 
     boardInfo = std::make_shared<BoardInformation>(xy, sourceImg.size());
 
@@ -127,6 +134,10 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
     pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces(defaultPositions);
 
     initBlankPiece();
+    setAnimationToPieces();
+
+    createBackBuffer();
+    drawAllPieces();
 
     return true;
 }
@@ -136,19 +147,19 @@ QString GameSimpleSlide::shortInformation() const
     return gameName();
 }
 
-void GameSimpleSlide::click(const QPoint &posInArray)
+void GameSimpleSlide::click(const QPoint &piecePos)
 {
-    if (posInArray == blankPos)
+    if (piecePos == blankPos)
         return;
 
-    if ((posInArray.x() != blankPos.x()) & (posInArray.y() != blankPos.y()))
+    if ((piecePos.x() != blankPos.x()) & (piecePos.y() != blankPos.y()))
         return;
 
-    addChangedPieces(posInArray.x() == blankPos.x() ? PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, posInArray)
-                                                    : PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, posInArray)
+    addChangedPieces(piecePos.x() == blankPos.x() ? PieceMover(pieces, boardInfo->xCount()).slideVertical(blankPos, piecePos)
+                                                  : PieceMover(pieces, boardInfo->xCount()).slideHorizontal(blankPos, piecePos)
                     );
 
-    blankPos = posInArray;
+    blankPos = piecePos;
 }
 
 void GameSimpleSlide::initPieces()
@@ -158,7 +169,22 @@ void GameSimpleSlide::initPieces()
 
 void GameSimpleSlide::initBlankPiece()
 {
-    pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()] = std::make_shared<SlideBlankPiece>(boardInfo, blankPos, Qt::black, slideAnimationFrames);
+    auto &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
+    blankPiece = std::make_shared<SlideBlankPiece>(boardInfo, blankPos, Qt::black, slideAnimationFrames);
+
+    addChangedPieces({blankPiece});
+}
+
+void GameSimpleSlide::setAnimationToPieces()
+{
+    for (auto &piece : pieces) {
+        piece->setAnimation(std::make_shared<Animation::LineMove>(slideAnimationFrames, false));
+        piece->setEffect(std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192)));
+    }
+
+    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(5, QColor(0, 0, 0), QColor(0, 0, 0), QColor(16, 64, 96, 224), QColor(64, 192, 224, 224), 120, true);
+
+    pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()]->setEffect(graduallyFrame);
 }
 
 GameSimpleSlide::GameSimpleSlide() :

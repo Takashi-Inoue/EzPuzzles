@@ -25,8 +25,6 @@
 #include "DialogSavedata.h"
 #include "FormFinalImage.h"
 
-#include "TimerThread.h"
-
 #include "IGame.h"
 #include "GameWidget.h"
 
@@ -38,11 +36,12 @@
 #include <QLabel>
 #include <QImage>
 #include <QPushButton>
+#include <QElapsedTimer>
 #include <QThread>
 #include <QDebug>
 
 QThread garbageThread;
-TimerThread timerThread;
+QThread timerThread;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,10 +71,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->dockWidget, SIGNAL(visibilityChanged(bool)), ui->action_Final_image, SLOT(setChecked(bool)));
 
-    connect(&timerThread, SIGNAL(tick(QMutex*)), this, SLOT(onTickFrameTimer(QMutex*)));
-    connect(this, SIGNAL(finishFrameOperation()), &timerThread, SLOT(onOperationFinished()));
+    frameTimer.moveToThread(&timerThread);
+
+    connect(&frameTimer, SIGNAL(tick(QMutex*,QWaitCondition*)), this, SLOT(onTickFrameTimer(QMutex*,QWaitCondition*)));
 
     timerThread.start();
+    frameTimer.start();
 }
 
 MainWindow::~MainWindow()
@@ -86,7 +87,10 @@ MainWindow::~MainWindow()
     garbageThread.quit();
     garbageThread.wait();
 
-    timerThread.stop();
+    frameTimer.stop();
+    frameTimer.wait();
+
+    timerThread.quit();
     timerThread.wait();
 
     delete gameWidget;
@@ -198,13 +202,17 @@ void MainWindow::loadGame()
     updateImageHistory(game->sourceImage().fullPath);
 }
 
-void MainWindow::onTickFrameTimer(QMutex *mutex)
+void MainWindow::onTickFrameTimer(QMutex *mutex, QWaitCondition *wait)
 {
     mutex->lock();
 
-    gameWidget->repaint();
+    if (game != nullptr)
+        game->onTickFrame();
 
-    emit finishFrameOperation();
+    gameWidget->update();
+
+    wait->wakeAll();
+    mutex->unlock();
 }
 
 void MainWindow::initToolBoxies()
@@ -283,8 +291,6 @@ void MainWindow::startNewGame(IGame *newGame)
 
     auto oldGame = game;
     game = newGame;
-
-//    qDebug() << "MainThreadID :" << this->thread()->currentThreadId();
 
     if (oldGame != nullptr) {
         garbageCollector.push(oldGame);

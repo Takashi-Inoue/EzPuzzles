@@ -25,6 +25,7 @@
 #include <memory>
 
 #include "GarbageCollector.h"
+#include "FrameTimer.h"
 #include "ToolIconWindow.h"
 
 namespace Ui {
@@ -44,9 +45,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-signals:
-    void finishFrameOperation();
-
 protected:
     void closeEvent(QCloseEvent *) override;
 
@@ -62,7 +60,7 @@ private slots:
     void startGameFromImageHistory();
     void saveGame();
     void loadGame();
-    void onTickFrameTimer(QMutex *);
+    void onTickFrameTimer(QMutex *mutex, QWaitCondition *wait);
 
 private:
     void initToolBoxies();
@@ -72,6 +70,8 @@ private:
     void startNewGame(IGame *newGame);
 
     Ui::MainWindow *ui;
+
+    FrameTimer frameTimer;
 
     ToolIconWindow newGameToolBox;
     ToolIconWindow diskToolBox;

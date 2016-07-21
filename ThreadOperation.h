@@ -20,8 +20,9 @@
 #ifndef THREADOPERATION_H
 #define THREADOPERATION_H
 
-#include <QMutexLocker>
 #include <QObject>
+#include <QMutex>
+#include <QReadWriteLock>
 #include <QWaitCondition>
 
 class ThreadOperation : public QObject
@@ -32,8 +33,9 @@ public:
     virtual ~ThreadOperation();
 
 public slots:
+    virtual void stop();
+
     void start();
-    void stop();
     void wait();
     void suspend();
     void resume();
@@ -60,7 +62,7 @@ private slots:
     void exec();
 
 private:
-    mutable QMutex mutex;
+    mutable QReadWriteLock rwLock;
     QMutex mutexRunning;
     bool stopped;
 

@@ -162,6 +162,11 @@ bool GameMineSweeper::load(const QString &loadPath)
     return true;
 }
 
+void GameMineSweeper::onTickFrame()
+{
+
+}
+
 void GameMineSweeper::click(const QSize &/*fieldSize*/, const QPoint &cursorPos)
 {
     Q_ASSERT(isInited);

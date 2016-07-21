@@ -12,7 +12,7 @@ GraduallyBlinkFrame::GraduallyBlinkFrame(const QColor &outerStart, const QColor 
 {
 }
 
-GraduallyBlinkFrame::GraduallyBlinkFrame(int width, const QColor &outerStart, const QColor &outerEnd, const QColor &innerStart, const QColor &innerEnd,
+GraduallyBlinkFrame::GraduallyBlinkFrame(int width, const QColor &outerStart, const QColor &innerStart, const QColor &outerEnd, const QColor &innerEnd,
                                          int totalFrameCount, bool isLoop) :
     AbstractEffect(totalFrameCount, isLoop),
     width(width),
@@ -80,13 +80,17 @@ QColor GraduallyBlinkFrame::currentColor(const QColor &start, const QColor &end)
     if (totalFrames() == 0)
         return start;
 
-    double pct = nowFrame() / totalFrames();
+    double pct = (2 * nowFrame()) / totalFrames();
+
+    if (pct > 1.0)
+        pct = 2 - pct;
 
     QColor color;
 
     color.setRedF  ((end.redF()   - start.redF())   * pct + start.redF());
     color.setGreenF((end.greenF() - start.greenF()) * pct + start.greenF());
     color.setBlueF ((end.blueF()  - start.blueF())  * pct + start.blueF());
+    color.setAlphaF((end.alphaF() - start.alphaF()) * pct + start.alphaF());
 
     return color;
 }

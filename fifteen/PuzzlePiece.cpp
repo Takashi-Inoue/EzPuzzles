@@ -31,19 +31,22 @@ PuzzlePiece::PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultP
 
 void PuzzlePiece::draw(QPainter &painter)
 {
-    if (animation != nullptr) {
-        auto rect = animation->rect();
+    if (animObj != nullptr) {
+        auto rect = animObj->rect();
 
         if (!rect.isNull())
             drawRect = rect;
     }
 
     imagePiece->draw(painter, drawRect);
+
+    if (effectObj != nullptr)
+        effectObj->draw(painter, drawRect);
 }
 
 void PuzzlePiece::setPos(const QPoint &pos)
 {
-    if (animation == nullptr) {
+    if (animObj == nullptr) {
         setPosWithoutAnimation(pos);
 
         return;
@@ -51,7 +54,7 @@ void PuzzlePiece::setPos(const QPoint &pos)
 
     position.setPos(pos);
 
-    animation->start(drawRect, boardInfo->rectFromPiecePos(pos));
+    animObj->start(drawRect, boardInfo->rectFromPiecePos(pos));
 }
 
 void PuzzlePiece::setPosWithoutAnimation(const QPoint &pos)
@@ -63,12 +66,12 @@ void PuzzlePiece::setPosWithoutAnimation(const QPoint &pos)
 
 void PuzzlePiece::setAnimation(AnimationPointer animation)
 {
-    this->animation = animation;
+    animObj = animation;
 }
 
 void PuzzlePiece::setEffect(EffectPointer effect)
 {
-    this->effect = effect;
+    effectObj = effect;
 }
 
 const Position &PuzzlePiece::pos() const
@@ -78,27 +81,37 @@ const Position &PuzzlePiece::pos() const
 
 void PuzzlePiece::onTickFrame()
 {
-    if (animation != nullptr)
-        animation->onTickFrame();
+    if (animObj != nullptr)
+        animObj->onTickFrame();
 
-    if (effect != nullptr)
-        effect->onTickFrame();
+    if (effectObj != nullptr)
+        effectObj->onTickFrame();
 }
 
 void PuzzlePiece::skipAnimation()
 {
-    if (animation != nullptr) {
-        animation->skipAnimation();
-        drawRect = animation->rect();
+    if (animObj != nullptr) {
+        animObj->skipAnimation();
+        drawRect = animObj->rect();
     }
 
-    if (effect != nullptr)
-        effect->skipAnimation();
+    if (effectObj != nullptr)
+        effectObj->skipAnimation();
 }
 
 bool PuzzlePiece::isLoopAnimation()
 {
     return false;
+}
+
+const AnimationPointer &PuzzlePiece::animation() const
+{
+    return animObj;
+}
+
+const EffectPointer &PuzzlePiece::effect() const
+{
+    return effectObj;
 }
 
 bool PuzzlePiece::isFinishedAnimation()

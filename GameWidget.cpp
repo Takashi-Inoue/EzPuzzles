@@ -35,8 +35,6 @@ void GameWidget::setGame(IGame *game)
         this->game->disconnect();
 
     this->game = game;
-
-    connect(game, SIGNAL(screenUpdated()), this, SLOT(repaint()));
 }
 
 void GameWidget::paintEvent(QPaintEvent *event)

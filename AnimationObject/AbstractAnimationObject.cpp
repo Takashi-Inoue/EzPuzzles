@@ -4,6 +4,7 @@
 
 AbstractAnimationObject::AbstractAnimationObject(int totalFrameCount, bool isLoop) :
     totalFrameCount(totalFrameCount),
+    nowFrameCount(0),
     isLoop(isLoop)
 {
     Q_ASSERT(totalFrameCount >= 0);
@@ -36,12 +37,12 @@ void AbstractAnimationObject::resetFrame()
     nowFrameCount = 0;
 }
 
-int AbstractAnimationObject::totalFrames() const
+double AbstractAnimationObject::totalFrames() const
 {
     return totalFrameCount;
 }
 
-int AbstractAnimationObject::nowFrame() const
+double AbstractAnimationObject::nowFrame() const
 {
     return nowFrameCount;
 }

@@ -73,7 +73,7 @@ void GameSimpleSwap::save(const QString &saveDirPath, const QSize &screenshotSiz
     stream << sourceImg.fullPath;
     stream << boardInfo->boardSize();
     stream << swapTargetPos;
-    stream << isStarted;
+    stream << static_cast<qint8>(gamePhase);
     stream << sourceImg.pixmap;
 
     QList<QPoint> defaultPositions;
@@ -106,12 +106,15 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
     gameId = GameID::fromQString(QFileInfo(loadFilePath).baseName());
 
     QSize xy;
+    qint8 phase;
 
     stream >> sourceImg.fullPath;
     stream >> xy;
     stream >> swapTargetPos;
-    stream >> isStarted;
+    stream >> phase;
     stream >> sourceImg.pixmap;
+
+    gamePhase = static_cast<GamePhase>(phase);
 
     boardInfo = std::make_shared<BoardInformation>(xy, sourceImg.size());
 
@@ -119,6 +122,9 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
     stream >> defaultPositions;
 
     pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces(defaultPositions);
+
+    createBackBuffer();
+    drawAllPieces();
 
     return true;
 }

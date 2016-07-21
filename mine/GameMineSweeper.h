@@ -52,12 +52,15 @@ public:
     void save(const QString &saveDirPath, const QSize &screenshotSize) const override;
     bool load(const QString &loadPath) override;
 
-    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
     void draw(QPainter &dest) override;
     QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
     QString shortInformation() const override;
     SourceImage sourceImage() const override;
+
+public slots:
+    void onTickFrame() override;
+    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
 
 protected:
     typedef std::shared_ptr<IDrawer> DrawerPointer;

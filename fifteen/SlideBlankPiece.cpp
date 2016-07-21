@@ -1,6 +1,8 @@
 #include "SlideBlankPiece.h"
 #include "AnimationObject/Animation/AnimationLineMove.h"
 
+#include <QDebug>
+
 namespace Fifteen {
 
 SlideBlankPiece::SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defaultPos, const QBrush &brush, int animationFrames) :
@@ -15,20 +17,22 @@ SlideBlankPiece::SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defau
 void SlideBlankPiece::draw(QPainter &painter)
 {
     oldRect = oldAnimation->rect();
-    newRect = newAnimation->rect();
+
+    if (newAnimation->rect().isValid())
+        newRect = newAnimation->rect();
 
     if (oldRect.isValid()) {
         painter.fillRect(oldRect, brush);
 
-        if (effect != nullptr)
-            effect->draw(painter, oldRect);
+        if (effectObj != nullptr)
+            effectObj->draw(painter, oldRect);
     }
 
     if (newRect.isValid()) {
         painter.fillRect(newRect, brush);
 
-        if (effect != nullptr)
-            effect->draw(painter, newRect);
+        if (effectObj != nullptr)
+            effectObj->draw(painter, newRect);
     }
 }
 
@@ -40,6 +44,7 @@ void SlideBlankPiece::setPos(const QPoint &pos)
         return;
 
     if ((currentPos.x() != pos.x()) & (currentPos.y() != pos.y())) {
+        qDebug() << pos;
         Q_ASSERT_X(false, "SlideBlankPiece::setPos()", "wrong new pos");
         return;
     }
@@ -77,11 +82,23 @@ void SlideBlankPiece::setPosWithoutAnimation(const QPoint &pos)
 {
     oldRect = QRectF();
     newRect = boardInfo->rectFromPiecePos(pos);
+
+    position.setPos(pos);
 }
 
 void SlideBlankPiece::setEffect(EffectPointer effect)
 {
-    this->effect = effect;
+    this->effectObj = effect;
+}
+
+const AnimationPointer &SlideBlankPiece::animation() const
+{
+    return newAnimation;
+}
+
+const EffectPointer &SlideBlankPiece::effect() const
+{
+    return effectObj;
 }
 
 const Position &SlideBlankPiece::pos() const
@@ -94,8 +111,8 @@ void SlideBlankPiece::onTickFrame()
     oldAnimation->onTickFrame();
     newAnimation->onTickFrame();
 
-    if (effect != nullptr)
-        effect->onTickFrame();
+    if (effectObj != nullptr)
+        effectObj->onTickFrame();
 }
 
 void SlideBlankPiece::skipAnimation()

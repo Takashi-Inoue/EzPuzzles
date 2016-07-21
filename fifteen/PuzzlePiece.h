@@ -42,6 +42,8 @@ public:
     void setPosWithoutAnimation(const QPoint &pos) override;
     void setAnimation(AnimationPointer animation) override;
     void setEffect(EffectPointer effect) override;
+    const AnimationPointer &animation() const override;
+    const EffectPointer &effect() const override;
 
     const Position &pos() const override;
 
@@ -49,7 +51,6 @@ public:
     void onTickFrame() override;
     void skipAnimation() override;
     bool isLoopAnimation() override;
-    bool isFinishedAnimation() override;
 
 protected:
     std::unique_ptr<IPiece> imagePiece;
@@ -57,8 +58,11 @@ protected:
     Position position;
     QRectF drawRect;
 
-    AnimationPointer animation;
-    EffectPointer effect;
+    AnimationPointer animObj;
+    EffectPointer effectObj;
+
+private:
+    bool isFinishedAnimation() override;
 };
 
 } // Fifteen

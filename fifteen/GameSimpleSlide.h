@@ -25,6 +25,7 @@ namespace Fifteen {
 
 class GameSimpleSlide : public GameLikeFifteen
 {
+    Q_OBJECT
 public:
     static QString gameName();
 
@@ -39,10 +40,12 @@ public:
 
 protected:
     // GameLikeFifteen
-    void click(const QPoint &posInArray) override;
+    void click(const QPoint &piecePos) override;
 
     void initPieces();
     void initBlankPiece();
+
+    void setAnimationToPieces();
 
     int slideAnimationFrames;
 

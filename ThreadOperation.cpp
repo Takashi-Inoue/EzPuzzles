@@ -18,6 +18,9 @@
  */
 
 #include "ThreadOperation.h"
+
+#include <QReadLocker>
+#include <QWriteLocker>
 #include <QDebug>
 
 ThreadOperation::ThreadOperation(QObject *parent) :
@@ -34,11 +37,6 @@ ThreadOperation::~ThreadOperation()
     wait();
 }
 
-void ThreadOperation::start()
-{
-    emit startOperation();
-}
-
 void ThreadOperation::stop()
 {
     if (!isRunning()) {
@@ -46,11 +44,16 @@ void ThreadOperation::stop()
         return;
     }
 
-    QMutexLocker locker(&mutex);
+    QWriteLocker locker(&rwLock);
 
     qDebug() << className() << "request to stop";
 
     stopped = true;
+}
+
+void ThreadOperation::start()
+{
+    emit startOperation();
 }
 
 void ThreadOperation::wait()
@@ -103,11 +106,9 @@ QString ThreadOperation::className() const
 
 bool ThreadOperation::isStopped() const
 {
-    mutex.lock();
-    bool result = stopped;
-    mutex.unlock();
+    QReadLocker locker(&rwLock);
 
-    return result;
+    return stopped;
 }
 
 void ThreadOperation::exec()
@@ -132,7 +133,7 @@ void ThreadOperation::exec()
 
     qDebug() << className() << "is aborted";
 
-    QMutexLocker locker(&mutex);
+    QWriteLocker locker(&rwLock);
 
     stopped = false;
 

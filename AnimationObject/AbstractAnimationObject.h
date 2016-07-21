@@ -15,8 +15,8 @@ public:
 
 protected:
     void resetFrame();
-    int totalFrames() const;
-    int nowFrame() const;
+    double totalFrames() const;
+    double nowFrame() const;
 
 private:
     int totalFrameCount;

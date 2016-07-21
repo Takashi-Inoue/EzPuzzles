@@ -25,6 +25,7 @@ namespace Fifteen {
 
 class GameSimpleSwap : public GameLikeFifteen
 {
+    Q_OBJECT
 public:
     static QString gameName();
 

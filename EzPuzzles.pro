@@ -70,10 +70,10 @@ SOURCES += main.cpp\
     AnimationObject/Animation/AnimationWarpMove.cpp \
     AnimationObject/Effect/EffectSimpleFrame.cpp \
     AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp \
-    TimerThread.cpp \
     BoardInformation.cpp \
     Position.cpp \
-    fifteen/SlideBlankPiece.cpp
+    fifteen/SlideBlankPiece.cpp \
+    FrameTimer.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -142,11 +142,11 @@ HEADERS  += MainWindow.h \
     AnimationObject/Animation/AnimationWarpMove.h \
     AnimationObject/Effect/EffectSimpleFrame.h \
     AnimationObject/Effect/EffectGraduallyBlinkFrame.h \
-    TimerThread.h \
     BoardInformation.h \
     Position.h \
     fifteen/SlideBlankPiece.h \
-    fifteen/FifteenAbstractShuffler.h
+    fifteen/FifteenAbstractShuffler.h \
+    FrameTimer.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
