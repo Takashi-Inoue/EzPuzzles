@@ -43,14 +43,11 @@ void FrameTimer::execImpl()
 
         mutexOperation.unlock();
 
-        if (isStopped())
-            break;
-
         int waitTime = msecsPerFrame - timer.elapsed();
 
-//        qDebug() << waitTime;
+        qDebug() << waitTime;
 
-        if (waitTime > 0)
+        if (!isStopped() & (waitTime > 0))
             QThread::msleep(waitTime);
     } while(!isStopped());
 

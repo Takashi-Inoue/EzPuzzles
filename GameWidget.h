@@ -25,7 +25,6 @@ class IGame;
 
 class GameWidget : public ImageWidget
 {
-    Q_OBJECT
 public:
     explicit GameWidget(QWidget *parent = 0);
     ~GameWidget() = default;

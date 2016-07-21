@@ -182,7 +182,7 @@ void GameSimpleSlide::setAnimationToPieces()
         piece->setEffect(std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192)));
     }
 
-    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(5, QColor(0, 0, 0), QColor(0, 0, 0), QColor(16, 64, 96, 224), QColor(64, 192, 224, 224), 120, true);
+    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(5, QColor(0, 0, 0), QColor(0, 0, 0), QColor(16, 64, 96, 224), QColor(64, 192, 224, 224), 90, true);
 
     pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()]->setEffect(graduallyFrame);
 }

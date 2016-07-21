@@ -18,8 +18,10 @@ void SlideBlankPiece::draw(QPainter &painter)
 {
     oldRect = oldAnimation->rect();
 
-    if (newAnimation->rect().isValid())
-        newRect = newAnimation->rect();
+    QRectF rect = newAnimation->rect();
+
+    if (rect.isValid())
+        newRect = rect;
 
     if (oldRect.isValid()) {
         painter.fillRect(oldRect, brush);

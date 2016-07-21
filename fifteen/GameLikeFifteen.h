@@ -43,14 +43,12 @@ public:
     // IGame
     GameID gameID() const override;
 
+    void onTickFrame() override;
+    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
     void draw(QPainter &dest) override;
     QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
     SourceImage sourceImage() const override;
-
-public slots:
-    void onTickFrame() override;
-    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
 
 protected:
     enum GamePhase {
@@ -80,7 +78,7 @@ protected:
 
 protected slots:
     void addChangedPieces(QList<PuzzlePiecePointer> changed);
-    void drawPieces(const QList<PuzzlePiecePointer> &pieces);
+    void drawPieces(const QList<PuzzlePiecePointer> &drawPieces);
 
 private:
     QList<PuzzlePiecePointer> changedPieces;

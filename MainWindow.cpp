@@ -206,11 +206,14 @@ void MainWindow::onTickFrameTimer(QMutex *mutex, QWaitCondition *wait)
 {
     mutex->lock();
 
+//    qDebug() << "onTickFrameTimer lock";
+
     if (game != nullptr)
         game->onTickFrame();
 
-    gameWidget->update();
+    gameWidget->repaint();
 
+//    qDebug() << "onTickFrameTimer wake";
     wait->wakeAll();
     mutex->unlock();
 }

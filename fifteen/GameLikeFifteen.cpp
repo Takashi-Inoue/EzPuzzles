@@ -55,6 +55,41 @@ GameID GameLikeFifteen::gameID() const
     return gameId;
 }
 
+void GameLikeFifteen::onTickFrame()
+{
+    for (auto &piece : changedPieces)
+        piece->onTickFrame();
+}
+
+void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
+{
+//    qDebug() << thread()->currentThreadId();
+
+    if ((gamePhase == PhasePreGaming) | (gamePhase == PhaseEnding))
+        return;
+
+    if (gamePhase == PhaseReady) {
+        gamePhase = PhasePreGaming;
+
+        drawAllPieces();
+        shuffler->shufflePieces();
+
+        gamePhase = PhaseGaming;
+
+        return;
+    }
+
+    for (auto &piece : changedPieces)
+        piece->skipAnimation();
+
+    double mag = static_cast<double>(backBuffer.width()) / fieldSize.width();
+
+    click(boardInfo->piecePosFromPixelPos(cursorPos * mag));
+
+    if (isGameCleared())
+        gamePhase = PhaseEnding;
+}
+
 void GameLikeFifteen::draw(QPainter &dest)
 {
     if ((gamePhase == PhaseGaming) | (gamePhase == PhaseEnding)) {
@@ -84,41 +119,6 @@ void GameLikeFifteen::drawFinalImage(QPainter &dest) const
 SourceImage GameLikeFifteen::sourceImage() const
 {
     return sourceImg;
-}
-
-void GameLikeFifteen::onTickFrame()
-{
-    for (auto &piece : changedPieces)
-        piece->onTickFrame();
-}
-
-void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
-{
-//    qDebug() << thread()->currentThreadId();
-
-    if ((gamePhase == PhasePreGaming) | (gamePhase == PhaseEnding))
-        return;
-
-    if (gamePhase == PhaseReady) {
-        gamePhase = PhasePreGaming;
-
-        drawAllPieces();
-        shuffler->shufflePieces();
-
-        gamePhase = PhaseGaming;
-
-        return;
-    }
-
-    for (auto &piece : changedPieces)
-        piece->animation()->skipAnimation();
-
-    double mag = static_cast<double>(backBuffer.width()) / fieldSize.width();
-
-    click(boardInfo->piecePosFromPixelPos(cursorPos * mag));
-
-    if (isGameCleared())
-        gamePhase = PhaseEnding;
 }
 
 bool GameLikeFifteen::isGameCleared() const
@@ -164,13 +164,13 @@ void GameLikeFifteen::addChangedPieces(QList<PuzzlePiecePointer> changed)
     changedPieces.erase(std::unique(changedPieces.begin(), changedPieces.end()), changedPieces.end());
 }
 
-void GameLikeFifteen::drawPieces(const QList<PuzzlePiecePointer> &pieces)
+void GameLikeFifteen::drawPieces(const QList<PuzzlePiecePointer> &drawPieces)
 {
     QPainter painterBuffer(&backBuffer);
 
     painterBuffer.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    for (auto &piece : pieces)
+    for (auto &piece : drawPieces)
         piece->draw(painterBuffer);
 }
 
