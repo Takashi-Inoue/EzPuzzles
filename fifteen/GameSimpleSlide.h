@@ -42,6 +42,7 @@ protected:
     // GameLikeFifteen
     void click(const QPoint &piecePos) override;
 
+    void createShuffler();
     void initPieces();
     void initBlankPiece();
 
@@ -51,6 +52,8 @@ protected:
 
     QPoint defaultBlankPos;
     QPoint blankPos;
+
+    std::unique_ptr<AbstractShuffler> shuffler;
 
 private:
     friend class SimpleSlideSaveData;

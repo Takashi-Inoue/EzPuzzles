@@ -42,10 +42,12 @@
 
 QThread garbageThread;
 QThread timerThread;
+QThread gameThread;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    frameTimer(120),
     newGameToolBox(this),
     diskToolBox(this),
     game(nullptr),
@@ -59,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     garbageCollector.moveToThread(&garbageThread);
     garbageThread.start();
+    garbageThread.setPriority(QThread::LowPriority);
 
     gameWidget->resize(1, 1);
     ui->scrollArea->setWidget(gameWidget);
@@ -77,21 +80,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timerThread.start();
     frameTimer.start();
+
+    gameThread.start();
 }
 
 MainWindow::~MainWindow()
 {
-    garbageCollector.stop();
-    garbageCollector.wait();
-
-    garbageThread.quit();
-    garbageThread.wait();
-
     frameTimer.stop();
     frameTimer.wait();
 
     timerThread.quit();
     timerThread.wait();
+
+    gameThread.quit();
+    gameThread.wait();
+
+    garbageCollector.stop();
+    garbageCollector.wait();
+
+    garbageThread.quit();
+    garbageThread.wait();
 
     delete gameWidget;
     delete ui;

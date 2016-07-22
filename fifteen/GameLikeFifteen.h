@@ -37,7 +37,7 @@ class GameLikeFifteen : public IGame
 {
     Q_OBJECT
 public:
-    GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, AbstractShuffler *shuffler);
+    GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy);
     ~GameLikeFifteen() = default;
 
     // IGame
@@ -50,6 +50,9 @@ public:
     void drawFinalImage(QPainter &dest) const override;
     SourceImage sourceImage() const override;
 
+signals:
+    void startShuffle();
+
 protected:
     enum GamePhase {
         PhaseReady,
@@ -59,7 +62,7 @@ protected:
         PhaseCleared,
     };
 
-    GameLikeFifteen(AbstractShuffler *shuffler);
+    GameLikeFifteen() = default;
     virtual void click(const QPoint &posInArray) = 0;
 
     bool isGameCleared() const;
@@ -71,12 +74,11 @@ protected:
     BoardInfoPointer boardInfo;
 
     QList<PuzzlePiecePointer> pieces;
-
     SourceImage sourceImg;
-
     GamePhase gamePhase;
 
 protected slots:
+    void onCompletedShuffling();
     void addChangedPieces(QList<PuzzlePiecePointer> changed);
     void drawPieces(const QList<PuzzlePiecePointer> &drawPieces);
 
@@ -84,7 +86,6 @@ private:
     QList<PuzzlePiecePointer> changedPieces;
 
     QPixmap backBuffer;
-    std::unique_ptr<AbstractShuffler> shuffler;
 };
 
 } // Fifteen

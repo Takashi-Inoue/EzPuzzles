@@ -20,11 +20,18 @@
 #include "SimplePiecesFactory.h"
 #include "FifteenSwapShuffler.h"
 #include "FifteenPieceMover.h"
+#include "AnimationObject/Animation/AnimationWarpMove.h"
+#include "AnimationObject/Effect/CompositeEffect.h"
+#include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
+#include "AnimationObject/Effect/EffectSimpleFrame.h"
 
 #include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
+#include <QThread>
 #include <QDebug>
+
+extern QThread gameThread;
 
 namespace Fifteen {
 
@@ -34,7 +41,7 @@ QString GameSimpleSwap::gameName()
 }
 
 GameSimpleSwap::GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, const QPoint &swapTargetPos) :
-    GameLikeFifteen(sourceImg, xy, new SwapShuffler(pieces, boardInfo)),
+    GameLikeFifteen(sourceImg, xy),
     swapTargetPos(swapTargetPos)
 {
     Q_ASSERT(!sourceImg.isNull());
@@ -43,6 +50,8 @@ GameSimpleSwap::GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, co
     Q_ASSERT(swapTargetPos.y() >= 0 && swapTargetPos.y() < xy.height());
 
     initPieces();
+    setAnimationToPieces();
+    createShuffler();
 }
 
 IGame *GameSimpleSwap::cloneAsNewGame() const
@@ -123,6 +132,10 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
 
     pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces(defaultPositions);
 
+    setAnimationToPieces();
+
+    createShuffler();
+
     createBackBuffer();
     drawAllPieces();
 
@@ -146,7 +159,25 @@ void GameSimpleSwap::click(const QPoint &piecePos)
     pieceClick->setPos(piecePos);
     pieceTarget->setPos(swapTargetPos);
 
+    auto effect = pieceClick->effect();
+    pieceClick->setEffect(pieceTarget->effect());
+    pieceTarget->setEffect(effect);
+
     addChangedPieces({pieceClick, pieceTarget});
+}
+
+void GameSimpleSwap::createShuffler()
+{
+    Q_ASSERT(boardInfo != nullptr);
+
+    shuffler  = std::make_unique<SwapShuffler>(pieces, boardInfo);
+
+    connect(this, SIGNAL(startShuffle()), shuffler.get(), SLOT(start()));
+    connect(shuffler.get(), SIGNAL(completed()), this, SLOT(onCompletedShuffling()));
+    connect(shuffler.get(), SIGNAL(completed()), this, SLOT(setGraduallyFrame()));
+    connect(shuffler.get(), SIGNAL(update(QList<PuzzlePiecePointer>)), this, SLOT(addChangedPieces(QList<PuzzlePiecePointer>)));
+
+    shuffler->moveToThread(&gameThread);
 }
 
 void GameSimpleSwap::initPieces()
@@ -154,9 +185,29 @@ void GameSimpleSwap::initPieces()
     pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces();
 }
 
-GameSimpleSwap::GameSimpleSwap() :
-    GameLikeFifteen(new SwapShuffler(pieces, boardInfo))
+void GameSimpleSwap::setAnimationToPieces()
 {
+    auto frame = std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
+
+    for (auto &piece : pieces) {
+        piece->setAnimation(std::make_shared<Animation::WarpMove>(0));
+        piece->setEffect(frame);
+    }
+}
+
+void GameSimpleSwap::setGraduallyFrame()
+{
+    Q_ASSERT(!pieces.isEmpty());
+
+    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
+                              5, QColor(255, 255, 96, 0), QColor(255, 255, 96, 0), QColor(255, 255, 96, 192), QColor(255, 255, 96, 160), 180, true);
+
+    auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
+
+    compositeEffect->addEffect(pieces[0]->effect());
+    compositeEffect->addEffect(graduallyFrame);
+
+    pieces[0]->setEffect(compositeEffect);
 }
 
 } // Fifteen

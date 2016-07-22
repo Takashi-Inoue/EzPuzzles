@@ -73,7 +73,8 @@ SOURCES += main.cpp\
     BoardInformation.cpp \
     Position.cpp \
     fifteen/SlideBlankPiece.cpp \
-    FrameTimer.cpp
+    FrameTimer.cpp \
+    AnimationObject/Effect/CompositeEffect.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -146,7 +147,8 @@ HEADERS  += MainWindow.h \
     Position.h \
     fifteen/SlideBlankPiece.h \
     fifteen/FifteenAbstractShuffler.h \
-    FrameTimer.h
+    FrameTimer.h \
+    AnimationObject/Effect/CompositeEffect.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

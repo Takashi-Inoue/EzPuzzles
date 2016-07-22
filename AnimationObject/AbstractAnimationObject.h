@@ -8,6 +8,7 @@ class AbstractAnimationObject : public IAnimationObject
 public:
     AbstractAnimationObject(int totalFrameCount, bool isLoop);
 
+    // IAnimationObject
     void onTickFrame() override;
     void skipAnimation() override;
     bool isLoopAnimation() override;

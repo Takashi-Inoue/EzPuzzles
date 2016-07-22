@@ -22,13 +22,17 @@
 namespace Fifteen {
 
 SwapShuffler::SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo) :
-    AbstractShuffler(pieces),
-    boardInfo(boardInfo),
+    AbstractShuffler(pieces, boardInfo),
     mt(std::random_device()())
 {
 }
 
-void SwapShuffler::shufflePieces()
+QString SwapShuffler::className() const
+{
+    return "SwapShuffler";
+}
+
+void SwapShuffler::execImpl()
 {
     Q_ASSERT(!pieces.isEmpty());
     Q_ASSERT(boardInfo != nullptr);
@@ -51,6 +55,9 @@ void SwapShuffler::shufflePieces()
         rhs->setPosWithoutAnimation(QPoint(rx, ry));
 
         emit update({lhs, rhs});
+
+        if (isStopped())
+            return;
     }
 }
 

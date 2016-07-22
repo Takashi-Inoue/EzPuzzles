@@ -1,18 +1,18 @@
 <RCC>
     <qresource prefix="/ico">
-        <file>currentImage.png</file>
-        <file alias="openImage">openImage.png</file>
-        <file>window.png</file>
-        <file>restart.png</file>
-        <file alias="historyImage">edit-history.png</file>
-        <file alias="exit">application-exit-4.png</file>
-        <file alias="save">document-save-2.png</file>
-        <file alias="load">load.png</file>
-        <file alias="gameMine">iconMine.png</file>
-        <file alias="gameSimpleSlide">iconSimpleSlide.png</file>
-        <file alias="gameSwap">iconSwap.png</file>
-        <file alias="gameAll">iconAll.png</file>
-        <file alias="saveload">saveload.png</file>
-        <file alias="x">x.png</file>
+        <file alias="x">icons/x.png</file>
+        <file alias="gameAll">icons/iconAll.png</file>
+        <file alias="gameMine">icons/iconMine.png</file>
+        <file alias="gameSimpleSlide">icons/iconSimpleSlide.png</file>
+        <file alias="gameSwap">icons/iconSwap.png</file>
+        <file alias="load">icons/load.png</file>
+        <file alias="saveload">icons/saveload.png</file>
+        <file alias="save">icons/document-save-2.png</file>
+        <file alias="exit">icons/application-exit-4.png</file>
+        <file>icons/insert-image-2.png</file>
+        <file alias="openImage">icons/insert-image-3.png</file>
+        <file>icons/window-new-2.png</file>
+        <file>icons/view-refresh-5.png</file>
+        <file alias="historyImage">icons/edit-history.png</file>
     </qresource>
 </RCC>

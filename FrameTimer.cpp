@@ -45,10 +45,10 @@ void FrameTimer::execImpl()
 
         int waitTime = msecsPerFrame - timer.elapsed();
 
-        qDebug() << waitTime;
+//        qDebug() << waitTime;
 
-        if (!isStopped() & (waitTime > 0))
-            QThread::msleep(waitTime);
+        if (waitTime > 0)
+            thread()->msleep(waitTime); // lag on win10, not on win7. ???
     } while(!isStopped());
 
     qDebug() << "TimerThread : Finish";

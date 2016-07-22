@@ -25,29 +25,16 @@
 
 namespace Fifteen {
 
-GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy, AbstractShuffler *shuffler) :
+GameLikeFifteen::GameLikeFifteen(const SourceImage &sourceImg, const QSize &xy) :
     boardInfo(std::make_shared<BoardInformation>(xy, sourceImg.size())),
     sourceImg(sourceImg),
     gamePhase(PhaseReady),
-    backBuffer(sourceImg.size()),
-    shuffler(shuffler)
+    backBuffer(sourceImg.size())
 {
     Q_ASSERT(!sourceImg.pixmap.isNull());
     Q_ASSERT(!xy.isEmpty());
-    Q_ASSERT(shuffler != nullptr);
 
-    createBackBuffer();
     drawFinalImage(QPainter(&backBuffer));
-
-    connect(shuffler, SIGNAL(update(QList<PuzzlePiecePointer>)), this, SLOT(drawPieces(QList<PuzzlePiecePointer>)));
-}
-
-GameLikeFifteen::GameLikeFifteen(AbstractShuffler *shuffler) : // protected constructor
-    shuffler(shuffler)
-{
-    Q_ASSERT(shuffler != nullptr);
-
-    connect(shuffler, SIGNAL(update(QList<PuzzlePiecePointer>)), this, SLOT(drawPieces(QList<QPoint>)));
 }
 
 GameID GameLikeFifteen::gameID() const
@@ -72,9 +59,8 @@ void GameLikeFifteen::click(const QSize &fieldSize, const QPoint &cursorPos)
         gamePhase = PhasePreGaming;
 
         drawAllPieces();
-        shuffler->shufflePieces();
 
-        gamePhase = PhaseGaming;
+        emit startShuffle();
 
         return;
     }
@@ -95,8 +81,12 @@ void GameLikeFifteen::draw(QPainter &dest)
     if ((gamePhase == PhaseGaming) | (gamePhase == PhaseEnding)) {
         drawPieces(changedPieces);
 
-        auto itr = std::remove_if(changedPieces.begin(), changedPieces.end(), [](PuzzlePiecePointer &piece){
-            return piece->animation()->isFinishedAnimation() && piece->effect()->isFinishedAnimation();
+        auto itr = std::remove_if(changedPieces.begin(), changedPieces.end(), [](PuzzlePiecePointer &piece) {
+            const auto &animation = piece->animation();
+            const auto &effect = piece->effect();
+
+            return (animation != nullptr && animation->isFinishedAnimation())
+                 & (effect != nullptr && effect->isFinishedAnimation());
         });
 
         changedPieces.erase(itr, changedPieces.end());
@@ -153,6 +143,11 @@ void GameLikeFifteen::saveScreenshot(const QString &saveDirPath, const QSize &sc
 {
     QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
+}
+
+void GameLikeFifteen::onCompletedShuffling()
+{
+    gamePhase = PhaseGaming;
 }
 
 void GameLikeFifteen::addChangedPieces(QList<PuzzlePiecePointer> changed)

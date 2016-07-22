@@ -32,7 +32,7 @@ int BoardInformation::xCount() const
 
 int BoardInformation::yCount() const
 {
-    return xyCount.width();
+    return xyCount.height();
 }
 
 const QSize &BoardInformation::boardSize() const

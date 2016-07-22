@@ -37,8 +37,8 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
 
     ui->buttonBox->setVisible(showOkButton);
 
-    ui->comboBoxGameType->addItem("Slide", idFifteen);
-    ui->comboBoxGameType->addItem("Swap for TopLeft", idSwap);
+    ui->comboBoxGameType->addItem("Slide mode", idFifteen);
+    ui->comboBoxGameType->addItem("Swap mode", idSwap);
 
     ui->imageWidget->setPixmap(sourceImage.pixmap);
     ui->imageWidget->addSubWidget(new GridSplitter(1, 1));

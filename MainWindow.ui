@@ -122,7 +122,7 @@
    </property>
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/window.png</normaloff>:/ico/window.png</iconset>
+     <normaloff>:/ico/icons/window-new-2.png</normaloff>:/ico/icons/window-new-2.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Final image</string>
@@ -134,7 +134,7 @@
    </property>
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/currentImage.png</normaloff>:/ico/currentImage.png</iconset>
+     <normaloff>:/ico/icons/insert-image-2.png</normaloff>:/ico/icons/insert-image-2.png</iconset>
    </property>
    <property name="text">
     <string>New Game (&amp;current image)</string>
@@ -146,7 +146,7 @@
    </property>
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/restart.png</normaloff>:/ico/restart.png</iconset>
+     <normaloff>:/ico/icons/view-refresh-5.png</normaloff>:/ico/icons/view-refresh-5.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Restart</string>

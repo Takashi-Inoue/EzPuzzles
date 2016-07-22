@@ -33,11 +33,12 @@ public:
     SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo);
     ~SwapShuffler() = default;
 
-    // AbstractShuffler
-    void shufflePieces() override;
+protected:
+    // ThreadOperation
+    QString className() const override;
+    void execImpl() override;
 
 private:
-    const BoardInfoPointer &boardInfo;
     mutable std::mt19937 mt;
 };
 

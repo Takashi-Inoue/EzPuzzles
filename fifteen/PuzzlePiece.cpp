@@ -38,6 +38,9 @@ void PuzzlePiece::draw(QPainter &painter)
             drawRect = rect;
     }
 
+    if (drawRect.isNull())
+        drawRect = boardInfo->rectFromPiecePos(position.currentPos());
+
     imagePiece->draw(painter, drawRect);
 
     if (effectObj != nullptr)

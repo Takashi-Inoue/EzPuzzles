@@ -28,7 +28,10 @@
 #include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
+#include <QThread>
 #include <QDebug>
+
+extern QThread gameThread;
 
 namespace Fifteen {
 
@@ -38,8 +41,8 @@ QString GameSimpleSlide::gameName()
 }
 
 GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos) :
-    GameLikeFifteen(sourceImg, xy, new SlideShuffler(pieces, boardInfo, this->blankPos)),
-    slideAnimationFrames(20),
+    GameLikeFifteen(sourceImg, xy),
+    slideAnimationFrames(10),
     defaultBlankPos(blankPos),
     blankPos(blankPos)
 {
@@ -51,6 +54,7 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
     initPieces();
     initBlankPiece();
     setAnimationToPieces();
+    createShuffler();
 }
 
 IGame *GameSimpleSlide::cloneAsNewGame() const
@@ -136,6 +140,8 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
     initBlankPiece();
     setAnimationToPieces();
 
+    createShuffler();
+
     createBackBuffer();
     drawAllPieces();
 
@@ -162,6 +168,19 @@ void GameSimpleSlide::click(const QPoint &piecePos)
     blankPos = piecePos;
 }
 
+void GameSimpleSlide::createShuffler()
+{
+    Q_ASSERT(boardInfo != nullptr);
+
+    shuffler  = std::make_unique<SlideShuffler>(pieces, boardInfo, blankPos);
+
+    connect(this, SIGNAL(startShuffle()), shuffler.get(), SLOT(start()));
+    connect(shuffler.get(), SIGNAL(completed()), this, SLOT(onCompletedShuffling()));
+    connect(shuffler.get(), SIGNAL(update(QList<PuzzlePiecePointer>)), this, SLOT(addChangedPieces(QList<PuzzlePiecePointer>)));
+
+    shuffler->moveToThread(&gameThread);
+}
+
 void GameSimpleSlide::initPieces()
 {
     pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces();
@@ -170,26 +189,28 @@ void GameSimpleSlide::initPieces()
 void GameSimpleSlide::initBlankPiece()
 {
     auto &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
-    blankPiece = std::make_shared<SlideBlankPiece>(boardInfo, blankPos, Qt::black, slideAnimationFrames);
+    blankPiece = std::make_shared<SlideBlankPiece>(boardInfo, defaultBlankPos, Qt::black, slideAnimationFrames);
+    blankPiece->setPosWithoutAnimation(blankPos);
 
     addChangedPieces({blankPiece});
 }
 
 void GameSimpleSlide::setAnimationToPieces()
 {
+    auto frame = std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
+
     for (auto &piece : pieces) {
         piece->setAnimation(std::make_shared<Animation::LineMove>(slideAnimationFrames, false));
-        piece->setEffect(std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192)));
+        piece->setEffect(frame);
     }
 
-    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(5, QColor(0, 0, 0), QColor(0, 0, 0), QColor(16, 64, 96, 224), QColor(64, 192, 224, 224), 90, true);
+    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(4, QColor(0, 0, 0), QColor(0, 0, 0), QColor(64, 192, 224, 224), QColor(16, 64, 96, 224), 120, true);
 
     pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()]->setEffect(graduallyFrame);
 }
 
 GameSimpleSlide::GameSimpleSlide() :
-    GameLikeFifteen(new SlideShuffler(pieces, boardInfo, this->blankPos)),
-    slideAnimationFrames(20)
+    slideAnimationFrames(10)
 {
 }
 

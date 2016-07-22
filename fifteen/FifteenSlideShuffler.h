@@ -21,7 +21,6 @@
 
 #include "FifteenAbstractShuffler.h"
 #include "IPuzzlePiece.h"
-#include "BoardInformation.h"
 
 #include <random>
 
@@ -33,8 +32,10 @@ public:
     SlideShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QPoint &blankPos);
     ~SlideShuffler() = default;
 
-    // AbstractShuffler
-    void shufflePieces() override;
+protected:
+    // ThreadOperation
+    QString className() const override;
+    void execImpl() override;
 
 private:
     enum Direction {
@@ -49,7 +50,6 @@ private:
     bool isHorizontal(Direction dir) const;
     QPoint nextBlankPosition(Direction to) const;
 
-    const BoardInfoPointer &boardInfo;
     QPoint &blankPos;
 
     mutable std::mt19937 mt;

@@ -44,8 +44,13 @@ QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces(const QList<QPoint> 
 {
     QList<PuzzlePiecePointer> pieces;
 
-    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount(); i < lim; ++i)
-        pieces << createPiece(defaultPositions.at(i));
+    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount(); i < lim; ++i) {
+        auto piece = createPiece(defaultPositions.at(i));
+
+        piece->setPosWithoutAnimation(QPoint(i % boardInfo->xCount(), i / boardInfo->xCount()));
+
+        pieces << piece;
+    }
 
     return pieces;
 }

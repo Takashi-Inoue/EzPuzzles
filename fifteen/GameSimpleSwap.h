@@ -20,6 +20,7 @@
 #define GAMESIMPLESWAP_H
 
 #include "GameLikeFifteen.h"
+#include "FifteenAbstractShuffler.h"
 
 namespace Fifteen {
 
@@ -42,13 +43,19 @@ protected:
     // GameLikeFifteen
     void click(const QPoint &piecePos) override;
 
+    void createShuffler();
     void initPieces();
+    void setAnimationToPieces();
 
     QPoint swapTargetPos;
+    std::unique_ptr<AbstractShuffler> shuffler;
+
+protected slots:
+    void setGraduallyFrame();
 
 private:
     friend class SimpleSwapSaveData;
-    GameSimpleSwap();
+    GameSimpleSwap() = default;
 };
 
 } // Fifteen

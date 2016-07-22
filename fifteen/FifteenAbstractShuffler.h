@@ -19,33 +19,35 @@
 #ifndef FIFTEENABSTRACTSHUFFLER_H
 #define FIFTEENABSTRACTSHUFFLER_H
 
+#include "ThreadOperation.h"
+#include "BoardInformation.h"
 #include "IPuzzlePiece.h"
-#include <QObject>
+
 #include <QList>
 #include <QPoint>
 
 namespace Fifteen {
 
-class AbstractShuffler : public QObject
+class AbstractShuffler : public ThreadOperation
 {
     Q_OBJECT
 public:
-    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, QObject *parent = 0) :
-        QObject(parent),
-        pieces(pieces)
+    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QObject *parent = 0) :
+        ThreadOperation(parent),
+        pieces(pieces),
+        boardInfo(boardInfo)
     {
         qRegisterMetaType<QList<PuzzlePiecePointer>>("QList<PuzzlePiecePointer>");
     }
 
     virtual ~AbstractShuffler() = default;
 
-    virtual void shufflePieces() = 0;
-
 signals:
     void update(QList<PuzzlePiecePointer> changed);
 
 protected:
     QList<PuzzlePiecePointer> &pieces;
+    const BoardInfoPointer &boardInfo;
 };
 
 } // Fifteen
