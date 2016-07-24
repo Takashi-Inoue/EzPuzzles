@@ -29,7 +29,7 @@ class GameSimpleSlide : public GameLikeFifteen
 public:
     static QString gameName();
 
-    GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos);
+    GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos, bool isRandomBlank);
 
     // IGame
     IGame *cloneAsNewGame() const override;
@@ -52,6 +52,7 @@ protected:
 
     QPoint defaultBlankPos;
     QPoint blankPos;
+    bool isRandomBlank;
 
     std::unique_ptr<AbstractShuffler> shuffler;
 

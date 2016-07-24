@@ -38,19 +38,19 @@ void SubFrame::draw(QPainter &painter)
     painter.drawRect(rect);
 }
 
-void SubFrame::mousePress(const QPoint &pos)
+void SubFrame::mousePress(QMouseEvent *event)
 {
-    dragger.mouseDown(pos);
+    dragger.mouseDown(event->pos());
 }
 
-void SubFrame::mouseRelease(const QPoint &pos)
+void SubFrame::mouseRelease(QMouseEvent *event)
 {
-    dragger.mouseRelease(pos);
+    dragger.mouseRelease(event->pos());
 }
 
-void SubFrame::mouseMove(const QPoint &pos)
+void SubFrame::mouseMove(QMouseEvent *event)
 {
-    dragger.mouseMove(pos);
+    dragger.mouseMove(event->pos());
 
     if (!dragger.isDragging())
         return;

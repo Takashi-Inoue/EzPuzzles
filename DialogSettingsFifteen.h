@@ -23,6 +23,7 @@
 #include <QDialog>
 
 class IGame;
+class SelectCellGrid;
 class SourceImage;
 
 namespace Ui {
@@ -40,7 +41,8 @@ public:
     IGame *buildGame() const override;
 
 private slots:
-    void updateSplitPainter() const;
+    void udpateGrid();
+    void onChangeBlankSetting();
 
 private:
     const int idFifteen = 0;
@@ -50,6 +52,8 @@ private:
     IGame *buildSimpleSwap() const;
 
     Ui::DialogSettingsFifteen *ui;
+
+    SelectCellGrid *grid;
 
     const SourceImage &sourceImage;
 };

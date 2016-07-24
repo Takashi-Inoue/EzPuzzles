@@ -19,7 +19,7 @@
 #include "DialogSettingsFifteen.h"
 #include "ui_DialogSettingsFifteen.h"
 
-#include "GridSplitter.h"
+#include "SelectCellGrid.h"
 #include "SourceImage.h"
 #include "fifteen/GameSimpleSlide.h"
 #include "fifteen/GameSimpleSwap.h"
@@ -29,6 +29,7 @@
 DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettingsFifteen),
+    grid(new SelectCellGrid(1, 1)),
     sourceImage(sourceImage)
 {
     ui->setupUi(this);
@@ -37,18 +38,20 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
 
     ui->buttonBox->setVisible(showOkButton);
 
-    ui->comboBoxGameType->addItem("Slide mode", idFifteen);
-    ui->comboBoxGameType->addItem("Swap mode", idSwap);
+    ui->comboBoxGameType->addItem("Simple Slide", idFifteen);
+    ui->comboBoxGameType->addItem("Simple Swap", idSwap);
 
     ui->imageWidget->setPixmap(sourceImage.pixmap);
-    ui->imageWidget->addSubWidget(new GridSplitter(1, 1));
+    ui->imageWidget->addSubWidget(grid);
 
     connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), ui->spinBoxSplitX, SLOT(setValue(int)));
     connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), ui->spinBoxSplitY, SLOT(setValue(int)));
     connect(ui->spinBoxSplitX, SIGNAL(valueChanged(int)), ui->hSliderSplitX, SLOT(setValue(int)));
     connect(ui->spinBoxSplitY, SIGNAL(valueChanged(int)), ui->hSliderSplitY, SLOT(setValue(int)));
-    connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), this, SLOT(updateSplitPainter()));
-    connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), this, SLOT(updateSplitPainter()));
+    connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), this, SLOT(udpateGrid()));
+    connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), this, SLOT(udpateGrid()));
+    connect(ui->radioButtonBlankRandom,    SIGNAL(clicked()), this, SLOT(onChangeBlankSetting()));
+    connect(ui->radioButtonBlankSpecified, SIGNAL(clicked()), this, SLOT(onChangeBlankSetting()));
 }
 
 DialogSettingsFifteen::~DialogSettingsFifteen()
@@ -69,19 +72,23 @@ IGame *DialogSettingsFifteen::buildGame() const
     return nullptr;
 }
 
-void DialogSettingsFifteen::updateSplitPainter() const
+void DialogSettingsFifteen::udpateGrid()
 {
-    GridSplitter *painter = new GridSplitter(ui->hSliderSplitX->value() - 1, ui->hSliderSplitY->value() - 1);
-    ui->imageWidget->replaceSubWidget(0, painter);
+    grid = new SelectCellGrid(ui->hSliderSplitX->value() - 1, ui->hSliderSplitY->value() - 1);
+    ui->imageWidget->replaceSubWidget(0, grid);
     ui->imageWidget->update();
+}
+
+void DialogSettingsFifteen::onChangeBlankSetting()
+{
+    grid->setRandomSelect(ui->radioButtonBlankRandom->isChecked());
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSlide() const
 {
-    QSize numXY(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
-    QPoint blankPos(numXY.width() - 1, numXY.height() - 1);
+    QSize xyCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
 
-    return new Fifteen::GameSimpleSlide(sourceImage, numXY, blankPos);
+    return new Fifteen::GameSimpleSlide(sourceImage, xyCount, grid->selectedCellPos(), ui->radioButtonBlankRandom->isChecked());
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSwap() const

@@ -40,11 +40,12 @@ QString GameSimpleSlide::gameName()
     return "Simple Slide";
 }
 
-GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos) :
+GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos, bool isRandomBlank) :
     GameLikeFifteen(sourceImg, xy),
     slideAnimationFrames(10),
     defaultBlankPos(blankPos),
-    blankPos(blankPos)
+    blankPos(blankPos),
+    isRandomBlank(isRandomBlank)
 {
     Q_ASSERT(!sourceImg.isNull());
     Q_ASSERT(!xy.isEmpty());
@@ -59,7 +60,7 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
 
 IGame *GameSimpleSlide::cloneAsNewGame() const
 {
-    auto game = new GameSimpleSlide(sourceImg, boardInfo->boardSize(), defaultBlankPos);
+    auto game = new GameSimpleSlide(sourceImg, boardInfo->boardSize(), defaultBlankPos, isRandomBlank);
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 

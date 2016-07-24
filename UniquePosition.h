@@ -16,28 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ANIMATIONWARPMOVE_H
-#define ANIMATIONWARPMOVE_H
+#ifndef UNIQUEPOSITION_H
+#define UNIQUEPOSITION_H
 
-#include "AbstractAnimation.h"
+#include <QDataStream>
+#include <QList>
+#include <QPoint>
+#include <QSize>
 
-namespace Animation {
+#include <random>
 
-class WarpMove : public AbstractAnimation
+class UniquePosition
 {
 public:
-    WarpMove(int waitFrameCount);
-    ~WarpMove() = default;
+    UniquePosition();
+    virtual ~UniquePosition() = default;
 
-    // AbstractAnimation
-    void start(const QRectF &from, const QRectF &to) override;
-    QRectF rect() override;
+    void randomSelect(const QSize &xyCount);
+    void select(const QPoint &pos);
+    const QPoint &selectedPosition() const;
+
+    void read(QDataStream &stream);
+    void write(QDataStream &stream) const;
+
+    QString toString() const;
 
 protected:
-    QRectF rectFrom;
-    QRectF rectTo;
+    QSize xyCount;
+    bool isRandomSelect;
+    QPoint selectedPos;
+
+    std::mt19937 mt;
 };
 
-} // Animation
-
-#endif // ANIMATIONWARPMOVE_H
+#endif // UNIQUEPOSITION_H

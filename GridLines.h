@@ -16,28 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ANIMATIONWARPMOVE_H
-#define ANIMATIONWARPMOVE_H
+#ifndef GRIDLINES_H
+#define GRIDLINES_H
 
-#include "AbstractAnimation.h"
+#include <QList>
+#include <QPainter>
 
-namespace Animation {
-
-class WarpMove : public AbstractAnimation
+class GridLines
 {
 public:
-    WarpMove(int waitFrameCount);
-    ~WarpMove() = default;
+    GridLines(const QRectF &rect, int vLineCount, int hLineCount);
+    GridLines(int vLineCount, int hLineCount);
+    virtual ~GridLines() = default;
 
-    // AbstractAnimation
-    void start(const QRectF &from, const QRectF &to) override;
-    QRectF rect() override;
+    void setRect(const QRectF &rect);
+    void draw(QPainter &painter) const;
+
+    QRectF cellRect(const QPoint &cellPos) const;
+    QPoint cellPosFromPixelPos(const QPoint &pixelPos) const;
 
 protected:
-    QRectF rectFrom;
-    QRectF rectTo;
+    void createLines();
+
+    QRectF rect;
+    int vLineCount;
+    int hLineCount;
+
+    QList<double> vLines;
+    QList<double> hLines;
 };
 
-} // Animation
-
-#endif // ANIMATIONWARPMOVE_H
+#endif // GRIDLINES_H

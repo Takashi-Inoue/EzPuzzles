@@ -20,6 +20,7 @@
 #define ISUBWIDGET_H
 
 #include <QObject>
+#include <QMouseEvent>
 
 class QPainter;
 class QPoint;
@@ -32,9 +33,11 @@ public:
     virtual ~ISubWidget() = default;
 
     virtual void draw(QPainter &) = 0;
-    virtual void mousePress(const QPoint &) = 0;
-    virtual void mouseRelease(const QPoint &) = 0;
-    virtual void mouseMove(const QPoint &) = 0;
+    virtual void mousePress(QMouseEvent *) = 0;
+    virtual void mouseRelease(QMouseEvent *) = 0;
+    virtual void mouseMove(QMouseEvent *) = 0;
+    virtual void mouseEnter(QEvent *) = 0;
+    virtual void mouseLeave(QEvent *) = 0;
     virtual QPoint pos() const = 0;
 
 signals:

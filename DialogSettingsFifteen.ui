@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>582</height>
+    <width>338</width>
+    <height>537</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,6 +52,9 @@
       </property>
       <item row="0" column="0">
        <widget class="ImageWidget" name="imageWidget">
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
         <property name="lineWidth">
          <number>0</number>
         </property>
@@ -62,6 +65,32 @@
    </item>
    <item>
     <widget class="QComboBox" name="comboBoxGameType"/>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Blank position</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QRadioButton" name="radioButtonBlankRandom">
+        <property name="text">
+         <string>Random</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonBlankSpecified">
+        <property name="text">
+         <string>Specified</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label">

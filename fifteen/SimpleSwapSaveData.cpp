@@ -45,7 +45,7 @@ QStringList SimpleSwapSaveData::informations() const
     return {
         QString("W%1 x H%2 : %3 pieces").arg(xy.width()).arg(xy.height()).arg(xy.width() * xy.height()),
         "",
-        QString("Swap target position [%1, %2]").arg(swapTargetPos.x()).arg(swapTargetPos.y()),
+        QString("Swap target position [%1, %2]").arg(swapTargetPos.x() + 1).arg(swapTargetPos.y() + 1),
     };
 }
 

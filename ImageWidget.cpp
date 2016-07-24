@@ -121,7 +121,7 @@ void ImageWidget::mousePressEvent(QMouseEvent *event)
     QFrame::mousePressEvent(event);
 
     for (auto &subWidget : subWidgets)
-        subWidget->mousePress(event->pos());
+        subWidget->mousePress(event);
 }
 
 void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
@@ -129,7 +129,7 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
     QFrame::mouseReleaseEvent(event);
 
     for (auto &subWidget : subWidgets)
-        subWidget->mouseRelease(event->pos());
+        subWidget->mouseRelease(event);
 }
 
 void ImageWidget::mouseMoveEvent(QMouseEvent *event)
@@ -137,7 +137,23 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
     QFrame::mouseMoveEvent(event);
 
     for (auto &subWidget : subWidgets)
-        subWidget->mouseMove(event->pos());
+        subWidget->mouseMove(event);
+}
+
+void ImageWidget::enterEvent(QEvent *event)
+{
+    QFrame::enterEvent(event);
+
+    for (auto &subWidget : subWidgets)
+        subWidget->mouseEnter(event);
+}
+
+void ImageWidget::leaveEvent(QEvent *event)
+{
+    QFrame::leaveEvent(event);
+
+    for (auto &subWidget : subWidgets)
+        subWidget->mouseLeave(event);
 }
 
 void ImageWidget::calcImageRect()

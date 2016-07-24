@@ -30,9 +30,11 @@ public:
     SubFrame(const QRect &rect);
 
     void draw(QPainter &) override;
-    void mousePress(const QPoint &) override;
-    void mouseRelease(const QPoint &) override;
-    void mouseMove(const QPoint &) override;
+    void mousePress(QMouseEvent *) override;
+    void mouseRelease(QMouseEvent *) override;
+    void mouseMove(QMouseEvent *) override;
+    void mouseEnter(QEvent *) override {}
+    void mouseLeave(QEvent *) override {}
     QPoint pos() const override;
 
 protected:

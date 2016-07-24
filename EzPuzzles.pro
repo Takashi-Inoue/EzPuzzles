@@ -49,7 +49,6 @@ SOURCES += main.cpp\
     SourceImage.cpp \
     fifteen/PuzzlePiece.cpp \
     mine/MinePiecesFactory.cpp \
-    GridSplitter.cpp \
     fifteen/GameLikeFifteen.cpp \
     fifteen/SimplePiecesFactory.cpp \
     fifteen/GameSimpleSlide.cpp \
@@ -74,7 +73,10 @@ SOURCES += main.cpp\
     Position.cpp \
     fifteen/SlideBlankPiece.cpp \
     FrameTimer.cpp \
-    AnimationObject/Effect/CompositeEffect.cpp
+    AnimationObject/Effect/CompositeEffect.cpp \
+    GridLines.cpp \
+    SelectCellGrid.cpp \
+    UniquePosition.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -117,7 +119,6 @@ HEADERS  += MainWindow.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
     mine/MinePiecesFactory.h \
-    GridSplitter.h \
     fifteen/GameLikeFifteen.h \
     fifteen/SimplePiecesFactory.h \
     fifteen/GameSimpleSlide.h \
@@ -148,7 +149,10 @@ HEADERS  += MainWindow.h \
     fifteen/SlideBlankPiece.h \
     fifteen/FifteenAbstractShuffler.h \
     FrameTimer.h \
-    AnimationObject/Effect/CompositeEffect.h
+    AnimationObject/Effect/CompositeEffect.h \
+    GridLines.h \
+    SelectCellGrid.h \
+    UniquePosition.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

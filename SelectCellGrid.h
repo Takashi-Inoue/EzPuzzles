@@ -16,35 +16,44 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef GRIDSPLITTER_H
-#define GRIDSPLITTER_H
+#ifndef SELECTCELLGRID_H
+#define SELECTCELLGRID_H
 
 #include "ISubWidget.h"
+#include "GridLines.h"
 #include <QList>
+#include <QPair>
 #include <QPen>
 
-class GridSplitter : public ISubWidget
+class SelectCellGrid : public ISubWidget
 {
 public:
-    GridSplitter(int xSplitterCount, int ySplitterCount);
-    GridSplitter(const QPen &pen, int xSplitterCount, int ySplitterCount);
-    ~GridSplitter() = default;
-
-    static QList<double> verticalSplitterPos(int width, int splitterCount);
-    static QList<double> horizontalSplitterPos(int height, int splitterCount);
-    static double verticalSplitterPos(int width, int splitterCount, int number);
-    static double horizontalSplitterPos(int height, int splitterCount, int number);
+    SelectCellGrid(int vSplitterCount, int hSplitterCount);
+    SelectCellGrid(const QPen &pen, int vSplitterCount, int hSplitterCount);
+    ~SelectCellGrid() = default;
 
     void draw(QPainter &) override;
-    void mousePress(const QPoint &) override;
-    void mouseRelease(const QPoint &) override;
-    void mouseMove(const QPoint &) override;
+    void mousePress(QMouseEvent *) override;
+    void mouseRelease(QMouseEvent *) override;
+    void mouseMove(QMouseEvent *) override;
+    void mouseEnter(QEvent *) override {}
+    void mouseLeave(QEvent *) override;
     QPoint pos() const override;
 
+    void setRandomSelect(bool isRandom);
+    const QPoint &selectedCellPos() const;
+
 private:
+    QPoint invalidPoint() const;
+
     QPen pen;
-    int xSplitterCount;
-    int ySplitterCount;
+    GridLines gridLines;
+
+    bool isPressed;
+    QPoint onMousePos;
+    QPoint selectedPos;
+
+    bool isRandomSelect;
 };
 
 #endif // GRIDSPLITTER_H
