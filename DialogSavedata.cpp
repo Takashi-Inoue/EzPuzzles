@@ -211,6 +211,9 @@ void DialogSavedata::on_pushButtonRemove_clicked()
 
     ui->listWidget->model()->removeRow(row);
     savedataNames.removeAt(row);
+
+    if (savedataName.isEmpty())
+        onDataSelectionCleared();
 }
 
 ISaveData *DialogSavedata::getSaveDataFromListItem(const QListWidgetItem *item) const

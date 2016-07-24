@@ -45,8 +45,8 @@ QStringList SimpleSlideSaveData::informations() const
     return {
         QString("W%1 x H%2 : %3 pieces").arg(xy.width()).arg(xy.height()).arg(xy.width() * xy.height()),
         "",
-        QString("Default blank piece position [%1, %2]").arg(defaultBlankPos.x() + 1).arg(defaultBlankPos.y() + 1),
-        QString("Current blank piece position [%1, %2]").arg(blankPos.x() + 1).arg(blankPos.y() + 1),
+        QString("Default blank ") + defaultBlankPos.toString(),
+        QString("Current blank [%1, %2]").arg(blankPos.x() + 1).arg(blankPos.y() + 1),
     };
 }
 
@@ -78,7 +78,7 @@ bool SimpleSlideSaveData::loadInfo()
 
     stream >> imgFilePath;
     stream >> xy;
-    stream >> defaultBlankPos;
+    defaultBlankPos.read(stream);
     stream >> blankPos;
 
     if (stream.status() != QDataStream::Ok)

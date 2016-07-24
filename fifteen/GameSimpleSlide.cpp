@@ -40,17 +40,17 @@ QString GameSimpleSlide::gameName()
     return "Simple Slide";
 }
 
-GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos, bool isRandomBlank) :
+GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const UniquePosition &blankPos) :
     GameLikeFifteen(sourceImg, xy),
     slideAnimationFrames(10),
     defaultBlankPos(blankPos),
-    blankPos(blankPos),
+    blankPos(blankPos.selectedPosition()),
     isRandomBlank(isRandomBlank)
 {
     Q_ASSERT(!sourceImg.isNull());
     Q_ASSERT(!xy.isEmpty());
-    Q_ASSERT(blankPos.x() >= 0 && blankPos.x() < xy.width());
-    Q_ASSERT(blankPos.y() >= 0 && blankPos.y() < xy.height());
+    Q_ASSERT(this->blankPos.x() >= 0 && this->blankPos.x() < xy.width());
+    Q_ASSERT(this->blankPos.y() >= 0 && this->blankPos.y() < xy.height());
 
     initPieces();
     initBlankPiece();
@@ -60,7 +60,7 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
 
 IGame *GameSimpleSlide::cloneAsNewGame() const
 {
-    auto game = new GameSimpleSlide(sourceImg, boardInfo->boardSize(), defaultBlankPos, isRandomBlank);
+    auto game = new GameSimpleSlide(sourceImg, boardInfo->boardSize(), defaultBlankPos);
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
@@ -85,7 +85,7 @@ void GameSimpleSlide::save(const QString &saveDirPath, const QSize &screenshotSi
     stream << gameName();
     stream << sourceImg.fullPath;
     stream << boardInfo->boardSize();
-    stream << defaultBlankPos;
+    defaultBlankPos.write(stream);
     stream << blankPos;
     stream << static_cast<qint8>(gamePhase);
     stream << sourceImg.pixmap;
@@ -124,7 +124,7 @@ bool GameSimpleSlide::load(const QString &loadFilePath)
 
     stream >> sourceImg.fullPath;
     stream >> xy;
-    stream >> defaultBlankPos;
+    defaultBlankPos.read(stream);
     stream >> blankPos;
     stream >> phase;
     stream >> sourceImg.pixmap;
@@ -190,7 +190,7 @@ void GameSimpleSlide::initPieces()
 void GameSimpleSlide::initBlankPiece()
 {
     auto &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
-    blankPiece = std::make_shared<SlideBlankPiece>(boardInfo, defaultBlankPos, Qt::black, slideAnimationFrames);
+    blankPiece = std::make_shared<SlideBlankPiece>(boardInfo, defaultBlankPos.selectedPosition(), Qt::black, slideAnimationFrames);
     blankPiece->setPosWithoutAnimation(blankPos);
 
     addChangedPieces({blankPiece});

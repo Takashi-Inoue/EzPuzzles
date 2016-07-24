@@ -145,6 +145,11 @@ void GameLikeFifteen::saveScreenshot(const QString &saveDirPath, const QSize &sc
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
 }
 
+PuzzlePiecePointer GameLikeFifteen::getPiece(const QPoint &piecePos) const
+{
+    return pieces.at(piecePos.y() * boardInfo->xCount() + piecePos.x());
+}
+
 void GameLikeFifteen::onCompletedShuffling()
 {
     gamePhase = PhaseGaming;

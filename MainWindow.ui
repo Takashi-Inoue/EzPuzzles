@@ -60,7 +60,7 @@
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>

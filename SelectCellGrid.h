@@ -28,7 +28,7 @@
 class SelectCellGrid : public ISubWidget
 {
 public:
-    SelectCellGrid(int vSplitterCount, int hSplitterCount);
+    SelectCellGrid(int vCellCount, int hCellCount);
     SelectCellGrid(const QPen &pen, int vSplitterCount, int hSplitterCount);
     ~SelectCellGrid() = default;
 
@@ -41,6 +41,7 @@ public:
     QPoint pos() const override;
 
     void setRandomSelect(bool isRandom);
+    void setCellCount(int vCellCount, int hCellCount);
     const QPoint &selectedCellPos() const;
 
 private:

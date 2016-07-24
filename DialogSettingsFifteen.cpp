@@ -29,7 +29,7 @@
 DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettingsFifteen),
-    grid(new SelectCellGrid(1, 1)),
+    grid(new SelectCellGrid(2, 2)),
     sourceImage(sourceImage)
 {
     ui->setupUi(this);
@@ -74,9 +74,7 @@ IGame *DialogSettingsFifteen::buildGame() const
 
 void DialogSettingsFifteen::udpateGrid()
 {
-    grid = new SelectCellGrid(ui->hSliderSplitX->value() - 1, ui->hSliderSplitY->value() - 1);
-    ui->imageWidget->replaceSubWidget(0, grid);
-    ui->imageWidget->update();
+    grid->setCellCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
 }
 
 void DialogSettingsFifteen::onChangeBlankSetting()
@@ -88,13 +86,22 @@ IGame *DialogSettingsFifteen::buildSimpleSlide() const
 {
     QSize xyCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
 
-    return new Fifteen::GameSimpleSlide(sourceImage, xyCount, grid->selectedCellPos(), ui->radioButtonBlankRandom->isChecked());
+    UniquePosition defaultBlank;
+
+    ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
+                                            : defaultBlank.select(grid->selectedCellPos());
+
+    return new Fifteen::GameSimpleSlide(sourceImage, xyCount, defaultBlank);
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSwap() const
 {
-    QSize numXY(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
-    QPoint swapTargetPos(0, 0);
+    QSize xyCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
 
-    return new Fifteen::GameSimpleSwap(sourceImage, numXY, swapTargetPos);
+    UniquePosition swapTarget;
+
+    ui->radioButtonBlankRandom->isChecked() ? swapTarget.randomSelect(xyCount)
+                                            : swapTarget.select(grid->selectedCellPos());
+
+    return new Fifteen::GameSimpleSwap(sourceImage, xyCount, swapTarget);
 }

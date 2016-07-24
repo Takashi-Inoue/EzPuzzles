@@ -21,6 +21,7 @@
 
 #include "GameLikeFifteen.h"
 #include "FifteenAbstractShuffler.h"
+#include "UniquePosition.h"
 
 namespace Fifteen {
 
@@ -30,7 +31,7 @@ class GameSimpleSwap : public GameLikeFifteen
 public:
     static QString gameName();
 
-    GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, const QPoint &swapTargetPos);
+    GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, const UniquePosition &swapTargetPos);
 
     // IGame
     IGame *cloneAsNewGame() const override;
@@ -47,7 +48,7 @@ protected:
     void initPieces();
     void setAnimationToPieces();
 
-    QPoint swapTargetPos;
+    UniquePosition swapTargetPos;
     std::unique_ptr<AbstractShuffler> shuffler;
 
 protected slots:

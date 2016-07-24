@@ -23,15 +23,15 @@
 #include <QPainter>
 #include <QDebug>
 
-SelectCellGrid::SelectCellGrid(int vSplitterCount, int hSplitterCount) :
+SelectCellGrid::SelectCellGrid(int vCellCount, int hCellCount) :
     pen(QColor(255, 0, 0, 128), 1),
-    gridLines(vSplitterCount, hSplitterCount),
+    gridLines(vCellCount - 1, hCellCount - 1),
     isPressed(false),
     onMousePos(invalidPoint()),
-    selectedPos(vSplitterCount, hSplitterCount),
+    selectedPos(vCellCount - 1, hCellCount - 1),
     isRandomSelect(false)
 {
-    Q_ASSERT(vSplitterCount >= 0 && hSplitterCount >= 0);
+    Q_ASSERT(vCellCount >= 0 && hCellCount >= 0);
 }
 
 SelectCellGrid::SelectCellGrid(const QPen &pen, int vSplitterCount, int hSplitterCount) :
@@ -149,6 +149,19 @@ void SelectCellGrid::setRandomSelect(bool isRandom)
         return;
 
     isRandomSelect = isRandom;
+
+    emit updated();
+}
+
+void SelectCellGrid::setCellCount(int vCellCount, int hCellCount)
+{
+    gridLines = GridLines(vCellCount - 1, hCellCount - 1);
+
+    if (selectedPos.x() >= vCellCount)
+        selectedPos.rx() = vCellCount - 1;
+
+    if (selectedPos.y() >= hCellCount)
+        selectedPos.ry() = hCellCount - 1;
 
     emit updated();
 }

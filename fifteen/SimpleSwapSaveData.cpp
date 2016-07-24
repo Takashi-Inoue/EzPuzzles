@@ -45,7 +45,7 @@ QStringList SimpleSwapSaveData::informations() const
     return {
         QString("W%1 x H%2 : %3 pieces").arg(xy.width()).arg(xy.height()).arg(xy.width() * xy.height()),
         "",
-        QString("Swap target position [%1, %2]").arg(swapTargetPos.x() + 1).arg(swapTargetPos.y() + 1),
+        QString("Swap target ") + swapTargetPos.toString(),
     };
 }
 
@@ -77,7 +77,7 @@ bool SimpleSwapSaveData::loadInfo()
 
     stream >> imgFilePath;
     stream >> xy;
-    stream >> swapTargetPos;
+    swapTargetPos.read(stream);
 
     if (stream.status() != QDataStream::Ok)
         return false;

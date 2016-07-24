@@ -40,14 +40,12 @@ QString GameSimpleSwap::gameName()
     return "Simple Swap";
 }
 
-GameSimpleSwap::GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, const QPoint &swapTargetPos) :
+GameSimpleSwap::GameSimpleSwap(const SourceImage &sourceImg, const QSize &xy, const UniquePosition &swapTargetPos) :
     GameLikeFifteen(sourceImg, xy),
     swapTargetPos(swapTargetPos)
 {
     Q_ASSERT(!sourceImg.isNull());
     Q_ASSERT(!xy.isEmpty());
-    Q_ASSERT(swapTargetPos.x() >= 0 && swapTargetPos.x() < xy.width());
-    Q_ASSERT(swapTargetPos.y() >= 0 && swapTargetPos.y() < xy.height());
 
     initPieces();
     setAnimationToPieces();
@@ -81,7 +79,7 @@ void GameSimpleSwap::save(const QString &saveDirPath, const QSize &screenshotSiz
     stream << gameName();
     stream << sourceImg.fullPath;
     stream << boardInfo->boardSize();
-    stream << swapTargetPos;
+    swapTargetPos.write(stream);
     stream << static_cast<qint8>(gamePhase);
     stream << sourceImg.pixmap;
 
@@ -119,7 +117,7 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
 
     stream >> sourceImg.fullPath;
     stream >> xy;
-    stream >> swapTargetPos;
+    swapTargetPos.read(stream);
     stream >> phase;
     stream >> sourceImg.pixmap;
 
@@ -133,6 +131,7 @@ bool GameSimpleSwap::load(const QString &loadFilePath)
     pieces = SimplePiecesFactory(boardInfo, sourceImg.pixmap).createPieces(defaultPositions);
 
     setAnimationToPieces();
+    setGraduallyFrame();
 
     createShuffler();
 
@@ -149,15 +148,15 @@ QString GameSimpleSwap::shortInformation() const
 
 void GameSimpleSwap::click(const QPoint &piecePos)
 {
-    if (piecePos == swapTargetPos)
+    if (piecePos == swapTargetPos.selectedPosition())
         return;
 
     auto &pieceClick  = pieces[piecePos.y() * boardInfo->xCount() + piecePos.x()];
-    auto &pieceTarget = pieces[swapTargetPos.y() * boardInfo->xCount() + swapTargetPos.x()];
+    auto &pieceTarget = pieces[swapTargetPos.selectedPosition().y() * boardInfo->xCount() + swapTargetPos.selectedPosition().x()];
 
     pieceClick.swap(pieceTarget);
     pieceClick->setPos(piecePos);
-    pieceTarget->setPos(swapTargetPos);
+    pieceTarget->setPos(swapTargetPos.selectedPosition());
 
     auto effect = pieceClick->effect();
     pieceClick->setEffect(pieceTarget->effect());
@@ -199,15 +198,22 @@ void GameSimpleSwap::setGraduallyFrame()
 {
     Q_ASSERT(!pieces.isEmpty());
 
+//    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
+//                              5, QColor(255, 255, 96, 0), QColor(255, 255, 96, 0), QColor(255, 255, 96, 192), QColor(255, 255, 96, 160), 180, true);
+
     auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
-                              5, QColor(255, 255, 96, 0), QColor(255, 255, 96, 0), QColor(255, 255, 96, 192), QColor(255, 255, 96, 160), 180, true);
+                              8, QColor(255, 128, 64, 224), QColor(255, 255, 64, 0), QColor(255, 255, 64, 224), QColor(255, 128, 64, 0), 240, true);
 
     auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
 
-    compositeEffect->addEffect(pieces[0]->effect());
+    auto piece = getPiece(swapTargetPos.selectedPosition());
+
+    compositeEffect->addEffect(piece->effect());
     compositeEffect->addEffect(graduallyFrame);
 
-    pieces[0]->setEffect(compositeEffect);
+    piece->setEffect(compositeEffect);
+
+    addChangedPieces({piece});
 }
 
 } // Fifteen

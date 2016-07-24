@@ -20,6 +20,7 @@
 #define GAMESIMPLESLIDE_H
 
 #include "GameLikeFifteen.h"
+#include "UniquePosition.h"
 
 namespace Fifteen {
 
@@ -29,7 +30,7 @@ class GameSimpleSlide : public GameLikeFifteen
 public:
     static QString gameName();
 
-    GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const QPoint &blankPos, bool isRandomBlank);
+    GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, const UniquePosition &blankPos);
 
     // IGame
     IGame *cloneAsNewGame() const override;
@@ -50,7 +51,7 @@ protected:
 
     int slideAnimationFrames;
 
-    QPoint defaultBlankPos;
+    UniquePosition defaultBlankPos;
     QPoint blankPos;
     bool isRandomBlank;
 

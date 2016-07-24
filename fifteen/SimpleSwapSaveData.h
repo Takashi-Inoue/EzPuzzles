@@ -20,6 +20,7 @@
 #define SIMPLESWAPSAVEDATA_H
 
 #include "ISaveData.h"
+#include "UniquePosition.h"
 
 #include <QPoint>
 #include <QSize>
@@ -46,7 +47,7 @@ private:
     QString gameTypeName;
     QString imgFilePath;
     QSize xy;
-    QPoint swapTargetPos;
+    UniquePosition swapTargetPos;
 };
 
 } // Fifteen
