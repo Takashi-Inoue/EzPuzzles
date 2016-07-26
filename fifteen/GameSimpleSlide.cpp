@@ -49,8 +49,6 @@ GameSimpleSlide::GameSimpleSlide(const SourceImage &sourceImg, const QSize &xy, 
 {
     Q_ASSERT(!sourceImg.isNull());
     Q_ASSERT(!xy.isEmpty());
-    Q_ASSERT(this->blankPos.x() >= 0 && this->blankPos.x() < xy.width());
-    Q_ASSERT(this->blankPos.y() >= 0 && this->blankPos.y() < xy.height());
 
     initPieces();
     initBlankPiece();
@@ -189,7 +187,7 @@ void GameSimpleSlide::initPieces()
 
 void GameSimpleSlide::initBlankPiece()
 {
-    auto &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
+    auto &blankPiece = getPiece(blankPos);
     blankPiece = std::make_shared<SlideBlankPiece>(boardInfo, defaultBlankPos.selectedPosition(), Qt::black, slideAnimationFrames);
     blankPiece->setPosWithoutAnimation(blankPos);
 
@@ -207,7 +205,7 @@ void GameSimpleSlide::setAnimationToPieces()
 
     auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(4, QColor(0, 0, 0), QColor(0, 0, 0), QColor(64, 192, 224, 224), QColor(16, 64, 96, 224), 120, true);
 
-    pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()]->setEffect(graduallyFrame);
+    getPiece(blankPos)->setEffect(graduallyFrame);
 }
 
 GameSimpleSlide::GameSimpleSlide() :

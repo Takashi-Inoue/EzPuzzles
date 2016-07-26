@@ -151,8 +151,8 @@ void GameSimpleSwap::click(const QPoint &piecePos)
     if (piecePos == swapTargetPos.selectedPosition())
         return;
 
-    auto &pieceClick  = pieces[piecePos.y() * boardInfo->xCount() + piecePos.x()];
-    auto &pieceTarget = pieces[swapTargetPos.selectedPosition().y() * boardInfo->xCount() + swapTargetPos.selectedPosition().x()];
+    auto &pieceClick  = getPiece(piecePos);
+    auto &pieceTarget = getPiece(swapTargetPos.selectedPosition());
 
     pieceClick.swap(pieceTarget);
     pieceClick->setPos(piecePos);

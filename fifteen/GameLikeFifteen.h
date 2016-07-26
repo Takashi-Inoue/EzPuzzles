@@ -69,7 +69,7 @@ protected:
     void createBackBuffer();
     void drawAllPieces();
     void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const;
-    PuzzlePiecePointer getPiece(const QPoint &piecePos) const;
+    PuzzlePiecePointer &getPiece(const QPoint &piecePos);
 
     GameID gameId;
     BoardInfoPointer boardInfo;
