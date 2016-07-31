@@ -34,9 +34,6 @@ public:
 
     const QString &toString() const;
 
-    void save(QDataStream &stream) const;
-    void load(QDataStream &stream);
-
 private:
     GameID(const QString &string);
 

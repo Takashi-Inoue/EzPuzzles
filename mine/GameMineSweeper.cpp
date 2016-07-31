@@ -260,7 +260,7 @@ QString GameMineSweeper::shortInformation() const
     return "MineSweeper " + openedDescription();
 }
 
-SourceImage GameMineSweeper::sourceImage() const
+const SourceImage &GameMineSweeper::sourceImage() const
 {
     return sourceImg;
 }

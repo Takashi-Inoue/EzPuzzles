@@ -48,7 +48,7 @@ public:
     void draw(QPainter &dest) override;
     QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
-    SourceImage sourceImage() const override;
+    const SourceImage &sourceImage() const override;
 
 signals:
     void startShuffle();

@@ -58,7 +58,7 @@ public:
     QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
     QString shortInformation() const override;
-    SourceImage sourceImage() const override;
+    const SourceImage &sourceImage() const override;
 
 protected:
     typedef std::shared_ptr<IDrawer> DrawerPointer;

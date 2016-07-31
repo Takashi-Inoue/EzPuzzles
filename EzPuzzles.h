@@ -26,6 +26,7 @@ class EzPuzzles
 {
 public:
     EzPuzzles() = default;
+    ~EzPuzzles() = default;
 
     static QSize screenshotSize();
 

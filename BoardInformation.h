@@ -34,6 +34,7 @@ public:
     int yCount() const;
 
     const QSize &boardSize() const;
+    const QSize &boardPixelSize() const;
 
 private:
     QSize xyCount;

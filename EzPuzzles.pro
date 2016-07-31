@@ -76,7 +76,13 @@ SOURCES += main.cpp\
     AnimationObject/Effect/CompositeEffect.cpp \
     GridLines.cpp \
     SelectCellGrid.cpp \
-    UniquePosition.cpp
+    UniquePosition.cpp \
+    PieceGame.cpp \
+    CommonPhase/PhaseShowFinalImage.cpp \
+    CommonPhase/PhaseShuffle.cpp \
+    CommonPhase/PhaseCleared.cpp \
+    Slide/PhaseSimpleSlideGaming.cpp \
+    Board.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -152,7 +158,15 @@ HEADERS  += MainWindow.h \
     AnimationObject/Effect/CompositeEffect.h \
     GridLines.h \
     SelectCellGrid.h \
-    UniquePosition.h
+    UniquePosition.h \
+    IPhase.h \
+    PieceGame.h \
+    IGameData.h \
+    CommonPhase/PhaseShowFinalImage.h \
+    CommonPhase/PhaseShuffle.h \
+    CommonPhase/PhaseCleared.h \
+    Slide/PhaseSimpleSlideGaming.h \
+    Board.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

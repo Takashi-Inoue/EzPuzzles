@@ -49,10 +49,13 @@ public:
     virtual QSize maxFieldSize() const = 0;
     virtual void drawFinalImage(QPainter &dest) const = 0;
     virtual QString shortInformation() const = 0;
-    virtual SourceImage sourceImage() const = 0;
+    virtual const SourceImage &sourceImage() const = 0;
 
 signals:
     void informationUpdated();
+
+protected:
+    virtual void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
 
 private:
     IGame(const IGame &) = delete;

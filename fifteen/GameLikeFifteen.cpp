@@ -106,7 +106,7 @@ void GameLikeFifteen::drawFinalImage(QPainter &dest) const
     dest.drawPixmap(QRect(QPoint(0, 0), destSize), sourceImg.pixmap, sourceImg.rect());
 }
 
-SourceImage GameLikeFifteen::sourceImage() const
+const SourceImage &GameLikeFifteen::sourceImage() const
 {
     return sourceImg;
 }

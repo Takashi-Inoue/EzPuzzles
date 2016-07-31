@@ -57,3 +57,8 @@ const QSize &BoardInformation::boardSize() const
 {
     return xyCount;
 }
+
+const QSize &BoardInformation::boardPixelSize() const
+{
+    return pixelSize;
+}

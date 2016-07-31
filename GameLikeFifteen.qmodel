@@ -1035,14 +1035,13 @@
                            <item>interface</item>
                           </qlist>
                          </stereotypes>
-                         <context>Phase</context>
                          <name>IPhase</name>
                          <pos>x:370;y:200</pos>
                          <rect>x:-20;y:-20;w:40;h:40</rect>
                          <visual-role>0</visual-role>
+                         <visual-emphasized>true</visual-emphasized>
                         </DObject>
                        </base-DObject>
-                       <namespace>Phase</namespace>
                        <show-all-members>true</show-all-members>
                       </DClass>
                      </instance>
@@ -1058,14 +1057,14 @@
                           </DElement>
                          </base-DElement>
                          <object>{cdd6ee19-0bfd-4846-81c5-26b55134a63d}</object>
-                         <context>Phase</context>
+                         <context>SimpleSlide</context>
                          <name>PreGame</name>
-                         <pos>x:265;y:425</pos>
-                         <rect>x:-40;y:-30;w:80;h:60</rect>
+                         <pos>x:215;y:515</pos>
+                         <rect>x:-70;y:-50;w:140;h:100</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
-                       <namespace>Phase</namespace>
+                       <show-all-members>true</show-all-members>
                       </DClass>
                      </instance>
                     </item>
@@ -1098,14 +1097,14 @@
                           </DElement>
                          </base-DElement>
                          <object>{ce2d2f96-5008-44bb-96c5-dc41c8abd5d0}</object>
-                         <context>Phase</context>
+                         <context>SimpleSlide</context>
                          <name>Gaming</name>
-                         <pos>x:365;y:425</pos>
-                         <rect>x:-40;y:-30;w:80;h:60</rect>
+                         <pos>x:370;y:515</pos>
+                         <rect>x:-70;y:-45;w:140;h:90</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
-                       <namespace>Phase</namespace>
+                       <show-all-members>true</show-all-members>
                       </DClass>
                      </instance>
                     </item>
@@ -1138,14 +1137,14 @@
                           </DElement>
                          </base-DElement>
                          <object>{e9dd2cca-e0e6-4480-96e4-f7f4f6dfb316}</object>
-                         <context>Phase</context>
+                         <context>SimpleSlide</context>
                          <name>Ready</name>
-                         <pos>x:165;y:425</pos>
-                         <rect>x:-40;y:-30;w:80;h:60</rect>
+                         <pos>x:75;y:515</pos>
+                         <rect>x:-55;y:-35;w:110;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
-                       <namespace>Phase</namespace>
+                       <show-all-members>true</show-all-members>
                       </DClass>
                      </instance>
                     </item>
@@ -1178,14 +1177,14 @@
                           </DElement>
                          </base-DElement>
                          <object>{875fceb5-d556-4bf5-861f-80b97491ec33}</object>
-                         <context>Phase</context>
+                         <context>SimpleSlide</context>
                          <name>Ending</name>
-                         <pos>x:465;y:425</pos>
-                         <rect>x:-40;y:-30;w:80;h:60</rect>
+                         <pos>x:500;y:515</pos>
+                         <rect>x:-45;y:-35;w:90;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
-                       <namespace>Phase</namespace>
+                       <show-all-members>true</show-all-members>
                       </DClass>
                      </instance>
                     </item>
@@ -1200,14 +1199,14 @@
                           </DElement>
                          </base-DElement>
                          <object>{0a9aa42c-cb82-41af-b2d5-55049b81db62}</object>
-                         <context>Phase</context>
+                         <context>SimpleSlide</context>
                          <name>Cleared</name>
-                         <pos>x:565;y:425</pos>
-                         <rect>x:-40;y:-30;w:80;h:60</rect>
+                         <pos>x:610;y:515</pos>
+                         <rect>x:-50;y:-35;w:100;h:70</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
-                       <namespace>Phase</namespace>
+                       <show-all-members>true</show-all-members>
                       </DClass>
                      </instance>
                     </item>
@@ -1230,27 +1229,6 @@
                      </instance>
                     </item>
                     <item>
-                     <instance type="DPackage">
-                      <DPackage>
-                       <base-DObject>
-                        <DObject>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{fe108f21-526d-4e06-9d24-020231a86b3a}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{e2689c9c-54f4-4e6b-adef-61d23d2799f8}</object>
-                         <name>Phase</name>
-                         <pos>x:400;y:320</pos>
-                         <rect>x:-440;y:-250;w:880;h:500</rect>
-                         <auto-sized>false</auto-sized>
-                         <visual-role>0</visual-role>
-                        </DObject>
-                       </base-DObject>
-                      </DPackage>
-                     </instance>
-                    </item>
-                    <item>
                      <instance type="DInheritance">
                       <DInheritance>
                        <base-DRelation>
@@ -1268,9 +1246,78 @@
                       </DInheritance>
                      </instance>
                     </item>
+                    <item>
+                     <instance type="DPackage">
+                      <DPackage>
+                       <base-DObject>
+                        <DObject>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{cdce36e1-146b-4851-99ff-ab00d072a7cc}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{f1136a66-dff4-4ab3-933e-07a9f53e688a}</object>
+                         <name>SimpleSlide</name>
+                         <pos>x:340;y:500</pos>
+                         <rect>x:-330;y:-80;w:660;h:160</rect>
+                         <auto-sized>false</auto-sized>
+                         <visual-role>0</visual-role>
+                        </DObject>
+                       </base-DObject>
+                      </DPackage>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DClass">
+                      <DClass>
+                       <base-DObject>
+                        <DObject>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{0d1cfa0e-2ebc-4af8-8a1f-44d073659595}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{b4ebad72-6d23-45a1-9e3f-ad8e8afd657d}</object>
+                         <stereotypes>
+                          <qlist>
+                           <item>interface</item>
+                          </qlist>
+                         </stereotypes>
+                         <name>IGameData</name>
+                         <pos>x:375;y:670</pos>
+                         <rect>x:-20;y:-20;w:40;h:40</rect>
+                         <visual-role>0</visual-role>
+                         <visual-emphasized>true</visual-emphasized>
+                        </DObject>
+                       </base-DObject>
+                       <show-all-members>true</show-all-members>
+                      </DClass>
+                     </instance>
+                    </item>
+                    <item>
+                     <instance type="DClass">
+                      <DClass>
+                       <base-DObject>
+                        <DObject>
+                         <base-DElement>
+                          <DElement>
+                           <uid>{1a1c9e30-7837-444a-b562-bbf547375a21}</uid>
+                          </DElement>
+                         </base-DElement>
+                         <object>{465c1837-c876-4e23-a727-b28d825f0240}</object>
+                         <name>Board</name>
+                         <pos>x:800;y:155</pos>
+                         <rect>x:-200;y:-75;w:400;h:150</rect>
+                         <visual-role>0</visual-role>
+                        </DObject>
+                       </base-DObject>
+                       <show-all-members>true</show-all-members>
+                      </DClass>
+                     </instance>
+                    </item>
                    </qlist>
                   </elements>
-                  <last-modified>1469435114550</last-modified>
+                  <last-modified>1469977815871</last-modified>
                   <toolbarid>Classes</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -1281,7 +1328,117 @@
            </item>
            <item>
             <handle>
-             <uid>{e2689c9c-54f4-4e6b-adef-61d23d2799f8}</uid>
+             <uid>{965a5802-0e39-47f3-bb8c-fa427d183330}</uid>
+             <target>
+              <instance type="MClass">
+               <MClass>
+                <base-MObject>
+                 <MObject>
+                  <base-MElement>
+                   <MElement>
+                    <uid>{965a5802-0e39-47f3-bb8c-fa427d183330}</uid>
+                    <stereotypes>
+                     <qlist>
+                      <item>interface</item>
+                     </qlist>
+                    </stereotypes>
+                   </MElement>
+                  </base-MElement>
+                  <name>IPhase</name>
+                 </MObject>
+                </base-MObject>
+                <members>
+                 <qlist>
+                  <item>
+                   <MClassMember>
+                    <uid>{34a5bcc6-98e4-4ceb-8f98-a9d20ac36d65}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>3</properties>
+                    <declaration>void click(const QPoint &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{830e8390-c9b9-4cbd-bfd9-520adcde8ef0}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>3</properties>
+                    <declaration>void onTickFrame()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{5917c30c-415d-4ea7-b693-44768e4889df}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>3</properties>
+                    <declaration>void draw(QPainter &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{1614b6e5-02b7-4825-9c3f-ebfd39bb089d}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>bool canSave()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{52f95125-b554-4360-939c-4e0c680ef788}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>bool canLoad()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{af24c75f-9044-4b92-b552-8f5660ff5a9a}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>bool save(QDataStream &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{4cf385fc-4b3b-4935-9fa6-a60356207704}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>3</properties>
+                    <declaration>bool load(QDataStream &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{c5856851-aad4-4fc2-aa43-c54fd240c89b}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>QString information()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{7f090579-d06c-4527-b3ba-208899754e33}</uid>
+                    <visibility>4</visibility>
+                    <type>2</type>
+                    <declaration>void toNextPhase(PhaseType)</declaration>
+                   </MClassMember>
+                  </item>
+                 </qlist>
+                </members>
+               </MClass>
+              </instance>
+             </target>
+            </handle>
+           </item>
+           <item>
+            <handle>
+             <uid>{f1136a66-dff4-4ab3-933e-07a9f53e688a}</uid>
              <target>
               <instance type="MPackage">
                <MPackage>
@@ -1289,10 +1446,10 @@
                  <MObject>
                   <base-MElement>
                    <MElement>
-                    <uid>{e2689c9c-54f4-4e6b-adef-61d23d2799f8}</uid>
+                    <uid>{f1136a66-dff4-4ab3-933e-07a9f53e688a}</uid>
                    </MElement>
                   </base-MElement>
-                  <name>Phase</name>
+                  <name>SimpleSlide</name>
                   <children>
                    <handles>
                     <handles>
@@ -1343,7 +1500,17 @@
                              </relations>
                             </MObject>
                            </base-MObject>
-                           <namespace>Phase</namespace>
+                           <members>
+                            <qlist>
+                             <item>
+                              <MClassMember>
+                               <uid>{0e958010-7559-4e79-8025-a54e8ba5f495}</uid>
+                               <type>1</type>
+                               <declaration>SourceImage img</declaration>
+                              </MClassMember>
+                             </item>
+                            </qlist>
+                           </members>
                           </MClass>
                          </instance>
                         </target>
@@ -1395,7 +1562,17 @@
                              </relations>
                             </MObject>
                            </base-MObject>
-                           <namespace>Phase</namespace>
+                           <members>
+                            <qlist>
+                             <item>
+                              <MClassMember>
+                               <uid>{21896d70-5f81-43de-b37c-05fb3c43dd99}</uid>
+                               <type>1</type>
+                               <declaration>Pieces &amp;pieces</declaration>
+                              </MClassMember>
+                             </item>
+                            </qlist>
+                           </members>
                           </MClass>
                          </instance>
                         </target>
@@ -1447,105 +1624,27 @@
                              </relations>
                             </MObject>
                            </base-MObject>
-                           <namespace>Phase</namespace>
-                          </MClass>
-                         </instance>
-                        </target>
-                       </handle>
-                      </item>
-                      <item>
-                       <handle>
-                        <uid>{965a5802-0e39-47f3-bb8c-fa427d183330}</uid>
-                        <target>
-                         <instance type="MClass">
-                          <MClass>
-                           <base-MObject>
-                            <MObject>
-                             <base-MElement>
-                              <MElement>
-                               <uid>{965a5802-0e39-47f3-bb8c-fa427d183330}</uid>
-                               <stereotypes>
-                                <qlist>
-                                 <item>interface</item>
-                                </qlist>
-                               </stereotypes>
-                              </MElement>
-                             </base-MElement>
-                             <name>IPhase</name>
-                            </MObject>
-                           </base-MObject>
-                           <namespace>Phase</namespace>
                            <members>
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{3e7a3f67-9f31-4a9a-817f-a7605a66e0b2}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>3</properties>
-                               <declaration>void click(const QPoint &amp;)</declaration>
+                               <uid>{9dedd42a-a755-4565-b568-da7dbfd19088}</uid>
+                               <type>1</type>
+                               <declaration>Pieces &amp;pieces</declaration>
                               </MClassMember>
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{41dc31e7-11d7-4a63-88fa-30150cba7dee}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>3</properties>
-                               <declaration>void onTickFrame()</declaration>
+                               <uid>{cdbeba3e-ee13-42cc-997c-cb671a84f3a3}</uid>
+                               <type>1</type>
+                               <declaration>Pieces animationPieces</declaration>
                               </MClassMember>
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{c16e839e-bd31-407c-90bd-d8c5ecf9eccb}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>3</properties>
-                               <declaration>void draw(QPainter &amp;)</declaration>
-                              </MClassMember>
-                             </item>
-                             <item>
-                              <MClassMember>
-                               <uid>{d10389d9-3e8a-4b44-a575-f435c2094957}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>7</properties>
-                               <declaration>bool canSave()</declaration>
-                              </MClassMember>
-                             </item>
-                             <item>
-                              <MClassMember>
-                               <uid>{114ce2dd-ea5a-4359-87c4-ea5a702f9662}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>7</properties>
-                               <declaration>bool canLoad()</declaration>
-                              </MClassMember>
-                             </item>
-                             <item>
-                              <MClassMember>
-                               <uid>{fcfea80f-1a36-4860-85f6-bd22d2f10317}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>7</properties>
-                               <declaration>bool save(const QString &amp;, const QSize &amp;ssSize)</declaration>
-                              </MClassMember>
-                             </item>
-                             <item>
-                              <MClassMember>
-                               <uid>{9b5fa381-ad06-4ed9-b188-0c9a0192a549}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>1</properties>
-                               <declaration>bool load(const QString &amp;)</declaration>
-                              </MClassMember>
-                             </item>
-                             <item>
-                              <MClassMember>
-                               <uid>{5567bf62-8792-4f61-97d9-16b03f420d2a}</uid>
-                               <visibility>4</visibility>
-                               <type>2</type>
-                               <declaration>void toNextPhase(PhaseType)</declaration>
+                               <uid>{fa11bf65-db9c-48e1-89ef-19842b406efa}</uid>
+                               <type>1</type>
+                               <declaration>IPuzzlePiece *blankPiece</declaration>
                               </MClassMember>
                              </item>
                             </qlist>
@@ -1601,7 +1700,42 @@
                              </relations>
                             </MObject>
                            </base-MObject>
-                           <namespace>Phase</namespace>
+                           <members>
+                            <qlist>
+                             <item>
+                              <MClassMember>
+                               <uid>{a3bd5645-e0d1-404d-a124-3882c0b44911}</uid>
+                               <visibility>3</visibility>
+                               <type>1</type>
+                               <declaration>SourceImage img</declaration>
+                              </MClassMember>
+                             </item>
+                             <item>
+                              <MClassMember>
+                               <uid>{db0a775c-17cb-4370-b710-1b0347da26b5}</uid>
+                               <visibility>3</visibility>
+                               <type>1</type>
+                               <declaration>Pieces &amp;pieces</declaration>
+                              </MClassMember>
+                             </item>
+                             <item>
+                              <MClassMember>
+                               <uid>{8b683f92-fe66-4759-8c6d-6fe56ebe5bf8}</uid>
+                               <visibility>3</visibility>
+                               <type>1</type>
+                               <declaration>Pieces changedPieces</declaration>
+                              </MClassMember>
+                             </item>
+                             <item>
+                              <MClassMember>
+                               <uid>{a65f0f6f-7960-44a4-9a24-5e5d3f776480}</uid>
+                               <visibility>3</visibility>
+                               <type>1</type>
+                               <declaration>Shuffler shuffler</declaration>
+                              </MClassMember>
+                             </item>
+                            </qlist>
+                           </members>
                           </MClass>
                          </instance>
                         </target>
@@ -1653,7 +1787,18 @@
                              </relations>
                             </MObject>
                            </base-MObject>
-                           <namespace>Phase</namespace>
+                           <members>
+                            <qlist>
+                             <item>
+                              <MClassMember>
+                               <uid>{1e19066e-1e1a-4074-a9fa-4174122080ee}</uid>
+                               <visibility>3</visibility>
+                               <type>1</type>
+                               <declaration>SourceImage img</declaration>
+                              </MClassMember>
+                             </item>
+                            </qlist>
+                           </members>
                           </MClass>
                          </instance>
                         </target>
@@ -1666,6 +1811,180 @@
                  </MObject>
                 </base-MObject>
                </MPackage>
+              </instance>
+             </target>
+            </handle>
+           </item>
+           <item>
+            <handle>
+             <uid>{b4ebad72-6d23-45a1-9e3f-ad8e8afd657d}</uid>
+             <target>
+              <instance type="MClass">
+               <MClass>
+                <base-MObject>
+                 <MObject>
+                  <base-MElement>
+                   <MElement>
+                    <uid>{b4ebad72-6d23-45a1-9e3f-ad8e8afd657d}</uid>
+                    <stereotypes>
+                     <qlist>
+                      <item>interface</item>
+                     </qlist>
+                    </stereotypes>
+                   </MElement>
+                  </base-MElement>
+                  <name>IGameData</name>
+                 </MObject>
+                </base-MObject>
+                <members>
+                 <qlist>
+                  <item>
+                   <MClassMember>
+                    <uid>{ed887016-2737-46dd-8e9e-e5e3a74cd9ee}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>QString gameName()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{5119ab5c-e605-487b-a652-468b50064df8}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>PhasePointer createPhase(PhaseType)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{d34017e8-884e-47d6-b541-a1c9e9aafa48}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>const SourceImage &amp;sourceImage()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{a1a179db-71b2-44c8-ab89-0256d7cc4af7}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>BoardInfoPointer boardInfo()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{890bdbdd-a8e3-4c84-b221-9f5625eaed8b}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>7</properties>
+                    <declaration>void save(QDataStream &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{c71cd291-4b69-4b95-8a23-286a8355f9cc}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>3</properties>
+                    <declaration>void load(QDataStream &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                 </qlist>
+                </members>
+               </MClass>
+              </instance>
+             </target>
+            </handle>
+           </item>
+           <item>
+            <handle>
+             <uid>{465c1837-c876-4e23-a727-b28d825f0240}</uid>
+             <target>
+              <instance type="MClass">
+               <MClass>
+                <base-MObject>
+                 <MObject>
+                  <base-MElement>
+                   <MElement>
+                    <uid>{465c1837-c876-4e23-a727-b28d825f0240}</uid>
+                   </MElement>
+                  </base-MElement>
+                  <name>Board</name>
+                 </MObject>
+                </base-MObject>
+                <members>
+                 <qlist>
+                  <item>
+                   <MClassMember>
+                    <uid>{bb6fae07-3e8e-45c0-ae23-2d76a186eb4d}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <declaration>QList&lt;PuzzlePiecePointer&gt; slidePiece(const QPoint &amp;from, const QPoint &amp;to)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{7685478f-608c-49a8-ae3b-aad28e30f914}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <declaration>QList&lt;PuzzlePiecePointer&gt; swapPiece(const QPoint &amp;from, const QPoint &amp;to)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{e358fa14-3e6f-4d8c-a81e-12f1b10904a7}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <declaration>void draw(QPainter &amp;)</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{be2c6aa5-6aeb-4cb5-9805-ce410338bde2}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <declaration>void onTickFrame()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{771efa9a-dfd2-4aab-95a5-73bc30ea6880}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <declaration>void skipPiecesAnimation()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{39484af4-aaa3-40d8-9a0f-0bf9d87d1bb5}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>4</properties>
+                    <declaration>BoardInfoPointer boardInfo()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{807e6c52-e138-4052-a9ea-28526b37f933}</uid>
+                    <visibility>2</visibility>
+                    <type>1</type>
+                    <declaration>BoardInfoPointer boardInformation</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{62d615c1-5206-4ff2-b2c5-92713be1d5ad}</uid>
+                    <visibility>2</visibility>
+                    <type>1</type>
+                    <declaration>QList&lt;PuzzlePiecePointer&gt; &amp;pieces</declaration>
+                   </MClassMember>
+                  </item>
+                 </qlist>
+                </members>
+               </MClass>
               </instance>
              </target>
             </handle>
