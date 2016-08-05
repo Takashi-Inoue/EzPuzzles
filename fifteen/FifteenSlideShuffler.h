@@ -29,7 +29,7 @@ namespace Fifteen {
 class SlideShuffler : public AbstractShuffler
 {
 public:
-    SlideShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QPoint &blankPos);
+    SlideShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos);
     ~SlideShuffler() = default;
 
 protected:

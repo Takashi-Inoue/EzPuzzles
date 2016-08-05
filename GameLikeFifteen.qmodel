@@ -1840,7 +1840,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{ed887016-2737-46dd-8e9e-e5e3a74cd9ee}</uid>
+                    <uid>{e8fecf7c-0032-4877-91f7-0787e622953d}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1849,16 +1849,25 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{5119ab5c-e605-487b-a652-468b50064df8}</uid>
+                    <uid>{bf04f37c-1b31-4d25-8773-f46c5e3d5142}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
-                    <properties>7</properties>
+                    <properties>3</properties>
                     <declaration>PhasePointer createPhase(PhaseType)</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{d34017e8-884e-47d6-b541-a1c9e9aafa48}</uid>
+                    <uid>{5dd0cebb-020e-4f1d-8e40-8b08d1af758f}</uid>
+                    <visibility>1</visibility>
+                    <type>2</type>
+                    <properties>3</properties>
+                    <declaration>PhasePointer createCurrentPhase()</declaration>
+                   </MClassMember>
+                  </item>
+                  <item>
+                   <MClassMember>
+                    <uid>{3e5f2fb8-cfce-43ef-a3bf-05b72c8ead7a}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1867,7 +1876,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{a1a179db-71b2-44c8-ab89-0256d7cc4af7}</uid>
+                    <uid>{da48054f-a26b-4fd5-a69f-1335aea52599}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1876,7 +1885,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{890bdbdd-a8e3-4c84-b221-9f5625eaed8b}</uid>
+                    <uid>{4629705b-f368-4287-ae81-2f46dc3cac23}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1885,7 +1894,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{c71cd291-4b69-4b95-8a23-286a8355f9cc}</uid>
+                    <uid>{e0fd39cf-42d9-498a-9d11-357ba015df59}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
@@ -1919,7 +1928,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{bb6fae07-3e8e-45c0-ae23-2d76a186eb4d}</uid>
+                    <uid>{22ad51b2-37b8-4390-be1b-c3ee9f40aaea}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>QList&lt;PuzzlePiecePointer&gt; slidePiece(const QPoint &amp;from, const QPoint &amp;to)</declaration>
@@ -1927,7 +1936,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{7685478f-608c-49a8-ae3b-aad28e30f914}</uid>
+                    <uid>{18fcde9e-0853-49fa-9a9d-2350365deaf3}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>QList&lt;PuzzlePiecePointer&gt; swapPiece(const QPoint &amp;from, const QPoint &amp;to)</declaration>
@@ -1935,7 +1944,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{e358fa14-3e6f-4d8c-a81e-12f1b10904a7}</uid>
+                    <uid>{378afc7e-befc-4d1a-888c-0dbe819600cd}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>void draw(QPainter &amp;)</declaration>
@@ -1943,7 +1952,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{be2c6aa5-6aeb-4cb5-9805-ce410338bde2}</uid>
+                    <uid>{e724f8f3-b127-49f6-bb4c-1da588b6176e}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>void onTickFrame()</declaration>
@@ -1951,7 +1960,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{771efa9a-dfd2-4aab-95a5-73bc30ea6880}</uid>
+                    <uid>{4f53a340-add6-4a7f-894a-3c791c84d2b8}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>void skipPiecesAnimation()</declaration>
@@ -1959,7 +1968,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{39484af4-aaa3-40d8-9a0f-0bf9d87d1bb5}</uid>
+                    <uid>{fe0c4236-5788-45e9-b226-e4ca5d283e78}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>4</properties>
@@ -1968,7 +1977,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{807e6c52-e138-4052-a9ea-28526b37f933}</uid>
+                    <uid>{eb41a337-8659-4785-b826-e2500decb79e}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>BoardInfoPointer boardInformation</declaration>
@@ -1976,7 +1985,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{62d615c1-5206-4ff2-b2c5-92713be1d5ad}</uid>
+                    <uid>{68452f8d-d954-4b31-b44a-9fa098ab0e95}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QList&lt;PuzzlePiecePointer&gt; &amp;pieces</declaration>

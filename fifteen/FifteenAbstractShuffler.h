@@ -32,22 +32,23 @@ class AbstractShuffler : public ThreadOperation
 {
     Q_OBJECT
 public:
-    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QObject *parent = 0) :
+    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QObject *parent = 0) :
         ThreadOperation(parent),
         pieces(pieces),
         boardInfo(boardInfo)
     {
         qRegisterMetaType<QList<PuzzlePiecePointer>>("QList<PuzzlePiecePointer>");
+        qRegisterMetaType<QList<Fifteen::PuzzlePiecePointer>>("QList<Fifteen::PuzzlePiecePointer>");
     }
 
     virtual ~AbstractShuffler() = default;
 
 signals:
-    void update(QList<PuzzlePiecePointer> changed);
+    void update(QList<Fifteen::PuzzlePiecePointer> changed);
 
 protected:
     QList<PuzzlePiecePointer> &pieces;
-    const BoardInfoPointer &boardInfo;
+    BoardInfoPointer boardInfo;
 };
 
 } // Fifteen

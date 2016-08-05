@@ -73,6 +73,7 @@ protected:
     void drawPiece(QPainter &painterBuffer, int x, int y);
     void openChaining(int x, int y);
     QString openedDescription() const;
+    void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const override;
 
     template<typename T> T safePieceCount() const
     {

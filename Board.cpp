@@ -42,12 +42,8 @@ QList<Fifteen::PuzzlePiecePointer> Board::slidePiece(const QPoint &from, const Q
 
     Fifteen::PieceMover mover(pieces, boardInformation->xCount());
 
-    auto list =  from.x() == to.x() ? mover.slideVertical(from, to)
-                                    : mover.slideHorizontal(from, to);
-
-    addAnimationPieces(list);
-
-    return list;
+    return from.x() == to.x() ? mover.slideVertical(from, to)
+                              : mover.slideHorizontal(from, to);
 }
 
 QList<Fifteen::PuzzlePiecePointer> Board::swapPiece(const QPoint &from, const QPoint &to)
@@ -60,52 +56,40 @@ QList<Fifteen::PuzzlePiecePointer> Board::swapPiece(const QPoint &from, const QP
     pieceFrom->setPos(from);
     pieceTo->setPos(to);
 
-    auto list = {pieceFrom, pieceTo};
-
-    addAnimationPieces(list);
-
-    return list;
+    return {pieceFrom, pieceTo};
 }
 
 void Board::draw(QPainter &painter)
 {
-    for (auto &piece : animationPieces)
+    for (auto &piece : pieces)
         piece->draw(painter);
-
-    auto itr = std::remove_if(animationPieces.begin(), animationPieces.end(), [](Fifteen::PuzzlePiecePointer &piece) {
-        bool f1 = (piece->animation() == nullptr || piece->animation()->isFinishedAnimation());
-        bool f2 = (piece->effect() == nullptr || piece->effect()->isFinishedAnimation());
-
-        return (f1 & f2);
-    });
-
-    animationPieces.erase(itr, animationPieces.end());
 }
 
 void Board::onTickFrame()
 {
-    for (auto &piece : animationPieces)
+    for (auto &piece : pieces)
         piece->onTickFrame();
 }
 
 void Board::skipPiecesAnimation()
 {
-    for (auto &piece : animationPieces)
+    for (auto &piece : pieces)
         piece->skipAnimation();
+}
+
+bool Board::isClearerd() const
+{
+    for (const auto &piece : pieces) {
+        if (!piece->pos().isCorrect())
+            return false;
+    }
+
+    return true;
 }
 
 BoardInfoPointer Board::boardInfo() const
 {
     return boardInformation;
-}
-
-void Board::addAnimationPieces(QList<Fifteen::PuzzlePiecePointer> pieces)
-{
-    animationPieces += pieces;
-
-    qSort(animationPieces);
-
-    animationPieces.erase(std::unique(animationPieces.begin(), animationPieces.end()), animationPieces.end());
 }
 
 Fifteen::PuzzlePiecePointer &Board::getPiece(const QPoint &pos)

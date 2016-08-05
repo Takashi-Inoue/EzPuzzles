@@ -21,6 +21,20 @@
 #include <QCoreApplication>
 #include <QDir>
 
+QString EzPuzzles::gameName(EzPuzzles::GameType gameType)
+{
+    if (gameType == SimpleSlide)
+        return "Simple Slide";
+
+    if (gameType == SimpleSwap)
+        return "Simple Swap";
+
+    if (gameType == MineSweeper)
+        return "MineSweeper";
+
+    return "";
+}
+
 QSize EzPuzzles::screenshotSize()
 {
     return QSize(256, 256);

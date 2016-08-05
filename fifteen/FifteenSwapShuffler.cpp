@@ -21,7 +21,7 @@
 
 namespace Fifteen {
 
-SwapShuffler::SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo) :
+SwapShuffler::SwapShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo) :
     AbstractShuffler(pieces, boardInfo),
     mt(std::random_device()())
 {

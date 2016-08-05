@@ -33,9 +33,13 @@ public:
 public:
     QList<Fifteen::PuzzlePiecePointer> slidePiece(const QPoint &from, const QPoint &to);
     QList<Fifteen::PuzzlePiecePointer> swapPiece(const QPoint &from, const QPoint &to);
+
     void draw(QPainter &painter);
     void onTickFrame();
     void skipPiecesAnimation();
+
+    bool isClearerd() const;
+
     BoardInfoPointer boardInfo() const;
 
 protected:
@@ -44,8 +48,8 @@ protected:
 
     BoardInfoPointer boardInformation;
     QList<Fifteen::PuzzlePiecePointer> &pieces;
-    QList<Fifteen::PuzzlePiecePointer> animationPieces;
-
 };
+
+typedef std::shared_ptr<Board> BoardPointer;
 
 #endif // BOARD_H

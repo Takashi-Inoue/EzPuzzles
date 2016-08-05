@@ -22,19 +22,24 @@
 #include "EzPuzzles.h"
 #include "IPhase.h"
 #include "BoardInformation.h"
+#include "SourceImage.h"
 
 #include <memory>
 
 class IGameData
 {
 public:
+    IGameData() = default;
+    virtual ~IGameData() = default;
+
     virtual QString gameName() const = 0;
     virtual PhasePointer createPhase(IPhase::PhaseType) = 0;
+    virtual PhasePointer createCurrentPhase() = 0;
     virtual const SourceImage &sourceImage() const = 0;
     virtual BoardInfoPointer boardInfo() const = 0;
 
-    virtual void save(QDataStream &) const = 0;
-    virtual void load(QDataStream &) = 0;
+    virtual bool save(const QString &fileName) const = 0;
+    virtual bool load(const QString &fileName) = 0;
 };
 
 typedef std::shared_ptr<IGameData> GameDataPointer;

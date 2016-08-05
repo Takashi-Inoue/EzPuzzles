@@ -19,49 +19,45 @@
 #include "PhaseSimpleSlideGaming.h"
 #include "fifteen/FifteenPieceMover.h"
 
-PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(QList<Fifteen::PuzzlePiecePointer> &pieces, QPoint &currentBlankPos, PhaseType nextPhase, QObject *parent) :
+PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
     IPhase(parent),
-    pieces(pieces),
+    board(board),
     blankPos(currentBlankPos),
-    nextPhase(nextPhase)
+    nextPhase(nextPhase),
+    slideFrameCount(slideFrameCount),
+    isGameCleared(false)
 {
+    Q_ASSERT(slideFrameCount >= 0);
 }
 
-void PhaseSimpleSlideGaming::click(const QPoint &clickPiecePos)
+void PhaseSimpleSlideGaming::click(const QPoint &clickedPiecePos)
 {
-    if (clickPiecePos == blankPos)
+    if (isGameCleared | (clickedPiecePos == blankPos))
         return;
 
-    if ((clickPiecePos.x() != blankPos.x()) & (clickPiecePos.y() != blankPos.y()))
+    if ((clickedPiecePos.x() != blankPos.x()) & (clickedPiecePos.y() != blankPos.y()))
         return;
 
+    board->slidePiece(blankPos, clickedPiecePos);
 
+    blankPos = clickedPiecePos;
 
-    blankPos = clickPiecePos;
-
-    if (isCleared())
-        emit toNextPhase(nextPhase);
+    isGameCleared = board->isClearerd();
 }
 
 void PhaseSimpleSlideGaming::onTickFrame()
 {
-    for (auto &piece : animationPieces)
-        piece->onTickFrame();
+    board->onTickFrame();
+
+    if (isGameCleared) {
+        if (--slideFrameCount == 0)
+            emit toNextPhase(nextPhase);
+    }
 }
 
 void PhaseSimpleSlideGaming::draw(QPainter &painter)
 {
-    for (auto &piece : animationPieces)
-        piece->draw(painter);
-
-    auto itr = std::remove_if(animationPieces.begin(), animationPieces.end(), [](Fifteen::PuzzlePiecePointer &piece) {
-        bool f1 = (piece->animation() == nullptr || piece->animation()->isFinishedAnimation());
-        bool f2 = (piece->effect() == nullptr || piece->effect()->isFinishedAnimation());
-
-        return (f1 & f2);
-    });
-
-    animationPieces.erase(itr, animationPieces.end());
+    board->draw(painter);
 }
 
 bool PhaseSimpleSlideGaming::canSave() const
@@ -87,14 +83,4 @@ bool PhaseSimpleSlideGaming::load(QDataStream &)
 QString PhaseSimpleSlideGaming::information() const
 {
     return "";
-}
-
-bool PhaseSimpleSlideGaming::isCleared() const
-{
-    for (const auto &piece : pieces) {
-        if (!piece->pos().isCorrect())
-            return false;
-    }
-
-    return true;
 }

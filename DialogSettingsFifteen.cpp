@@ -24,6 +24,9 @@
 #include "fifteen/GameSimpleSlide.h"
 #include "fifteen/GameSimpleSwap.h"
 
+#include "PieceGame.h"
+#include "Slide/GameDataSimpleSlide.h"
+
 #include <QDebug>
 
 DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton, QWidget *parent) :
@@ -91,7 +94,9 @@ IGame *DialogSettingsFifteen::buildSimpleSlide() const
     ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
                                             : defaultBlank.select(grid->selectedCellPos());
 
-    return new Fifteen::GameSimpleSlide(sourceImage, xyCount, defaultBlank);
+    return new PieceGame(std::make_shared<GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
+
+//    return new Fifteen::GameSimpleSlide(sourceImage, xyCount, defaultBlank);
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSwap() const

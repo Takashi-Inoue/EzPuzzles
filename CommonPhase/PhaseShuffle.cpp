@@ -23,9 +23,8 @@
 
 extern QThread gameThread;
 
-PhaseShuffle::PhaseShuffle(QList<Fifteen::PuzzlePiecePointer> &pieces, std::shared_ptr<Fifteen::AbstractShuffler> shuffler, PhaseType nextPhase, QObject *parent) :
+PhaseShuffle::PhaseShuffle(std::shared_ptr<Fifteen::AbstractShuffler> shuffler, PhaseType nextPhase, QObject *parent) :
     IPhase(parent),
-    pieces(pieces),
     shuffler(shuffler),
     nextPhase(nextPhase)
 {
@@ -36,12 +35,13 @@ PhaseShuffle::PhaseShuffle(QList<Fifteen::PuzzlePiecePointer> &pieces, std::shar
 
     if (!gameThread.isRunning())
         gameThread.start();
+
+    shuffler->start();
 }
 
 PhaseShuffle::~PhaseShuffle()
 {
     shuffler->disconnect();
-    shuffler->moveToThread(QThread::currentThread());
 }
 
 void PhaseShuffle::draw(QPainter &painter)

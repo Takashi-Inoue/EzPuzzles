@@ -20,18 +20,20 @@
 #define IPUZZLEPIECE_H
 
 #include "Position.h"
-#include "AnimationObject/IAnimationObject.h"
 #include "AnimationObject/Animation/AbstractAnimation.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
 #include <memory>
 
 namespace Fifteen {
 
-class IPuzzlePiece : public IAnimationObject
+class IPuzzlePiece
 {
 public:
     IPuzzlePiece() = default;
     virtual ~IPuzzlePiece() = default;
+
+    virtual void onTickFrame() = 0;
+    virtual void skipAnimation() = 0;
 
     virtual void draw(QPainter &) = 0;
     virtual void setPos(const QPoint &pos) = 0;

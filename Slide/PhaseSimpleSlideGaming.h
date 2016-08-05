@@ -20,16 +20,17 @@
 #define PHASESIMPLESLIDEGAMING_H
 
 #include "IPhase.h"
+#include "Board.h"
 #include "fifteen/PuzzlePiece.h"
 
 class PhaseSimpleSlideGaming : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseSimpleSlideGaming(QList<Fifteen::PuzzlePiecePointer> &pieces, QPoint &currentBlankPos, PhaseType nextPhase, QObject *parent = 0);
+    PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
     ~PhaseSimpleSlideGaming() = default;
 
-    void click(const QPoint &) override;
+    void click(const QPoint &clickedPiecePos) override;
     void onTickFrame() override;
     void draw(QPainter &) override;
     bool canSave() const override;
@@ -39,12 +40,11 @@ public:
     QString information() const override;
 
 protected:
-    bool isCleared() const;
-
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
-    QList<Fifteen::PuzzlePiecePointer> animationPieces;
+    BoardPointer board;
     QPoint &blankPos;
     PhaseType nextPhase;
+    int slideFrameCount;
+    bool isGameCleared;
 };
 
 #endif // PHASESIMPLESLIDEGAMING_H

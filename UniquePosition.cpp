@@ -59,5 +59,6 @@ void UniquePosition::write(QDataStream &stream) const
 
 QString UniquePosition::toString() const
 {
-    return QString("[%1, %2]").arg(selectedPos.x() + 1).arg(selectedPos.y() + 1) + (isRandomSelect ? "(Random)" : "(Specified)");
+    return isRandomSelect ? "[???]<Random>"
+                          : QString("[%1, %2]<Specified>").arg(selectedPos.x() + 1).arg(selectedPos.y() + 1);
 }

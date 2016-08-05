@@ -30,7 +30,7 @@ namespace Fifteen {
 class SwapShuffler : public AbstractShuffler
 {
 public:
-    SwapShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo);
+    SwapShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo);
     ~SwapShuffler() = default;
 
 protected:

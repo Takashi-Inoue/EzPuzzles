@@ -99,9 +99,7 @@ void GameMineSweeper::save(const QString &saveDirPath, const QSize &screenshotSi
     stream << PiecesFactory::toIntList(pieces);
     stream << sourceImg.pixmap;
 
-    QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
-
-    backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
+    saveScreenshot(saveDirPath, screenshotSize);
 }
 
 bool GameMineSweeper::load(const QString &loadPath)
@@ -390,7 +388,14 @@ QString GameMineSweeper::openedDescription() const
     return QString("%1/%2 %3% opend, %4 missed").arg(openedCount)
                                                 .arg(safeCount)
                                                 .arg((openedCount * 100.0) / safeCount, 0, 'f', 2)
-                                                .arg(missedCount);
+            .arg(missedCount);
+}
+
+void GameMineSweeper::saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const
+{
+    QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
+
+    backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
 }
 
 GameMineSweeper::GameMineSweeper() :

@@ -28,10 +28,14 @@ AbstractAnimationObject::AbstractAnimationObject(int totalFrameCount, bool isLoo
     Q_ASSERT(totalFrameCount >= 0);
 }
 
-void AbstractAnimationObject::onTickFrame()
+bool AbstractAnimationObject::onTickFrame()
 {
+    int oldCount = nowFrameCount;
+
     nowFrameCount = isLoop ? ++nowFrameCount % totalFrameCount
                            : qMin(++nowFrameCount, totalFrameCount);
+
+    return oldCount != nowFrameCount;
 }
 
 void AbstractAnimationObject::skipAnimation()

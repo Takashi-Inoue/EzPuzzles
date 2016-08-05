@@ -22,7 +22,7 @@
 
 namespace Fifteen {
 
-SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QPoint &blankPos) :
+SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos) :
     AbstractShuffler(pieces, boardInfo),
     blankPos(blankPos),
     mt(std::random_device()())

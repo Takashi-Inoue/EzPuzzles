@@ -25,12 +25,38 @@ namespace Fifteen {
 PuzzlePiece::PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage) :
     imagePiece(std::make_unique<ImageFragmentPiece>(sourceImage, boardInfo->rectFromPiecePos(pieceDefaultPos))),
     boardInfo(boardInfo),
-    position(pieceDefaultPos)
+    position(pieceDefaultPos),
+    isChanged(false)
 {
+}
+
+void PuzzlePiece::onTickFrame()
+{
+    if (animObj != nullptr)
+        isChanged |= animObj->onTickFrame();
+
+    if (effectObj != nullptr)
+        isChanged |= effectObj->onTickFrame();
+}
+
+void PuzzlePiece::skipAnimation()
+{
+    isChanged = true;
+
+    if (animObj != nullptr) {
+        animObj->skipAnimation();
+        drawRect = animObj->rect();
+    }
+
+    if (effectObj != nullptr)
+        effectObj->skipAnimation();
 }
 
 void PuzzlePiece::draw(QPainter &painter)
 {
+    if (!isChanged)
+        return;
+
     if (animObj != nullptr) {
         auto rect = animObj->rect();
 
@@ -45,6 +71,8 @@ void PuzzlePiece::draw(QPainter &painter)
 
     if (effectObj != nullptr)
         effectObj->draw(painter, drawRect);
+
+    isChanged = false;
 }
 
 void PuzzlePiece::setPos(const QPoint &pos)
@@ -58,6 +86,8 @@ void PuzzlePiece::setPos(const QPoint &pos)
     position.setPos(pos);
 
     animObj->start(drawRect, boardInfo->rectFromPiecePos(pos));
+
+    isChanged = true;
 }
 
 void PuzzlePiece::setPosWithoutAnimation(const QPoint &pos)
@@ -65,6 +95,8 @@ void PuzzlePiece::setPosWithoutAnimation(const QPoint &pos)
     position.setPos(pos);
 
     drawRect = boardInfo->rectFromPiecePos(pos);
+
+    isChanged = true;
 }
 
 void PuzzlePiece::setAnimation(AnimationPointer animation)
@@ -82,31 +114,6 @@ const Position &PuzzlePiece::pos() const
     return position;
 }
 
-void PuzzlePiece::onTickFrame()
-{
-    if (animObj != nullptr)
-        animObj->onTickFrame();
-
-    if (effectObj != nullptr)
-        effectObj->onTickFrame();
-}
-
-void PuzzlePiece::skipAnimation()
-{
-    if (animObj != nullptr) {
-        animObj->skipAnimation();
-        drawRect = animObj->rect();
-    }
-
-    if (effectObj != nullptr)
-        effectObj->skipAnimation();
-}
-
-bool PuzzlePiece::isLoopAnimation()
-{
-    return false;
-}
-
 const AnimationPointer &PuzzlePiece::animation() const
 {
     return animObj;
@@ -115,11 +122,6 @@ const AnimationPointer &PuzzlePiece::animation() const
 const EffectPointer &PuzzlePiece::effect() const
 {
     return effectObj;
-}
-
-bool PuzzlePiece::isFinishedAnimation()
-{
-    return false;
 }
 
 } // Fifteen

@@ -1,4 +1,4 @@
-#ifndef SLIDEBLANKPIECE_H
+﻿#ifndef SLIDEBLANKPIECE_H
 #define SLIDEBLANKPIECE_H
 
 #include "IPuzzlePiece.h"
@@ -14,6 +14,9 @@ public:
     SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defaultPos, const QBrush &brush, int animationFrames);
 
     // IPuzzlePiece
+    void onTickFrame() override;
+    void skipAnimation() override;
+
     void draw(QPainter &painter) override;
     void setPos(const QPoint &pos) override;
     void setPosWithoutAnimation(const QPoint &pos) override;
@@ -23,12 +26,6 @@ public:
     const EffectPointer &effect() const override;
 
     const Position &pos() const override;
-
-    // IAnimationObject
-    void onTickFrame() override;
-    void skipAnimation() override;
-    bool isLoopAnimation() override;
-    bool isFinishedAnimation() override;
 
 private:
     BoardInfoPointer boardInfo;

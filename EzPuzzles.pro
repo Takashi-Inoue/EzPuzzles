@@ -82,7 +82,11 @@ SOURCES += main.cpp\
     CommonPhase/PhaseShuffle.cpp \
     CommonPhase/PhaseCleared.cpp \
     Slide/PhaseSimpleSlideGaming.cpp \
-    Board.cpp
+    Board.cpp \
+    Slide/GameDataSimpleSlide.cpp \
+    Slide/SaveDataSimpleSlide.cpp \
+    Slide/PhaseSimpleSlideEnding.cpp \
+    AnimationObject/Effect/EffectRoundMoveFrame.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -166,7 +170,11 @@ HEADERS  += MainWindow.h \
     CommonPhase/PhaseShuffle.h \
     CommonPhase/PhaseCleared.h \
     Slide/PhaseSimpleSlideGaming.h \
-    Board.h
+    Board.h \
+    Slide/GameDataSimpleSlide.h \
+    Slide/SaveDataSimpleSlide.h \
+    Slide/PhaseSimpleSlideEnding.h \
+    AnimationObject/Effect/EffectRoundMoveFrame.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

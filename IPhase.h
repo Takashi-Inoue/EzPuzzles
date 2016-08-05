@@ -39,6 +39,7 @@ public:
     explicit IPhase(QObject *parent = nullptr) :
         QObject(parent)
     {
+        qRegisterMetaType<IPhase::PhaseType>("IPhase::PhaseType");
     }
 
     virtual ~IPhase() = default;
@@ -53,7 +54,7 @@ public:
     virtual QString information() const = 0;
 
 signals:
-    void toNextPhase(PhaseType);
+    void toNextPhase(IPhase::PhaseType);
 };
 
 typedef std::shared_ptr<IPhase> PhasePointer;

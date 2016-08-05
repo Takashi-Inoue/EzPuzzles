@@ -27,7 +27,7 @@ public:
     AbstractAnimationObject(int totalFrameCount, bool isLoop);
 
     // IAnimationObject
-    void onTickFrame() override;
+    bool onTickFrame() override;
     void skipAnimation() override;
     bool isLoopAnimation() override;
     bool isFinishedAnimation() override;

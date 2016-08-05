@@ -53,34 +53,16 @@ void PieceGame::save(const QString &saveDirPath, const QSize &screenshotSize) co
     if (!phase->canSave())
         return;
 
-    QFile file(saveDirPath + "/" + gameId.toString() + ".dat");
+    QString fileName = saveDirPath + "/" + gameId.toString() + ".dat";
 
-    if (!file.open(QIODevice::WriteOnly)) {
-        qDebug() << file.errorString();
-        return;
-    }
-
-    QDataStream stream(&file);
-
-    gameData->save(stream);
+    gameData->save(fileName);
 
     saveScreenshot(saveDirPath, screenshotSize);
 }
 
 bool PieceGame::load(const QString &loadFilePath)
 {
-    QFile file(loadFilePath);
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << file.errorString();
-        return false;
-    }
-
-    QDataStream stream(&file);
-
-    gameData->load(stream);
-
-    if (stream.status() != QDataStream::Ok)
+    if (!gameData->load(loadFilePath))
         return false;
 
     backBuffer = QPixmap(gameData->boardInfo()->boardPixelSize());
@@ -118,19 +100,24 @@ void PieceGame::draw(QPainter &dest)
     dest.restore();
 }
 
+QSize PieceGame::maxFieldSize() const
+{
+    return backBuffer.size();
+}
+
 void PieceGame::drawFinalImage(QPainter &dest) const
 {
     const auto &sourceImg = gameData->sourceImage();
 
     QSize destSize = sourceImg.size().scaled(dest.viewport().size(), Qt::KeepAspectRatio);
-    QPoint tl((destSize.width() - dest.viewport().width()) / 2, (destSize.height() - dest.viewport().height()) / 2);
+    QPoint tl((dest.viewport().width() - destSize.width()) / 2, (dest.viewport().height() - destSize.height()) / 2);
 
     dest.drawPixmap(QRect(tl, destSize), sourceImg.pixmap, sourceImg.rect());
 }
 
 QString PieceGame::shortInformation() const
 {
-    return phase->information();
+    return gameData->gameName() + " - " + phase->information();
 }
 
 const SourceImage &PieceGame::sourceImage() const
@@ -140,8 +127,10 @@ const SourceImage &PieceGame::sourceImage() const
 
 void PieceGame::changePhase(IPhase::PhaseType phaseType)
 {
-    if (phase != nullptr && phaseType == phase->phaseType())
-        return;
+    qDebug() << "changePhase" << phaseType;
+
+    if (phase != nullptr)
+        phase->disconnect();
 
     phase = gameData->createPhase(phaseType);
 

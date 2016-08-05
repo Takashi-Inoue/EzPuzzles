@@ -28,6 +28,14 @@ public:
     EzPuzzles() = default;
     ~EzPuzzles() = default;
 
+    enum GameType {
+        SimpleSlide,
+        SimpleSwap,
+        MineSweeper,
+    };
+
+    static QString gameName(GameType gameType);
+
     static QSize screenshotSize();
 
     static QString imageHistoryPath();

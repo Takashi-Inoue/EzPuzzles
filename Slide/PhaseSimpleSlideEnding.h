@@ -16,23 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SIMPLESLIDEPHASEPREGAME_H
-#define SIMPLESLIDEPHASEPREGAME_H
+#ifndef PHASESIMPLESLIDEENDING_H
+#define PHASESIMPLESLIDEENDING_H
 
 #include "IPhase.h"
-#include "BoardInformation.h"
-#include "fifteen/FifteenAbstractShuffler.h"
 #include "fifteen/PuzzlePiece.h"
 
-class PhaseShuffle : public IPhase
+class PhaseSimpleSlideEnding : public IPhase
 {
-    Q_OBJECT
 public:
-    PhaseShuffle(std::shared_ptr<Fifteen::AbstractShuffler> shuffler, PhaseType nextPhase, QObject *parent = 0);
-    ~PhaseShuffle();
+    PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase);
 
-    void click(const QPoint &) override {}
-    void onTickFrame() override {}
+    void click(const QPoint &) override;
+    void onTickFrame() override;
     void draw(QPainter &) override;
     bool canSave() const override;
     bool canLoad() const override;
@@ -40,14 +36,11 @@ public:
     bool load(QDataStream &) override;
     QString information() const override;
 
-private slots:
-    void addChangedPieces(QList<Fifteen::PuzzlePiecePointer>);
-    void completeShuffling();
-
 private:
-    QList<Fifteen::PuzzlePiecePointer> changedPieces;
-    std::shared_ptr<Fifteen::AbstractShuffler> shuffler;
+    static const int frameMoveCount = 180;
+
+    QList<Fifteen::PuzzlePiecePointer> &pieces;
     PhaseType nextPhase;
 };
 
-#endif // SIMPLESLIDEPHASEPREGAME_H
+#endif // PHASESIMPLESLIDEENDING_H
