@@ -37,10 +37,10 @@ public:
     QString information() const override;
 
 private:
-    static const int frameMoveCount = 180;
-
     QList<Fifteen::PuzzlePiecePointer> &pieces;
     PhaseType nextPhase;
+
+    int frameMoveCount;
 };
 
 #endif // PHASESIMPLESLIDEENDING_H

@@ -21,7 +21,8 @@
 
 PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase) :
     pieces(pieces),
-    nextPhase(nextPhase)
+    nextPhase(nextPhase),
+    frameMoveCount(180)
 {
     for (auto &piece : pieces) {
         auto frame = std::make_shared<Effect::RoundMoveFrame>(2, Qt::transparent, Qt::transparent, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192),
@@ -40,6 +41,9 @@ void PhaseSimpleSlideEnding::onTickFrame()
 {
     for (auto &piece : pieces)
         piece->onTickFrame();
+
+    if (frameMoveCount-- <= 0)
+        emit toNextPhase(nextPhase);
 }
 
 void PhaseSimpleSlideEnding::draw(QPainter &painter)

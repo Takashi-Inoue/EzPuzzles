@@ -44,56 +44,73 @@ void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
     painter.setPen(Qt::transparent);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    auto rectInner = rect.marginsRemoved(QMarginsF(width, width, width, width));
+    const auto rectInner = rect.marginsRemoved(QMarginsF(width, width, width, width));
 
-    double totalOuterLength = (rect.width() + rect.height()) * 2;
-    double totalInnerLength = (rectInner.width() + rectInner.height()) * 2;
+    const double totalOuterLength = (rect.width() + rect.height()) * 2;
+    const double totalInnerLength = (rectInner.width() + rectInner.height()) * 2;
     double nowOuterLength = totalOuterLength * nowFrame() / totalFrames();
     double nowInnerLength = totalInnerLength * nowFrame() / totalFrames();
-
-//    qDebug() << totalOuterLength << nowFrame() << totalFrames() << nowOuterLength;
-
-    bool isColorChanged = false;
 
     Qt::Edge currentEdge = startEdge;
 
     auto startOuterPos = pointOnEdge(rect, startEdge, startPoint);
     auto startInnerPos = pointOnEdge(rectInner, startEdge, startPoint);
 
-    for (int i = 0; i < 5; ++i) {
-        auto nextOuterCorner = nextCorner(rect, currentEdge, direction);
-        auto nextInnerCorner = nextCorner(rectInner, currentEdge, direction);
+    typedef QPair<QPointF, QPointF> Points;
 
-        double distOuter = calcDistance(startOuterPos, nextOuterCorner);
-        double distInner = calcDistance(startInnerPos, nextInnerCorner);
+    QList<Points> pointsList = {
+        Points(startOuterPos, startInnerPos)
+    };
 
-        auto gradient = createGradient(rect, currentEdge);
-        gradient.setColorAt(0, isColorChanged ? outerColor2 : outerColor1);
-        gradient.setColorAt(1, isColorChanged ? innerColor2 : innerColor1);
+    int divIndex = 0;
 
-        QVector<QPointF> polygon;
+    for (int i = 0; i < 4; ++i) {
+        auto outer = nextCorner(rect, currentEdge, direction);
+        auto inner = nextCorner(rectInner, currentEdge, direction);
 
-        if (!isColorChanged && distOuter > nowOuterLength) {
-            auto nextOuterPos = nextPoint(startOuterPos, currentEdge, direction, nowOuterLength);
-            auto nextInnerPos = nextPoint(startInnerPos, currentEdge, direction, nowInnerLength);
+        if (nowOuterLength >= 0 && nowOuterLength < totalOuterLength) {
+            double distanceToNextOuterCorner = calcDistance(startOuterPos, outer);
+            double distanceToNextInnerCorner = calcDistance(startInnerPos, inner);
 
-            polygon << startOuterPos << startInnerPos << nextInnerPos << nextOuterPos;
+            if (distanceToNextOuterCorner > nowOuterLength) {
+                QPointF divOuter = nextPoint(startOuterPos, currentEdge, direction, nowOuterLength);
+                QPointF divInner = nextPoint(startInnerPos, currentEdge, direction, nowInnerLength);
 
-            startOuterPos = nextOuterPos;
-            startInnerPos = nextInnerPos;
+                pointsList << Points(divOuter, divInner);
 
-            isColorChanged = true;
-        } else {
-            polygon << startOuterPos << startInnerPos << nextInnerCorner << nextOuterCorner;
+                divIndex = i + 1;
 
-            startOuterPos = nextOuterCorner;
-            startInnerPos = nextInnerCorner;
-
-            currentEdge = nextEdge(currentEdge, direction);
-
-            nowOuterLength -= distOuter;
-            nowInnerLength -= distInner;
+                nowOuterLength = -1;
+            } else {
+                nowOuterLength -= distanceToNextOuterCorner;
+                nowInnerLength -= distanceToNextInnerCorner;
+                startOuterPos = outer;
+                startInnerPos = inner;
+            }
         }
+
+        pointsList << Points(outer, inner);
+
+        currentEdge = nextEdge(currentEdge, direction);
+    }
+
+    if (pointsList.last() != pointsList.first())
+        pointsList << pointsList.first();
+
+    for (int i = 0, lim = pointsList.size() - 1; i < lim; ++i) {
+        const auto &points1 = pointsList.at(i);
+        const auto &points2 = pointsList.at(i + 1);
+
+        auto gradient = createGradient(rect, edgeFromPolygon(points1.first, points1.second, points2.first));
+        gradient.setColorAt(0, i < divIndex ? outerColor1 : outerColor2);
+        gradient.setColorAt(1, i < divIndex ? innerColor1 : innerColor2);
+
+        QVector<QPointF> polygon = {
+            points1.first,
+            points1.second,
+            points2.second,
+            points2.first,
+        };
 
         painter.setBrush(gradient);
         painter.drawPolygon(polygon);
@@ -123,8 +140,6 @@ QPointF RoundMoveFrame::pointOnEdge(const QRectF &rect, Qt::Edge edge, double po
 
 QPointF RoundMoveFrame::nextCorner(const QRectF &rect, Qt::Edge edge, Direction direction) const
 {
-    Q_ASSERT((direction == LeftHandTurn) | (direction == RightHandTurn));
-
     if (edge == Qt::LeftEdge)
         return direction == LeftHandTurn ? rect.bottomLeft() : rect.topLeft();
 
@@ -144,8 +159,6 @@ QPointF RoundMoveFrame::nextCorner(const QRectF &rect, Qt::Edge edge, Direction 
 
 QPointF RoundMoveFrame::nextPoint(const QPointF &point, Qt::Edge edge, RoundMoveFrame::Direction direction, double distance) const
 {
-    Q_ASSERT((direction == LeftHandTurn) | (direction == RightHandTurn));
-
     if (edge == Qt::LeftEdge)
         return direction == LeftHandTurn ? QPointF(point.x(), point.y() + distance) : QPointF(point.x(), point.y() - distance);
 
@@ -165,8 +178,6 @@ QPointF RoundMoveFrame::nextPoint(const QPointF &point, Qt::Edge edge, RoundMove
 
 Qt::Edge RoundMoveFrame::nextEdge(Qt::Edge edge, RoundMoveFrame::Direction direction) const
 {
-    Q_ASSERT((direction == LeftHandTurn) | (direction == RightHandTurn));
-
     if (edge == Qt::LeftEdge)
         return direction == LeftHandTurn ? Qt::BottomEdge : Qt::TopEdge;
 
@@ -182,6 +193,14 @@ Qt::Edge RoundMoveFrame::nextEdge(Qt::Edge edge, RoundMoveFrame::Direction direc
     Q_ASSERT_X(false, "RoundMoveFrame::nextEdge", "invalid edge");
 
     return edge;
+}
+
+Qt::Edge RoundMoveFrame::edgeFromPolygon(const QPointF &outer1, const QPointF &inner1, const QPointF &outer2) const
+{
+    if (outer1.x() == outer2.x())
+        return inner1.x() > outer1.x() ? Qt::LeftEdge : Qt::RightEdge;
+
+    return inner1.y() > outer1.y() ? Qt::TopEdge : Qt::BottomEdge;
 }
 
 double RoundMoveFrame::calcDistance(const QPointF &p1, const QPointF &p2) const

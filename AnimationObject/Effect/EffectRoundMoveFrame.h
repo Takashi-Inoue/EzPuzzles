@@ -33,7 +33,6 @@ public:
     enum Direction {
         LeftHandTurn,
         RightHandTurn,
-        LeftAndRight,
     };
 
     RoundMoveFrame(int width, const QColor &outer1, const QColor &inner1, const QColor &outer2, const QColor &inner2,
@@ -48,6 +47,7 @@ protected:
     QPointF nextCorner(const QRectF &rect, Qt::Edge edge, Direction direction) const;
     QPointF nextPoint(const QPointF &point, Qt::Edge edge, Direction direction, double distance) const;
     Qt::Edge nextEdge(Qt::Edge edge, Direction direction) const;
+    Qt::Edge edgeFromPolygon(const QPointF &outer1, const QPointF &inner1, const QPointF &outer2)const;
     double calcDistance(const QPointF &p1, const QPointF &p2) const;
     QLinearGradient createGradient(const QRectF &rect, Qt::Edge edge);
 
