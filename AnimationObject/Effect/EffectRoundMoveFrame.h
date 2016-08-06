@@ -43,13 +43,62 @@ public:
     void draw(QPainter &painter, const QRectF &rect) override;
 
 protected:
+    class Line
+    {
+    public:
+        Line(const QPointF &outer, const QPointF &inner) :
+            outer(outer),
+            inner(inner)
+        {
+        }
+
+        bool operator!=(const Line &other) const
+        {
+            return outer != other.outer && inner != other.inner;
+        }
+
+        QPointF outer;
+        QPointF inner;
+    };
+
+    class EdgeSquare
+    {
+    public:
+        EdgeSquare(const Line &line1, const Line &line2) :
+            line1(line1),
+            line2(line2)
+        {
+        }
+
+        const QVector<QPointF> toPolygon() const
+        {
+            return {
+                line1.outer,
+                line2.outer,
+                line2.inner,
+                line1.inner,
+            };
+        }
+
+        Qt::Edge edge() const
+        {
+            if (line1.outer.x() == line2.outer.x())
+                return line1.inner.x() > line1.outer.x() ? Qt::LeftEdge : Qt::RightEdge;
+
+            return line1.inner.y() > line1.outer.y() ? Qt::TopEdge : Qt::BottomEdge;
+        }
+
+        Line line1;
+        Line line2;
+    };
+
     QPointF pointOnEdge(const QRectF &rect, Qt::Edge edge, double point) const;
     QPointF nextCorner(const QRectF &rect, Qt::Edge edge, Direction direction) const;
     QPointF nextPoint(const QPointF &point, Qt::Edge edge, Direction direction, double distance) const;
     Qt::Edge nextEdge(Qt::Edge edge, Direction direction) const;
-    Qt::Edge edgeFromPolygon(const QPointF &outer1, const QPointF &inner1, const QPointF &outer2)const;
     double calcDistance(const QPointF &p1, const QPointF &p2) const;
-    QLinearGradient createGradient(const QRectF &rect, Qt::Edge edge);
+    QLinearGradient createGradient(const QRectF &rect, Qt::Edge edge) const;
+    void drawPolygon(QPainter &painter, const QRectF &rect, const EdgeSquare &square, const QColor &outerColor, const QColor &innerColor) const;
 
     int width;
     QColor outerColor1;

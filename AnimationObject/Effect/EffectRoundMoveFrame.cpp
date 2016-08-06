@@ -56,10 +56,8 @@ void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
     auto startOuterPos = pointOnEdge(rect, startEdge, startPoint);
     auto startInnerPos = pointOnEdge(rectInner, startEdge, startPoint);
 
-    typedef QPair<QPointF, QPointF> Points;
-
-    QList<Points> pointsList = {
-        Points(startOuterPos, startInnerPos)
+    QList<Line> lines = {
+        Line(startOuterPos, startInnerPos)
     };
 
     int divIndex = 0;
@@ -76,7 +74,7 @@ void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
                 QPointF divOuter = nextPoint(startOuterPos, currentEdge, direction, nowOuterLength);
                 QPointF divInner = nextPoint(startInnerPos, currentEdge, direction, nowInnerLength);
 
-                pointsList << Points(divOuter, divInner);
+                lines << Line(divOuter, divInner);
 
                 divIndex = i + 1;
 
@@ -89,31 +87,22 @@ void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
             }
         }
 
-        pointsList << Points(outer, inner);
+        lines << Line(outer, inner);
 
         currentEdge = nextEdge(currentEdge, direction);
     }
 
-    if (pointsList.last() != pointsList.first())
-        pointsList << pointsList.first();
+    if (lines.last() != lines.first())
+        lines << lines.first();
 
-    for (int i = 0, lim = pointsList.size() - 1; i < lim; ++i) {
-        const auto &points1 = pointsList.at(i);
-        const auto &points2 = pointsList.at(i + 1);
+    for (int i = 0, lim = lines.size() - 1; i < lim; ++i) {
+        const auto &line1 = lines.at(i);
+        const auto &line2 = lines.at(i + 1);
 
-        auto gradient = createGradient(rect, edgeFromPolygon(points1.first, points1.second, points2.first));
-        gradient.setColorAt(0, i < divIndex ? outerColor1 : outerColor2);
-        gradient.setColorAt(1, i < divIndex ? innerColor1 : innerColor2);
+        const QColor &outerColor = i < divIndex ? outerColor1 : outerColor2;
+        const QColor &innerColor = i < divIndex ? innerColor1 : innerColor2;
 
-        QVector<QPointF> polygon = {
-            points1.first,
-            points1.second,
-            points2.second,
-            points2.first,
-        };
-
-        painter.setBrush(gradient);
-        painter.drawPolygon(polygon);
+        drawPolygon(painter, rect, EdgeSquare(line1, line2), outerColor, innerColor);
     }
 
     painter.restore();
@@ -195,14 +184,6 @@ Qt::Edge RoundMoveFrame::nextEdge(Qt::Edge edge, RoundMoveFrame::Direction direc
     return edge;
 }
 
-Qt::Edge RoundMoveFrame::edgeFromPolygon(const QPointF &outer1, const QPointF &inner1, const QPointF &outer2) const
-{
-    if (outer1.x() == outer2.x())
-        return inner1.x() > outer1.x() ? Qt::LeftEdge : Qt::RightEdge;
-
-    return inner1.y() > outer1.y() ? Qt::TopEdge : Qt::BottomEdge;
-}
-
 double RoundMoveFrame::calcDistance(const QPointF &p1, const QPointF &p2) const
 {
     Q_ASSERT(p1 != p2);
@@ -214,7 +195,7 @@ double RoundMoveFrame::calcDistance(const QPointF &p1, const QPointF &p2) const
     return result >= 0 ? result : -result;
 }
 
-QLinearGradient RoundMoveFrame::createGradient(const QRectF &rect, Qt::Edge edge)
+QLinearGradient RoundMoveFrame::createGradient(const QRectF &rect, Qt::Edge edge) const
 {
     if (edge == Qt::LeftEdge)
         return QLinearGradient(rect.topLeft(), rect.topLeft() + QPoint(width, 0));
@@ -231,6 +212,18 @@ QLinearGradient RoundMoveFrame::createGradient(const QRectF &rect, Qt::Edge edge
     Q_ASSERT_X(false, "RoundMoveFrame::createGradient", "invalid edge");
 
     return QLinearGradient();
+}
+
+void RoundMoveFrame::drawPolygon(QPainter &painter, const QRectF &rect, const EdgeSquare &square,
+                                 const QColor &outerColor, const QColor &innerColor) const
+{
+    auto gradient = createGradient(rect, square.edge());
+
+    gradient.setColorAt(0, outerColor);
+    gradient.setColorAt(1, innerColor);
+
+    painter.setBrush(gradient);
+    painter.drawPolygon(square.toPolygon());
 }
 
 } // Effect
