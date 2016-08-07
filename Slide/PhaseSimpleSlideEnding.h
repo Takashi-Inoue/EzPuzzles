@@ -25,7 +25,7 @@
 class PhaseSimpleSlideEnding : public IPhase
 {
 public:
-    PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase);
+    PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -38,6 +38,7 @@ public:
 
 private:
     QList<Fifteen::PuzzlePiecePointer> &pieces;
+    Fifteen::PuzzlePiecePointer finalPiece;
     PhaseType nextPhase;
 
     int frameMoveCount;

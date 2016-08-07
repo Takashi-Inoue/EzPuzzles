@@ -99,8 +99,8 @@ void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
         const auto &line1 = lines.at(i);
         const auto &line2 = lines.at(i + 1);
 
-        const QColor &outerColor = i < divIndex ? outerColor1 : outerColor2;
-        const QColor &innerColor = i < divIndex ? innerColor1 : innerColor2;
+        const QColor &outerColor = (divIndex == 0) | (i < divIndex) ? outerColor1 : outerColor2;
+        const QColor &innerColor = (divIndex == 0) | (i < divIndex) ? innerColor1 : innerColor2;
 
         drawPolygon(painter, rect, EdgeSquare(line1, line2), outerColor, innerColor);
     }

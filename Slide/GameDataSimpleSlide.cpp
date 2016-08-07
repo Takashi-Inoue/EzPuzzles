@@ -41,12 +41,6 @@ GameDataSimpleSlide::GameDataSimpleSlide(const SourceImage &img, const UniquePos
     currentPhaseType(IPhase::PhaseReady)
 {
     Q_ASSERT(!img.isNull());
-
-    pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), img.pixmap).createPieces();
-
-    createBlankPiece();
-    setSlideAnimationToPieces();
-    setEffectToPieces();
 }
 
 QString GameDataSimpleSlide::gameName() const
@@ -58,8 +52,10 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
 {
     currentPhaseType = phaseType;
 
-    if (phaseType == IPhase::PhaseReady)
+    if (phaseType == IPhase::PhaseReady) {
+        initPieces();
         return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
+    }
 
     if (phaseType == IPhase::PhasePreGame)
         return std::make_shared<PhaseShuffle>(std::make_shared<Fifteen::SlideShuffler>(pieces, board->boardInfo(), currentBlankPos), IPhase::PhaseGaming);
@@ -68,7 +64,7 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
         return std::make_shared<PhaseSimpleSlideGaming>(board, currentBlankPos, IPhase::PhaseEnding, slideFrameCount);
 
     if (phaseType == IPhase::PhaseEnding)
-        return std::make_shared<PhaseSimpleSlideEnding>(pieces, IPhase::PhaseCleared);
+        return std::make_shared<PhaseSimpleSlideEnding>(pieces, finalPiece, currentBlankPos.y() * board->boardInfo()->xCount() + currentBlankPos.x(), IPhase::PhaseCleared);
 
     if (phaseType == IPhase::PhaseCleared)
         return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);
@@ -128,15 +124,28 @@ bool GameDataSimpleSlide::load(const QString &fileName)
 
     pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces(savedata.defaultPositions);
 
-    createBlankPiece();
-    setSlideAnimationToPieces();
-    setEffectToPieces();
+    initPieces();
 
     return true;
 }
 
+void GameDataSimpleSlide::initPieces()
+{
+    if (pieces.isEmpty())
+        pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces();
+
+    createBlankPiece();
+    setSlideAnimationToPieces();
+    setEffectToPieces();
+}
+
 void GameDataSimpleSlide::createBlankPiece()
 {
+    Q_ASSERT(!pieces.isEmpty());
+
+    if (finalPiece == nullptr)
+        finalPiece = getPiece(currentBlankPos);
+
     auto &blankPiece = getPiece(currentBlankPos);
 
     blankPiece = std::make_shared<Fifteen::SlideBlankPiece>(board->boardInfo(), defaultBlankPos.selectedPosition(), Qt::black, slideFrameCount);

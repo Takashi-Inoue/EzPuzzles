@@ -17,12 +17,15 @@
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseCleared.h"
+#include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
+
 #include <QFileDialog>
 
 PhaseCleared::PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent) :
     IPhase(parent),
     sourceImage(image),
-    nextPhase(nextPhase)
+    nextPhase(nextPhase),
+    effect(std::make_unique<Effect::GraduallyBlinkFrame>(10, QColor(255, 224, 96, 224), QColor(255, 255, 96, 0), QColor(255, 255, 96, 32), QColor(255, 255, 96, 0), 240, true))
 {
     Q_ASSERT(!image.isNull());
 }
@@ -32,9 +35,15 @@ void PhaseCleared::click(const QPoint &)
     emit toNextPhase(nextPhase);
 }
 
+void PhaseCleared::onTickFrame()
+{
+    effect->onTickFrame();
+}
+
 void PhaseCleared::draw(QPainter &painter)
 {
     painter.drawPixmap(painter.viewport(), sourceImage.pixmap);
+    effect->draw(painter, painter.viewport());
 }
 
 bool PhaseCleared::canSave() const

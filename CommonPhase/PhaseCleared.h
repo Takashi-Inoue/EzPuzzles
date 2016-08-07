@@ -20,7 +20,10 @@
 #define PHASECLEARED_H
 
 #include "IPhase.h"
+#include "AnimationObject/Effect/AbstractEffect.h"
 #include "SourceImage.h"
+
+#include <memory>
 
 class PhaseCleared : public IPhase
 {
@@ -30,7 +33,7 @@ public:
     ~PhaseCleared() = default;
 
     void click(const QPoint &) override;
-    void onTickFrame() override {}
+    void onTickFrame() override;
     void draw(QPainter &) override;
     bool canSave() const override;
     bool canLoad() const override;
@@ -41,6 +44,7 @@ public:
 private:
     SourceImage sourceImage;
     PhaseType nextPhase;
+    std::unique_ptr<Effect::AbstractEffect> effect;
 };
 
 #endif // PHASECLEARED_H

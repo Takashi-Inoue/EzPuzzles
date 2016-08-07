@@ -40,6 +40,7 @@ public:
     bool load(const QString &fileName) override;
 
 protected:
+    void initPieces();
     void createBlankPiece();
     void setSlideAnimationToPieces();
     void setEffectToPieces();
@@ -48,6 +49,7 @@ protected:
     static const unsigned char slideFrameCount = 20;
 
     QList<Fifteen::PuzzlePiecePointer> pieces;
+    Fifteen::PuzzlePiecePointer finalPiece;
     SourceImage sourceImg;
     BoardPointer board;
     UniquePosition defaultBlankPos;

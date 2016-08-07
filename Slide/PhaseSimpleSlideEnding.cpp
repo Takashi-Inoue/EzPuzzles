@@ -19,11 +19,14 @@
 #include "PhaseSimpleSlideEnding.h"
 #include "AnimationObject/Effect/EffectRoundMoveFrame.h"
 
-PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase) :
+PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase) :
     pieces(pieces),
+    finalPiece(finalPiece),
     nextPhase(nextPhase),
-    frameMoveCount(180)
+    frameMoveCount(120)
 {
+    pieces[currentBlankIndex] = finalPiece;
+
     for (auto &piece : pieces) {
         auto frame = std::make_shared<Effect::RoundMoveFrame>(2, Qt::transparent, Qt::transparent, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192),
                                                               Qt::TopEdge, 0, Effect::RoundMoveFrame::RightHandTurn, frameMoveCount, false);
