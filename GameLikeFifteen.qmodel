@@ -1351,7 +1351,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{34a5bcc6-98e4-4ceb-8f98-a9d20ac36d65}</uid>
+                    <uid>{9008e663-d9dc-4de3-8a51-efcf59ee1431}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
@@ -1360,7 +1360,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{830e8390-c9b9-4cbd-bfd9-520adcde8ef0}</uid>
+                    <uid>{42382ef3-ad5f-4eb4-9ea2-0c36ab927fef}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
@@ -1369,7 +1369,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{5917c30c-415d-4ea7-b693-44768e4889df}</uid>
+                    <uid>{a55752fb-78d9-4b71-a47d-f7b96bdc19c2}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
@@ -1378,7 +1378,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{1614b6e5-02b7-4825-9c3f-ebfd39bb089d}</uid>
+                    <uid>{9c700844-b9fa-43ce-b219-5f617a1c82b5}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1387,7 +1387,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{52f95125-b554-4360-939c-4e0c680ef788}</uid>
+                    <uid>{74c94fbe-a8e0-4be8-b9d1-eda10a2f6d50}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1396,25 +1396,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{af24c75f-9044-4b92-b552-8f5660ff5a9a}</uid>
-                    <visibility>1</visibility>
-                    <type>2</type>
-                    <properties>7</properties>
-                    <declaration>bool save(QDataStream &amp;)</declaration>
-                   </MClassMember>
-                  </item>
-                  <item>
-                   <MClassMember>
-                    <uid>{4cf385fc-4b3b-4935-9fa6-a60356207704}</uid>
-                    <visibility>1</visibility>
-                    <type>2</type>
-                    <properties>3</properties>
-                    <declaration>bool load(QDataStream &amp;)</declaration>
-                   </MClassMember>
-                  </item>
-                  <item>
-                   <MClassMember>
-                    <uid>{c5856851-aad4-4fc2-aa43-c54fd240c89b}</uid>
+                    <uid>{5453158f-3784-4917-8ed1-457b5be5f797}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1423,7 +1405,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{7f090579-d06c-4527-b3ba-208899754e33}</uid>
+                    <uid>{331be423-646f-4f3c-9914-5bd3ae8ddafd}</uid>
                     <visibility>4</visibility>
                     <type>2</type>
                     <declaration>void toNextPhase(PhaseType)</declaration>
@@ -1840,7 +1822,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{e8fecf7c-0032-4877-91f7-0787e622953d}</uid>
+                    <uid>{942aa859-8dd6-4554-8c48-aa462ff392f5}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1849,7 +1831,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{bf04f37c-1b31-4d25-8773-f46c5e3d5142}</uid>
+                    <uid>{8bb130c7-5800-43f0-9995-adf80075d7bb}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
@@ -1858,7 +1840,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{5dd0cebb-020e-4f1d-8e40-8b08d1af758f}</uid>
+                    <uid>{8e1ee1f2-86ad-474b-9e06-290ec19096f7}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
@@ -1867,7 +1849,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{3e5f2fb8-cfce-43ef-a3bf-05b72c8ead7a}</uid>
+                    <uid>{d492d54f-1ef0-46bb-98a2-968ed95dcf90}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1876,7 +1858,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{da48054f-a26b-4fd5-a69f-1335aea52599}</uid>
+                    <uid>{d5b08d17-ab10-4d46-a798-bebc8b50e9b4}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
@@ -1885,20 +1867,20 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{4629705b-f368-4287-ae81-2f46dc3cac23}</uid>
+                    <uid>{1270211f-f702-4533-badb-19f7e57af373}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>7</properties>
-                    <declaration>void save(QDataStream &amp;)</declaration>
+                    <declaration>void save(const QString &amp;fileName)</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{e0fd39cf-42d9-498a-9d11-357ba015df59}</uid>
+                    <uid>{7bc0dfe7-43c0-4ece-af1d-dcdee29bd557}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>3</properties>
-                    <declaration>void load(QDataStream &amp;)</declaration>
+                    <declaration>void load(const QString &amp;fileName)</declaration>
                    </MClassMember>
                   </item>
                  </qlist>

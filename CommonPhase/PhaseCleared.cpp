@@ -19,8 +19,6 @@
 #include "PhaseCleared.h"
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 
-#include <QFileDialog>
-
 PhaseCleared::PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent) :
     IPhase(parent),
     sourceImage(image),
@@ -53,22 +51,6 @@ bool PhaseCleared::canSave() const
 
 bool PhaseCleared::canLoad() const
 {
-    return false;
-}
-
-bool PhaseCleared::save(QDataStream &) const
-{
-    QString fileName = QFileDialog::getSaveFileName(nullptr, tr("Save final image as..."), "untitled.png", "Image (*.png)");
-
-    if (fileName.isEmpty())
-        return true;
-
-    return sourceImage.pixmap.save(fileName, "PNG");
-}
-
-bool PhaseCleared::load(QDataStream &)
-{
-    Q_ASSERT(false);
     return false;
 }
 

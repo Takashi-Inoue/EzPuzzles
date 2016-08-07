@@ -18,6 +18,7 @@
  */
 #include "SourceImage.h"
 
+#include <QFileDialog>
 #include <QFileInfo>
 
 SourceImage::SourceImage(const QString &imagePath) :
@@ -60,4 +61,14 @@ int SourceImage::width() const
 int SourceImage::height() const
 {
     return pixmap.height();
+}
+
+bool SourceImage::saveImage() const
+{
+    QString fileName = QFileDialog::getSaveFileName(nullptr, QObject::tr("Save final image as..."), "untitled.png", "Image (*.png)");
+
+    if (fileName.isEmpty())
+        return true;
+
+    return pixmap.save(fileName, "PNG");
 }

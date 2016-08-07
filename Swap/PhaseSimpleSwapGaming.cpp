@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "PhaseSimpleSlideGaming.h"
+#include "PhaseSimpleSwapGaming.h"
 #include "fifteen/FifteenPieceMover.h"
 
-PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
+PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
     IPhase(parent),
     board(board),
-    blankPos(currentBlankPos),
+    swapTargetPos(swapTargetPos),
     nextPhase(nextPhase),
     slideFrameCount(slideFrameCount),
     isGameCleared(false)
@@ -30,22 +30,17 @@ PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &curre
     Q_ASSERT(slideFrameCount >= 0);
 }
 
-void PhaseSimpleSlideGaming::click(const QPoint &clickedPiecePos)
+void PhaseSimpleSwapGaming::click(const QPoint &clickedPiecePos)
 {
-    if (isGameCleared | (clickedPiecePos == blankPos))
+    if (isGameCleared | (clickedPiecePos == swapTargetPos))
         return;
 
-    if ((clickedPiecePos.x() != blankPos.x()) & (clickedPiecePos.y() != blankPos.y()))
-        return;
-
-    board->slidePiece(blankPos, clickedPiecePos);
-
-    blankPos = clickedPiecePos;
+    board->swapPiece(swapTargetPos, clickedPiecePos);
 
     isGameCleared = board->isClearerd();
 }
 
-void PhaseSimpleSlideGaming::onTickFrame()
+void PhaseSimpleSwapGaming::onTickFrame()
 {
     board->onTickFrame();
 
@@ -55,22 +50,22 @@ void PhaseSimpleSlideGaming::onTickFrame()
     }
 }
 
-void PhaseSimpleSlideGaming::draw(QPainter &painter)
+void PhaseSimpleSwapGaming::draw(QPainter &painter)
 {
     board->draw(painter);
 }
 
-bool PhaseSimpleSlideGaming::canSave() const
+bool PhaseSimpleSwapGaming::canSave() const
 {
     return true;
 }
 
-bool PhaseSimpleSlideGaming::canLoad() const
+bool PhaseSimpleSwapGaming::canLoad() const
 {
     return true;
 }
 
-QString PhaseSimpleSlideGaming::information() const
+QString PhaseSimpleSwapGaming::information() const
 {
     return "";
 }

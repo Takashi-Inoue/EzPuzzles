@@ -16,16 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "PhaseSimpleSlideEnding.h"
+#include "PhaseSimpleSwapEnding.h"
 #include "AnimationObject/Effect/EffectRoundMoveFrame.h"
 
-PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase) :
+PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase) :
     pieces(pieces),
     nextPhase(nextPhase),
     frameMoveCount(120)
 {
-    pieces[currentBlankIndex] = finalPiece;
-
     for (auto &piece : pieces) {
         auto frame = std::make_shared<Effect::RoundMoveFrame>(2, Qt::transparent, Qt::transparent, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192),
                                                               Qt::TopEdge, 0, Effect::RoundMoveFrame::RightHandTurn, frameMoveCount, false);
@@ -34,12 +32,12 @@ PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer
     }
 }
 
-void PhaseSimpleSlideEnding::click(const QPoint &)
+void PhaseSimpleSwapEnding::click(const QPoint &)
 {
     emit toNextPhase(nextPhase);
 }
 
-void PhaseSimpleSlideEnding::onTickFrame()
+void PhaseSimpleSwapEnding::onTickFrame()
 {
     for (auto &piece : pieces)
         piece->onTickFrame();
@@ -48,23 +46,23 @@ void PhaseSimpleSlideEnding::onTickFrame()
         emit toNextPhase(nextPhase);
 }
 
-void PhaseSimpleSlideEnding::draw(QPainter &painter)
+void PhaseSimpleSwapEnding::draw(QPainter &painter)
 {
     for (auto &piece : pieces)
         piece->draw(painter);
 }
 
-bool PhaseSimpleSlideEnding::canSave() const
+bool PhaseSimpleSwapEnding::canSave() const
 {
     return false;
 }
 
-bool PhaseSimpleSlideEnding::canLoad() const
+bool PhaseSimpleSwapEnding::canLoad() const
 {
     return false;
 }
 
-QString PhaseSimpleSlideEnding::information() const
+QString PhaseSimpleSwapEnding::information() const
 {
     return "Clear!";
 }

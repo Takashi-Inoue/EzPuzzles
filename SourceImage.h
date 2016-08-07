@@ -38,6 +38,8 @@ public:
     int width() const;
     int height() const;
 
+    bool saveImage() const;
+
     QString fullPath;
     QPixmap pixmap;
 };

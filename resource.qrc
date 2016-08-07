@@ -7,12 +7,12 @@
         <file alias="gameSwap">icons/iconSwap.png</file>
         <file alias="load">icons/load.png</file>
         <file alias="saveload">icons/saveload.png</file>
-        <file alias="save">icons/document-save-2.png</file>
         <file alias="exit">icons/application-exit-4.png</file>
         <file>icons/insert-image-2.png</file>
         <file alias="openImage">icons/insert-image-3.png</file>
         <file>icons/window-new-2.png</file>
         <file>icons/view-refresh-5.png</file>
         <file alias="historyImage">icons/edit-history.png</file>
+        <file alias="save">icons/save.png</file>
     </qresource>
 </RCC>

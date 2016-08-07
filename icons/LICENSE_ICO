@@ -13,13 +13,15 @@ GNOME Icon Theme 2.26.0 (gnome)
     license: GPLv2 
     license link: http://creativecommons.org/licenses/GPL/2.0/
 
-    document-save-2.png
     insert-image-2.png
     window-new-2.png
 
     [modified by me (Takashi Inoue)]
     load.png     : drive-harddisk-4.png + Up arrow
+    save.png     : drive-harddisk-4.png + Down arrow
     saveload.png : drive-harddisk-4.png + Up & Down arrows
+    
+    Arrow image from "document-save-2.png"
 
 ----------------------------------------------------------------------
 Nuvola 1.0 (KDE 3.x icon set) (nuvola)

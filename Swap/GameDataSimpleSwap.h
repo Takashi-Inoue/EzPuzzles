@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef GAMEDATASIMPLESLIDE_H
-#define GAMEDATASIMPLESLIDE_H
+#ifndef GAMEDATASIMPLESWAP_H
+#define GAMEDATASIMPLESWAP_H
 
 #include "IGameData.h"
 #include "Board.h"
 #include "UniquePosition.h"
 
-class GameDataSimpleSlide : public IGameData
+class GameDataSimpleSwap : public IGameData
 {
 public:
-    GameDataSimpleSlide(const SourceImage &img, const UniquePosition &defaultBlankPos, const QSize &xyCount);
-    ~GameDataSimpleSlide() = default;
+    GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount);
+    ~GameDataSimpleSwap() = default;
 
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
@@ -40,19 +40,16 @@ public:
 
 protected:
     void initPieces();
-    void createBlankPiece();
-    void setSlideAnimationToPieces();
+    void setAnimationToPieces();
     void setEffectToPieces();
     Fifteen::PuzzlePiecePointer &getPiece(const QPoint &pos);
 
     static const unsigned char slideFrameCount = 20;
 
     QList<Fifteen::PuzzlePiecePointer> pieces;
-    Fifteen::PuzzlePiecePointer finalPiece;
     SourceImage sourceImg;
     BoardPointer board;
-    UniquePosition defaultBlankPos;
-    QPoint currentBlankPos;
+    UniquePosition swapTargetPos;
     IPhase::PhaseType currentPhaseType;
 };
 

@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PHASESIMPLESLIDEENDING_H
-#define PHASESIMPLESLIDEENDING_H
+#ifndef PHASESIMPLESWAPENDING_H
+#define PHASESIMPLESWAPENDING_H
 
 #include "IPhase.h"
 #include "fifteen/PuzzlePiece.h"
 
-class PhaseSimpleSlideEnding : public IPhase
+class PhaseSimpleSwapEnding : public IPhase
 {
 public:
-    PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase);
+    PhaseSimpleSwapEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -41,4 +41,4 @@ private:
     int frameMoveCount;
 };
 
-#endif // PHASESIMPLESLIDEENDING_H
+#endif // PHASESIMPLESWAPENDING_H

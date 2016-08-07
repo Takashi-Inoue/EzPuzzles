@@ -62,18 +62,6 @@ bool PhaseShuffle::canLoad() const
     return false;
 }
 
-bool PhaseShuffle::save(QDataStream &) const
-{
-    Q_ASSERT(false);
-    return false;
-}
-
-bool PhaseShuffle::load(QDataStream &)
-{
-    Q_ASSERT(false);
-    return false;
-}
-
 QString PhaseShuffle::information() const
 {
     return "Shuffling...";

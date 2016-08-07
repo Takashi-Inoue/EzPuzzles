@@ -49,8 +49,6 @@ public:
     virtual void draw(QPainter &) = 0;
     virtual bool canSave() const = 0;
     virtual bool canLoad() const = 0;
-    virtual bool save(QDataStream &stream) const = 0;
-    virtual bool load(QDataStream &stream) = 0;
     virtual QString information() const = 0;
 
 signals:

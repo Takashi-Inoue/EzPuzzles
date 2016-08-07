@@ -86,7 +86,11 @@ SOURCES += main.cpp\
     Slide/GameDataSimpleSlide.cpp \
     Slide/SaveDataSimpleSlide.cpp \
     Slide/PhaseSimpleSlideEnding.cpp \
-    AnimationObject/Effect/EffectRoundMoveFrame.cpp
+    AnimationObject/Effect/EffectRoundMoveFrame.cpp \
+    Swap/GameDataSimpleSwap.cpp \
+    Swap/SaveDataSimpleSwap.cpp \
+    Swap/PhaseSimpleSwapEnding.cpp \
+    Swap/PhaseSimpleSwapGaming.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -174,7 +178,11 @@ HEADERS  += MainWindow.h \
     Slide/GameDataSimpleSlide.h \
     Slide/SaveDataSimpleSlide.h \
     Slide/PhaseSimpleSlideEnding.h \
-    AnimationObject/Effect/EffectRoundMoveFrame.h
+    AnimationObject/Effect/EffectRoundMoveFrame.h \
+    Swap/GameDataSimpleSwap.h \
+    Swap/SaveDataSimpleSwap.h \
+    Swap/PhaseSimpleSwapEnding.h \
+    Swap/PhaseSimpleSwapGaming.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

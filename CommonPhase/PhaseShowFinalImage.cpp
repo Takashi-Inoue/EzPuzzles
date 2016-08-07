@@ -46,16 +46,6 @@ bool PhaseShowFinalImage::canLoad() const
     return true;
 }
 
-bool PhaseShowFinalImage::save(QDataStream &) const
-{
-    return true;
-}
-
-bool PhaseShowFinalImage::load(QDataStream &)
-{
-    return true;
-}
-
 QString PhaseShowFinalImage::information() const
 {
     return "";

@@ -16,29 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PHASESIMPLESLIDEENDING_H
-#define PHASESIMPLESLIDEENDING_H
+#ifndef PHASESIMPLESWAPGAMING_H
+#define PHASESIMPLESWAPGAMING_H
 
 #include "IPhase.h"
+#include "Board.h"
 #include "fifteen/PuzzlePiece.h"
 
-class PhaseSimpleSlideEnding : public IPhase
+class PhaseSimpleSwapGaming : public IPhase
 {
+    Q_OBJECT
 public:
-    PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase);
+    PhaseSimpleSwapGaming(BoardPointer board, const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
+    ~PhaseSimpleSwapGaming() = default;
 
-    void click(const QPoint &) override;
+    void click(const QPoint &clickedPiecePos) override;
     void onTickFrame() override;
     void draw(QPainter &) override;
     bool canSave() const override;
     bool canLoad() const override;
     QString information() const override;
 
-private:
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
+protected:
+    BoardPointer board;
+    QPoint swapTargetPos;
     PhaseType nextPhase;
-
-    int frameMoveCount;
+    int slideFrameCount;
+    bool isGameCleared;
 };
 
-#endif // PHASESIMPLESLIDEENDING_H
+#endif // PHASESIMPLESWAPGAMING_H

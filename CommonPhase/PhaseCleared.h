@@ -37,8 +37,6 @@ public:
     void draw(QPainter &) override;
     bool canSave() const override;
     bool canLoad() const override;
-    bool save(QDataStream &) const override;
-    bool load(QDataStream &) override;
     QString information() const override;
 
 private:
