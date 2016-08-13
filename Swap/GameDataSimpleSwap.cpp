@@ -26,9 +26,7 @@
 #include "PhaseSimpleSwapEnding.h"
 #include "PhaseSimpleSwapGaming.h"
 #include "AnimationObject/Animation/AnimationLineMove.h"
-#include "AnimationObject/Effect/CompositeEffect.h"
 #include "AnimationObject/Effect/EffectSimpleFrame.h"
-#include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 #include "SaveDataSimpleSwap.h"
 #include "EzPuzzles.h"
 
@@ -61,7 +59,7 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
         return std::make_shared<PhaseShuffle>(std::make_shared<Fifteen::SwapShuffler>(pieces, board->boardInfo()), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
-        return std::make_shared<PhaseSimpleSwapGaming>(board, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);
+        return std::make_shared<PhaseSimpleSwapGaming>(board, pieces, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);
 
     if (phaseType == IPhase::PhaseEnding)
         return std::make_shared<PhaseSimpleSwapEnding>(pieces, IPhase::PhaseCleared);
@@ -155,21 +153,4 @@ void GameDataSimpleSwap::setEffectToPieces()
 
     for (auto &piece : pieces)
         piece->setEffect(frame);
-
-    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
-                              8, QColor(255, 128, 64, 224), QColor(255, 255, 64, 0), QColor(255, 255, 64, 224), QColor(255, 128, 64, 0), 240, true);
-
-    auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
-
-    auto piece = getPiece(swapTargetPos.selectedPosition());
-
-    compositeEffect->addEffect(piece->effect());
-    compositeEffect->addEffect(graduallyFrame);
-
-    piece->setEffect(compositeEffect);
-}
-
-Fifteen::PuzzlePiecePointer &GameDataSimpleSwap::getPiece(const QPoint &pos)
-{
-    return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
 }

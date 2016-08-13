@@ -23,7 +23,7 @@
 #include "SourceImage.h"
 #include "fifteen/GameSimpleSwap.h"
 
-#include "PieceGame.h"
+#include "GameCore.h"
 #include "Slide/GameDataSimpleSlide.h"
 #include "Swap/GameDataSimpleSwap.h"
 
@@ -96,7 +96,7 @@ IGame *DialogSettingsFifteen::buildSimpleSlide() const
     ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
                                             : defaultBlank.select(grid->selectedCellPos());
 
-    return new PieceGame(std::make_shared<GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
+    return new GameCore(std::make_shared<GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSwap() const
@@ -110,5 +110,5 @@ IGame *DialogSettingsFifteen::buildSimpleSwap() const
 
 //    return new Fifteen::GameSimpleSwap(sourceImage, xyCount, swapTarget);
 
-    return new PieceGame(std::make_shared<GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
+    return new GameCore(std::make_shared<GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
 }

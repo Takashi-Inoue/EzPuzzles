@@ -31,7 +31,7 @@ namespace MineSweeper {
 class PiecesFactory
 {
 public:
-    PiecesFactory(const QPixmap &sourcePixmap, const QSize &pieceSize, const QSize &xyCount, int mineCount, bool isKeepMinesPositions);
+    PiecesFactory(const QPixmap &sourcePixmap, const QSize &xyCount, int mineCount, bool isKeepMinesPositions);
     ~PiecesFactory() = default;
 
     static QList<int> toIntList(const QVector<QVector<MinePiecePointer>> &pieces);

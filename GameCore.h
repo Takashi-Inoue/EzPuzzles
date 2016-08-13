@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PIECEGAME_H
-#define PIECEGAME_H
+#ifndef GAMECORE_H
+#define GAMECORE_H
 
 #include "IGame.h"
 #include "IGameData.h"
@@ -26,12 +26,12 @@
 #include <QList>
 #include <QPixmap>
 
-class PieceGame : public IGame
+class GameCore : public IGame
 {
     Q_OBJECT
 public:
-    PieceGame(GameDataPointer gameData);
-    ~PieceGame() = default;
+    GameCore(GameDataPointer gameData);
+    ~GameCore() = default;
 
     GameID gameID() const override;
 

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "PieceGame.h"
+#include "GameCore.h"
 #include "SourceImage.h"
 
 #include <QDataStream>
@@ -24,7 +24,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-PieceGame::PieceGame(GameDataPointer gameData) :
+GameCore::GameCore(GameDataPointer gameData) :
     backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize())),
     gameData(gameData),
     phase(nullptr)
@@ -34,21 +34,21 @@ PieceGame::PieceGame(GameDataPointer gameData) :
     changePhase(IPhase::PhaseReady);
 }
 
-GameID PieceGame::gameID() const
+GameID GameCore::gameID() const
 {
     return gameId;
 }
 
-IGame *PieceGame::cloneAsNewGame() const
+IGame *GameCore::cloneAsNewGame() const
 {
-    auto game = new PieceGame(gameData);
+    auto game = new GameCore(gameData);
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
     return game;
 }
 
-void PieceGame::save(const QString &saveDirPath, const QSize &screenshotSize) const
+void GameCore::save(const QString &saveDirPath, const QSize &screenshotSize) const
 {
     if (!phase->canSave())
         return;
@@ -60,7 +60,7 @@ void PieceGame::save(const QString &saveDirPath, const QSize &screenshotSize) co
     saveScreenshot(saveDirPath, screenshotSize);
 }
 
-bool PieceGame::load(const QString &loadFilePath)
+bool GameCore::load(const QString &loadFilePath)
 {
     if (!gameData->load(loadFilePath))
         return false;
@@ -70,14 +70,14 @@ bool PieceGame::load(const QString &loadFilePath)
     return true;
 }
 
-void PieceGame::onTickFrame()
+void GameCore::onTickFrame()
 {
     Q_CHECK_PTR(phase);
 
     phase->onTickFrame();
 }
 
-void PieceGame::click(const QSize &fieldSize, const QPoint &cursorPos)
+void GameCore::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
     const auto &boardInfo = gameData->boardInfo();
 
@@ -87,7 +87,7 @@ void PieceGame::click(const QSize &fieldSize, const QPoint &cursorPos)
     phase->click(piecePos);
 }
 
-void PieceGame::draw(QPainter &dest)
+void GameCore::draw(QPainter &dest)
 {
     QPainter painter(&backBuffer);
 
@@ -100,12 +100,12 @@ void PieceGame::draw(QPainter &dest)
     dest.restore();
 }
 
-QSize PieceGame::maxFieldSize() const
+QSize GameCore::maxFieldSize() const
 {
     return backBuffer.size();
 }
 
-void PieceGame::drawFinalImage(QPainter &dest) const
+void GameCore::drawFinalImage(QPainter &dest) const
 {
     const auto &sourceImg = gameData->sourceImage();
 
@@ -115,17 +115,17 @@ void PieceGame::drawFinalImage(QPainter &dest) const
     dest.drawPixmap(QRect(tl, destSize), sourceImg.pixmap, sourceImg.rect());
 }
 
-QString PieceGame::shortInformation() const
+QString GameCore::shortInformation() const
 {
     return gameData->gameName() + " - " + phase->information();
 }
 
-const SourceImage &PieceGame::sourceImage() const
+const SourceImage &GameCore::sourceImage() const
 {
     return gameData->sourceImage();
 }
 
-void PieceGame::changePhase(IPhase::PhaseType phaseType)
+void GameCore::changePhase(IPhase::PhaseType phaseType)
 {
     qDebug() << "changePhase" << phaseType;
 
@@ -137,7 +137,7 @@ void PieceGame::changePhase(IPhase::PhaseType phaseType)
     connect(phase.get(), SIGNAL(toNextPhase(IPhase::PhaseType)), this, SLOT(changePhase(IPhase::PhaseType)));
 }
 
-void PieceGame::saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const
+void GameCore::saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const
 {
     QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");

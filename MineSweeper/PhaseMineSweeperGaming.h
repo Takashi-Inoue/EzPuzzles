@@ -16,20 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PHASESIMPLESWAPGAMING_H
-#define PHASESIMPLESWAPGAMING_H
+#ifndef PHASEMINESWEEPERGAMING_H
+#define PHASEMINESWEEPERGAMING_H
 
 #include "IPhase.h"
-#include "Board.h"
-#include "fifteen/PuzzlePiece.h"
+#include "mine/IMinePiece.h"
+#include "mine/MineLocker.h"
 
-class PhaseSimpleSwapGaming : public IPhase
+#include <QVector>
+
+namespace MineSweeper {
+
+class MineLocker;
+
+class PhaseMineSweeperGaming : public IPhase
 {
-    Q_OBJECT
 public:
-    PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
-                          const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
-    ~PhaseSimpleSwapGaming() = default;
+    PhaseMineSweeperGaming(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, PhaseType nextPhase);
+    ~PhaseMineSweeperGaming() = default;
 
     void click(const QPoint &clickedPiecePos) override;
     void onTickFrame() override;
@@ -38,15 +42,12 @@ public:
     bool canLoad() const override;
     QString information() const override;
 
-protected:
-    Fifteen::PuzzlePiecePointer &getPiece(const QPoint &pos);
-
-    BoardPointer board;
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
-    QPoint swapTargetPos;
+private:
+    QVector<QVector<MinePiecePointer>> &pieces;
+    MineLockerPointer mineLocker;
     PhaseType nextPhase;
-    int slideFrameCount;
-    bool isGameCleared;
 };
 
-#endif // PHASESIMPLESWAPGAMING_H
+} // MineSweeper
+
+#endif // PHASEMINESWEEPERGAMING_H

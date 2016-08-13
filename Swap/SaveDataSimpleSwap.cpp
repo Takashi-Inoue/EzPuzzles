@@ -78,7 +78,7 @@ bool SaveDataSimpleSwap::save() const
 
     QDataStream stream(&file);
 
-    stream << gameTypeName;
+    stream << EzPuzzles::gameName(EzPuzzles::SimpleSwap);
     stream << boardSize;
     swapTargetPos.write(stream);
     stream << sourceImg.fullPath;

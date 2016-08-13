@@ -35,6 +35,7 @@ public:
     void randomSelect(const QSize &xyCount);
     void select(const QPoint &pos);
     const QPoint &selectedPosition() const;
+    bool isRandom() const;
 
     void read(QDataStream &stream);
     void write(QDataStream &stream) const;

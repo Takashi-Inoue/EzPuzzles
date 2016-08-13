@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef GAMEDATASIMPLESWAP_H
-#define GAMEDATASIMPLESWAP_H
+#ifndef GAMEDATAMINESWEEPER_H
+#define GAMEDATAMINESWEEPER_H
 
 #include "IGameData.h"
-#include "Board.h"
-#include "UniquePosition.h"
+#include "mine/MinePiece.h"
+#include "mine/MineLocker.h"
 
-class GameDataSimpleSwap : public IGameData
+namespace MineSweeper {
+
+class GameDataMineSweeper : public IGameData
 {
 public:
-    GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount);
-    ~GameDataSimpleSwap() = default;
+    GameDataMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock);
 
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
@@ -38,18 +39,15 @@ public:
     bool save(const QString &fileName) const override;
     bool load(const QString &fileName) override;
 
-protected:
-    void initPieces();
-    void setAnimationToPieces();
-    void setEffectToPieces();
-
-    static const unsigned char slideFrameCount = 20;
-
-    QList<Fifteen::PuzzlePiecePointer> pieces;
+private:
     SourceImage sourceImg;
-    BoardPointer board;
-    UniquePosition swapTargetPos;
-    IPhase::PhaseType currentPhaseType;
+    BoardInfoPointer boardInformation;
+    int mineCount;
+    QVector<QVector<MinePiecePointer>> pieces;
+    MineLockerPointer mineLocker;
+    PhasePointer currentPhase;
 };
 
-#endif // GAMEDATASIMPLESLIDE_H
+} // MineSweeper
+
+#endif // GAMEDATAMINESWEEPER_H

@@ -18,16 +18,33 @@
  */
 #include "PhaseSimpleSwapGaming.h"
 #include "fifteen/FifteenPieceMover.h"
+#include "AnimationObject/Effect/CompositeEffect.h"
+#include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 
-PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
+PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
+                                             const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
     IPhase(parent),
     board(board),
+    pieces(pieces),
     swapTargetPos(swapTargetPos),
     nextPhase(nextPhase),
     slideFrameCount(slideFrameCount),
     isGameCleared(false)
 {
     Q_ASSERT(slideFrameCount >= 0);
+
+
+    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
+                              8, QColor(255, 128, 64, 224), QColor(255, 255, 64, 0), QColor(255, 255, 64, 224), QColor(255, 128, 64, 0), 240, true);
+
+    auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
+
+    auto piece = getPiece(swapTargetPos);
+
+    compositeEffect->addEffect(piece->effect());
+    compositeEffect->addEffect(graduallyFrame);
+
+    piece->setEffect(compositeEffect);
 }
 
 void PhaseSimpleSwapGaming::click(const QPoint &clickedPiecePos)
@@ -36,6 +53,11 @@ void PhaseSimpleSwapGaming::click(const QPoint &clickedPiecePos)
         return;
 
     board->swapPiece(swapTargetPos, clickedPiecePos);
+
+    auto effect = getPiece(swapTargetPos)->effect();
+
+    getPiece(swapTargetPos)->setEffect(getPiece(clickedPiecePos)->effect());
+    getPiece(clickedPiecePos)->setEffect(effect);
 
     isGameCleared = board->isClearerd();
 }
@@ -68,4 +90,9 @@ bool PhaseSimpleSwapGaming::canLoad() const
 QString PhaseSimpleSwapGaming::information() const
 {
     return "";
+}
+
+Fifteen::PuzzlePiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)
+{
+    return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
 }

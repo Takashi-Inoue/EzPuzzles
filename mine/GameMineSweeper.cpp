@@ -142,9 +142,7 @@ bool GameMineSweeper::load(const QString &loadPath)
 
     backBuffer = QPixmap(sourceImg.size());
 
-    QSize pieceSize(backBuffer.width() / xy.width(), backBuffer.height() / xy.height());
-
-    PiecesFactory factory(sourceImg.pixmap, pieceSize, xy, mineCount, isAutoLock);
+    PiecesFactory factory(sourceImg.pixmap, xy, mineCount, isAutoLock);
 
     pieces = factory.toPieces(intList);
 
@@ -265,9 +263,7 @@ const SourceImage &GameMineSweeper::sourceImage() const
 
 void GameMineSweeper::initPieces()
 {
-    QSize pieceSize(backBuffer.width() / xy.width(), backBuffer.height() / xy.height());
-
-    PiecesFactory factory(sourceImg.pixmap, pieceSize, xy, mineCount, mineLocker != nullptr);
+    PiecesFactory factory(sourceImg.pixmap, xy, mineCount, mineLocker != nullptr);
 
     pieces = factory.createPieces();
 

@@ -77,7 +77,6 @@ SOURCES += main.cpp\
     GridLines.cpp \
     SelectCellGrid.cpp \
     UniquePosition.cpp \
-    PieceGame.cpp \
     CommonPhase/PhaseShowFinalImage.cpp \
     CommonPhase/PhaseShuffle.cpp \
     CommonPhase/PhaseCleared.cpp \
@@ -90,7 +89,12 @@ SOURCES += main.cpp\
     Swap/GameDataSimpleSwap.cpp \
     Swap/SaveDataSimpleSwap.cpp \
     Swap/PhaseSimpleSwapEnding.cpp \
-    Swap/PhaseSimpleSwapGaming.cpp
+    Swap/PhaseSimpleSwapGaming.cpp \
+    GameCore.cpp \
+    MineSweeper/PhaseMineSweeperGaming.cpp \
+    MineSweeper/GameDataMineSweeper.cpp \
+    MineSweeper/MineField.cpp \
+    MineSweeper/SaveDataMineSweeper.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -168,7 +172,6 @@ HEADERS  += MainWindow.h \
     SelectCellGrid.h \
     UniquePosition.h \
     IPhase.h \
-    PieceGame.h \
     IGameData.h \
     CommonPhase/PhaseShowFinalImage.h \
     CommonPhase/PhaseShuffle.h \
@@ -182,7 +185,12 @@ HEADERS  += MainWindow.h \
     Swap/GameDataSimpleSwap.h \
     Swap/SaveDataSimpleSwap.h \
     Swap/PhaseSimpleSwapEnding.h \
-    Swap/PhaseSimpleSwapGaming.h
+    Swap/PhaseSimpleSwapGaming.h \
+    GameCore.h \
+    MineSweeper/PhaseMineSweeperGaming.h \
+    MineSweeper/GameDataMineSweeper.h \
+    MineSweeper/MineField.h \
+    MineSweeper/SaveDataMineSweeper.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

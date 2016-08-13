@@ -21,6 +21,7 @@
 
 #include "IMinePiece.h"
 #include <QVector>
+#include <memory>
 
 namespace MineSweeper {
 
@@ -50,6 +51,8 @@ private:
     MineLocker &operator=(const MineLocker &) = delete;
     MineLocker &operator=(MineLocker &&) = delete;
 };
+
+typedef std::shared_ptr<MineLocker> MineLockerPointer;
 
 } // MineSweeper
 

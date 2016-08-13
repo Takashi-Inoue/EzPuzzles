@@ -26,16 +26,15 @@
 
 namespace MineSweeper {
 
-PiecesFactory::PiecesFactory(const QPixmap &sourcePixmap, const QSize &pieceSize, const QSize &xyCount, int mineCount, bool isKeepMinesPositions) :
+PiecesFactory::PiecesFactory(const QPixmap &sourcePixmap, const QSize &xyCount, int mineCount, bool isKeepMinesPositions) :
     sourcePixmap(sourcePixmap),
-    pieceSize(pieceSize),
+    pieceSize(sourcePixmap.width() / xyCount.width(), sourcePixmap.height() / xyCount.height()),
     xy(xyCount),
     mineCount(mineCount),
     isKeepMinesPositions(isKeepMinesPositions),
     mt(std::random_device()())
 {
     Q_ASSERT(!sourcePixmap.isNull());
-    Q_ASSERT(!pieceSize.isEmpty());
     Q_ASSERT(!xyCount.isEmpty());
     Q_ASSERT(mineCount > 0 && mineCount < xy.width() * xy.height());
 }

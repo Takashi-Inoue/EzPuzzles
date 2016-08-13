@@ -16,29 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "SaveDataSimpleSlide.h"
+#include "SaveDataMineSweeper.h"
 #include "EzPuzzles.h"
 
 #include <QSaveFile>
 
-SaveDataSimpleSlide::SaveDataSimpleSlide(const QString &fileName) :
+namespace MineSweeper {
+
+SaveDataMineSweeper::SaveDataMineSweeper(const QString &fileName) :
     fileName(fileName),
     isSavedataValid(true)
 {
     Q_ASSERT(!fileName.isEmpty());
 }
 
-QIcon SaveDataSimpleSlide::gameTypeIcon() const
+QIcon SaveDataMineSweeper::gameTypeIcon() const
 {
-    return QIcon(":/ico/gameSimpleSlide");
+    return QIcon(":/ico/gameMine");
 }
 
-bool SaveDataSimpleSlide::isValid() const
+bool SaveDataMineSweeper::isValid() const
 {
     return isSavedataValid;
 }
 
-bool SaveDataSimpleSlide::loadInfo()
+bool SaveDataMineSweeper::loadInfo()
 {
     QSaveFile file(fileName);
 
@@ -50,26 +52,37 @@ bool SaveDataSimpleSlide::loadInfo()
     return loadInfo(QDataStream(&file));
 }
 
-QString SaveDataSimpleSlide::gameName() const
+QString SaveDataMineSweeper::gameName() const
 {
     return gameTypeName;
 }
 
-QString SaveDataSimpleSlide::imageFilePath() const
+QString SaveDataMineSweeper::imageFilePath() const
 {
     return sourceImg.fullPath;
 }
 
-QStringList SaveDataSimpleSlide::informations() const
+QStringList SaveDataMineSweeper::informations() const
 {
+    int cellCount = xyCount.width() * xyCount.height();
+    int safePieceCount = cellCount - mineCount;
+
+    QString openedDescription = QString("%1/%2 opened (%3%), %4 missed").arg(openedCount)
+                                                                        .arg(safePieceCount)
+                                                                        .arg((openedCount * 100.0) / safePieceCount, 0, 'f', 2)
+                                                                        .arg(missedCount);
+
     return {
-        QString("W%1 x H%2 : %3 pieces").arg(boardSize.width()).arg(boardSize.height()).arg(boardSize.width() * boardSize.height()),
+        QString("W%1 x H%2 : %3 cells").arg(xyCount.width()).arg(xyCount.height()).arg(cellCount),
         "",
-        QString("Default blank ") + defaultBlankPos.toString(),
+        QString("%1 mines (%2%)").arg(mineCount).arg((mineCount * 100.0) / cellCount, 0, 'f', 2),
+        openedDescription,
+        "",
+        QString("Autolock naked mines : ") + (isAutoLock ? "On" : "Off"),
     };
 }
 
-bool SaveDataSimpleSlide::save() const
+bool SaveDataMineSweeper::save() const
 {
     QSaveFile file(fileName);
 
@@ -78,30 +91,34 @@ bool SaveDataSimpleSlide::save() const
 
     QDataStream stream(&file);
 
-    stream << EzPuzzles::gameName(EzPuzzles::SimpleSlide);
-    stream << boardSize;
-    defaultBlankPos.write(stream);
-    stream << currentBlankPos;
+    stream << gameTypeName;
+    stream << xyCount;
+    stream << mineCount;
+    stream << openedCount;
+    stream << missedCount;
+    stream << isAutoLock;
     stream << sourceImg.fullPath;
     stream << sourceImg.pixmap;
     stream << static_cast<qint8>(currentPhaseType);
-    stream << defaultPositions;
+    stream << pieces;
 
     return file.commit();
 }
 
-bool SaveDataSimpleSlide::loadInfo(QDataStream &stream)
+bool SaveDataMineSweeper::loadInfo(QDataStream &stream)
 {
     stream >> gameTypeName;
 
-    if (gameTypeName != EzPuzzles::gameName(EzPuzzles::SimpleSlide)) {
+    if (gameTypeName != EzPuzzles::gameName(EzPuzzles::MineSweeper)) {
         isSavedataValid = false;
         return false;
     }
 
-    stream >> boardSize;
-    defaultBlankPos.read(stream);
-    stream >> currentBlankPos;
+    stream >> xyCount;
+    stream >> mineCount;
+    stream >> openedCount;
+    stream >> missedCount;
+    stream >> isAutoLock;
     stream >> sourceImg.fullPath;
 
     isSavedataValid = (stream.status() == QDataStream::Ok);
@@ -109,7 +126,7 @@ bool SaveDataSimpleSlide::loadInfo(QDataStream &stream)
     return isSavedataValid;
 }
 
-bool SaveDataSimpleSlide::load()
+bool SaveDataMineSweeper::load()
 {
     QSaveFile file(fileName);
 
@@ -131,9 +148,11 @@ bool SaveDataSimpleSlide::load()
 
     currentPhaseType = static_cast<IPhase::PhaseType>(phaseType);
 
-    stream >> defaultPositions;
+    stream >> pieces;
 
     isSavedataValid = (stream.status() == QDataStream::Ok);
 
     return isSavedataValid;
 }
+
+} // MineSweeper

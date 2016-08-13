@@ -45,6 +45,11 @@ const QPoint &UniquePosition::selectedPosition() const
     return selectedPos;
 }
 
+bool UniquePosition::isRandom() const
+{
+    return isRandomSelect;
+}
+
 void UniquePosition::read(QDataStream &stream)
 {
     stream >> isRandomSelect;
