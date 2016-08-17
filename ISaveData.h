@@ -19,6 +19,8 @@
 #ifndef ISAVEDATA_H
 #define ISAVEDATA_H
 
+#include "EzPuzzles.h"
+
 #include <QStringList>
 #include <QIcon>
 
@@ -30,14 +32,17 @@ public:
     ISaveData() = default;
     virtual ~ISaveData() = default;
 
-    virtual QString gameName() const = 0;
+    virtual QIcon gameTypeIcon() const = 0;
+    virtual bool isValid() const = 0;
+
+    virtual bool loadInfo() = 0;
+
+    virtual EzPuzzles::GameType gameType() const = 0;
+    virtual QString gameTypeName() const = 0;
     virtual QString imageFilePath() const = 0;
     virtual QStringList informations() const = 0;
 
-    virtual IGame *loadGame() const = 0;
-    virtual bool loadInfo() = 0;
-    virtual bool isValid() const = 0;
-    virtual QIcon gameTypeIcon() const = 0;
+    virtual IGame *loadGame() = 0;
 };
 
 #endif // IGAMEINFO_H

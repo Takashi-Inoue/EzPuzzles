@@ -596,7 +596,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1468843786255</last-modified>
+                  <last-modified>1471138860173</last-modified>
                   <toolbarid>Classes</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -856,7 +856,7 @@
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{f1dc87a6-12b1-47ce-8a8e-73d28573c514}</uid>
+                               <uid>{6aae3a2a-7e0b-4908-8743-af9e9de4006f}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>3</properties>
@@ -865,7 +865,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{00236e1a-f4dd-40ee-b3c2-09220850d056}</uid>
+                               <uid>{0038ac07-5b2f-4166-adaa-9cab6c3c3ab6}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>3</properties>
@@ -874,7 +874,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{dcd5f765-6ad8-40a2-beb8-78ff817ee766}</uid>
+                               <uid>{731c409b-8485-4e69-bf3f-448b20428d35}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>3</properties>
@@ -883,7 +883,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{d49d2f22-8f96-47c7-b054-8e3a93ee7675}</uid>
+                               <uid>{e88db56d-d400-4508-b94b-3dfbbeb3169d}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>3</properties>
@@ -1641,7 +1641,7 @@
                          <context>Fifteen</context>
                          <name>PuzzlePiece</name>
                          <pos>x:60;y:765</pos>
-                         <rect>x:-95;y:-45;w:190;h:90</rect>
+                         <rect>x:-95;y:-50;w:190;h:100</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -2039,51 +2039,6 @@
                         <DObject>
                          <base-DElement>
                           <DElement>
-                           <uid>{9d4a9380-d1a1-4139-bb6f-ee6755bbba77}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{742504ab-7e68-4419-9ea4-7239ed108d4d}</object>
-                         <stereotypes>
-                          <qlist>
-                           <item>interface</item>
-                          </qlist>
-                         </stereotypes>
-                         <context>AnimationObject</context>
-                         <name>IAnimationObject</name>
-                         <pos>x:325;y:425</pos>
-                         <rect>x:-20;y:-20;w:40;h:40</rect>
-                         <visual-role>5</visual-role>
-                         <visual-emphasized>true</visual-emphasized>
-                        </DObject>
-                       </base-DObject>
-                      </DClass>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DInheritance">
-                      <DInheritance>
-                       <base-DRelation>
-                        <DRelation>
-                         <base-DElement>
-                          <DElement>
-                           <uid>{14a2ac13-f699-4277-86fd-50578340ad78}</uid>
-                          </DElement>
-                         </base-DElement>
-                         <object>{0b41fd62-722a-4d95-8ad2-741a5a640ff4}</object>
-                         <a>{1fdd0fa8-8355-404a-ba75-08bc8af4cfc8}</a>
-                         <b>{9d4a9380-d1a1-4139-bb6f-ee6755bbba77}</b>
-                        </DRelation>
-                       </base-DRelation>
-                      </DInheritance>
-                     </instance>
-                    </item>
-                    <item>
-                     <instance type="DClass">
-                      <DClass>
-                       <base-DObject>
-                        <DObject>
-                         <base-DElement>
-                          <DElement>
                            <uid>{5a70f385-0cec-4db9-92fd-ea1b8cafcf58}</uid>
                           </DElement>
                          </base-DElement>
@@ -2188,7 +2143,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1468908495567</last-modified>
+                  <last-modified>1471138873908</last-modified>
                   <toolbarid>Classes</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -2409,7 +2364,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{def0596d-b268-4927-add1-adeeddb56e12}</uid>
+                    <uid>{cdb491cc-d83b-4100-9898-c574501869ff}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>NumberPiece(int number, QColor color)</declaration>
@@ -2417,7 +2372,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{5d76e6cd-e269-455b-8770-d77def60f5a1}</uid>
+                    <uid>{43cbbdc5-2c58-455c-9e21-0b8f46482897}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <properties>4</properties>
@@ -2426,7 +2381,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{72f54a9b-0465-42cc-989f-002c97f0fecd}</uid>
+                    <uid>{ca597d71-06ea-4812-bedb-dea74aa03a6c}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>int number</declaration>
@@ -2434,7 +2389,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{c4c53c9a-3749-4f44-a6ae-4efc902260f0}</uid>
+                    <uid>{06a7fc3a-a3db-47d4-aabe-8243197baea5}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QColor color</declaration>
@@ -2442,7 +2397,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{8dd27cd4-ea9b-4dea-9ce9-a18542e8c190}</uid>
+                    <uid>{406abefb-716a-412f-ad1e-cc00d8814144}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QPixmap pixmap</declaration>
@@ -2505,7 +2460,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{d04847e3-3d63-4daf-8178-bbc3e3db95f1}</uid>
+                    <uid>{ec7c1112-22bf-447a-93da-53770b8ede04}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>ImagePiece(QPixmap)</declaration>
@@ -2513,7 +2468,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{d462d395-3ce9-4820-89e0-2f2feba0e9a6}</uid>
+                    <uid>{aa6a67e4-6a25-4a00-b0ef-46f9bcbdeb2e}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QPixmap pixmap</declaration>
@@ -2576,7 +2531,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{a6bd60cc-a2e3-4fff-8725-f7195bf6fca7}</uid>
+                    <uid>{a769d88a-49be-4882-95f9-f614f23fe16c}</uid>
                     <visibility>1</visibility>
                     <type>2</type>
                     <declaration>ImageFragmentPiece(QPixmap, QRect)</declaration>
@@ -2584,7 +2539,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{e948f1be-da06-439d-80c8-81552d1dd4b0}</uid>
+                    <uid>{3744a7cc-39b8-4cf9-8a16-e1471dea242d}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QPixmap sourcePixmap</declaration>
@@ -2592,7 +2547,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{e4d6441d-fdf5-4975-8a5d-7abc3399cf4a}</uid>
+                    <uid>{3fac60ba-7d60-48a6-aebd-6799c3526f76}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QRectF sourceRect</declaration>
@@ -2655,7 +2610,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{8b34eb8e-72b9-44c2-b278-8d6ec3c83442}</uid>
+                    <uid>{b0afad47-a46e-486b-af28-be6fab0194b4}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QColor foreground</declaration>
@@ -2663,7 +2618,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{c656fb18-c4b7-4893-9f21-8659c4b0bfde}</uid>
+                    <uid>{ebdc14f4-4fda-418f-adca-163f6c239ae7}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QColor lightLine</declaration>
@@ -2671,7 +2626,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{84e65081-5113-4035-976f-a077d3cea950}</uid>
+                    <uid>{69a0df5e-bfa9-4f69-a806-05e22a9ef5ae}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QColor darkLine</declaration>
@@ -2679,7 +2634,7 @@
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{e39ba08d-dc7d-493d-a1e6-4ec6c39ffdfb}</uid>
+                    <uid>{b08a3771-0187-477d-95c6-d4504e0699a7}</uid>
                     <visibility>2</visibility>
                     <type>1</type>
                     <declaration>QPixmap pixmap</declaration>
@@ -2891,7 +2846,7 @@
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{20652388-e182-459f-963d-b6a85e043374}</uid>
+                               <uid>{3df7a801-2ba0-4923-9d22-8e104c427b0a}</uid>
                                <type>2</type>
                                <properties>3</properties>
                                <declaration>void draw(QPainter &amp;)</declaration>
@@ -2899,7 +2854,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{534c8c95-e99a-4679-ba2b-6406e6923c86}</uid>
+                               <uid>{3264de0a-24e5-454b-9a38-c1918aab787f}</uid>
                                <type>2</type>
                                <properties>3</properties>
                                <declaration>void setPos(const QPoint &amp;)</declaration>
@@ -2907,7 +2862,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{5a3c8d29-5c48-4cd7-8305-3c936eb72722}</uid>
+                               <uid>{7ac7d5de-7930-4390-820e-7291c6421caa}</uid>
                                <type>2</type>
                                <properties>3</properties>
                                <declaration>void setPosWithoutAnimation(const QPoint &amp;)</declaration>
@@ -2915,7 +2870,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{07ca2eb3-b62c-41ca-bd98-1d6435680e83}</uid>
+                               <uid>{550250d6-79da-4f15-b817-6c00cf5d0657}</uid>
                                <type>2</type>
                                <properties>3</properties>
                                <declaration>void setAnimation(AnimationPointer)</declaration>
@@ -2923,7 +2878,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{74d2e8e2-dd86-4769-81ed-735ab2200d1b}</uid>
+                               <uid>{295c7b66-0f20-4ce1-a98d-25243dd66378}</uid>
                                <type>2</type>
                                <properties>3</properties>
                                <declaration>void setEffect(EffectPointer)</declaration>
@@ -2931,7 +2886,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{3121b58b-a0bc-4f72-a844-701aa798a220}</uid>
+                               <uid>{5f157f04-3e45-40a5-bcb6-1b9c34628515}</uid>
                                <type>2</type>
                                <properties>7</properties>
                                <declaration>const Position &amp;pos()</declaration>
@@ -3170,7 +3125,7 @@
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{5490afaa-4f72-4ebd-9e03-1d7cd9436b04}</uid>
+                               <uid>{85a0c409-8b6e-4271-a231-d4b083b3842c}</uid>
                                <visibility>2</visibility>
                                <type>1</type>
                                <declaration>std::unique_ptr&lt;IPiece&gt; imagePiece</declaration>
@@ -3178,10 +3133,18 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{f6601465-e56b-457c-92b2-d97ada910f1d}</uid>
+                               <uid>{830c9d4b-e279-4066-bf01-ac2bf3f5419a}</uid>
                                <visibility>2</visibility>
                                <type>1</type>
                                <declaration>QRectF drawRect</declaration>
+                              </MClassMember>
+                             </item>
+                             <item>
+                              <MClassMember>
+                               <uid>{33c44dc4-5b96-4c3a-95aa-6496d76e1395}</uid>
+                               <visibility>2</visibility>
+                               <type>1</type>
+                               <declaration>bool isChanged</declaration>
                               </MClassMember>
                              </item>
                             </qlist>
@@ -3519,7 +3482,7 @@
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{e1b3860b-f361-4080-aa3b-68f9e0e811c6}</uid>
+                               <uid>{fd4f6a2e-50a2-47b4-82a1-d312b6be455b}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>7</properties>
@@ -3528,7 +3491,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{9ffb7444-1d1e-48c1-aa9d-ac9b3a2d52f7}</uid>
+                               <uid>{14dd8950-6021-4142-9324-be0c79c9c697}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>7</properties>
@@ -3537,7 +3500,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{d04c641c-8fb2-4240-9dfc-dbfa83e2be8e}</uid>
+                               <uid>{6288cfe0-8e57-4adb-9e04-d6775783440d}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>7</properties>
@@ -3546,20 +3509,11 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{801d95ab-2df5-4d2b-ad7f-78d75a4ce20e}</uid>
+                               <uid>{3d9dbe54-cc8e-4da3-9afa-903d07f1b95e}</uid>
                                <visibility>1</visibility>
                                <type>2</type>
                                <properties>7</properties>
                                <declaration>int numberOfAroundMines()</declaration>
-                              </MClassMember>
-                             </item>
-                             <item>
-                              <MClassMember>
-                               <uid>{1e9e37c8-cac3-4a01-8e38-d734e67ae7c0}</uid>
-                               <visibility>1</visibility>
-                               <type>2</type>
-                               <properties>3</properties>
-                               <declaration>void setSize(const QSize &amp;)</declaration>
                               </MClassMember>
                              </item>
                             </qlist>
@@ -3672,7 +3626,7 @@
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{bbccf171-d997-45e2-a6fd-369244390782}</uid>
+                               <uid>{d1a4a296-2117-4302-a970-6cc0f1123ffe}</uid>
                                <visibility>2</visibility>
                                <type>1</type>
                                <declaration>IPiece  *blockPiece</declaration>
@@ -3736,7 +3690,7 @@
                             <qlist>
                              <item>
                               <MClassMember>
-                               <uid>{6573a47a-0267-4dd5-9197-935f6661eb51}</uid>
+                               <uid>{ac4330ed-cda8-47bc-bb85-9c1ffe932882}</uid>
                                <visibility>2</visibility>
                                <type>1</type>
                                <declaration>ISwithcPiece *switchImagePiece</declaration>
@@ -3744,7 +3698,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{fe953e2d-290d-482b-bd51-0521bf4c2a4d}</uid>
+                               <uid>{da3e30b0-ee05-42f2-b967-2b8beed41bf3}</uid>
                                <visibility>2</visibility>
                                <type>1</type>
                                <declaration>IPiece *numberPiece</declaration>
@@ -3752,7 +3706,7 @@
                              </item>
                              <item>
                               <MClassMember>
-                               <uid>{f12b1b0f-f6ef-4738-b31f-4b72dfa72b27}</uid>
+                               <uid>{27676061-0fdb-43dc-b336-05dfe26cc7a4}</uid>
                                <visibility>2</visibility>
                                <type>1</type>
                                <declaration>int numOfAroundMines</declaration>

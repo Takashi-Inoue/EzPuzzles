@@ -43,6 +43,20 @@ GameDataSimpleSlide::GameDataSimpleSlide(const SourceImage &img, const UniquePos
     Q_ASSERT(!img.isNull());
 }
 
+GameDataSimpleSlide::GameDataSimpleSlide(const SaveDataSimpleSlide &loadedSavedata) :
+    sourceImg(loadedSavedata.sourceImg),
+    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSavedata.boardSize, sourceImg.size()), pieces)),
+    defaultBlankPos(loadedSavedata.defaultBlankPos),
+    currentBlankPos(loadedSavedata.currentBlankPos),
+    currentPhaseType(loadedSavedata.currentPhaseType)
+{
+    Q_ASSERT(loadedSavedata.isValid());
+
+    pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces(loadedSavedata.defaultPositions);
+
+    initPieces();
+}
+
 QString GameDataSimpleSlide::gameName() const
 {
     return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
@@ -76,14 +90,19 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
     return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
 }
 
-PhasePointer GameDataSimpleSlide::createCurrentPhase()
+IPhase::PhaseType GameDataSimpleSlide::currentPhase() const
 {
-    return createPhase(currentPhaseType);
+    return currentPhaseType;
 }
 
 const SourceImage &GameDataSimpleSlide::sourceImage() const
 {
     return sourceImg;
+}
+
+QPixmap GameDataSimpleSlide::finalImage() const
+{
+    return sourceImg.pixmap;
 }
 
 BoardInfoPointer GameDataSimpleSlide::boardInfo() const
@@ -98,7 +117,7 @@ bool GameDataSimpleSlide::save(const QString &fileName) const
 
     SaveDataSimpleSlide savedata(fileName);
 
-    savedata.gameTypeName     = gameName();
+    savedata.gameName         = gameName();
     savedata.boardSize        = board->boardInfo()->boardSize();
     savedata.defaultBlankPos  = defaultBlankPos;
     savedata.currentBlankPos  = currentBlankPos;
@@ -109,27 +128,6 @@ bool GameDataSimpleSlide::save(const QString &fileName) const
         savedata.defaultPositions << piece->pos().defaultPos();
 
     return savedata.save();
-}
-
-bool GameDataSimpleSlide::load(const QString &fileName)
-{
-    SaveDataSimpleSlide savedata(fileName);
-
-    if (!savedata.load() || savedata.gameName() != gameName())
-        return false;
-
-    defaultBlankPos  = savedata.defaultBlankPos;
-    currentBlankPos  = savedata.currentBlankPos;
-    sourceImg        = savedata.sourceImg;
-    currentPhaseType = savedata.currentPhaseType;
-
-    board = std::make_shared<Board>(std::make_shared<BoardInformation>(savedata.boardSize, sourceImg.size()), pieces);
-
-    pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces(savedata.defaultPositions);
-
-    initPieces();
-
-    return true;
 }
 
 void GameDataSimpleSlide::initPieces()

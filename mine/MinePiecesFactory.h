@@ -20,6 +20,7 @@
 #define MINEPIECESFACTORY_H
 
 #include "IMinePiece.h"
+#include "BoardInformation.h"
 #include <QList>
 #include <QPixmap>
 
@@ -31,7 +32,7 @@ namespace MineSweeper {
 class PiecesFactory
 {
 public:
-    PiecesFactory(const QPixmap &sourcePixmap, const QSize &xyCount, int mineCount, bool isKeepMinesPositions);
+    PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation, int mineCount, bool isKeepMinesPositions);
     ~PiecesFactory() = default;
 
     static QList<int> toIntList(const QVector<QVector<MinePiecePointer>> &pieces);
@@ -56,8 +57,7 @@ private:
     void createSafePiece(QVector<QVector<MinePiecePointer>> &pieces, int x, int y, int numberOfAroundMines) const;
 
     const QPixmap &sourcePixmap;
-    QSize pieceSize;
-    QSize xy;
+    BoardInfoPointer boardInformation;
     int mineCount;
     bool isKeepMinesPositions;
 

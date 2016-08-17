@@ -32,6 +32,7 @@ public:
 
     int xCount() const;
     int yCount() const;
+    int pieceCount() const;
 
     const QSize &boardSize() const;
     const QSize &boardPixelSize() const;

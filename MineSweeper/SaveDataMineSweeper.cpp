@@ -17,15 +17,19 @@
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "SaveDataMineSweeper.h"
+#include "GameDataMineSweeper.h"
+#include "GameCoreMineSweeper.h"
+
 #include "EzPuzzles.h"
 
+#include <QFile>
 #include <QSaveFile>
 
 namespace MineSweeper {
 
 SaveDataMineSweeper::SaveDataMineSweeper(const QString &fileName) :
     fileName(fileName),
-    isSavedataValid(true)
+    isSavedataValid(false)
 {
     Q_ASSERT(!fileName.isEmpty());
 }
@@ -42,19 +46,22 @@ bool SaveDataMineSweeper::isValid() const
 
 bool SaveDataMineSweeper::loadInfo()
 {
-    QSaveFile file(fileName);
+    QFile file(fileName);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (!file.open(QIODevice::ReadOnly))
+        return (isSavedataValid = false);
 
     return loadInfo(QDataStream(&file));
 }
 
-QString SaveDataMineSweeper::gameName() const
+EzPuzzles::GameType SaveDataMineSweeper::gameType() const
 {
-    return gameTypeName;
+    return EzPuzzles::MineSweeper;
+}
+
+QString SaveDataMineSweeper::gameTypeName() const
+{
+    return EzPuzzles::gameName(EzPuzzles::MineSweeper);
 }
 
 QString SaveDataMineSweeper::imageFilePath() const
@@ -82,6 +89,14 @@ QStringList SaveDataMineSweeper::informations() const
     };
 }
 
+IGame *SaveDataMineSweeper::loadGame()
+{
+    if (!load())
+        return nullptr;
+
+    return new GameCoreMineSweeper(std::make_shared<GameDataMineSweeper>(*this));
+}
+
 bool SaveDataMineSweeper::save() const
 {
     QSaveFile file(fileName);
@@ -91,7 +106,7 @@ bool SaveDataMineSweeper::save() const
 
     QDataStream stream(&file);
 
-    stream << gameTypeName;
+    stream << gameTypeName();
     stream << xyCount;
     stream << mineCount;
     stream << openedCount;
@@ -107,12 +122,10 @@ bool SaveDataMineSweeper::save() const
 
 bool SaveDataMineSweeper::loadInfo(QDataStream &stream)
 {
-    stream >> gameTypeName;
+    stream >> gameName;
 
-    if (gameTypeName != EzPuzzles::gameName(EzPuzzles::MineSweeper)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (gameName != gameTypeName())
+        return (isSavedataValid = false);
 
     stream >> xyCount;
     stream >> mineCount;
@@ -128,12 +141,10 @@ bool SaveDataMineSweeper::loadInfo(QDataStream &stream)
 
 bool SaveDataMineSweeper::load()
 {
-    QSaveFile file(fileName);
+    QFile file(fileName);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (!file.open(QIODevice::ReadOnly))
+        return (isSavedataValid = false);
 
     QDataStream stream(&file);
 

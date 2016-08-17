@@ -21,7 +21,6 @@
 
 #include "SelectCellGrid.h"
 #include "SourceImage.h"
-#include "fifteen/GameSimpleSwap.h"
 
 #include "GameCore.h"
 #include "Slide/GameDataSimpleSlide.h"
@@ -107,8 +106,6 @@ IGame *DialogSettingsFifteen::buildSimpleSwap() const
 
     ui->radioButtonBlankRandom->isChecked() ? swapTarget.randomSelect(xyCount)
                                             : swapTarget.select(grid->selectedCellPos());
-
-//    return new Fifteen::GameSimpleSwap(sourceImage, xyCount, swapTarget);
 
     return new GameCore(std::make_shared<GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
 }

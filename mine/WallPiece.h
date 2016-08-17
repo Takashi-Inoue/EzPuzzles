@@ -42,6 +42,7 @@ public:
     void setOpenPieceOpacity(double /*opacity*/) override {}
 
     // IMinePiece
+    void draw(QPainter &) override {}
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;

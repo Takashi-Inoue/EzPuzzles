@@ -41,6 +41,19 @@ GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosit
     Q_ASSERT(!img.isNull());
 }
 
+GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData) :
+    sourceImg(loadedSaveData.sourceImg),
+    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSaveData.boardSize, sourceImg.size()), pieces)),
+    swapTargetPos(loadedSaveData.swapTargetPos),
+    currentPhaseType(loadedSaveData.currentPhaseType)
+{
+    Q_ASSERT(loadedSaveData.isValid());
+
+    pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces(loadedSaveData.defaultPositions);
+
+    initPieces();
+}
+
 QString GameDataSimpleSwap::gameName() const
 {
     return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
@@ -74,14 +87,19 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
     return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
 }
 
-PhasePointer GameDataSimpleSwap::createCurrentPhase()
+IPhase::PhaseType GameDataSimpleSwap::currentPhase() const
 {
-    return createPhase(currentPhaseType);
+    return currentPhaseType;
 }
 
 const SourceImage &GameDataSimpleSwap::sourceImage() const
 {
     return sourceImg;
+}
+
+QPixmap GameDataSimpleSwap::finalImage() const
+{
+    return sourceImg.pixmap;
 }
 
 BoardInfoPointer GameDataSimpleSwap::boardInfo() const
@@ -96,7 +114,7 @@ bool GameDataSimpleSwap::save(const QString &fileName) const
 
     SaveDataSimpleSwap savedata(fileName);
 
-    savedata.gameTypeName     = gameName();
+    savedata.gameName         = gameName();
     savedata.boardSize        = board->boardInfo()->boardSize();
     savedata.swapTargetPos    = swapTargetPos;
     savedata.sourceImg        = sourceImg;
@@ -106,26 +124,6 @@ bool GameDataSimpleSwap::save(const QString &fileName) const
         savedata.defaultPositions << piece->pos().defaultPos();
 
     return savedata.save();
-}
-
-bool GameDataSimpleSwap::load(const QString &fileName)
-{
-    SaveDataSimpleSwap savedata(fileName);
-
-    if (!savedata.load() || savedata.gameName() != gameName())
-        return false;
-
-    swapTargetPos    = savedata.swapTargetPos;
-    sourceImg        = savedata.sourceImg;
-    currentPhaseType = savedata.currentPhaseType;
-
-    board = std::make_shared<Board>(std::make_shared<BoardInformation>(savedata.boardSize, sourceImg.size()), pieces);
-
-    pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces(savedata.defaultPositions);
-
-    initPieces();
-
-    return true;
 }
 
 void GameDataSimpleSwap::initPieces()

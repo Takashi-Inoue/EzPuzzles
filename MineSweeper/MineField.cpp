@@ -21,32 +21,110 @@
 
 namespace MineSweeper {
 
-MineField::MineField(QVector<QVector<MinePiecePointer>> &pieces, bool isAutoLock) :
-    pieces(pieces)
+MineField::MineField(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, int mineCount) :
+    pieces(pieces),
+    mineCount(mineCount),
+    openedCount(0),
+    missedCount(0),
+    mineLocker(mineLocker)
 {
-    if (isAutoLock)
-        mineLocker = std::make_unique<MineLocker>(pieces);
+    Q_ASSERT(!pieces.isEmpty());
 }
 
 void MineField::open(const QPoint &pos)
 {
+    auto &piece = pieces[pos.y()][pos.x()];
 
+    piece->open();
+
+    if (piece->isMine()) {
+        ++missedCount;
+        explodedPos << pos;
+    } else {
+        ++openedCount;
+    }
+
+    if (!piece->isNearMine())
+        openChaining(pos);
+
+    if (mineLocker != nullptr)
+        mineLocker->lockMines();
 }
 
 void MineField::save(SaveDataMineSweeper &savedata) const
 {
     savedata.openedCount = openedCount;
     savedata.missedCount = missedCount;
-    savedata.isAutoLock  = (mineLocker != nullptr);
 }
 
-void MineField::load(SaveDataMineSweeper &savedata)
+void MineField::load(const SaveDataMineSweeper &savedata)
 {
     openedCount = savedata.openedCount;
     missedCount = savedata.missedCount;
 
-    if (savedata.isAutoLock)
-        mineLocker = std::make_unique<MineLocker>(pieces);
+    explodedPos.clear();
+
+    for (int y = 0, ylim = pieces.size(); y < ylim; ++y) {
+        const auto &horizontal = pieces.at(y);
+
+        for (int x = 0, xlim = horizontal.size(); x < xlim; ++x) {
+            const auto &piece = horizontal.at(x);
+
+            if (piece->isMine() & piece->isOpen())
+                explodedPos << QPoint(x, y);
+        }
+    }
+}
+
+double MineField::openedRate() const
+{
+    Q_ASSERT(!pieces.isEmpty());
+
+    double safePieceCount = pieces.size() * pieces.first().size();
+
+    return openedCount / safePieceCount;
+}
+
+bool MineField::isAllOpened() const
+{
+    Q_ASSERT(!pieces.isEmpty());
+
+    return pieces.size() * pieces.first().size() == openedCount;
+}
+
+const QList<QPoint> &MineField::explodedPositions() const
+{
+    return explodedPos;
+}
+
+void MineField::openChaining(const QPoint &pos)
+{
+    QList<QPoint> mustCheck = {pos};
+
+    while (!mustCheck.isEmpty()) {
+        QPoint center = mustCheck.takeFirst();
+
+        for (int dy = -1; dy <= 1; ++dy) {
+            for (int dx = -1; dx <= 1; ++dx) {
+                if ((dx | dy) == 0)
+                    continue;
+
+                QPoint checkPos(center + QPoint(dx, dy));
+
+                auto &piece = pieces[checkPos.y()][checkPos.x()];
+
+                if (piece->isOpen() || piece->isMine())
+                    continue;
+
+                piece->open();
+
+                ++openedCount;
+
+                if (!piece->isNearMine())
+                    mustCheck << checkPos;
+            }
+        }
+    }
 }
 
 } // MineSweeper

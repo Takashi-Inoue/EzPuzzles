@@ -19,6 +19,7 @@
 #ifndef SAVEDATASIMPLESWAP_H
 #define SAVEDATASIMPLESWAP_H
 
+#include "ISaveData.h"
 #include "SourceImage.h"
 #include "UniquePosition.h"
 #include "IPhase.h"
@@ -28,20 +29,24 @@
 #include <QList>
 #include <QPoint>
 
-class SaveDataSimpleSwap
+class SaveDataSimpleSwap : public ISaveData
 {
 public:
     SaveDataSimpleSwap(const QString &fileName);
     ~SaveDataSimpleSwap() = default;
 
-    QIcon gameTypeIcon() const;
-    bool isValid() const;
+    // ISaveData
+    QIcon gameTypeIcon() const override;
+    bool isValid() const override;
 
-    bool loadInfo();
+    bool loadInfo() override;
 
-    QString gameName() const;
-    QString imageFilePath() const;
-    QStringList informations() const;
+    EzPuzzles::GameType gameType() const override;
+    QString gameTypeName() const override;
+    QString imageFilePath() const override;
+    QStringList informations() const override;
+
+    IGame *loadGame() override;
 
 private:
     friend class GameDataSimpleSwap;
@@ -53,7 +58,7 @@ private:
     QString fileName;
     bool isSavedataValid;
 
-    QString gameTypeName;
+    QString gameName;
     SourceImage sourceImg;
     QSize boardSize;
     UniquePosition swapTargetPos;

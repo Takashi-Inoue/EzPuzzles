@@ -19,6 +19,7 @@
 #ifndef SAVEDATASIMPLESLIDE_H
 #define SAVEDATASIMPLESLIDE_H
 
+#include "ISaveData.h"
 #include "SourceImage.h"
 #include "UniquePosition.h"
 #include "IPhase.h"
@@ -28,20 +29,23 @@
 #include <QList>
 #include <QPoint>
 
-class SaveDataSimpleSlide
+class SaveDataSimpleSlide : public ISaveData
 {
 public:
     SaveDataSimpleSlide(const QString &fileName);
     ~SaveDataSimpleSlide() = default;
 
-    QIcon gameTypeIcon() const;
-    bool isValid() const;
+    QIcon gameTypeIcon() const override;
+    bool isValid() const override;
 
-    bool loadInfo();
+    bool loadInfo() override;
 
-    QString gameName() const;
-    QString imageFilePath() const;
-    QStringList informations() const;
+    EzPuzzles::GameType gameType() const override;
+    QString gameTypeName() const override;
+    QString imageFilePath() const override;
+    QStringList informations() const override;
+
+    IGame *loadGame() override;
 
 private:
     friend class GameDataSimpleSlide;
@@ -53,7 +57,7 @@ private:
     QString fileName;
     bool isSavedataValid;
 
-    QString gameTypeName;
+    QString gameName;
     SourceImage sourceImg;
     QSize boardSize;
     UniquePosition defaultBlankPos;

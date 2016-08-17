@@ -23,59 +23,50 @@
 
 namespace MineSweeper {
 
-SafePiece::SafePiece(int numOfAroundMines, const QPixmap &pixmap, const QRect &sourceRect) :
+SafePiece::SafePiece(int numOfAroundMines, const QRect &destRect, const QPixmap &pixmap, const QRect &sourceRect) :
     switchImagePiece(std::make_unique<SwitchImagePiece>(pixmap, sourceRect)),
     numberPiece(nullptr),
     numOfAroundMines(numOfAroundMines),
-    size(pixmap.size())
+    rect(destRect),
+    isChanged(true)
 {
     Q_ASSERT(numOfAroundMines >= 0 && numOfAroundMines < 9);
-
-    if (!sourceRect.isNull())
-        size = sourceRect.size();
 
     if (isNearMine())
         switchImagePiece->setOpenPieceOpacity(0.5);
 
     if (numOfAroundMines > 0)
-        numberPiece = NumberPieceFactory::getPiece(numOfAroundMines, size);
-}
-
-void SafePiece::draw(QPainter &painter, const QPointF &pos)
-{
-    if (isOpen())
-        fillRect(painter, QRectF(pos, size));
-
-    switchImagePiece->draw(painter, pos);
-
-    if (numberPiece != nullptr && isOpen())
-        numberPiece->draw(painter, pos);
-}
-
-void SafePiece::draw(QPainter &painter, const QRectF &rect)
-{
-    if (isOpen())
-        fillRect(painter, rect);
-
-    switchImagePiece->draw(painter, rect);
-
-    if (numberPiece != nullptr && isOpen())
-        numberPiece->draw(painter, rect);
+        numberPiece = NumberPieceFactory::getPiece(numOfAroundMines, rect.size());
 }
 
 void SafePiece::open()
 {
+    if (switchImagePiece->isOpen())
+        return;
+
     switchImagePiece->open();
+
+    isChanged = true;
 }
 
 void SafePiece::close()
 {
+    if (!switchImagePiece->isOpen())
+        return;
+
     switchImagePiece->close();
+
+    isChanged = true;
 }
 
 void SafePiece::lock()
 {
+    if (switchImagePiece->isLock())
+        return;
+
     switchImagePiece->lock();
+
+    isChanged = true;
 }
 
 bool SafePiece::isOpen() const
@@ -90,8 +81,28 @@ bool SafePiece::isLock() const
 
 void SafePiece::setOpenPieceOpacity(double opacity)
 {
-    if (!isNearMine())
-        switchImagePiece->setOpenPieceOpacity(opacity);
+    if (isNearMine())
+        return;
+
+    switchImagePiece->setOpenPieceOpacity(opacity);
+
+    isChanged = true;
+}
+
+void SafePiece::draw(QPainter &painter)
+{
+    if (!isChanged)
+        return;
+
+    if (isOpen())
+        fillRect(painter);
+
+    switchImagePiece->draw(painter, rect);
+
+    if (numberPiece != nullptr && isOpen())
+        numberPiece->draw(painter, rect);
+
+    isChanged = false;
 }
 
 bool SafePiece::isMine() const
@@ -114,7 +125,7 @@ int SafePiece::numberOfAroundMines() const
     return numOfAroundMines;
 }
 
-void SafePiece::fillRect(QPainter &painter, const QRectF &rect)
+void SafePiece::fillRect(QPainter &painter)
 {
     painter.setOpacity(1);
 

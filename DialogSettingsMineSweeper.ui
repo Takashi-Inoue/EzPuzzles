@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>366</width>
-    <height>484</height>
+    <width>447</width>
+    <height>487</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -97,7 +97,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QSlider" name="horizontalSlider">
+      <widget class="QSlider" name="pieceSizeSlider">
        <property name="minimum">
         <number>16</number>
        </property>
@@ -139,7 +139,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBox">
+      <widget class="QSpinBox" name="spinBoxMineCount">
        <property name="minimum">
         <number>1</number>
        </property>

@@ -19,6 +19,8 @@
 #ifndef DIALOGSAVEDATA_H
 #define DIALOGSAVEDATA_H
 
+#include "EzPuzzles.h"
+
 #include <QDialog>
 #include <QMap>
 #include <QStringList>
@@ -54,9 +56,11 @@ private slots:
 private:
     enum ShownDataType {
         ShowAll,
-        OnlySimpleSlide,
-        OnlySwap,
-        OnlyMineSweeper,
+        ShowTypeSlide,
+        ShowTypeSwap,
+        ShowSimpleSlide,
+        ShowSimpleSwap,
+        ShowMineSweeper,
     };
 
     ISaveData *getSaveDataFromListItem(const QListWidgetItem *item) const;
@@ -65,8 +69,9 @@ private:
     void onDataSelected(int row);
 
     void showAllSaveData();
-    void showSelectedTypeData(ShownDataType shownDataType);
+    void showSpecifiedTypeData(ShownDataType shownDataType);
 
+    void initShowTypeMap();
     void initComboBox();
     void initListWidget();
 
@@ -76,7 +81,7 @@ private:
     GameInfoLoader *infoLoader;
     QStringList savedataNames;
 
-    QMap<QString, ShownDataType> gameTypeMap; // key = gameName
+    QMap<ShownDataType, QList<EzPuzzles::GameType>> showTypeMap;
 };
 
 #endif // DIALOGSAVEDATA_H

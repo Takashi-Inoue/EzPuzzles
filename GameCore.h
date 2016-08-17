@@ -37,7 +37,6 @@ public:
 
     IGame *cloneAsNewGame() const override;
     void save(const QString &saveDirPath, const QSize &screenshotSize) const override;
-    bool load(const QString &loadFilePath) override;
 
     void onTickFrame() override;
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
@@ -52,14 +51,14 @@ protected slots:
 
 protected:
     void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const override;
+    QPoint piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const;
+
+    PhasePointer phase;
+    GameDataPointer gameData;
 
 private:
     GameID gameId;
-
     QPixmap backBuffer;
-
-    GameDataPointer gameData;
-    PhasePointer phase;
 };
 
 #endif // GAMECORE_H

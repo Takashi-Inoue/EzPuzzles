@@ -17,13 +17,16 @@
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "SaveDataSimpleSwap.h"
+#include "GameDataSimpleSwap.h"
+#include "GameCore.h"
 #include "EzPuzzles.h"
 
+#include <QFile>
 #include <QSaveFile>
 
 SaveDataSimpleSwap::SaveDataSimpleSwap(const QString &fileName) :
     fileName(fileName),
-    isSavedataValid(true)
+    isSavedataValid(false)
 {
     Q_ASSERT(!fileName.isEmpty());
 }
@@ -40,19 +43,22 @@ bool SaveDataSimpleSwap::isValid() const
 
 bool SaveDataSimpleSwap::loadInfo()
 {
-    QSaveFile file(fileName);
+    QFile file(fileName);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (!file.open(QIODevice::ReadOnly))
+        return (isSavedataValid = false);
 
     return loadInfo(QDataStream(&file));
 }
 
-QString SaveDataSimpleSwap::gameName() const
+EzPuzzles::GameType SaveDataSimpleSwap::gameType() const
 {
-    return gameTypeName;
+    return EzPuzzles::SimpleSwap;
+}
+
+QString SaveDataSimpleSwap::gameTypeName() const
+{
+    return EzPuzzles::gameName(EzPuzzles::SimpleSwap);
 }
 
 QString SaveDataSimpleSwap::imageFilePath() const
@@ -69,6 +75,14 @@ QStringList SaveDataSimpleSwap::informations() const
     };
 }
 
+IGame *SaveDataSimpleSwap::loadGame()
+{
+    if (!load())
+        return nullptr;
+
+    return new GameCore(std::make_shared<GameDataSimpleSwap>(*this));
+}
+
 bool SaveDataSimpleSwap::save() const
 {
     QSaveFile file(fileName);
@@ -78,7 +92,7 @@ bool SaveDataSimpleSwap::save() const
 
     QDataStream stream(&file);
 
-    stream << EzPuzzles::gameName(EzPuzzles::SimpleSwap);
+    stream << gameTypeName();
     stream << boardSize;
     swapTargetPos.write(stream);
     stream << sourceImg.fullPath;
@@ -91,12 +105,10 @@ bool SaveDataSimpleSwap::save() const
 
 bool SaveDataSimpleSwap::loadInfo(QDataStream &stream)
 {
-    stream >> gameTypeName;
+    stream >> gameName;
 
-    if (gameTypeName != EzPuzzles::gameName(EzPuzzles::SimpleSwap)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (gameName != gameTypeName())
+        return (isSavedataValid = false);
 
     stream >> boardSize;
     swapTargetPos.read(stream);
@@ -109,12 +121,10 @@ bool SaveDataSimpleSwap::loadInfo(QDataStream &stream)
 
 bool SaveDataSimpleSwap::load()
 {
-    QSaveFile file(fileName);
+    QFile file(fileName);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (!file.open(QIODevice::ReadOnly))
+        return (isSavedataValid = false);
 
     QDataStream stream(&file);
 

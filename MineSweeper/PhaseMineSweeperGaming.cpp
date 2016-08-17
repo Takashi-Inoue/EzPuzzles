@@ -21,17 +21,29 @@
 
 namespace MineSweeper {
 
-PhaseMineSweeperGaming::PhaseMineSweeperGaming(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, PhaseType nextPhase) :
+PhaseMineSweeperGaming::PhaseMineSweeperGaming(MineFieldPointer mineField, QVector<QVector<MinePiecePointer>> &pieces, PhaseType nextPhase) :
+    mineField(mineField),
     pieces(pieces),
-    mineLocker(mineLocker),
     nextPhase(nextPhase)
 {
-    Q_ASSERT(!pieces.isEmpty());
+    Q_CHECK_PTR(mineField);
 }
 
 void PhaseMineSweeperGaming::click(const QPoint &clickedPiecePos)
 {
+    mineField->open(clickedPiecePos);
 
+    double opacity = mineField->openedRate() / 2.0 + 0.5;
+
+    for (auto &horizontal : pieces) {
+        for (auto &piece : horizontal) {
+            if (!piece->isNearMine() && piece->isOpen())
+                piece->setOpenPieceOpacity(opacity);
+        }
+    }
+
+    if (mineField->isAllOpened())
+        emit toNextPhase(nextPhase);
 }
 
 void PhaseMineSweeperGaming::onTickFrame()
@@ -45,7 +57,10 @@ void PhaseMineSweeperGaming::onTickFrame()
 
 void PhaseMineSweeperGaming::draw(QPainter &painter)
 {
-
+    for (auto &horizontal : pieces) {
+        for (auto &piece : horizontal)
+            piece->draw(painter);
+    }
 }
 
 bool PhaseMineSweeperGaming::canSave() const

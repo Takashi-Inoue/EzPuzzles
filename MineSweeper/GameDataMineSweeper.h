@@ -20,32 +20,42 @@
 #define GAMEDATAMINESWEEPER_H
 
 #include "IGameData.h"
+#include "MineField.h"
 #include "mine/MinePiece.h"
 #include "mine/MineLocker.h"
 
 namespace MineSweeper {
 
+class SaveDataMineSweeper;
+
 class GameDataMineSweeper : public IGameData
 {
 public:
     GameDataMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock);
+    GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata);
 
+    // IGameData
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
-    PhasePointer createCurrentPhase() override;
+    IPhase::PhaseType currentPhase() const override;
     const SourceImage &sourceImage() const override;
+    QPixmap finalImage() const override;
     BoardInfoPointer boardInfo() const override;
-
     bool save(const QString &fileName) const override;
-    bool load(const QString &fileName) override;
+
+    double openedRate() const;
+    QList<QPointF> explodedCenters() const;
 
 private:
     SourceImage sourceImg;
+    QPixmap finalImg;
     BoardInfoPointer boardInformation;
     int mineCount;
+    IPhase::PhaseType currentPhaseType;
+
     QVector<QVector<MinePiecePointer>> pieces;
     MineLockerPointer mineLocker;
-    PhasePointer currentPhase;
+    MineFieldPointer mineField;
 };
 
 } // MineSweeper

@@ -25,13 +25,12 @@
 #include <QDebug>
 
 GameCore::GameCore(GameDataPointer gameData) :
-    backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize())),
     gameData(gameData),
-    phase(nullptr)
+    backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
 {
     Q_CHECK_PTR(gameData);
 
-    changePhase(IPhase::PhaseReady);
+    changePhase(gameData->currentPhase());
 }
 
 GameID GameCore::gameID() const
@@ -60,16 +59,6 @@ void GameCore::save(const QString &saveDirPath, const QSize &screenshotSize) con
     saveScreenshot(saveDirPath, screenshotSize);
 }
 
-bool GameCore::load(const QString &loadFilePath)
-{
-    if (!gameData->load(loadFilePath))
-        return false;
-
-    backBuffer = QPixmap(gameData->boardInfo()->boardPixelSize());
-
-    return true;
-}
-
 void GameCore::onTickFrame()
 {
     Q_CHECK_PTR(phase);
@@ -79,12 +68,7 @@ void GameCore::onTickFrame()
 
 void GameCore::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
-    const auto &boardInfo = gameData->boardInfo();
-
-    double scale = static_cast<double>(boardInfo->boardPixelSize().width()) / fieldSize.width();
-    QPoint piecePos = boardInfo->piecePosFromPixelPos(cursorPos * scale);
-
-    phase->click(piecePos);
+    phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
 }
 
 void GameCore::draw(QPainter &dest)
@@ -107,12 +91,12 @@ QSize GameCore::maxFieldSize() const
 
 void GameCore::drawFinalImage(QPainter &dest) const
 {
-    const auto &sourceImg = gameData->sourceImage();
+    auto &pixmap = gameData->finalImage();
 
-    QSize destSize = sourceImg.size().scaled(dest.viewport().size(), Qt::KeepAspectRatio);
+    QSize destSize = pixmap.size().scaled(dest.viewport().size(), Qt::KeepAspectRatio);
     QPoint tl((dest.viewport().width() - destSize.width()) / 2, (dest.viewport().height() - destSize.height()) / 2);
 
-    dest.drawPixmap(QRect(tl, destSize), sourceImg.pixmap, sourceImg.rect());
+    dest.drawPixmap(QRect(tl, destSize), pixmap, pixmap.rect());
 }
 
 QString GameCore::shortInformation() const
@@ -141,4 +125,13 @@ void GameCore::saveScreenshot(const QString &saveDirPath, const QSize &screensho
 {
     QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
     backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
+}
+
+QPoint GameCore::piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const
+{
+    const auto &boardInfo = gameData->boardInfo();
+
+    double scale = static_cast<double>(boardInfo->boardPixelSize().width()) / fieldSize.width();
+
+    return boardInfo->piecePosFromPixelPos(cursorPos * scale);
 }

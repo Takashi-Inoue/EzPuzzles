@@ -24,16 +24,13 @@
 #include "GameInfoLoader.h"
 #include "ISaveData.h"
 
-#include "fifteen/GameSimpleSlide.h"
-#include "fifteen/GameSimpleSwap.h"
-#include "mine/GameMineSweeper.h"
-
 #include "MoveToTrashBox.h"
 
 #include <QDateTime>
 #include <QDir>
 #include <QDataStream>
 #include <QFileInfo>
+#include <QPainter>
 #include <QPushButton>
 #include <QStyledItemDelegate>
 #include <QDebug>
@@ -67,9 +64,9 @@ public:
             drawRect.setLeft(drawRect.left() + ico.actualSize(drawRect.size()).width() + 2);
         }
 
-        auto gameInfo = reinterpret_cast<ISaveData *>(index.data(Qt::UserRole).toULongLong());
+        auto savedata = reinterpret_cast<ISaveData *>(index.data(Qt::UserRole).toULongLong());
 
-        if (gameInfo == nullptr)
+        if (savedata == nullptr)
             return;
 
         painter->save();
@@ -87,10 +84,10 @@ public:
 
         painter->setFont(gameNameFont);
 
-        painter->drawText(drawRect, Qt::AlignLeft | Qt::AlignTop, gameInfo->gameName());
+        painter->drawText(drawRect, Qt::AlignLeft | Qt::AlignTop, savedata->gameTypeName());
 
         painter->setFont(defaultFont);
-        painter->drawText(drawRect, Qt::AlignRight | Qt::AlignBottom, index.data().toString() + "\n" + QFileInfo(gameInfo->imageFilePath()).baseName());
+        painter->drawText(drawRect, Qt::AlignRight | Qt::AlignBottom, index.data().toString() + "\n" + QFileInfo(savedata->imageFilePath()).baseName());
 
         painter->restore();
     }
@@ -105,10 +102,7 @@ DialogSavedata::DialogSavedata(QWidget *parent) :
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-    gameTypeMap[Fifteen::GameSimpleSlide::gameName()] = OnlySimpleSlide;
-    gameTypeMap[Fifteen::GameSimpleSwap::gameName()] = OnlySwap;
-    gameTypeMap[MineSweeper::GameMineSweeper::gameName()] = OnlyMineSweeper;
-
+    initShowTypeMap();
     initComboBox();
     initListWidget();
 
@@ -161,7 +155,6 @@ void DialogSavedata::saveInfoLoaded(QString savedataName, ISaveData *gameInfo)
     item->setText(lastModified);
     item->setIcon(gameInfo->gameTypeIcon());
     item->setData(Qt::UserRole, reinterpret_cast<uintptr_t>(gameInfo));
-    item->setData(Qt::UserRole + 1, gameTypeMap.value(gameInfo->gameName()));
 }
 
 void DialogSavedata::on_listWidget_itemSelectionChanged()
@@ -180,7 +173,7 @@ void DialogSavedata::on_comboBox_currentIndexChanged(int index)
     ShownDataType shownDataType = static_cast<ShownDataType>(ui->comboBox->itemData(index).toInt());
 
     shownDataType == ShowAll ? showAllSaveData()
-                             : showSelectedTypeData(shownDataType);
+                             : showSpecifiedTypeData(shownDataType);
 
     auto items = ui->listWidget->selectedItems();
 
@@ -253,16 +246,30 @@ void DialogSavedata::showAllSaveData()
         ui->listWidget->item(i)->setHidden(false);
 }
 
-void DialogSavedata::showSelectedTypeData(ShownDataType shownDataType)
+void DialogSavedata::showSpecifiedTypeData(ShownDataType shownDataType)
 {
     Q_ASSERT(shownDataType != ShowAll);
 
+    const auto &types = showTypeMap[shownDataType];
+
+    Q_ASSERT(!types.isEmpty());
+
     for (int i = 0, lim = ui->listWidget->model()->rowCount(); i < lim; ++i) {
         auto item = ui->listWidget->item(i);
-        auto type = static_cast<ShownDataType>(item->data(Qt::UserRole + 1).toInt());
+        auto savedata = getSaveDataFromListItem(item);
 
-        item->setHidden(type != shownDataType);
+        item->setHidden(!std::binary_search(types.begin(), types.end(), savedata->gameType()));
     }
+}
+
+void DialogSavedata::initShowTypeMap()
+{
+    // 検索に std::binary_search を使用するので、対象が複数の場合は昇順で初期化すること
+    showTypeMap[ShowTypeSlide] = {EzPuzzles::SimpleSlide};
+    showTypeMap[ShowTypeSwap]  = {EzPuzzles::SimpleSwap};
+    showTypeMap[ShowSimpleSlide] = {EzPuzzles::SimpleSlide};
+    showTypeMap[ShowSimpleSwap]  = {EzPuzzles::SimpleSwap};
+    showTypeMap[ShowMineSweeper] = {EzPuzzles::MineSweeper};
 }
 
 void DialogSavedata::initComboBox()
@@ -276,9 +283,9 @@ void DialogSavedata::initComboBox()
     ui->comboBox->setStyleSheet("QAbstractItemView::item {min-height: 20px;}");
 
     ui->comboBox->addItem(QIcon(":/ico/gameAll"),         "All",         ShowAll);
-    ui->comboBox->addItem(QIcon(":/ico/gameSimpleSlide"), "Slide",       OnlySimpleSlide);
-    ui->comboBox->addItem(QIcon(":/ico/gameSwap"),        "Swap",        OnlySwap);
-    ui->comboBox->addItem(QIcon(":/ico/gameMine"),        "MineSweeper", OnlyMineSweeper);
+    ui->comboBox->addItem(QIcon(":/ico/gameSimpleSlide"), "Slide",       ShowSimpleSlide);
+    ui->comboBox->addItem(QIcon(":/ico/gameSwap"),        "Swap",        ShowSimpleSwap);
+    ui->comboBox->addItem(QIcon(":/ico/gameMine"),        "MineSweeper", ShowMineSweeper);
 }
 
 void DialogSavedata::initListWidget()

@@ -22,34 +22,33 @@
 
 namespace MineSweeper {
 
-MinePiece::MinePiece(const QSize &size) :
-    blockPiece(new BlockPiece(size)),
+MinePiece::MinePiece(const QRect &rect) :
+    blockPiece(new BlockPiece(rect.size())),
     isOpened(false),
     isLocked(false),
-    size(size)
+    rect(rect),
+    isChanged(true)
 {
-}
-
-void MinePiece::draw(QPainter &painter, const QPointF &pos)
-{
-    blockPiece->draw(painter, pos);
-}
-
-void MinePiece::draw(QPainter &painter, const QRectF &rect)
-{
-    blockPiece->draw(painter, rect);
 }
 
 void MinePiece::open()
 {
-    blockPiece.reset(new BlockPiece(size, QColor(224, 128, 128), QColor(192, 96, 96), QColor(96, 0, 0)));
+    if (isOpened | isLocked)
+        return;
+
+    blockPiece.reset(new BlockPiece(rect.size(), QColor(224, 128, 128), QColor(192, 96, 96), QColor(96, 0, 0)));
     isOpened = true;
+    isChanged = true;
 }
 
 void MinePiece::close()
 {
-    blockPiece.reset(new BlockPiece(size));
+    if (!isOpened | isLocked)
+        return;
+
+    blockPiece.reset(new BlockPiece(rect.size()));
     isOpened = false;
+    isChanged = true;
 }
 
 void MinePiece::lock()
@@ -57,8 +56,9 @@ void MinePiece::lock()
     if (isOpen())
         return;
 
-    blockPiece.reset(new BlockPiece(size, QColor(160, 160, 255), QColor(128, 128, 224), QColor(32, 32, 128)));
+    blockPiece.reset(new BlockPiece(rect.size(), QColor(160, 160, 255), QColor(128, 128, 224), QColor(32, 32, 128)));
     isLocked = true;
+    isChanged = true;
 }
 
 bool MinePiece::isOpen() const
@@ -69,6 +69,16 @@ bool MinePiece::isOpen() const
 bool MinePiece::isLock() const
 {
     return isLocked;
+}
+
+void MinePiece::draw(QPainter &painter)
+{
+    if (!isChanged)
+        return;
+
+    blockPiece->draw(painter, rect);
+
+    isChanged = false;
 }
 
 bool MinePiece::isMine() const

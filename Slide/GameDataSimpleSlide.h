@@ -23,20 +23,23 @@
 #include "Board.h"
 #include "UniquePosition.h"
 
+class SaveDataSimpleSlide;
+
 class GameDataSimpleSlide : public IGameData
 {
 public:
     GameDataSimpleSlide(const SourceImage &img, const UniquePosition &defaultBlankPos, const QSize &xyCount);
+    GameDataSimpleSlide(const SaveDataSimpleSlide &loadedSavedata);
     ~GameDataSimpleSlide() = default;
 
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
-    PhasePointer createCurrentPhase() override;
+    IPhase::PhaseType currentPhase() const override;
     const SourceImage &sourceImage() const override;
+    QPixmap finalImage() const override;
     BoardInfoPointer boardInfo() const override;
 
     bool save(const QString &fileName) const override;
-    bool load(const QString &fileName) override;
 
 protected:
     void initPieces();

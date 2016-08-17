@@ -29,6 +29,7 @@ public:
     ~EzPuzzles() = default;
 
     enum GameType {
+        UnkownGame,
         SimpleSlide,
         SimpleSwap,
         MineSweeper,

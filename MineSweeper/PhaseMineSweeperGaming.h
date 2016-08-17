@@ -20,8 +20,7 @@
 #define PHASEMINESWEEPERGAMING_H
 
 #include "IPhase.h"
-#include "mine/IMinePiece.h"
-#include "mine/MineLocker.h"
+#include "MineField.h"
 
 #include <QVector>
 
@@ -32,7 +31,7 @@ class MineLocker;
 class PhaseMineSweeperGaming : public IPhase
 {
 public:
-    PhaseMineSweeperGaming(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, PhaseType nextPhase);
+    PhaseMineSweeperGaming(MineFieldPointer mineField, QVector<QVector<MinePiecePointer> > &pieces, PhaseType nextPhase);
     ~PhaseMineSweeperGaming() = default;
 
     void click(const QPoint &clickedPiecePos) override;
@@ -43,8 +42,8 @@ public:
     QString information() const override;
 
 private:
+    MineFieldPointer mineField;
     QVector<QVector<MinePiecePointer>> &pieces;
-    MineLockerPointer mineLocker;
     PhaseType nextPhase;
 };
 

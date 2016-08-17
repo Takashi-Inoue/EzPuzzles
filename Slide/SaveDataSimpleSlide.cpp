@@ -17,13 +17,16 @@
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "SaveDataSimpleSlide.h"
+#include "GameDataSimpleSlide.h"
+#include "GameCore.h"
 #include "EzPuzzles.h"
 
+#include <QFile>
 #include <QSaveFile>
 
 SaveDataSimpleSlide::SaveDataSimpleSlide(const QString &fileName) :
     fileName(fileName),
-    isSavedataValid(true)
+    isSavedataValid(false)
 {
     Q_ASSERT(!fileName.isEmpty());
 }
@@ -40,19 +43,22 @@ bool SaveDataSimpleSlide::isValid() const
 
 bool SaveDataSimpleSlide::loadInfo()
 {
-    QSaveFile file(fileName);
+    QFile file(fileName);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (!file.open(QIODevice::ReadOnly))
+        return (isSavedataValid = false);
 
     return loadInfo(QDataStream(&file));
 }
 
-QString SaveDataSimpleSlide::gameName() const
+EzPuzzles::GameType SaveDataSimpleSlide::gameType() const
 {
-    return gameTypeName;
+    return EzPuzzles::SimpleSlide;
+}
+
+QString SaveDataSimpleSlide::gameTypeName() const
+{
+    return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
 }
 
 QString SaveDataSimpleSlide::imageFilePath() const
@@ -69,6 +75,14 @@ QStringList SaveDataSimpleSlide::informations() const
     };
 }
 
+IGame *SaveDataSimpleSlide::loadGame()
+{
+    if (!load())
+        return nullptr;
+
+    return new GameCore(std::make_shared<GameDataSimpleSlide>(*this));
+}
+
 bool SaveDataSimpleSlide::save() const
 {
     QSaveFile file(fileName);
@@ -78,7 +92,7 @@ bool SaveDataSimpleSlide::save() const
 
     QDataStream stream(&file);
 
-    stream << EzPuzzles::gameName(EzPuzzles::SimpleSlide);
+    stream << gameTypeName();
     stream << boardSize;
     defaultBlankPos.write(stream);
     stream << currentBlankPos;
@@ -92,12 +106,10 @@ bool SaveDataSimpleSlide::save() const
 
 bool SaveDataSimpleSlide::loadInfo(QDataStream &stream)
 {
-    stream >> gameTypeName;
+    stream >> gameName;
 
-    if (gameTypeName != EzPuzzles::gameName(EzPuzzles::SimpleSlide)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (gameName != gameTypeName())
+        return (isSavedataValid = false);
 
     stream >> boardSize;
     defaultBlankPos.read(stream);
@@ -111,12 +123,10 @@ bool SaveDataSimpleSlide::loadInfo(QDataStream &stream)
 
 bool SaveDataSimpleSlide::load()
 {
-    QSaveFile file(fileName);
+    QFile file(fileName);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-        isSavedataValid = false;
-        return false;
-    }
+    if (!file.open(QIODevice::ReadOnly))
+        return (isSavedataValid = false);
 
     QDataStream stream(&file);
 

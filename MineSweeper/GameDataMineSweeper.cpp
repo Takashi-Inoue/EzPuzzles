@@ -17,24 +17,51 @@
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "GameDataMineSweeper.h"
+#include "CommonPhase/PhaseCleared.h"
 #include "mine/MinePiecesFactory.h"
 #include "PhaseMineSweeperGaming.h"
+#include "SaveDataMineSweeper.h"
 #include "EzPuzzles.h"
 
 namespace MineSweeper {
 
 GameDataMineSweeper::GameDataMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock) :
     sourceImg(sourceImage),
+    finalImg(sourceImage.pixmap.copy()),
     boardInformation(std::make_shared<BoardInformation>(xyCount, sourceImage.size())),
-    mineCount(mineCount)
+    mineCount(mineCount),
+    currentPhaseType(IPhase::PhaseReady)
 {
-    PiecesFactory factory(sourceImage.pixmap, xyCount, mineCount, isAutoLock);
+    PiecesFactory factory(sourceImage.pixmap, boardInformation, mineCount, isAutoLock);
     pieces = factory.createPieces();
 
     if (isAutoLock) {
         mineLocker = std::make_shared<MineLocker>(pieces);
         mineLocker->addMinesPositions(factory.getMinesPositions());
     }
+
+    mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
+}
+
+GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata) :
+    sourceImg(loadedSavedata.sourceImg),
+    finalImg(sourceImg.pixmap.copy()),
+    boardInformation(std::make_shared<BoardInformation>(loadedSavedata.xyCount, sourceImg.size())),
+    mineCount(loadedSavedata.mineCount),
+    currentPhaseType(loadedSavedata.currentPhaseType)
+{
+    Q_ASSERT(loadedSavedata.isValid());
+
+    PiecesFactory factory(sourceImg.pixmap, boardInformation, mineCount, loadedSavedata.isAutoLock);
+    pieces = factory.toPieces(loadedSavedata.pieces);
+
+    if (loadedSavedata.isAutoLock) {
+        mineLocker = std::make_shared<MineLocker>(pieces);
+        mineLocker->addMinesPositions(factory.getMinesPositions());
+    }
+
+    mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
+    mineField->load(loadedSavedata);
 }
 
 QString GameDataMineSweeper::gameName() const
@@ -44,30 +71,37 @@ QString GameDataMineSweeper::gameName() const
 
 PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
 {
+    currentPhaseType = phaseType;
+
     switch (phaseType) {
     case IPhase::PhaseReady:
     case IPhase::PhasePreGame:
     case IPhase::PhaseGaming:
-        return currentPhase = std::make_shared<PhaseMineSweeperGaming>(pieces, mineLocker, IPhase::PhaseEnding);
+        return std::make_shared<PhaseMineSweeperGaming>(mineField, pieces, IPhase::PhaseCleared);
 
     case IPhase::PhaseEnding:
         break;
 
     case IPhase::PhaseCleared:
-        break;
+        return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);
     }
 
     return nullptr;
 }
 
-PhasePointer GameDataMineSweeper::createCurrentPhase()
+IPhase::PhaseType GameDataMineSweeper::currentPhase() const
 {
-    return currentPhase;
+    return currentPhaseType;
 }
 
 const SourceImage &GameDataMineSweeper::sourceImage() const
 {
     return sourceImg;
+}
+
+QPixmap GameDataMineSweeper::finalImage() const
+{
+    return finalImg;
 }
 
 BoardInfoPointer GameDataMineSweeper::boardInfo() const
@@ -77,12 +111,36 @@ BoardInfoPointer GameDataMineSweeper::boardInfo() const
 
 bool GameDataMineSweeper::save(const QString &fileName) const
 {
-    return true;
+    SaveDataMineSweeper savedata(fileName);
+
+    savedata.xyCount = boardInformation->boardSize();
+    savedata.mineCount = mineCount;
+    savedata.isAutoLock = (mineLocker != nullptr);
+    savedata.sourceImg = sourceImg;
+    savedata.currentPhaseType = currentPhaseType;
+    savedata.pieces = PiecesFactory::toIntList(pieces);
+
+    mineField->save(savedata);
+
+    return savedata.save();
 }
 
-bool GameDataMineSweeper::load(const QString &fileName)
+double GameDataMineSweeper::openedRate() const
 {
-    return true;
+    return mineField->openedRate();
+}
+
+QList<QPointF> GameDataMineSweeper::explodedCenters() const
+{
+    QList<QPointF> centers;
+
+    for (const auto &piecePos : mineField->explodedPositions()) {
+        const auto &rect = boardInformation->rectFromPiecePos(piecePos - QPoint(1, 1));
+
+        centers << rect.center();
+    }
+
+    return centers;
 }
 
 } // MineSweeper

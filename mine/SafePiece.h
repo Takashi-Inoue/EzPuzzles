@@ -28,11 +28,7 @@ namespace MineSweeper {
 class SafePiece : public IMinePiece
 {
 public:
-    SafePiece(int numOfAroundMines, const QPixmap &pixmap, const QRect &sourceRect = QRect());
-
-    // IPiece
-    void draw(QPainter &painter, const QPointF &pos) override;
-    void draw(QPainter &painter, const QRectF &rect) override;
+    SafePiece(int numOfAroundMines, const QRect &destRect, const QPixmap &pixmap, const QRect &sourceRect);
 
     // ISwitchPiece
     void open() override;
@@ -43,19 +39,27 @@ public:
     void setOpenPieceOpacity(double opacity) override;
 
     // IMinePiece
+    void draw(QPainter &painter) override;
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;
     int numberOfAroundMines() const override;
 
 protected:
-    void fillRect(QPainter &painter, const QRectF &rect);
+    void fillRect(QPainter &painter);
 
     std::unique_ptr<ISwitchPiece> switchImagePiece;
     IPiece *numberPiece;
 
     int numOfAroundMines;
-    QSize size;
+    QRect rect;
+
+    bool isChanged;
+
+    // -------------------- deleted functions --------------------
+    // IPiece
+    void draw(QPainter &, const QPointF &) override {}
+    void draw(QPainter &, const QRectF &) override {}
 };
 
 } // MineSweeper

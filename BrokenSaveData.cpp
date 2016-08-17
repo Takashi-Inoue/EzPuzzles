@@ -18,7 +18,27 @@
  */
 #include "BrokenSaveData.h"
 
-QString BrokenSaveData::gameName() const
+QIcon BrokenSaveData::gameTypeIcon() const
+{
+    return QIcon(":/ico/x");
+}
+
+bool BrokenSaveData::isValid() const
+{
+    return false;
+}
+
+bool BrokenSaveData::loadInfo()
+{
+    return false;
+}
+
+EzPuzzles::GameType BrokenSaveData::gameType() const
+{
+    return EzPuzzles::UnkownGame;
+}
+
+QString BrokenSaveData::gameTypeName() const
 {
     return "Broken data";
 }
@@ -35,22 +55,7 @@ QStringList BrokenSaveData::informations() const
     };
 }
 
-IGame *BrokenSaveData::loadGame() const
+IGame *BrokenSaveData::loadGame()
 {
     return nullptr;
-}
-
-bool BrokenSaveData::loadInfo()
-{
-    return false;
-}
-
-bool BrokenSaveData::isValid() const
-{
-    return false;
-}
-
-QIcon BrokenSaveData::gameTypeIcon() const
-{
-    return QIcon(":/ico/x");
 }

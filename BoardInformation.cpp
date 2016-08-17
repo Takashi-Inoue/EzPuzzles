@@ -53,6 +53,11 @@ int BoardInformation::yCount() const
     return xyCount.height();
 }
 
+int BoardInformation::pieceCount() const
+{
+    return xCount() * yCount();
+}
+
 const QSize &BoardInformation::boardSize() const
 {
     return xyCount;

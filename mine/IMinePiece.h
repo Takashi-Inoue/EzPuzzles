@@ -30,6 +30,7 @@ public:
     IMinePiece() = default;
     virtual ~IMinePiece() = default;
 
+    virtual void draw(QPainter &painter) = 0;
     virtual bool isMine() const = 0;
     virtual bool isNearMine() const = 0;
     virtual bool isWall() const = 0;

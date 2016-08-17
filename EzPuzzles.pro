@@ -24,7 +24,6 @@ SOURCES += main.cpp\
     GameWidget.cpp \
     DialogGameStart.cpp \
     DialogSettingsMineSweeper.cpp \
-    mine/GameMineSweeper.cpp \
     mine/MinePiece.cpp \
     mine/WallPiece.cpp \
     Dragger.cpp \
@@ -49,20 +48,14 @@ SOURCES += main.cpp\
     SourceImage.cpp \
     fifteen/PuzzlePiece.cpp \
     mine/MinePiecesFactory.cpp \
-    fifteen/GameLikeFifteen.cpp \
     fifteen/SimplePiecesFactory.cpp \
-    fifteen/GameSimpleSlide.cpp \
     fifteen/FifteenSlideShuffler.cpp \
     fifteen/FifteenPieceMover.cpp \
     GameID.cpp \
-    fifteen/GameSimpleSwap.cpp \
     fifteen/FifteenSwapShuffler.cpp \
     GameInfoLoader.cpp \
     BrokenSaveData.cpp \
     UnknownSaveData.cpp \
-    mine/MineSweeperSaveData.cpp \
-    fifteen/SimpleSwapSaveData.cpp \
-    fifteen/SimpleSlideSaveData.cpp \
     MoveToTrashBox.cpp \
     AnimationObject/AbstractAnimationObject.cpp \
     AnimationObject/Animation/AnimationLineMove.cpp \
@@ -94,7 +87,8 @@ SOURCES += main.cpp\
     MineSweeper/PhaseMineSweeperGaming.cpp \
     MineSweeper/GameDataMineSweeper.cpp \
     MineSweeper/MineField.cpp \
-    MineSweeper/SaveDataMineSweeper.cpp
+    MineSweeper/SaveDataMineSweeper.cpp \
+    MineSweeper/GameCoreMineSweeper.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -106,7 +100,6 @@ HEADERS  += MainWindow.h \
     IPiece.h \
     DialogGameStart.h \
     DialogSettingsMineSweeper.h \
-    mine/GameMineSweeper.h \
     mine/MinePiece.h \
     mine/WallPiece.h \
     ISubWidget.h \
@@ -137,22 +130,16 @@ HEADERS  += MainWindow.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
     mine/MinePiecesFactory.h \
-    fifteen/GameLikeFifteen.h \
     fifteen/SimplePiecesFactory.h \
-    fifteen/GameSimpleSlide.h \
     fifteen/FifteenSlideShuffler.h \
     fifteen/FifteenPieceMover.h \
     GameID.h \
-    fifteen/GameSimpleSwap.h \
     fifteen/FifteenSwapShuffler.h \
     IDialogGameSettings.h \
     GameInfoLoader.h \
     ISaveData.h \
     BrokenSaveData.h \
     UnknownSaveData.h \
-    mine/MineSweeperSaveData.h \
-    fifteen/SimpleSwapSaveData.h \
-    fifteen/SimpleSlideSaveData.h \
     MoveToTrashBox.h \
     AnimationObject/AbstractAnimationObject.h \
     AnimationObject/IAnimationObject.h \
@@ -190,7 +177,8 @@ HEADERS  += MainWindow.h \
     MineSweeper/PhaseMineSweeperGaming.h \
     MineSweeper/GameDataMineSweeper.h \
     MineSweeper/MineField.h \
-    MineSweeper/SaveDataMineSweeper.h
+    MineSweeper/SaveDataMineSweeper.h \
+    MineSweeper/GameCoreMineSweeper.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
@@ -205,5 +193,5 @@ RESOURCES += \
     resource.qrc
 
 DISTFILES += \
-    GameLikeFifteen.qmodel \
-    gameCore.qmodel
+    gameCore.qmodel \
+    Games.qmodel

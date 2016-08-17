@@ -23,20 +23,23 @@
 #include "Board.h"
 #include "UniquePosition.h"
 
+class SaveDataSimpleSwap;
+
 class GameDataSimpleSwap : public IGameData
 {
 public:
     GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount);
+    GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData);
     ~GameDataSimpleSwap() = default;
 
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
-    PhasePointer createCurrentPhase() override;
+    IPhase::PhaseType currentPhase() const override;
     const SourceImage &sourceImage() const override;
+    QPixmap finalImage() const override;
     BoardInfoPointer boardInfo() const override;
 
     bool save(const QString &fileName) const override;
-    bool load(const QString &fileName) override;
 
 protected:
     void initPieces();

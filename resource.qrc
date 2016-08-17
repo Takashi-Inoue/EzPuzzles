@@ -4,7 +4,7 @@
         <file alias="gameAll">icons/iconAll.png</file>
         <file alias="gameMine">icons/iconMine.png</file>
         <file alias="gameSimpleSlide">icons/iconSimpleSlide.png</file>
-        <file alias="gameSwap">icons/iconSwap.png</file>
+        <file alias="gameSimpleSwap">icons/iconSwap.png</file>
         <file alias="load">icons/load.png</file>
         <file alias="saveload">icons/saveload.png</file>
         <file alias="exit">icons/application-exit-4.png</file>
@@ -14,5 +14,8 @@
         <file>icons/view-refresh-5.png</file>
         <file alias="historyImage">icons/edit-history.png</file>
         <file alias="save">icons/save.png</file>
+    </qresource>
+    <qresource prefix="/img">
+        <file alias="hole">images/hole.png</file>
     </qresource>
 </RCC>

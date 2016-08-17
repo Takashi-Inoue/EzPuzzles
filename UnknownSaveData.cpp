@@ -18,7 +18,27 @@
  */
 #include "UnknownSaveData.h"
 
-QString UnknownSaveData::gameName() const
+QIcon UnknownSaveData::gameTypeIcon() const
+{
+    return QIcon(":/ico/x");
+}
+
+bool UnknownSaveData::isValid() const
+{
+    return false;
+}
+
+bool UnknownSaveData::loadInfo()
+{
+    return true;
+}
+
+EzPuzzles::GameType UnknownSaveData::gameType() const
+{
+    return EzPuzzles::UnkownGame;
+}
+
+QString UnknownSaveData::gameTypeName() const
 {
     return "Not save data or broken.";
 }
@@ -35,22 +55,7 @@ QStringList UnknownSaveData::informations() const
     };
 }
 
-IGame *UnknownSaveData::loadGame() const
+IGame *UnknownSaveData::loadGame()
 {
     return nullptr;
-}
-
-bool UnknownSaveData::loadInfo()
-{
-    return true;
-}
-
-bool UnknownSaveData::isValid() const
-{
-    return false;
-}
-
-QIcon UnknownSaveData::gameTypeIcon() const
-{
-    return QIcon(":/ico/x");
 }

@@ -22,6 +22,9 @@
 #include "mine/MinePiece.h"
 #include "mine/MineLocker.h"
 
+#include <QList>
+#include <memory>
+
 namespace MineSweeper {
 
 class SaveDataMineSweeper;
@@ -29,19 +32,31 @@ class SaveDataMineSweeper;
 class MineField
 {
 public:
-    MineField(QVector<QVector<MinePiecePointer>> &pieces, bool isAutoLock);
+    MineField(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, int mineCount);
 
     void open(const QPoint &pos);
     void save(SaveDataMineSweeper &) const;
-    void load(SaveDataMineSweeper &);
+    void load(const SaveDataMineSweeper &);
+
+    double openedRate() const;
+    bool isAllOpened() const;
+
+    const QList<QPoint> &explodedPositions() const;
 
 private:
+    void openChaining(const QPoint &pos);
+
     QVector<QVector<MinePiecePointer>> &pieces;
+    int mineCount;
     int openedCount;
     int missedCount;
 
     MineLockerPointer mineLocker;
+
+    QList<QPoint> explodedPos;
 };
+
+typedef std::shared_ptr<MineField> MineFieldPointer;
 
 } // MineSweeper
 

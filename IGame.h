@@ -41,7 +41,6 @@ public:
 
     virtual IGame *cloneAsNewGame() const = 0;
     virtual void save(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
-    virtual bool load(const QString &loadFilePath) = 0;
 
     virtual void onTickFrame() = 0;
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;

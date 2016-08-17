@@ -16,32 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IGAMEDATA_H
-#define IGAMEDATA_H
+#ifndef GAMECOREMINESWEEPER_H
+#define GAMECOREMINESWEEPER_H
 
-#include "EzPuzzles.h"
-#include "IPhase.h"
-#include "BoardInformation.h"
-#include "SourceImage.h"
+#include "GameCore.h"
+#include "GameDataMineSweeper.h"
 
-#include <memory>
+#include <QPair>
+#include <random>
 
-class IGameData
+namespace MineSweeper {
+
+class GameCoreMineSweeper : public GameCore
 {
 public:
-    IGameData() = default;
-    virtual ~IGameData() = default;
+    GameCoreMineSweeper(std::shared_ptr<GameDataMineSweeper> gameData);
+    ~GameCoreMineSweeper() = default;
 
-    virtual QString gameName() const = 0;
-    virtual PhasePointer createPhase(IPhase::PhaseType) = 0;
-    virtual IPhase::PhaseType currentPhase() const = 0;
-    virtual const SourceImage &sourceImage() const = 0;
-    virtual QPixmap finalImage() const = 0;
-    virtual BoardInfoPointer boardInfo() const = 0;
+    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
+    void drawFinalImage(QPainter &dest) const override;
 
-    virtual bool save(const QString &fileName) const = 0;
+private:
+    std::shared_ptr<GameDataMineSweeper> gameDataMineSweeper;
+    QPixmap holeImg;
+
+    mutable QList<QPair<QPoint, QMatrix>> matrixPairs;
+
+    mutable std::mt19937 mt;
 };
 
-typedef std::shared_ptr<IGameData> GameDataPointer;
+} // MineSweeper
 
-#endif // IPHASEFACTORY_H
+#endif // GAMECOREMINESWEEPER_H
