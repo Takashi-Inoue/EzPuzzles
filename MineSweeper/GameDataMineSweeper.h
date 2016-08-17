@@ -48,7 +48,6 @@ public:
 
 private:
     SourceImage sourceImg;
-    QPixmap finalImg;
     BoardInfoPointer boardInformation;
     int mineCount;
     IPhase::PhaseType currentPhaseType;

@@ -33,6 +33,8 @@ void GameCoreMineSweeper::click(const QSize &fieldSize, const QPoint &cursorPos)
     const auto &piecePos = piecePosFromCursorPos(fieldSize, cursorPos);
 
     phase->click(piecePos + QPoint(1, 1));
+
+    emit informationUpdated();
 }
 
 void GameCoreMineSweeper::drawFinalImage(QPainter &dest) const

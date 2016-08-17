@@ -41,10 +41,13 @@ public:
     double openedRate() const;
     bool isAllOpened() const;
 
+    QString information() const;
     const QList<QPoint> &explodedPositions() const;
 
 private:
     void openChaining(const QPoint &pos);
+
+    int safePiecesCount() const;
 
     QVector<QVector<MinePiecePointer>> &pieces;
     int mineCount;

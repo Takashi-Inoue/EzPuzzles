@@ -75,7 +75,7 @@ bool PhaseMineSweeperGaming::canLoad() const
 
 QString PhaseMineSweeperGaming::information() const
 {
-    return "";
+    return mineField->information();
 }
 
 } // MineSweeper

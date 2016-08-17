@@ -35,6 +35,9 @@ void MineField::open(const QPoint &pos)
 {
     auto &piece = pieces[pos.y()][pos.x()];
 
+    if (piece->isOpen() | piece->isLock())
+        return;
+
     piece->open();
 
     if (piece->isMine()) {
@@ -78,18 +81,24 @@ void MineField::load(const SaveDataMineSweeper &savedata)
 
 double MineField::openedRate() const
 {
-    Q_ASSERT(!pieces.isEmpty());
+    double safeCount = safePiecesCount();
 
-    double safePieceCount = pieces.size() * pieces.first().size();
-
-    return openedCount / safePieceCount;
+    return openedCount / safeCount;
 }
 
 bool MineField::isAllOpened() const
 {
-    Q_ASSERT(!pieces.isEmpty());
+    return safePiecesCount() == openedCount;
+}
 
-    return pieces.size() * pieces.first().size() == openedCount;
+QString MineField::information() const
+{
+    double safeCount = safePiecesCount();
+
+    return QString("%1/%2 %3% opend, %4 missed").arg(openedCount)
+                                                .arg(safeCount)
+                                                .arg((openedCount * 100.0) / safeCount, 0, 'f', 2)
+                                                .arg(missedCount);
 }
 
 const QList<QPoint> &MineField::explodedPositions() const
@@ -125,6 +134,13 @@ void MineField::openChaining(const QPoint &pos)
             }
         }
     }
+}
+
+int MineField::safePiecesCount() const
+{
+    Q_ASSERT(!pieces.isEmpty());
+
+    return (pieces.size() - 2) * (pieces.first().size() - 2) - mineCount;
 }
 
 } // MineSweeper

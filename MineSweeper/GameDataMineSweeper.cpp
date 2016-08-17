@@ -27,7 +27,6 @@ namespace MineSweeper {
 
 GameDataMineSweeper::GameDataMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock) :
     sourceImg(sourceImage),
-    finalImg(sourceImage.pixmap.copy()),
     boardInformation(std::make_shared<BoardInformation>(xyCount, sourceImage.size())),
     mineCount(mineCount),
     currentPhaseType(IPhase::PhaseReady)
@@ -45,7 +44,6 @@ GameDataMineSweeper::GameDataMineSweeper(const SourceImage &sourceImage, const Q
 
 GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata) :
     sourceImg(loadedSavedata.sourceImg),
-    finalImg(sourceImg.pixmap.copy()),
     boardInformation(std::make_shared<BoardInformation>(loadedSavedata.xyCount, sourceImg.size())),
     mineCount(loadedSavedata.mineCount),
     currentPhaseType(loadedSavedata.currentPhaseType)
@@ -101,7 +99,7 @@ const SourceImage &GameDataMineSweeper::sourceImage() const
 
 QPixmap GameDataMineSweeper::finalImage() const
 {
-    return finalImg;
+    return sourceImg.pixmap;
 }
 
 BoardInfoPointer GameDataMineSweeper::boardInfo() const

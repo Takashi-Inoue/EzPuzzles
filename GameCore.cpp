@@ -119,6 +119,8 @@ void GameCore::changePhase(IPhase::PhaseType phaseType)
     phase = gameData->createPhase(phaseType);
 
     connect(phase.get(), SIGNAL(toNextPhase(IPhase::PhaseType)), this, SLOT(changePhase(IPhase::PhaseType)));
+
+    emit informationUpdated();
 }
 
 void GameCore::saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const
