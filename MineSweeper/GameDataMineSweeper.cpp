@@ -18,7 +18,7 @@
  */
 #include "GameDataMineSweeper.h"
 #include "CommonPhase/PhaseCleared.h"
-#include "mine/MinePiecesFactory.h"
+#include "MinePiecesFactory.h"
 #include "PhaseMineSweeperGaming.h"
 #include "SaveDataMineSweeper.h"
 #include "EzPuzzles.h"

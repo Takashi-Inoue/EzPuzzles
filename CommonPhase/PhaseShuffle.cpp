@@ -23,15 +23,16 @@
 
 extern QThread gameThread;
 
-PhaseShuffle::PhaseShuffle(std::shared_ptr<Fifteen::AbstractShuffler> shuffler, PhaseType nextPhase, QObject *parent) :
+PhaseShuffle::PhaseShuffle(BoardPointer board, Fifteen::AbstractShuffler *shuffler, PhaseType nextPhase, QObject *parent) :
     IPhase(parent),
+    board(board),
     shuffler(shuffler),
-    nextPhase(nextPhase)
+    nextPhase(nextPhase),
+    isEnableDraw(true)
 {
     shuffler->moveToThread(&gameThread);
 
-    connect(shuffler.get(), SIGNAL(update(QList<Fifteen::PuzzlePiecePointer>)), this, SLOT(addChangedPieces(QList<Fifteen::PuzzlePiecePointer>)));
-    connect(shuffler.get(), SIGNAL(completed()), this, SLOT(completeShuffling()));
+    connect(shuffler, SIGNAL(completed()), this, SLOT(completeShuffling()));
 
     if (!gameThread.isRunning())
         gameThread.start();
@@ -42,14 +43,18 @@ PhaseShuffle::PhaseShuffle(std::shared_ptr<Fifteen::AbstractShuffler> shuffler, 
 PhaseShuffle::~PhaseShuffle()
 {
     shuffler->disconnect();
+    delete shuffler;
+}
+
+void PhaseShuffle::click(const QPoint &)
+{
+    isEnableDraw = false;
 }
 
 void PhaseShuffle::draw(QPainter &painter)
 {
-    for (auto &piece : changedPieces)
-        piece->draw(painter);
-
-    changedPieces.clear();
+    if (isEnableDraw)
+        board->draw(painter);
 }
 
 bool PhaseShuffle::canSave() const
@@ -65,15 +70,6 @@ bool PhaseShuffle::canLoad() const
 QString PhaseShuffle::information() const
 {
     return "Shuffling...";
-}
-
-void PhaseShuffle::addChangedPieces(QList<Fifteen::PuzzlePiecePointer> changed)
-{
-    changedPieces += changed;
-
-    qSort(changedPieces);
-
-    changedPieces.erase(std::unique(changedPieces.begin(), changedPieces.end()), changedPieces.end());
 }
 
 void PhaseShuffle::completeShuffling()

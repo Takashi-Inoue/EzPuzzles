@@ -41,6 +41,7 @@ RoundMoveFrame::RoundMoveFrame(int width, const QColor &outer1, const QColor &in
 void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
 {
     painter.save();
+    painter.setClipRect(rect);
     painter.setPen(Qt::transparent);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 

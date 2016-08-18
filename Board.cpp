@@ -21,9 +21,10 @@
 
 #include <QDebug>
 
-Board::Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointer> &pieces) :
+Board::Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock) :
     boardInformation(boardInformation),
-    pieces(pieces)
+    pieces(pieces),
+    rwlock(rwlock)
 {
     Q_CHECK_PTR(boardInformation);
 }
@@ -61,8 +62,11 @@ QList<Fifteen::PuzzlePiecePointer> Board::swapPiece(const QPoint &from, const QP
 
 void Board::draw(QPainter &painter)
 {
-    for (auto &piece : pieces)
+    for (auto &piece : pieces) {
+        rwlock->lockForRead();
         piece->draw(painter);
+        rwlock->unlock();
+    }
 }
 
 void Board::onTickFrame()

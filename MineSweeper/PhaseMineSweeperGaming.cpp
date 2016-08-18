@@ -17,7 +17,7 @@
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseMineSweeperGaming.h"
-#include "mine/MineLocker.h"
+#include "MineLocker.h"
 
 namespace MineSweeper {
 

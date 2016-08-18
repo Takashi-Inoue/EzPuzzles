@@ -23,6 +23,8 @@
 #include "Board.h"
 #include "UniquePosition.h"
 
+#include <QReadWriteLock>
+
 class SaveDataSimpleSwap;
 
 class GameDataSimpleSwap : public IGameData
@@ -47,6 +49,8 @@ protected:
     void setEffectToPieces();
 
     static const unsigned char slideFrameCount = 20;
+
+    std::shared_ptr<QReadWriteLock> rwlock;
 
     QList<Fifteen::PuzzlePiecePointer> pieces;
     SourceImage sourceImg;

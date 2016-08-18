@@ -23,11 +23,13 @@
 #include "fifteen/PuzzlePiece.h"
 
 #include <QPainter>
+#include <QReadWriteLock>
+#include <memory>
 
 class Board
 {
 public:
-    Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointer> &pieces);
+    Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock);
     ~Board() = default;
 
 public:
@@ -48,6 +50,8 @@ protected:
 
     BoardInfoPointer boardInformation;
     QList<Fifteen::PuzzlePiecePointer> &pieces;
+
+    std::shared_ptr<QReadWriteLock> rwlock;
 };
 
 typedef std::shared_ptr<Board> BoardPointer;

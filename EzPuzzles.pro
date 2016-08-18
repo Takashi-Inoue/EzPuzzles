@@ -24,21 +24,20 @@ SOURCES += main.cpp\
     GameWidget.cpp \
     DialogGameStart.cpp \
     DialogSettingsMineSweeper.cpp \
-    mine/MinePiece.cpp \
-    mine/WallPiece.cpp \
+    MineSweeper/MinePiece.cpp \
+    MineSweeper/WallPiece.cpp \
     Dragger.cpp \
     SubFrame.cpp \
-    mine/GraduallyDrawer.cpp \
     ImagePiece.cpp \
     NumberPiece.cpp \
     BlockPiece.cpp \
     SwitchImagePiece.cpp \
-    mine/SafePiece.cpp \
-    mine/NumberPieceFactory.cpp \
+    MineSweeper/SafePiece.cpp \
+    MineSweeper/NumberPieceFactory.cpp \
     ThreadOperation.cpp \
     GarbageCollector.cpp \
     ImageFragmentPiece.cpp \
-    mine/MineLocker.cpp \
+    MineSweeper/MineLocker.cpp \
     DialogImageHistory.cpp \
     ImageLoader.cpp \
     StringListHistory.cpp \
@@ -47,7 +46,7 @@ SOURCES += main.cpp\
     DialogSavedata.cpp \
     SourceImage.cpp \
     fifteen/PuzzlePiece.cpp \
-    mine/MinePiecesFactory.cpp \
+    MineSweeper/MinePiecesFactory.cpp \
     fifteen/SimplePiecesFactory.cpp \
     fifteen/FifteenSlideShuffler.cpp \
     fifteen/FifteenPieceMover.cpp \
@@ -100,25 +99,24 @@ HEADERS  += MainWindow.h \
     IPiece.h \
     DialogGameStart.h \
     DialogSettingsMineSweeper.h \
-    mine/MinePiece.h \
-    mine/WallPiece.h \
+    MineSweeper/MinePiece.h \
+    MineSweeper/WallPiece.h \
     ISubWidget.h \
     Dragger.h \
     SubFrame.h \
     IDrawer.h \
-    mine/GraduallyDrawer.h \
     ImagePiece.h \
     NumberPiece.h \
     ISwitchPiece.h \
     BlockPiece.h \
     SwitchImagePiece.h \
-    mine/IMinePiece.h \
-    mine/SafePiece.h \
-    mine/NumberPieceFactory.h \
+    MineSweeper/IMinePiece.h \
+    MineSweeper/SafePiece.h \
+    MineSweeper/NumberPieceFactory.h \
     ThreadOperation.h \
     GarbageCollector.h \
     ImageFragmentPiece.h \
-    mine/MineLocker.h \
+    MineSweeper/MineLocker.h \
     Utility.h \
     DialogImageHistory.h \
     ImageLoader.h \
@@ -129,7 +127,7 @@ HEADERS  += MainWindow.h \
     SourceImage.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
-    mine/MinePiecesFactory.h \
+    MineSweeper/MinePiecesFactory.h \
     fifteen/SimplePiecesFactory.h \
     fifteen/FifteenSlideShuffler.h \
     fifteen/FifteenPieceMover.h \

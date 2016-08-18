@@ -53,6 +53,7 @@ void GraduallyBlinkFrame::drawSingleLineFrame(QPainter &painter, const QRectF &r
     painter.save();
 
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing, false);
+    painter.setClipRect(rect);
 
     QColor color = currentColor(outerStartColor, outerEndColor);
 
@@ -67,6 +68,7 @@ void GraduallyBlinkFrame::drawGradationFrame(QPainter &painter, const QRectF &re
     painter.save();
 
     painter.setRenderHint(QPainter::Antialiasing);
+    painter.setClipRect(rect);
     painter.setPen(Qt::transparent);
 
     QLinearGradient gradient(rect.topLeft(), rect.topLeft() + QPointF(width, 0));

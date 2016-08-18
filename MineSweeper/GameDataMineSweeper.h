@@ -21,8 +21,8 @@
 
 #include "IGameData.h"
 #include "MineField.h"
-#include "mine/MinePiece.h"
-#include "mine/MineLocker.h"
+#include "MineSweeper/MinePiece.h"
+#include "MineSweeper/MineLocker.h"
 
 namespace MineSweeper {
 

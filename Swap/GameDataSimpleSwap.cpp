@@ -33,8 +33,9 @@
 #include <QDebug>
 
 GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount) :
+    rwlock(std::make_shared<QReadWriteLock>()),
     sourceImg(img),
-    board(std::make_shared<Board>(std::make_shared<BoardInformation>(xyCount, img.size()), pieces)),
+    board(std::make_shared<Board>(std::make_shared<BoardInformation>(xyCount, img.size()), pieces, rwlock)),
     swapTargetPos(swapTargetPos),
     currentPhaseType(IPhase::PhaseReady)
 {
@@ -42,8 +43,9 @@ GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosit
 }
 
 GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData) :
+    rwlock(std::make_shared<QReadWriteLock>()),
     sourceImg(loadedSaveData.sourceImg),
-    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSaveData.boardSize, sourceImg.size()), pieces)),
+    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSaveData.boardSize, sourceImg.size()), pieces, rwlock)),
     swapTargetPos(loadedSaveData.swapTargetPos),
     currentPhaseType(loadedSaveData.currentPhaseType)
 {
@@ -69,7 +71,7 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
     }
 
     if (phaseType == IPhase::PhasePreGame)
-        return std::make_shared<PhaseShuffle>(std::make_shared<Fifteen::SwapShuffler>(pieces, board->boardInfo()), IPhase::PhaseGaming);
+        return std::make_shared<PhaseShuffle>(board, new Fifteen::SwapShuffler(pieces, board->boardInfo(), rwlock), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
         return std::make_shared<PhaseSimpleSwapGaming>(board, pieces, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);

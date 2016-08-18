@@ -19,8 +19,8 @@
 #ifndef MINEFIELD_H
 #define MINEFIELD_H
 
-#include "mine/MinePiece.h"
-#include "mine/MineLocker.h"
+#include "MineSweeper/MinePiece.h"
+#include "MineSweeper/MineLocker.h"
 
 #include <QList>
 #include <memory>

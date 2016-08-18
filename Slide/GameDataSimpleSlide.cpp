@@ -34,8 +34,9 @@
 #include <QDebug>
 
 GameDataSimpleSlide::GameDataSimpleSlide(const SourceImage &img, const UniquePosition &defaultBlankPos, const QSize &xyCount) :
+    rwlock(std::make_shared<QReadWriteLock>()),
     sourceImg(img),
-    board(std::make_shared<Board>(std::make_shared<BoardInformation>(xyCount, img.size()), pieces)),
+    board(std::make_shared<Board>(std::make_shared<BoardInformation>(xyCount, img.size()), pieces, rwlock)),
     defaultBlankPos(defaultBlankPos),
     currentBlankPos(defaultBlankPos.selectedPosition()),
     currentPhaseType(IPhase::PhaseReady)
@@ -44,8 +45,9 @@ GameDataSimpleSlide::GameDataSimpleSlide(const SourceImage &img, const UniquePos
 }
 
 GameDataSimpleSlide::GameDataSimpleSlide(const SaveDataSimpleSlide &loadedSavedata) :
+    rwlock(std::make_shared<QReadWriteLock>()),
     sourceImg(loadedSavedata.sourceImg),
-    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSavedata.boardSize, sourceImg.size()), pieces)),
+    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSavedata.boardSize, sourceImg.size()), pieces, rwlock)),
     defaultBlankPos(loadedSavedata.defaultBlankPos),
     currentBlankPos(loadedSavedata.currentBlankPos),
     currentPhaseType(loadedSavedata.currentPhaseType)
@@ -72,7 +74,7 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
     }
 
     if (phaseType == IPhase::PhasePreGame)
-        return std::make_shared<PhaseShuffle>(std::make_shared<Fifteen::SlideShuffler>(pieces, board->boardInfo(), currentBlankPos), IPhase::PhaseGaming);
+        return std::make_shared<PhaseShuffle>(board, new Fifteen::SlideShuffler(pieces, board->boardInfo(), currentBlankPos, rwlock), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
         return std::make_shared<PhaseSimpleSlideGaming>(board, currentBlankPos, IPhase::PhaseEnding, slideFrameCount);

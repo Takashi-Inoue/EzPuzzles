@@ -20,7 +20,7 @@
 #define SIMPLESLIDEPHASEPREGAME_H
 
 #include "IPhase.h"
-#include "BoardInformation.h"
+#include "Board.h"
 #include "fifteen/FifteenAbstractShuffler.h"
 #include "fifteen/PuzzlePiece.h"
 
@@ -28,10 +28,10 @@ class PhaseShuffle : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseShuffle(std::shared_ptr<Fifteen::AbstractShuffler> shuffler, PhaseType nextPhase, QObject *parent = 0);
+    PhaseShuffle(BoardPointer board, Fifteen::AbstractShuffler *shuffler, PhaseType nextPhase, QObject *parent = 0);
     ~PhaseShuffle();
 
-    void click(const QPoint &) override {}
+    void click(const QPoint &) override;
     void onTickFrame() override {}
     void draw(QPainter &) override;
     bool canSave() const override;
@@ -39,13 +39,14 @@ public:
     QString information() const override;
 
 private slots:
-    void addChangedPieces(QList<Fifteen::PuzzlePiecePointer>);
     void completeShuffling();
 
 private:
-    QList<Fifteen::PuzzlePiecePointer> changedPieces;
-    std::shared_ptr<Fifteen::AbstractShuffler> shuffler;
+    BoardPointer board;
+    Fifteen::AbstractShuffler *shuffler;
     PhaseType nextPhase;
+
+    bool isEnableDraw;
 };
 
 #endif // SIMPLESLIDEPHASEPREGAME_H

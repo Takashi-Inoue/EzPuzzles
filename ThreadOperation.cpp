@@ -44,7 +44,7 @@ void ThreadOperation::stop()
         return;
     }
 
-    QWriteLocker locker(&rwLock);
+    QWriteLocker locker(&rwLockForThreadOperation);
 
     qDebug() << className() << "request to stop";
 
@@ -106,7 +106,7 @@ QString ThreadOperation::className() const
 
 bool ThreadOperation::isStopped() const
 {
-    QReadLocker locker(&rwLock);
+    QReadLocker locker(&rwLockForThreadOperation);
 
     return stopped;
 }
@@ -133,7 +133,7 @@ void ThreadOperation::exec()
 
     qDebug() << className() << "is aborted";
 
-    QWriteLocker locker(&rwLock);
+    QWriteLocker locker(&rwLockForThreadOperation);
 
     stopped = false;
 

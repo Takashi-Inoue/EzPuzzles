@@ -22,8 +22,8 @@
 
 namespace Fifteen {
 
-SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos) :
-    AbstractShuffler(pieces, boardInfo),
+SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces) :
+    AbstractShuffler(pieces, boardInfo, rwlockForPieces),
     blankPos(blankPos),
     mt(std::random_device()())
 {
@@ -47,22 +47,20 @@ void SlideShuffler::execImpl()
         Direction to = nextDirection(from);
         QPoint nextPos = nextBlankPosition(to);
 
+        rwlock->lockForWrite();
+
         changedPos = isHorizontal(to) ? Utility::slideHorizontal2Dlist<PuzzlePiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos)
                                       : Utility::slideVertical2Dlist<PuzzlePiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos);
         blankPos = nextPos;
         from = reverse(to);
 
-        QList<PuzzlePiecePointer> changedPieces;
-
         for (const auto &pos : changedPos) {
             auto &piece = pieces[pos.y() * boardInfo->xCount() + pos.x()];
 
             piece->setPosWithoutAnimation(pos);
-
-            changedPieces << piece;
         }
 
-        emit update(changedPieces);
+        rwlock->unlock();
 
         if (isStopped())
             return;
