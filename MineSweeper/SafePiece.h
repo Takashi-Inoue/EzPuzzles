@@ -30,19 +30,19 @@ class SafePiece : public IMinePiece
 public:
     SafePiece(int numOfAroundMines, const QRect &destRect, const QPixmap &pixmap, const QRect &sourceRect);
 
-    // ISwitchPiece
-    void open() override;
-    void close() override;
-    void lock() override;
-    bool isOpen() const override;
-    bool isLock() const override;
-    void setOpenPieceOpacity(double opacity) override;
-
     // IMinePiece
     void draw(QPainter &painter) override;
+    void setOpenPieceOpacity(double opacity) override;
+
+    void open() override;
+    void lock() override;
+
+    bool isOpen() const override;
+    bool isLock() const override;
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;
+
     int numberOfAroundMines() const override;
 
 protected:
@@ -53,13 +53,10 @@ protected:
 
     int numOfAroundMines;
     QRect rect;
+    double openOpacity;
+    double oldOpacity;
 
     bool isChanged;
-
-    // -------------------- deleted functions --------------------
-    // IPiece
-    void draw(QPainter &, const QPointF &) override {}
-    void draw(QPainter &, const QRectF &) override {}
 };
 
 } // MineSweeper

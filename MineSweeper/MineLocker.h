@@ -33,6 +33,7 @@ public:
 
     void addMinePos(const QPoint &minePos);
     void addMinesPositions(const QList<QPoint> &minesPositions);
+    void setMinesPositions(const QList<QPoint> &minesPositions);
     QList<QPoint> lockMines();
 
 private:

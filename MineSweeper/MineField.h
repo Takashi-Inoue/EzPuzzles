@@ -40,6 +40,7 @@ public:
 
     double openedRate() const;
     bool isAllOpened() const;
+    bool isNoMissed() const;
 
     QString information() const;
     const QList<QPoint> &explodedPositions() const;

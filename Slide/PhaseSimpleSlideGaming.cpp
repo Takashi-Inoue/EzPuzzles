@@ -72,5 +72,5 @@ bool PhaseSimpleSlideGaming::canLoad() const
 
 QString PhaseSimpleSlideGaming::information() const
 {
-    return "";
+    return QString("Blank Position [%1, %2]").arg(blankPos.x()).arg(blankPos.y());
 }

@@ -89,7 +89,7 @@ bool PhaseSimpleSwapGaming::canLoad() const
 
 QString PhaseSimpleSwapGaming::information() const
 {
-    return "";
+    return QString("Swap Position [%1, %2]").arg(swapTargetPos.x() + 1).arg(swapTargetPos.y() + 1);
 }
 
 Fifteen::PuzzlePiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)

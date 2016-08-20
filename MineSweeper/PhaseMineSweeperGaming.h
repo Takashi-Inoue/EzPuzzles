@@ -42,6 +42,8 @@ public:
     QString information() const override;
 
 private:
+    void setOpenPieceOpacity();
+
     MineFieldPointer mineField;
     QVector<QVector<MinePiecePointer>> &pieces;
     PhaseType nextPhase;

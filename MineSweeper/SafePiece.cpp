@@ -28,15 +28,59 @@ SafePiece::SafePiece(int numOfAroundMines, const QRect &destRect, const QPixmap 
     numberPiece(nullptr),
     numOfAroundMines(numOfAroundMines),
     rect(destRect),
+    openOpacity(1),
+    oldOpacity(1),
     isChanged(true)
 {
     Q_ASSERT(numOfAroundMines >= 0 && numOfAroundMines < 9);
 
     if (isNearMine())
-        switchImagePiece->setOpenPieceOpacity(0.5);
+        openOpacity = 0.5;
 
     if (numOfAroundMines > 0)
         numberPiece = NumberPieceFactory::getPiece(numOfAroundMines, rect.size());
+}
+
+void SafePiece::draw(QPainter &painter)
+{
+    if (!isChanged)
+        return;
+
+    painter.save();
+
+    if (isOpen()) {
+        fillRect(painter);
+        painter.setOpacity(openOpacity);
+    }
+
+    switchImagePiece->draw(painter, rect);
+
+    painter.setOpacity(1);
+
+    if (numberPiece != nullptr && isOpen())
+        numberPiece->draw(painter, rect);
+
+    painter.restore();
+
+    isChanged = false;
+}
+
+void SafePiece::setOpenPieceOpacity(double opacity)
+{
+    if (isNearMine())
+        return;
+
+    openOpacity = opacity;
+
+    double div = opacity - oldOpacity;
+
+    div = (div >= 0) ? div : -div;
+
+    if ((div > 0.01) | (opacity == 1))
+        oldOpacity = opacity;
+
+    if (oldOpacity == openOpacity)
+        isChanged = true;
 }
 
 void SafePiece::open()
@@ -45,16 +89,6 @@ void SafePiece::open()
         return;
 
     switchImagePiece->open();
-
-    isChanged = true;
-}
-
-void SafePiece::close()
-{
-    if (!switchImagePiece->isOpen())
-        return;
-
-    switchImagePiece->close();
 
     isChanged = true;
 }
@@ -77,32 +111,6 @@ bool SafePiece::isOpen() const
 bool SafePiece::isLock() const
 {
     return switchImagePiece->isLock();
-}
-
-void SafePiece::setOpenPieceOpacity(double opacity)
-{
-    if (isNearMine())
-        return;
-
-    switchImagePiece->setOpenPieceOpacity(opacity);
-
-    isChanged = true;
-}
-
-void SafePiece::draw(QPainter &painter)
-{
-    if (!isChanged)
-        return;
-
-    if (isOpen())
-        fillRect(painter);
-
-    switchImagePiece->draw(painter, rect);
-
-    if (numberPiece != nullptr && isOpen())
-        numberPiece->draw(painter, rect);
-
-    isChanged = false;
 }
 
 bool SafePiece::isMine() const

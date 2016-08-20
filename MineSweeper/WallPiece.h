@@ -29,23 +29,19 @@ public:
     WallPiece() = default;
     ~WallPiece() = default;
 
-    // IPiece
-    void draw(QPainter &/*painter*/, const QPointF &/*pos*/) override {}
-    void draw(QPainter &/*painter*/, const QRectF &/*targetSize*/) override {}
-
-    // ISwitchPiece
-    void open() override {}
-    void close() override {}
-    void lock() override {}
-    bool isOpen() const override;
-    bool isLock() const override;
-    void setOpenPieceOpacity(double /*opacity*/) override {}
-
     // IMinePiece
     void draw(QPainter &) override {}
+    void setOpenPieceOpacity(double /*opacity*/) override {}
+
+    void open() override {}
+    void lock() override {}
+
+    bool isOpen() const override;
+    bool isLock() const override;
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;
+
     int numberOfAroundMines() const override;
 };
 

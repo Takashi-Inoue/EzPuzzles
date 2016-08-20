@@ -31,6 +31,16 @@ MinePiece::MinePiece(const QRect &rect) :
 {
 }
 
+void MinePiece::draw(QPainter &painter)
+{
+    if (!isChanged)
+        return;
+
+    blockPiece->draw(painter, rect);
+
+    isChanged = false;
+}
+
 void MinePiece::open()
 {
     if (isOpened | isLocked)
@@ -38,16 +48,6 @@ void MinePiece::open()
 
     blockPiece.reset(new BlockPiece(rect.size(), QColor(224, 128, 128), QColor(192, 96, 96), QColor(96, 0, 0)));
     isOpened = true;
-    isChanged = true;
-}
-
-void MinePiece::close()
-{
-    if (!isOpened | isLocked)
-        return;
-
-    blockPiece.reset(new BlockPiece(rect.size()));
-    isOpened = false;
     isChanged = true;
 }
 
@@ -69,16 +69,6 @@ bool MinePiece::isOpen() const
 bool MinePiece::isLock() const
 {
     return isLocked;
-}
-
-void MinePiece::draw(QPainter &painter)
-{
-    if (!isChanged)
-        return;
-
-    blockPiece->draw(painter, rect);
-
-    isChanged = false;
 }
 
 bool MinePiece::isMine() const

@@ -24,16 +24,24 @@
 
 namespace MineSweeper {
 
-class IMinePiece : public ISwitchPiece
+class IMinePiece
 {
 public:
     IMinePiece() = default;
     virtual ~IMinePiece() = default;
 
     virtual void draw(QPainter &painter) = 0;
+    virtual void setOpenPieceOpacity(double opacity) = 0;
+
+    virtual void open() = 0;
+    virtual void lock() = 0;
+
+    virtual bool isOpen() const = 0;
+    virtual bool isLock() const = 0;
     virtual bool isMine() const = 0;
     virtual bool isNearMine() const = 0;
     virtual bool isWall() const = 0;
+
     virtual int numberOfAroundMines() const = 0;
 };
 

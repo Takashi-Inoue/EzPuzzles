@@ -40,7 +40,6 @@ public:
     void lock() override;
     bool isOpen() const override;
     bool isLock() const override;
-    void setOpenPieceOpacity(double opacity) override;
 
 protected:
     std::unique_ptr<IPiece> blockPiece;
@@ -48,7 +47,6 @@ protected:
 
     bool isOpened;
     bool isLocked;
-    double openOpacity;
 };
 
 #endif // SWITCHIMAGEPIECE_H

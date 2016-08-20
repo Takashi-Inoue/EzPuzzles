@@ -61,6 +61,7 @@ private slots:
     void saveGame();
     void loadGame();
     void onTickFrameTimer(QMutex *mutex, QWaitCondition *wait);
+    void updateTitle(QString);
 
 private:
     void initToolBoxies();

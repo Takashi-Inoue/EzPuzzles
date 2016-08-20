@@ -172,7 +172,7 @@ void GameDataSimpleSlide::setEffectToPieces()
     for (auto &piece : pieces)
         piece->setEffect(frame);
 
-    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(4, QColor(0, 0, 0), QColor(0, 0, 0), QColor(64, 192, 224, 224), QColor(16, 64, 96, 224), 120, true);
+    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(15, QColor(0, 0, 0), QColor(0, 0, 0), QColor(64, 192, 224, 224), QColor(16, 64, 96, 224), 120, true);
 
     getPiece(currentBlankPos)->setEffect(graduallyFrame);
 }

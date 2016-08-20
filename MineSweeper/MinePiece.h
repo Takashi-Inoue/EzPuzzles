@@ -32,19 +32,19 @@ public:
     MinePiece(const QRect &rect);
     ~MinePiece() = default;
 
-    // ISwitchPiece
-    void open() override;
-    void close() override;
-    void lock() override;
-    bool isOpen() const override;
-    bool isLock() const override;
-    void setOpenPieceOpacity(double /*opacity*/) override {}
-
     // IMinePiece
     void draw(QPainter &painter) override;
+    void setOpenPieceOpacity(double /*opacity*/) override {}
+
+    void open() override;
+    void lock() override;
+
+    bool isOpen() const override;
+    bool isLock() const override;
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;
+
     int numberOfAroundMines() const override;
 
 private:
@@ -53,10 +53,6 @@ private:
     bool isLocked;
     QRect rect;
     bool isChanged;
-
-    // IPiece
-    void draw(QPainter &, const QPointF &) override {}
-    void draw(QPainter &, const QRectF &) override {}
 };
 
 } // MineSweeper

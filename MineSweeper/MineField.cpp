@@ -28,11 +28,12 @@ MineField::MineField(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPoint
     missedCount(0),
     mineLocker(mineLocker)
 {
-    Q_ASSERT(!pieces.isEmpty());
 }
 
 void MineField::open(const QPoint &pos)
 {
+    Q_ASSERT(!pieces.isEmpty());
+
     auto &piece = pieces[pos.y()][pos.x()];
 
     if (piece->isOpen() | piece->isLock())
@@ -89,6 +90,11 @@ double MineField::openedRate() const
 bool MineField::isAllOpened() const
 {
     return safePiecesCount() == openedCount;
+}
+
+bool MineField::isNoMissed() const
+{
+    return missedCount == 0;
 }
 
 QString MineField::information() const

@@ -48,6 +48,11 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
     ui->imageWidget->setPixmap(sourceImage.pixmap);
     ui->imageWidget->addSubWidget(grid);
 
+    ui->spinBoxSplitX->setMaximum(sourceImage.width()  / 50);
+    ui->spinBoxSplitY->setMaximum(sourceImage.height() / 50);
+    ui->hSliderSplitX->setMaximum(ui->spinBoxSplitX->maximum());
+    ui->hSliderSplitY->setMaximum(ui->spinBoxSplitY->maximum());
+
     connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), ui->spinBoxSplitX, SLOT(setValue(int)));
     connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), ui->spinBoxSplitY, SLOT(setValue(int)));
     connect(ui->spinBoxSplitX, SIGNAL(valueChanged(int)), ui->hSliderSplitX, SLOT(setValue(int)));

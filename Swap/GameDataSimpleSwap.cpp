@@ -58,7 +58,7 @@ GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData)
 
 QString GameDataSimpleSwap::gameName() const
 {
-    return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
+    return EzPuzzles::gameName(EzPuzzles::SimpleSwap);
 }
 
 PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)

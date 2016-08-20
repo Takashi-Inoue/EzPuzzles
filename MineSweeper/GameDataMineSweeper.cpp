@@ -31,15 +31,10 @@ GameDataMineSweeper::GameDataMineSweeper(const SourceImage &sourceImage, const Q
     mineCount(mineCount),
     currentPhaseType(IPhase::PhaseReady)
 {
-    PiecesFactory factory(sourceImage.pixmap, boardInformation, mineCount, isAutoLock);
-    pieces = factory.createPieces();
+    // pieces の初期化は createPhase で
 
-    if (isAutoLock) {
+    if (isAutoLock)
         mineLocker = std::make_shared<MineLocker>(pieces);
-        mineLocker->addMinesPositions(factory.getMinesPositions());
-    }
-
-    mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
 }
 
 GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata) :
@@ -72,9 +67,23 @@ PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
     currentPhaseType = phaseType;
 
     switch (phaseType) {
-    case IPhase::PhaseReady:
+    case IPhase::PhaseReady: {
+        PiecesFactory factory(sourceImg.pixmap, boardInformation, mineCount, mineLocker != nullptr);
+        pieces = factory.createPieces();
+
+        if (mineLocker != nullptr)
+            mineLocker->setMinesPositions(factory.getMinesPositions());
+
+        mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
+
+        currentPhaseType = IPhase::PhaseGaming;
+
+        return std::make_shared<PhaseMineSweeperGaming>(mineField, pieces, IPhase::PhaseCleared);
+    }
+
     case IPhase::PhasePreGame:
     case IPhase::PhaseGaming:
+        currentPhaseType = IPhase::PhaseGaming;
         return std::make_shared<PhaseMineSweeperGaming>(mineField, pieces, IPhase::PhaseCleared);
 
     case IPhase::PhaseEnding:

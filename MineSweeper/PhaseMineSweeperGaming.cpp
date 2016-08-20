@@ -31,18 +31,16 @@ PhaseMineSweeperGaming::PhaseMineSweeperGaming(MineFieldPointer mineField, QVect
 
 void PhaseMineSweeperGaming::click(const QPoint &clickedPiecePos)
 {
-    mineField->open(clickedPiecePos);
-
-    double opacity = mineField->openedRate() / 2.0 + 0.5;
-
-    for (auto &horizontal : pieces) {
-        for (auto &piece : horizontal) {
-            if (!piece->isNearMine() && piece->isOpen())
-                piece->setOpenPieceOpacity(opacity);
-        }
+    if (mineField->isAllOpened() & !mineField->isNoMissed()) {
+        emit toNextPhase(IPhase::PhaseReady);
+        return;
     }
 
-    if (mineField->isAllOpened())
+    mineField->open(clickedPiecePos);
+
+    setOpenPieceOpacity();
+
+    if (mineField->isAllOpened() & mineField->isNoMissed())
         emit toNextPhase(nextPhase);
 }
 
@@ -76,6 +74,16 @@ bool PhaseMineSweeperGaming::canLoad() const
 QString PhaseMineSweeperGaming::information() const
 {
     return mineField->information();
+}
+
+void PhaseMineSweeperGaming::setOpenPieceOpacity()
+{
+    double opacity = mineField->openedRate() / 2.0 + 0.5;
+
+    for (auto &horizontal : pieces) {
+        for (auto &piece : horizontal)
+            piece->setOpenPieceOpacity(opacity);
+    }
 }
 
 } // MineSweeper

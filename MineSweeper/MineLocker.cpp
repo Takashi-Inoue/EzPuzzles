@@ -36,6 +36,11 @@ void MineLocker::addMinesPositions(const QList<QPoint> &minesPositions)
     notLockedMinesPos += minesPositions;
 }
 
+void MineLocker::setMinesPositions(const QList<QPoint> &minesPositions)
+{
+    notLockedMinesPos = minesPositions;
+}
+
 QList<QPoint> MineLocker::lockMines()
 {
     QList<QPoint> result;
