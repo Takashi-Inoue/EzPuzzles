@@ -1,17 +1,17 @@
-EzPuzzles alpha(W.I.P)
+EzPuzzles beta(W.I.P)
 ==========
  
 Copyright 2016 Takashi Inoue e01b0420@kyoto-kcg.ac.jp
 
 
-EzPuzzles is free Puzzle Game for windows. 
+EzPuzzles is free Puzzle Game for windows.
 Enjoy with your favorite images!
 
 ##**Games**  
 This app includes 3 type games with an image.
 
-- 15 puzzle : Simple is best.  
-- Swap mode : like 15 puzzle. Clicked piece doesn't "Slide". It is "Swapped" to a top left piece. 
+- Simple Slide : 15 puzzle. Simple is best.  
+- Simple Swap  : It's like 15 puzzle. But clicked piece doesn't "slide". It "swap" to a specified piece. 
 - Mine Sweeper : You know it. But it is little bit different than the "Windows Minesweeper". Right click has same action that left click. An image is gradually visible while pieces are opened. If you missed, you can play the game continually, but you can't watch a perfect image.
 
 ##**tools**
