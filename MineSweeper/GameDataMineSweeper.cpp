@@ -55,6 +55,13 @@ GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSaveda
 
     mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
     mineField->load(loadedSavedata);
+
+    finalImg = std::make_shared<MineSweeperFinalImage>(sourceImg.pixmap, mineField, boardInformation);
+}
+
+GameDataPointer GameDataMineSweeper::cloneAsNewGame() const
+{
+    return std::make_shared<GameDataMineSweeper>(sourceImg, boardInformation->boardSize(), mineCount, mineLocker != nullptr);
 }
 
 QString GameDataMineSweeper::gameName() const
@@ -75,6 +82,8 @@ PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
             mineLocker->setMinesPositions(factory.getMinesPositions());
 
         mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
+
+        finalImg = std::make_shared<MineSweeperFinalImage>(sourceImg.pixmap, mineField, boardInformation);
 
         currentPhaseType = IPhase::PhaseGaming;
 
@@ -106,9 +115,9 @@ const SourceImage &GameDataMineSweeper::sourceImage() const
     return sourceImg;
 }
 
-QPixmap GameDataMineSweeper::finalImage() const
+FinalImagePointer GameDataMineSweeper::finalImage() const
 {
-    return sourceImg.pixmap;
+    return finalImg;
 }
 
 BoardInfoPointer GameDataMineSweeper::boardInfo() const

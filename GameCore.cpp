@@ -33,6 +33,16 @@ GameCore::GameCore(GameDataPointer gameData) :
     changePhase(gameData->currentPhase());
 }
 
+GameCore::GameCore(GameDataPointer gameData, GameID id) :
+    gameData(gameData),
+    gameId(id),
+    backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
+{
+    Q_CHECK_PTR(gameData);
+
+    changePhase(gameData->currentPhase());
+}
+
 GameID GameCore::gameID() const
 {
     return gameId;
@@ -40,7 +50,7 @@ GameID GameCore::gameID() const
 
 IGame *GameCore::cloneAsNewGame() const
 {
-    auto game = new GameCore(gameData);
+    auto game = new GameCore(gameData->cloneAsNewGame());
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
@@ -91,12 +101,10 @@ QSize GameCore::maxFieldSize() const
 
 void GameCore::drawFinalImage(QPainter &dest) const
 {
-    auto &pixmap = gameData->finalImage();
+    auto &finalImage = gameData->finalImage();
 
-    QSize destSize = pixmap.size().scaled(dest.viewport().size(), Qt::KeepAspectRatio);
-    QPoint tl((dest.viewport().width() - destSize.width()) / 2, (dest.viewport().height() - destSize.height()) / 2);
-
-    dest.drawPixmap(QRect(tl, destSize), pixmap, pixmap.rect());
+    if (finalImage != nullptr)
+        finalImage->draw(dest);
 }
 
 QString GameCore::shortInformation() const

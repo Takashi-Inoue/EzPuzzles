@@ -22,9 +22,14 @@
 #include "EzPuzzles.h"
 #include "IPhase.h"
 #include "BoardInformation.h"
+#include "FinalImage.h"
 #include "SourceImage.h"
 
 #include <memory>
+
+class IGameData;
+
+typedef std::shared_ptr<IGameData> GameDataPointer;
 
 class IGameData
 {
@@ -32,16 +37,16 @@ public:
     IGameData() = default;
     virtual ~IGameData() = default;
 
+    virtual GameDataPointer cloneAsNewGame() const = 0;
+
     virtual QString gameName() const = 0;
     virtual PhasePointer createPhase(IPhase::PhaseType) = 0;
     virtual IPhase::PhaseType currentPhase() const = 0;
     virtual const SourceImage &sourceImage() const = 0;
-    virtual QPixmap finalImage() const = 0;
+    virtual FinalImagePointer finalImage() const = 0;
     virtual BoardInfoPointer boardInfo() const = 0;
 
     virtual bool save(const QString &fileName) const = 0;
 };
-
-typedef std::shared_ptr<IGameData> GameDataPointer;
 
 #endif // IPHASEFACTORY_H

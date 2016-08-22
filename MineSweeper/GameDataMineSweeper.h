@@ -21,8 +21,9 @@
 
 #include "IGameData.h"
 #include "MineField.h"
-#include "MineSweeper/MinePiece.h"
-#include "MineSweeper/MineLocker.h"
+#include "MinePiece.h"
+#include "MineLocker.h"
+#include "MineSweeperFinalImage.h"
 
 namespace MineSweeper {
 
@@ -35,11 +36,12 @@ public:
     GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata);
 
     // IGameData
+    GameDataPointer cloneAsNewGame() const override;
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
     IPhase::PhaseType currentPhase() const override;
     const SourceImage &sourceImage() const override;
-    QPixmap finalImage() const override;
+    FinalImagePointer finalImage() const override;
     BoardInfoPointer boardInfo() const override;
     bool save(const QString &fileName) const override;
 
@@ -55,6 +57,8 @@ private:
     QVector<QVector<MinePiecePointer>> pieces;
     MineLockerPointer mineLocker;
     MineFieldPointer mineField;
+
+    FinalImagePointer finalImg;
 };
 
 } // MineSweeper

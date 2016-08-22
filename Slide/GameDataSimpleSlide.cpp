@@ -59,6 +59,11 @@ GameDataSimpleSlide::GameDataSimpleSlide(const SaveDataSimpleSlide &loadedSaveda
     initPieces();
 }
 
+GameDataPointer GameDataSimpleSlide::cloneAsNewGame() const
+{
+    return std::make_shared<GameDataSimpleSlide>(sourceImg, defaultBlankPos, board->boardInfo()->boardSize());
+}
+
 QString GameDataSimpleSlide::gameName() const
 {
     return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
@@ -102,9 +107,9 @@ const SourceImage &GameDataSimpleSlide::sourceImage() const
     return sourceImg;
 }
 
-QPixmap GameDataSimpleSlide::finalImage() const
+FinalImagePointer GameDataSimpleSlide::finalImage() const
 {
-    return sourceImg.pixmap;
+    return std::make_shared<FinalImage>(sourceImg.pixmap);
 }
 
 BoardInfoPointer GameDataSimpleSlide::boardInfo() const

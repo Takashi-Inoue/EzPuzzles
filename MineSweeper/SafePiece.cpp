@@ -76,11 +76,10 @@ void SafePiece::setOpenPieceOpacity(double opacity)
 
     div = (div >= 0) ? div : -div;
 
-    if ((div > 0.01) | (opacity == 1))
+    if ((div > 0.01) | (opacity == 1)) {
         oldOpacity = opacity;
-
-    if (oldOpacity == openOpacity)
         isChanged = true;
+    }
 }
 
 void SafePiece::open()

@@ -31,6 +31,7 @@ class GameCore : public IGame
     Q_OBJECT
 public:
     GameCore(GameDataPointer gameData);
+    GameCore(GameDataPointer gameData, GameID id);
     ~GameCore() = default;
 
     GameID gameID() const override;
@@ -56,8 +57,9 @@ protected:
     PhasePointer phase;
     GameDataPointer gameData;
 
-private:
     GameID gameId;
+
+private:
     QPixmap backBuffer;
 };
 

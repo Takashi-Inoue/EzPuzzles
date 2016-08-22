@@ -16,28 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef GAMECOREMINESWEEPER_H
-#define GAMECOREMINESWEEPER_H
+#include "FinalImage.h"
 
-#include "GameCore.h"
-#include "GameDataMineSweeper.h"
-
-#include <QPair>
-#include <random>
-
-namespace MineSweeper {
-
-class GameCoreMineSweeper : public GameCore
+FinalImage::FinalImage(QPixmap pixmap) :
+    pixmap(pixmap)
 {
-public:
-    GameCoreMineSweeper(GameDataPointer gameData);
-    GameCoreMineSweeper(GameDataPointer gameData, GameID id);
-    ~GameCoreMineSweeper() = default;
+    Q_ASSERT(!pixmap.isNull());
+}
 
-    IGame *cloneAsNewGame() const override;
-    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
-};
+void FinalImage::draw(QPainter &painter)
+{
+    QSize destSize = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
+    QPoint tl((painter.viewport().width() - destSize.width()) / 2, (painter.viewport().height() - destSize.height()) / 2);
 
-} // MineSweeper
-
-#endif // GAMECOREMINESWEEPER_H
+    painter.drawPixmap(QRect(tl, destSize), pixmap, pixmap.rect());
+}

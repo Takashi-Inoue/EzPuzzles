@@ -23,6 +23,7 @@
 #include "EzPuzzles.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QSaveFile>
 
 namespace MineSweeper {
@@ -94,7 +95,9 @@ IGame *SaveDataMineSweeper::loadGame()
     if (!load())
         return nullptr;
 
-    return new GameCoreMineSweeper(std::make_shared<GameDataMineSweeper>(*this));
+    auto &gameID = GameID::fromQString(QFileInfo(fileName).completeBaseName());
+
+    return new GameCoreMineSweeper(std::make_shared<GameDataMineSweeper>(*this), gameID);
 }
 
 bool SaveDataMineSweeper::save() const

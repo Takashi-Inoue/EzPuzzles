@@ -56,6 +56,11 @@ GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData)
     initPieces();
 }
 
+GameDataPointer GameDataSimpleSwap::cloneAsNewGame() const
+{
+    return std::make_shared<GameDataSimpleSwap>(sourceImg, swapTargetPos, board->boardInfo()->boardSize());
+}
+
 QString GameDataSimpleSwap::gameName() const
 {
     return EzPuzzles::gameName(EzPuzzles::SimpleSwap);
@@ -99,9 +104,9 @@ const SourceImage &GameDataSimpleSwap::sourceImage() const
     return sourceImg;
 }
 
-QPixmap GameDataSimpleSwap::finalImage() const
+FinalImagePointer GameDataSimpleSwap::finalImage() const
 {
-    return sourceImg.pixmap;
+    return std::make_shared<FinalImage>(sourceImg.pixmap);
 }
 
 BoardInfoPointer GameDataSimpleSwap::boardInfo() const

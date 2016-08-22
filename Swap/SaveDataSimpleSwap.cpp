@@ -22,6 +22,7 @@
 #include "EzPuzzles.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QSaveFile>
 
 SaveDataSimpleSwap::SaveDataSimpleSwap(const QString &fileName) :
@@ -80,7 +81,9 @@ IGame *SaveDataSimpleSwap::loadGame()
     if (!load())
         return nullptr;
 
-    return new GameCore(std::make_shared<GameDataSimpleSwap>(*this));
+    auto &gameID = GameID::fromQString(QFileInfo(fileName).completeBaseName());
+
+    return new GameCore(std::make_shared<GameDataSimpleSwap>(*this), gameID);
 }
 
 bool SaveDataSimpleSwap::save() const

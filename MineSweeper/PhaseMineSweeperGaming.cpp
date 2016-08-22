@@ -27,6 +27,8 @@ PhaseMineSweeperGaming::PhaseMineSweeperGaming(MineFieldPointer mineField, QVect
     nextPhase(nextPhase)
 {
     Q_CHECK_PTR(mineField);
+
+    setOpenPieceOpacity();
 }
 
 void PhaseMineSweeperGaming::click(const QPoint &clickedPiecePos)

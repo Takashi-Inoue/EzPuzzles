@@ -34,11 +34,13 @@ public:
     GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData);
     ~GameDataSimpleSwap() = default;
 
+    // IGameData
+    GameDataPointer cloneAsNewGame() const override;
     QString gameName() const override;
     PhasePointer createPhase(IPhase::PhaseType) override;
     IPhase::PhaseType currentPhase() const override;
     const SourceImage &sourceImage() const override;
-    QPixmap finalImage() const override;
+    FinalImagePointer finalImage() const override;
     BoardInfoPointer boardInfo() const override;
 
     bool save(const QString &fileName) const override;
