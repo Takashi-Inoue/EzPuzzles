@@ -1,6 +1,6 @@
 EzPuzzles beta(W.I.P)
 ==========
- 
+
 Copyright 2016 Takashi Inoue e01b0420@kyoto-kcg.ac.jp
 
 
@@ -11,14 +11,16 @@ Enjoy with your favorite images!
 This app includes 3 type games with an image.
 
 - Simple Slide : 15 puzzle. Simple is best.  
-- Simple Swap  : It's like 15 puzzle. But clicked piece doesn't "slide". It "swap" to a specified piece. 
+- Simple Swap  : It's like 15 puzzle. But clicked piece doesn't "slide". It "swap" to a specified piece.
 - Mine Sweeper : You know it. But it is little bit different than the "Windows Minesweeper". Right click has same action that left click. An image is gradually visible while pieces are opened. If you missed, you can play the game continually, but you can't watch a perfect image.
+
+If you have vcruntime error, please execute vcredist_x64.exe file.
 
 ##**tools**
 Qt Creator 4.0.3 + Qt 5.7.0 + MSVC2015 EE
 
 
-##**License** 
+##**License**
 EzPuzzles is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
