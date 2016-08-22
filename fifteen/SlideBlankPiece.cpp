@@ -1,4 +1,4 @@
-#include "SlideBlankPiece.h"
+﻿#include "SlideBlankPiece.h"
 #include "AnimationObject/Animation/AnimationLineMove.h"
 
 #include <QDebug>
@@ -12,6 +12,21 @@ SlideBlankPiece::SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defau
     oldAnimation(std::make_shared<Animation::LineMove>(animationFrames, false)),
     newAnimation(std::make_shared<Animation::LineMove>(animationFrames, false))
 {
+}
+
+void SlideBlankPiece::onTickFrame()
+{
+    oldAnimation->onTickFrame();
+    newAnimation->onTickFrame();
+
+    if (effectObj != nullptr)
+        effectObj->onTickFrame();
+}
+
+void SlideBlankPiece::skipAnimation()
+{
+    oldAnimation->skipAnimation();
+    newAnimation->skipAnimation();
 }
 
 void SlideBlankPiece::draw(QPainter &painter)
@@ -106,31 +121,6 @@ const EffectPointer &SlideBlankPiece::effect() const
 const Position &SlideBlankPiece::pos() const
 {
     return position;
-}
-
-void SlideBlankPiece::onTickFrame()
-{
-    oldAnimation->onTickFrame();
-    newAnimation->onTickFrame();
-
-    if (effectObj != nullptr)
-        effectObj->onTickFrame();
-}
-
-void SlideBlankPiece::skipAnimation()
-{
-    oldAnimation->skipAnimation();
-    newAnimation->skipAnimation();
-}
-
-bool SlideBlankPiece::isLoopAnimation()
-{
-    return false;
-}
-
-bool SlideBlankPiece::isFinishedAnimation()
-{
-    return false;
 }
 
 } // Fifteen

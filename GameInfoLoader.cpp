@@ -18,12 +18,9 @@
  */
 #include "GameInfoLoader.h"
 #include "EzPuzzles.h"
-#include "fifteen/SimpleSlideSaveData.h"
-#include "fifteen/SimpleSwapSaveData.h"
-#include "mine/MineSweeperSaveData.h"
-#include "fifteen/GameSimpleSlide.h"
-#include "fifteen/GameSimpleSwap.h"
-#include "mine/GameMineSweeper.h"
+#include "MineSweeper/SaveDataMineSweeper.h"
+#include "Slide/SaveDataSimpleSlide.h"
+#include "Swap/SaveDataSimpleSwap.h"
 #include "BrokenSaveData.h"
 #include "UnknownSaveData.h"
 
@@ -66,10 +63,7 @@ void GameInfoLoader::execImpl()
 
         stream >> gameName;
 
-        auto gameInfo = createGameInfo(gameName, savedataDir + name);
-
-        if (gameInfo == nullptr)
-            continue;
+        auto gameInfo = createSaveData(gameName, savedataDir + name);
 
         if (!gameInfo->loadInfo()) {
             delete gameInfo;
@@ -81,16 +75,16 @@ void GameInfoLoader::execImpl()
     }
 }
 
-ISaveData *GameInfoLoader::createGameInfo(const QString &gameName, const QString &savedataFilePath) const
+ISaveData *GameInfoLoader::createSaveData(const QString &gameName, const QString &savedataFilePath) const
 {
-    if (gameName == Fifteen::GameSimpleSlide::gameName())
-        return new Fifteen::SimpleSlideSaveData(savedataFilePath);
+    if (gameName == EzPuzzles::gameName(EzPuzzles::SimpleSlide))
+        return new SaveDataSimpleSlide(savedataFilePath);
 
-    if (gameName == Fifteen::GameSimpleSwap::gameName())
-        return new Fifteen::SimpleSwapSaveData(savedataFilePath);
+    if (gameName == EzPuzzles::gameName(EzPuzzles::SimpleSwap))
+        return new SaveDataSimpleSwap(savedataFilePath);
 
-    if (gameName == MineSweeper::GameMineSweeper::gameName())
-        return new MineSweeper::MineSweeperSaveData(savedataFilePath);
+    if (gameName == EzPuzzles::gameName(EzPuzzles::MineSweeper))
+        return new MineSweeper::SaveDataMineSweeper(savedataFilePath);
 
     return new UnknownSaveData();
 }

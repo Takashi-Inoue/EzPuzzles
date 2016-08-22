@@ -226,6 +226,11 @@ void MainWindow::onTickFrameTimer(QMutex *mutex, QWaitCondition *wait)
     mutex->unlock();
 }
 
+void MainWindow::updateTitle(QString finalImageWidgetTitle)
+{
+    setWindowTitle("EzPuzzles : " + finalImageWidgetTitle);
+}
+
 void MainWindow::initToolBoxies()
 {
     auto buttonOpenImage = newGameToolBox.addIcon(QIcon(":/ico/openImage"), "Open new image");
@@ -263,6 +268,7 @@ void MainWindow::createFinalImageWidget(IGame *game)
     ui->dockWidget->setWidget(finalImageWidget.get());
 
     connect(finalImageWidget.get(), SIGNAL(windowTitleChanged(QString)), ui->dockWidget, SLOT(setWindowTitle(QString)));
+    connect(finalImageWidget.get(), SIGNAL(windowTitleChanged(QString)), this, SLOT(updateTitle(QString)));
 }
 
 IGame *MainWindow::createNewGame(const SourceImage &sourceImage)

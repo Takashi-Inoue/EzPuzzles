@@ -24,22 +24,20 @@ SOURCES += main.cpp\
     GameWidget.cpp \
     DialogGameStart.cpp \
     DialogSettingsMineSweeper.cpp \
-    mine/GameMineSweeper.cpp \
-    mine/MinePiece.cpp \
-    mine/WallPiece.cpp \
+    MineSweeper/MinePiece.cpp \
+    MineSweeper/WallPiece.cpp \
     Dragger.cpp \
     SubFrame.cpp \
-    mine/GraduallyDrawer.cpp \
     ImagePiece.cpp \
     NumberPiece.cpp \
     BlockPiece.cpp \
     SwitchImagePiece.cpp \
-    mine/SafePiece.cpp \
-    mine/NumberPieceFactory.cpp \
+    MineSweeper/SafePiece.cpp \
+    MineSweeper/NumberPieceFactory.cpp \
     ThreadOperation.cpp \
     GarbageCollector.cpp \
     ImageFragmentPiece.cpp \
-    mine/MineLocker.cpp \
+    MineSweeper/MineLocker.cpp \
     DialogImageHistory.cpp \
     ImageLoader.cpp \
     StringListHistory.cpp \
@@ -48,21 +46,15 @@ SOURCES += main.cpp\
     DialogSavedata.cpp \
     SourceImage.cpp \
     fifteen/PuzzlePiece.cpp \
-    mine/MinePiecesFactory.cpp \
-    fifteen/GameLikeFifteen.cpp \
+    MineSweeper/MinePiecesFactory.cpp \
     fifteen/SimplePiecesFactory.cpp \
-    fifteen/GameSimpleSlide.cpp \
     fifteen/FifteenSlideShuffler.cpp \
     fifteen/FifteenPieceMover.cpp \
     GameID.cpp \
-    fifteen/GameSimpleSwap.cpp \
     fifteen/FifteenSwapShuffler.cpp \
     GameInfoLoader.cpp \
     BrokenSaveData.cpp \
     UnknownSaveData.cpp \
-    mine/MineSweeperSaveData.cpp \
-    fifteen/SimpleSwapSaveData.cpp \
-    fifteen/SimpleSlideSaveData.cpp \
     MoveToTrashBox.cpp \
     AnimationObject/AbstractAnimationObject.cpp \
     AnimationObject/Animation/AnimationLineMove.cpp \
@@ -76,7 +68,28 @@ SOURCES += main.cpp\
     AnimationObject/Effect/CompositeEffect.cpp \
     GridLines.cpp \
     SelectCellGrid.cpp \
-    UniquePosition.cpp
+    UniquePosition.cpp \
+    CommonPhase/PhaseShowFinalImage.cpp \
+    CommonPhase/PhaseShuffle.cpp \
+    CommonPhase/PhaseCleared.cpp \
+    Slide/PhaseSimpleSlideGaming.cpp \
+    Board.cpp \
+    Slide/GameDataSimpleSlide.cpp \
+    Slide/SaveDataSimpleSlide.cpp \
+    Slide/PhaseSimpleSlideEnding.cpp \
+    AnimationObject/Effect/EffectRoundMoveFrame.cpp \
+    Swap/GameDataSimpleSwap.cpp \
+    Swap/SaveDataSimpleSwap.cpp \
+    Swap/PhaseSimpleSwapEnding.cpp \
+    Swap/PhaseSimpleSwapGaming.cpp \
+    GameCore.cpp \
+    MineSweeper/PhaseMineSweeperGaming.cpp \
+    MineSweeper/GameDataMineSweeper.cpp \
+    MineSweeper/MineField.cpp \
+    MineSweeper/SaveDataMineSweeper.cpp \
+    MineSweeper/GameCoreMineSweeper.cpp \
+    FinalImage.cpp \
+    MineSweeper/MineSweeperFinalImage.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -88,26 +101,24 @@ HEADERS  += MainWindow.h \
     IPiece.h \
     DialogGameStart.h \
     DialogSettingsMineSweeper.h \
-    mine/GameMineSweeper.h \
-    mine/MinePiece.h \
-    mine/WallPiece.h \
+    MineSweeper/MinePiece.h \
+    MineSweeper/WallPiece.h \
     ISubWidget.h \
     Dragger.h \
     SubFrame.h \
     IDrawer.h \
-    mine/GraduallyDrawer.h \
     ImagePiece.h \
     NumberPiece.h \
     ISwitchPiece.h \
     BlockPiece.h \
     SwitchImagePiece.h \
-    mine/IMinePiece.h \
-    mine/SafePiece.h \
-    mine/NumberPieceFactory.h \
+    MineSweeper/IMinePiece.h \
+    MineSweeper/SafePiece.h \
+    MineSweeper/NumberPieceFactory.h \
     ThreadOperation.h \
     GarbageCollector.h \
     ImageFragmentPiece.h \
-    mine/MineLocker.h \
+    MineSweeper/MineLocker.h \
     Utility.h \
     DialogImageHistory.h \
     ImageLoader.h \
@@ -118,23 +129,17 @@ HEADERS  += MainWindow.h \
     SourceImage.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
-    mine/MinePiecesFactory.h \
-    fifteen/GameLikeFifteen.h \
+    MineSweeper/MinePiecesFactory.h \
     fifteen/SimplePiecesFactory.h \
-    fifteen/GameSimpleSlide.h \
     fifteen/FifteenSlideShuffler.h \
     fifteen/FifteenPieceMover.h \
     GameID.h \
-    fifteen/GameSimpleSwap.h \
     fifteen/FifteenSwapShuffler.h \
     IDialogGameSettings.h \
     GameInfoLoader.h \
     ISaveData.h \
     BrokenSaveData.h \
     UnknownSaveData.h \
-    mine/MineSweeperSaveData.h \
-    fifteen/SimpleSwapSaveData.h \
-    fifteen/SimpleSlideSaveData.h \
     MoveToTrashBox.h \
     AnimationObject/AbstractAnimationObject.h \
     AnimationObject/IAnimationObject.h \
@@ -152,7 +157,30 @@ HEADERS  += MainWindow.h \
     AnimationObject/Effect/CompositeEffect.h \
     GridLines.h \
     SelectCellGrid.h \
-    UniquePosition.h
+    UniquePosition.h \
+    IPhase.h \
+    IGameData.h \
+    CommonPhase/PhaseShowFinalImage.h \
+    CommonPhase/PhaseShuffle.h \
+    CommonPhase/PhaseCleared.h \
+    Slide/PhaseSimpleSlideGaming.h \
+    Board.h \
+    Slide/GameDataSimpleSlide.h \
+    Slide/SaveDataSimpleSlide.h \
+    Slide/PhaseSimpleSlideEnding.h \
+    AnimationObject/Effect/EffectRoundMoveFrame.h \
+    Swap/GameDataSimpleSwap.h \
+    Swap/SaveDataSimpleSwap.h \
+    Swap/PhaseSimpleSwapEnding.h \
+    Swap/PhaseSimpleSwapGaming.h \
+    GameCore.h \
+    MineSweeper/PhaseMineSweeperGaming.h \
+    MineSweeper/GameDataMineSweeper.h \
+    MineSweeper/MineField.h \
+    MineSweeper/SaveDataMineSweeper.h \
+    MineSweeper/GameCoreMineSweeper.h \
+    FinalImage.h \
+    MineSweeper/MineSweeperFinalImage.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \
@@ -167,5 +195,5 @@ RESOURCES += \
     resource.qrc
 
 DISTFILES += \
-    GameLikeFifteen.qmodel \
-    gameCore.qmodel
+    gameCore.qmodel \
+    Games.qmodel

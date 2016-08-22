@@ -21,8 +21,12 @@
 
 #include "SelectCellGrid.h"
 #include "SourceImage.h"
-#include "fifteen/GameSimpleSlide.h"
-#include "fifteen/GameSimpleSwap.h"
+
+#include "GameCore.h"
+#include "Slide/GameDataSimpleSlide.h"
+#include "Swap/GameDataSimpleSwap.h"
+
+#include "EzPuzzles.h"
 
 #include <QDebug>
 
@@ -38,11 +42,16 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
 
     ui->buttonBox->setVisible(showOkButton);
 
-    ui->comboBoxGameType->addItem("Simple Slide", idFifteen);
-    ui->comboBoxGameType->addItem("Simple Swap", idSwap);
+    ui->comboBoxGameType->addItem(EzPuzzles::gameName(EzPuzzles::SimpleSlide), idFifteen);
+    ui->comboBoxGameType->addItem(EzPuzzles::gameName(EzPuzzles::SimpleSwap), idSwap);
 
     ui->imageWidget->setPixmap(sourceImage.pixmap);
     ui->imageWidget->addSubWidget(grid);
+
+    ui->spinBoxSplitX->setMaximum(sourceImage.width()  / 50);
+    ui->spinBoxSplitY->setMaximum(sourceImage.height() / 50);
+    ui->hSliderSplitX->setMaximum(ui->spinBoxSplitX->maximum());
+    ui->hSliderSplitY->setMaximum(ui->spinBoxSplitY->maximum());
 
     connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), ui->spinBoxSplitX, SLOT(setValue(int)));
     connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), ui->spinBoxSplitY, SLOT(setValue(int)));
@@ -91,7 +100,7 @@ IGame *DialogSettingsFifteen::buildSimpleSlide() const
     ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
                                             : defaultBlank.select(grid->selectedCellPos());
 
-    return new Fifteen::GameSimpleSlide(sourceImage, xyCount, defaultBlank);
+    return new GameCore(std::make_shared<GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSwap() const
@@ -103,5 +112,5 @@ IGame *DialogSettingsFifteen::buildSimpleSwap() const
     ui->radioButtonBlankRandom->isChecked() ? swapTarget.randomSelect(xyCount)
                                             : swapTarget.select(grid->selectedCellPos());
 
-    return new Fifteen::GameSimpleSwap(sourceImage, xyCount, swapTarget);
+    return new GameCore(std::make_shared<GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
 }

@@ -62,7 +62,7 @@ private slots:
     void exec();
 
 private:
-    mutable QReadWriteLock rwLock;
+    mutable QReadWriteLock rwLockForThreadOperation;
     QMutex mutexRunning;
     bool stopped;
 

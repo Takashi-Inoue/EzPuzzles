@@ -37,6 +37,9 @@ public:
     ~PuzzlePiece() = default;
 
     // IPuzzlePiece
+    void onTickFrame() override;
+    void skipAnimation() override;
+
     void draw(QPainter &painter) override;
     void setPos(const QPoint &pos) override;
     void setPosWithoutAnimation(const QPoint &pos) override;
@@ -47,11 +50,6 @@ public:
 
     const Position &pos() const override;
 
-    // IAnimationObject
-    void onTickFrame() override;
-    void skipAnimation() override;
-    bool isLoopAnimation() override;
-
 protected:
     std::unique_ptr<IPiece> imagePiece;
     BoardInfoPointer boardInfo;
@@ -61,8 +59,7 @@ protected:
     AnimationPointer animObj;
     EffectPointer effectObj;
 
-private:
-    bool isFinishedAnimation() override;
+    bool isChanged;
 };
 
 } // Fifteen

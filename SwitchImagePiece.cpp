@@ -26,8 +26,7 @@ SwitchImagePiece::SwitchImagePiece(const QPixmap &pixmap, const QRect sourceRect
     blockPiece(std::make_unique<BlockPiece>(pixmap.size())),
     imagePiece(nullptr),
     isOpened(false),
-    isLocked(false),
-    openOpacity(1.0)
+    isLocked(false)
 {
     if (sourceRect.isNull()) {
         blockPiece = std::make_unique<BlockPiece>(pixmap.size());
@@ -40,28 +39,14 @@ SwitchImagePiece::SwitchImagePiece(const QPixmap &pixmap, const QRect sourceRect
 
 void SwitchImagePiece::draw(QPainter &painter, const QPointF &pos)
 {
-    if (isOpen()) {
-        painter.setOpacity(openOpacity);
-
-        imagePiece->draw(painter, pos);
-    } else {
-        painter.setOpacity(1.0);
-
-        blockPiece->draw(painter, pos);
-    }
+    isOpen() ? imagePiece->draw(painter, pos)
+             : blockPiece->draw(painter, pos);
 }
 
 void SwitchImagePiece::draw(QPainter &painter, const QRectF &rect)
 {
-    if (isOpen()) {
-        painter.setOpacity(openOpacity);
-
-        imagePiece->draw(painter, rect);
-    } else {
-        painter.setOpacity(1.0);
-
-        blockPiece->draw(painter, rect);
-    }
+    isOpen() ? imagePiece->draw(painter, rect)
+             : blockPiece->draw(painter, rect);
 }
 
 void SwitchImagePiece::open()
@@ -87,11 +72,4 @@ bool SwitchImagePiece::isOpen() const
 bool SwitchImagePiece::isLock() const
 {
     return isLocked;
-}
-
-void SwitchImagePiece::setOpenPieceOpacity(double opacity)
-{
-    Q_ASSERT(opacity >= 0 && opacity <= 1.0);
-
-    openOpacity = opacity;
 }

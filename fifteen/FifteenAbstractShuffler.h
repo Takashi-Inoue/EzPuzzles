@@ -25,6 +25,8 @@
 
 #include <QList>
 #include <QPoint>
+#include <QReadWriteLock>
+#include <memory>
 
 namespace Fifteen {
 
@@ -32,22 +34,22 @@ class AbstractShuffler : public ThreadOperation
 {
     Q_OBJECT
 public:
-    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, const BoardInfoPointer &boardInfo, QObject *parent = 0) :
+    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces, QObject *parent = 0) :
         ThreadOperation(parent),
         pieces(pieces),
-        boardInfo(boardInfo)
+        boardInfo(boardInfo),
+        rwlock(rwlockForPieces)
     {
-        qRegisterMetaType<QList<PuzzlePiecePointer>>("QList<PuzzlePiecePointer>");
+        Q_CHECK_PTR(rwlockForPieces);
     }
 
     virtual ~AbstractShuffler() = default;
 
-signals:
-    void update(QList<PuzzlePiecePointer> changed);
-
 protected:
     QList<PuzzlePiecePointer> &pieces;
-    const BoardInfoPointer &boardInfo;
+    BoardInfoPointer boardInfo;
+
+    std::shared_ptr<QReadWriteLock> rwlock;
 };
 
 } // Fifteen

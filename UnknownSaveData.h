@@ -27,14 +27,17 @@ public:
     UnknownSaveData() = default;
     ~UnknownSaveData() = default;
 
-    QString gameName() const override;
+    QIcon gameTypeIcon() const override;
+    bool isValid() const override;
+
+    bool loadInfo() override;
+
+    EzPuzzles::GameType gameType() const override;
+    QString gameTypeName() const override;
     QString imageFilePath() const override;
     QStringList informations() const override;
 
-    IGame *loadGame() const override;
-    bool loadInfo() override;
-    bool isValid() const override;
-    QIcon gameTypeIcon() const override;
+    IGame *loadGame() override;
 };
 
 #endif // UNKNOWNSAVEDATA_H

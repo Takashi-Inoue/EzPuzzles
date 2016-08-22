@@ -41,7 +41,6 @@ public:
 
     virtual IGame *cloneAsNewGame() const = 0;
     virtual void save(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
-    virtual bool load(const QString &loadFilePath) = 0;
 
     virtual void onTickFrame() = 0;
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
@@ -49,10 +48,13 @@ public:
     virtual QSize maxFieldSize() const = 0;
     virtual void drawFinalImage(QPainter &dest) const = 0;
     virtual QString shortInformation() const = 0;
-    virtual SourceImage sourceImage() const = 0;
+    virtual const SourceImage &sourceImage() const = 0;
 
 signals:
     void informationUpdated();
+
+protected:
+    virtual void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
 
 private:
     IGame(const IGame &) = delete;

@@ -56,7 +56,7 @@ void NumberPiece::init()
 {
     qDebug() << "INIT NumberPiece :" << num;
 
-    pixmap.fill(QColor(0, 0, 0, 0));
+    pixmap.fill(Qt::transparent);
 
     QFont font;
     font.setPixelSize(pixmap.height() * 0.8);

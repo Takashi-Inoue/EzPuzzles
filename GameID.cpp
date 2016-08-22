@@ -43,16 +43,6 @@ const QString &GameID::toString() const
     return gameID;
 }
 
-void GameID::save(QDataStream &stream) const
-{
-    stream << gameID;
-}
-
-void GameID::load(QDataStream &stream)
-{
-    stream >> gameID;
-}
-
 // private constructor
 GameID::GameID(const QString &string) :
     gameID(string)

@@ -32,7 +32,6 @@ public:
     virtual void lock() = 0;
     virtual bool isOpen() const = 0;
     virtual bool isLock() const = 0;
-    virtual void setOpenPieceOpacity(double opacity) = 0;
 };
 
 #endif // ISWITCHPIECE_H

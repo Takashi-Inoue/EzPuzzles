@@ -19,9 +19,10 @@
 #include "DialogSettingsMineSweeper.h"
 #include "ui_DialogSettingsMineSweeper.h"
 
+#include "MineSweeper/GameCoreMineSweeper.h"
+#include "MineSweeper/GameDataMineSweeper.h"
 #include "SubFrame.h"
 #include "SourceImage.h"
-#include "mine/GameMineSweeper.h"
 
 #include <QDebug>
 
@@ -39,9 +40,9 @@ DialogSettingsMineSweeper::DialogSettingsMineSweeper(const SourceImage &sourceIm
     updateLabels();
     updateMineMax();
 
-    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateLabels()));
-    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateMineMax()));
-    connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSubFrame()));
+    connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateLabels()));
+    connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateMineMax()));
+    connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSubFrame()));
 }
 
 DialogSettingsMineSweeper::~DialogSettingsMineSweeper()
@@ -51,7 +52,7 @@ DialogSettingsMineSweeper::~DialogSettingsMineSweeper()
 
 IGame *DialogSettingsMineSweeper::buildGame() const
 {
-    int cellSize = ui->horizontalSlider->value();
+    int cellSize = ui->pieceSizeSlider->value();
     QSize xy(xyCount());
     QSize fieldSize(xy * cellSize);
 
@@ -68,7 +69,11 @@ IGame *DialogSettingsMineSweeper::buildGame() const
 
     QPixmap pixmap = ui->imageWidget->originalPixmap().copy(pixRect);
 
-    return new MineSweeper::GameMineSweeper(SourceImage(sourceImage.fullPath, pixmap), xy, ui->spinBox->value(), ui->checkBoxAutoLock->isChecked());
+    SourceImage sourceImage(sourceImage.fullPath, pixmap);
+    int mineCount = ui->spinBoxMineCount->value();
+    bool isAutoLock = ui->checkBoxAutoLock->isChecked();
+
+    return new MineSweeper::GameCoreMineSweeper(std::make_shared<MineSweeper::GameDataMineSweeper>(sourceImage, xy, mineCount, isAutoLock));
 }
 
 void DialogSettingsMineSweeper::showEvent(QShowEvent *event)
@@ -80,7 +85,7 @@ void DialogSettingsMineSweeper::showEvent(QShowEvent *event)
 
 void DialogSettingsMineSweeper::updateLabels()
 {
-    ui->labelPixels->setText(QString("%1 x %1 pixels").arg(ui->horizontalSlider->value()));
+    ui->labelPixels->setText(QString("%1 x %1 pixels").arg(ui->pieceSizeSlider->value()));
 
     QSize xy = xyCount();
     ui->labelCells->setText(QString("%1 x %2 : %3 cells").arg(xy.width()).arg(xy.height()).arg(xy.width() * xy.height()));
@@ -90,16 +95,16 @@ void DialogSettingsMineSweeper::updateMineMax()
 {
     QSize pixmapSize(ui->imageWidget->originalPixmap().size());
 
-    int cellSize = ui->horizontalSlider->value();
+    int cellSize = ui->pieceSizeSlider->value();
     int cellnX = pixmapSize.width()  / cellSize;
     int cellnY = pixmapSize.height() / cellSize;
 
-    ui->spinBox->setMaximum(cellnX * cellnY * 0.2);
+    ui->spinBoxMineCount->setMaximum(cellnX * cellnY * 0.2);
 }
 
 void DialogSettingsMineSweeper::updateSubFrame()
 {
-    QSize frameSize = (xyCount() * ui->horizontalSlider->value()) * ui->imageWidget->imageScale();
+    QSize frameSize = (xyCount() * ui->pieceSizeSlider->value()) * ui->imageWidget->imageScale();
     QRect frameRect(QPoint(0, 0), frameSize);
 
     subFrame = new SubFrame(frameRect);
@@ -109,27 +114,27 @@ void DialogSettingsMineSweeper::updateSubFrame()
 
 void DialogSettingsMineSweeper::on_pushButtonEasy_clicked()
 {
-    ui->spinBox->setValue(numberOfAllCells() * 6 / 100);
+    ui->spinBoxMineCount->setValue(numberOfAllCells() * 6 / 100);
 }
 
 void DialogSettingsMineSweeper::on_pushButtonNormal_clicked()
 {
-    ui->spinBox->setValue(numberOfAllCells() * 10 / 100);
+    ui->spinBoxMineCount->setValue(numberOfAllCells() * 10 / 100);
 }
 
 void DialogSettingsMineSweeper::on_pushButtonHard_clicked()
 {
-    ui->spinBox->setValue(numberOfAllCells() * 15 / 100);
+    ui->spinBoxMineCount->setValue(numberOfAllCells() * 15 / 100);
 }
 
 void DialogSettingsMineSweeper::on_pushButtonMax_clicked()
 {
-    ui->spinBox->setValue(ui->spinBox->maximum());
+    ui->spinBoxMineCount->setValue(ui->spinBoxMineCount->maximum());
 }
 
 QSize DialogSettingsMineSweeper::xyCount() const
 {
-    int cellSize = ui->horizontalSlider->value();
+    int cellSize = ui->pieceSizeSlider->value();
     QSize pixmapSize(ui->imageWidget->originalPixmap().size());
 
     return QSize(pixmapSize.width() / cellSize, pixmapSize.height() / cellSize);

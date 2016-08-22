@@ -31,10 +31,14 @@ void CompositeEffect::addEffect(EffectPointer effect)
         effects << effect;
 }
 
-void CompositeEffect::onTickFrame()
+bool CompositeEffect::onTickFrame()
 {
+    bool isChanged = false;
+
     for (const auto &effect : effects)
-        effect->onTickFrame();
+        isChanged |= effect->onTickFrame();
+
+    return isChanged;
 }
 
 void CompositeEffect::skipAnimation()

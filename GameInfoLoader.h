@@ -39,7 +39,7 @@ protected:
     void execImpl() override;
 
 private:
-    ISaveData *createGameInfo(const QString &gameName, const QString &savedataFilePath) const;
+    ISaveData *createSaveData(const QString &gameName, const QString &savedataFilePath) const;
 
     QStringList savedataNames;
 };

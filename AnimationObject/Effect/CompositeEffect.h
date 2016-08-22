@@ -34,7 +34,7 @@ public:
     void addEffect(EffectPointer effect);
 
     // IAnimationObject
-    void onTickFrame() override;
+    bool onTickFrame() override;
     void skipAnimation() override;
     bool isLoopAnimation() override;
     bool isFinishedAnimation() override;
