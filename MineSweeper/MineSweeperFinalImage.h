@@ -37,12 +37,16 @@ public:
 
 private:
     QList<QPointF> explodedCenters() const;
+    int piecePixelSize() const;
+    QMatrix createMatrix();
 
     MineFieldPointer mineField;
     BoardInfoPointer boardInfo;
     QPixmap holeImg;
 
-    QList<QPair<QPoint, QMatrix>> matrixPairs;
+    typedef QPair<QPoint, QMatrix> MatrixPair;
+
+    QList<MatrixPair> matrixPairs;
     std::mt19937 mt;
 };
 

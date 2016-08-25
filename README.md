@@ -1,8 +1,8 @@
 EzPuzzles beta(W.I.P)
 ==========
 
+https://github.com/Takashi-Inoue/EzPuzzles  
 Copyright 2016 Takashi Inoue e01b0420@kyoto-kcg.ac.jp
-
 
 EzPuzzles is free Puzzle Game for windows.
 Enjoy with your favorite images!

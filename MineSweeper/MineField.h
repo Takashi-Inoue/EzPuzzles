@@ -39,6 +39,7 @@ public:
     void load(const SaveDataMineSweeper &);
 
     double openedRate() const;
+    double mineRatio() const;
     bool isAllOpened() const;
     bool isNoMissed() const;
 
@@ -48,6 +49,7 @@ public:
 private:
     void openChaining(const QPoint &pos);
 
+    int totalPieceCount() const;
     int safePiecesCount() const;
 
     QVector<QVector<MinePiecePointer>> &pieces;

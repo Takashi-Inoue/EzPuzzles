@@ -89,7 +89,8 @@ SOURCES += main.cpp\
     MineSweeper/SaveDataMineSweeper.cpp \
     MineSweeper/GameCoreMineSweeper.cpp \
     FinalImage.cpp \
-    MineSweeper/MineSweeperFinalImage.cpp
+    MineSweeper/MineSweeperFinalImage.cpp \
+    AnimationObject/Animation/CompositeAnimation.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -180,7 +181,8 @@ HEADERS  += MainWindow.h \
     MineSweeper/SaveDataMineSweeper.h \
     MineSweeper/GameCoreMineSweeper.h \
     FinalImage.h \
-    MineSweeper/MineSweeperFinalImage.h
+    MineSweeper/MineSweeperFinalImage.h \
+    AnimationObject/Animation/CompositeAnimation.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

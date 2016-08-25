@@ -48,20 +48,14 @@ void MineSweeperFinalImage::draw(QPainter &painter)
     double scale = destSize.width() / static_cast<double>(pixmap.width());
 
     for (const auto &center : explodedCenters()) {
-        auto itr = std::find_if(matrixPairs.begin(), matrixPairs.end(), [&](const QPair<QPoint, QMatrix> matrixPair) {
+        auto itr = std::find_if(matrixPairs.begin(), matrixPairs.end(), [&](const MatrixPair matrixPair) {
             return matrixPair.first == center.toPoint();
         });
 
-        QMatrix matrix = (itr != matrixPairs.end()) ? itr->second : QMatrix();
+        if (itr == matrixPairs.end())
+            itr = matrixPairs.insert(matrixPairs.end(), MatrixPair(center.toPoint(), createMatrix()));
 
-        if (matrix.isIdentity()) {
-            matrix.rotate(mt() % 360);
-            matrix.scale((mt() % 5 + 6) / 10.0, (mt() % 5 + 6) / 10.0);
-
-            matrixPairs << QPair<QPoint, QMatrix>(center.toPoint(), matrix);
-        }
-
-        QPixmap pixmap = holeImg.transformed(matrix);
+        QPixmap pixmap = holeImg.transformed(itr->second);
 
         QSizeF holeImgDestSize = pixmap.size() * scale;
 
@@ -87,6 +81,27 @@ QList<QPointF> MineSweeperFinalImage::explodedCenters() const
     }
 
     return centers;
+}
+
+int MineSweeperFinalImage::piecePixelSize() const
+{
+    return pixmap.width() / boardInfo->boardSize().width();
+}
+
+QMatrix MineSweeperFinalImage::createMatrix()
+{
+    double minHoleSize = piecePixelSize() * 3;
+    double scaleToPieceSize = qMax(minHoleSize / holeImg.width(), 1.0);
+
+    double mineRatio = mineField->mineRatio();
+    double scaleBase = (mineRatio * mineRatio * mineRatio * 70) + scaleToPieceSize;
+
+    QMatrix matrix;
+
+    matrix.rotate(mt() % 360);
+    matrix.scale(scaleBase + (mt() % 5 + 6) / 10.0, scaleBase + (mt() % 5 + 6) / 10.0);
+
+    return matrix;
 }
 
 } // MineSweeper

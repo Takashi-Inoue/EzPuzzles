@@ -87,6 +87,11 @@ double MineField::openedRate() const
     return openedCount / safeCount;
 }
 
+double MineField::mineRatio() const
+{
+    return static_cast<double>(mineCount) / totalPieceCount();
+}
+
 bool MineField::isAllOpened() const
 {
     return safePiecesCount() == openedCount;
@@ -103,7 +108,7 @@ QString MineField::information() const
 
     return QString("%1/%2 %3% opend, %4 missed").arg(openedCount)
                                                 .arg(safeCount)
-                                                .arg((openedCount * 100.0) / safeCount, 0, 'f', 2)
+                                                .arg(openedRate() * 100, 0, 'f', 2)
                                                 .arg(missedCount);
 }
 
@@ -142,11 +147,16 @@ void MineField::openChaining(const QPoint &pos)
     }
 }
 
+int MineField::totalPieceCount() const
+{
+    return (pieces.size() - 2) * (pieces.first().size() - 2);
+}
+
 int MineField::safePiecesCount() const
 {
     Q_ASSERT(!pieces.isEmpty());
 
-    return (pieces.size() - 2) * (pieces.first().size() - 2) - mineCount;
+    return totalPieceCount() - mineCount;
 }
 
 } // MineSweeper
