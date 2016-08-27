@@ -22,6 +22,7 @@
 #include "Position.h"
 #include "AnimationObject/Animation/AbstractAnimation.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
+#include "AnimationObject/Transform/AbstractTransform.h"
 #include <memory>
 
 namespace Fifteen {
@@ -40,6 +41,7 @@ public:
     virtual void setPosWithoutAnimation(const QPoint &pos) = 0;
     virtual void setAnimation(AnimationPointer) = 0;
     virtual void setEffect(EffectPointer) = 0;
+    virtual void setTransform(TransformPointer) = 0;
     virtual const AnimationPointer &animation() const = 0;
     virtual const EffectPointer &effect() const = 0;
 

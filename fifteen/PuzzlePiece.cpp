@@ -20,6 +20,8 @@
 #include "ImageFragmentPiece.h"
 #include "SourceImage.h"
 
+#include <QDebug>
+
 namespace Fifteen {
 
 PuzzlePiece::PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage) :
@@ -37,6 +39,9 @@ void PuzzlePiece::onTickFrame()
 
     if (effectObj != nullptr)
         isChanged |= effectObj->onTickFrame();
+
+    if (transformObj != nullptr)
+        isChanged |= transformObj->onTickFrame();
 }
 
 void PuzzlePiece::skipAnimation()
@@ -50,12 +55,17 @@ void PuzzlePiece::skipAnimation()
 
     if (effectObj != nullptr)
         effectObj->skipAnimation();
+
+    if (transformObj != nullptr)
+        transformObj->skipAnimation();
 }
 
 void PuzzlePiece::draw(QPainter &painter)
 {
     if (!isChanged)
         return;
+
+    painter.save();
 
     if (animObj != nullptr) {
         auto rect = animObj->rect();
@@ -67,10 +77,19 @@ void PuzzlePiece::draw(QPainter &painter)
     if (drawRect.isNull())
         drawRect = boardInfo->rectFromPiecePos(position.currentPos());
 
-    imagePiece->draw(painter, drawRect);
+    QRectF rect = drawRect;
+
+    if (transformObj != nullptr) {
+        painter.fillRect(drawRect, Qt::black);
+        rect = transformObj->mapInRect(drawRect);
+    }
+
+    imagePiece->draw(painter, rect);
 
     if (effectObj != nullptr)
-        effectObj->draw(painter, drawRect);
+        effectObj->draw(painter, rect);
+
+    painter.restore();
 
     isChanged = false;
 }
@@ -86,6 +105,9 @@ void PuzzlePiece::setPos(const QPoint &pos)
     position.setPos(pos);
 
     animObj->start(drawRect, boardInfo->rectFromPiecePos(pos));
+
+    if (transformObj != nullptr)
+        transformObj->start(drawRect.size());
 
     isChanged = true;
 }
@@ -107,6 +129,11 @@ void PuzzlePiece::setAnimation(AnimationPointer animation)
 void PuzzlePiece::setEffect(EffectPointer effect)
 {
     effectObj = effect;
+}
+
+void PuzzlePiece::setTransform(TransformPointer transform)
+{
+    transformObj = transform;
 }
 
 const Position &PuzzlePiece::pos() const

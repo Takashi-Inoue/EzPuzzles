@@ -25,8 +25,10 @@
 #include "fifteen/SlideBlankPiece.h"
 #include "PhaseSimpleSwapEnding.h"
 #include "PhaseSimpleSwapGaming.h"
-#include "AnimationObject/Animation/AnimationLineMove.h"
+#include "AnimationObject/Animation/AnimationWarpMove.h"
 #include "AnimationObject/Effect/EffectSimpleFrame.h"
+#include "AnimationObject/Transform/ChainedTransform.h"
+#include "AnimationObject/Transform/TransformExpand.h"
 #include "SaveDataSimpleSwap.h"
 #include "EzPuzzles.h"
 
@@ -79,7 +81,7 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
         return std::make_shared<PhaseShuffle>(board, new Fifteen::SwapShuffler(pieces, board->boardInfo(), rwlock), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
-        return std::make_shared<PhaseSimpleSwapGaming>(board, pieces, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);
+        return std::make_shared<PhaseSimpleSwapGaming>(board, pieces, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
 
     if (phaseType == IPhase::PhaseEnding)
         return std::make_shared<PhaseSimpleSwapEnding>(pieces, IPhase::PhaseCleared);
@@ -146,8 +148,14 @@ void GameDataSimpleSwap::setAnimationToPieces()
 {
     Q_ASSERT(!pieces.isEmpty());
 
-//    for (auto &piece : pieces)
-//        piece->setAnimation(std::make_shared<Animation::LineMove>(slideFrameCount, false));
+    for (auto &piece : pieces) {
+        auto chainTransform = std::make_shared<Transform::ChainedTransform>();
+        chainTransform->addTransform(std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter, warpWaitCount));
+        chainTransform->addTransform(std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, warpWaitCount));
+
+        piece->setAnimation(std::make_shared<Animation::WarpMove>(warpWaitCount));
+        piece->setTransform(chainTransform);
+    }
 }
 
 void GameDataSimpleSwap::setEffectToPieces()

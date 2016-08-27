@@ -50,7 +50,7 @@ protected:
     void setAnimationToPieces();
     void setEffectToPieces();
 
-    static const unsigned char slideFrameCount = 20;
+    static const unsigned char warpWaitCount = 6;
 
     std::shared_ptr<QReadWriteLock> rwlock;
 

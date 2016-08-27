@@ -45,6 +45,7 @@ public:
     void setPosWithoutAnimation(const QPoint &pos) override;
     void setAnimation(AnimationPointer animation) override;
     void setEffect(EffectPointer effect) override;
+    void setTransform(TransformPointer) override;
     const AnimationPointer &animation() const override;
     const EffectPointer &effect() const override;
 
@@ -58,6 +59,7 @@ protected:
 
     AnimationPointer animObj;
     EffectPointer effectObj;
+    TransformPointer transformObj;
 
     bool isChanged;
 };

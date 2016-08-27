@@ -20,18 +20,19 @@
 #include "fifteen/FifteenPieceMover.h"
 #include "AnimationObject/Effect/CompositeEffect.h"
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
+#include "fifteen/EffectSwapper.h"
 
 PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
-                                             const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
+                                             const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent) :
     IPhase(parent),
     board(board),
     pieces(pieces),
     swapTargetPos(swapTargetPos),
     nextPhase(nextPhase),
-    slideFrameCount(slideFrameCount),
+    totalMoveFrame(totalMoveFrame),
     isGameCleared(false)
 {
-    Q_ASSERT(slideFrameCount >= 0);
+    Q_ASSERT(totalMoveFrame >= 0);
 
 
     auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
@@ -54,10 +55,7 @@ void PhaseSimpleSwapGaming::click(const QPoint &clickedPiecePos)
 
     board->swapPiece(swapTargetPos, clickedPiecePos);
 
-    auto effect = getPiece(swapTargetPos)->effect();
-
-    getPiece(swapTargetPos)->setEffect(getPiece(clickedPiecePos)->effect());
-    getPiece(clickedPiecePos)->setEffect(effect);
+    frameOperations << std::make_shared<Fifteen::EffectSwapper>(getPiece(swapTargetPos), getPiece(clickedPiecePos), totalMoveFrame / 2);
 
     isGameCleared = board->isClearerd();
 }
@@ -66,8 +64,18 @@ void PhaseSimpleSwapGaming::onTickFrame()
 {
     board->onTickFrame();
 
+    auto itr = frameOperations.begin();
+    auto end = frameOperations.end();
+
+    for (; itr < end; ++itr) {
+        if (!(*itr)->onTickFrame()) {
+            itr = frameOperations.erase(itr);
+            end = frameOperations.end();
+        }
+    }
+
     if (isGameCleared) {
-        if (--slideFrameCount == 0)
+        if (--totalMoveFrame == 0)
             emit toNextPhase(nextPhase);
     }
 }

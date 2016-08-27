@@ -90,7 +90,10 @@ SOURCES += main.cpp\
     MineSweeper/GameCoreMineSweeper.cpp \
     FinalImage.cpp \
     MineSweeper/MineSweeperFinalImage.cpp \
-    AnimationObject/Animation/CompositeAnimation.cpp
+    AnimationObject/Transform/TransformExpand.cpp \
+    AnimationObject/Transform/ChainedTransform.cpp \
+    AnimationObject/Transform/AbstractTransform.cpp \
+    fifteen/EffectSwapper.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -182,7 +185,10 @@ HEADERS  += MainWindow.h \
     MineSweeper/GameCoreMineSweeper.h \
     FinalImage.h \
     MineSweeper/MineSweeperFinalImage.h \
-    AnimationObject/Animation/CompositeAnimation.h
+    AnimationObject/Transform/AbstractTransform.h \
+    AnimationObject/Transform/TransformExpand.h \
+    AnimationObject/Transform/ChainedTransform.h \
+    fifteen/EffectSwapper.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

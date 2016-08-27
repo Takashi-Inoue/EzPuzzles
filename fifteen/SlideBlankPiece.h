@@ -21,6 +21,7 @@ public:
     void setPos(const QPoint &pos) override;
     void setPosWithoutAnimation(const QPoint &pos) override;
     void setAnimation(AnimationPointer) override {}
+    void setTransform(TransformPointer) override {}
     void setEffect(EffectPointer) override;
     const AnimationPointer &animation() const override;
     const EffectPointer &effect() const override;

@@ -1,5 +1,6 @@
 ﻿#include "SlideBlankPiece.h"
 #include "AnimationObject/Animation/AnimationLineMove.h"
+#include "AnimationObject/Transform/TransformExpand.h"
 
 #include <QDebug>
 

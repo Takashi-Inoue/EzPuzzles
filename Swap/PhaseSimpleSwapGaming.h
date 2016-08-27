@@ -22,13 +22,14 @@
 #include "IPhase.h"
 #include "Board.h"
 #include "fifteen/PuzzlePiece.h"
+#include "AnimationObject/IAnimationObject.h"
 
 class PhaseSimpleSwapGaming : public IPhase
 {
     Q_OBJECT
 public:
     PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
-                          const QPoint &swapTargetPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
+                          const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent = 0);
     ~PhaseSimpleSwapGaming() = default;
 
     void click(const QPoint &clickedPiecePos) override;
@@ -45,8 +46,10 @@ protected:
     QList<Fifteen::PuzzlePiecePointer> &pieces;
     QPoint swapTargetPos;
     PhaseType nextPhase;
-    int slideFrameCount;
+    int totalMoveFrame;
     bool isGameCleared;
+
+    QList<std::shared_ptr<IAnimationObject>> frameOperations;
 };
 
 #endif // PHASESIMPLESWAPGAMING_H
