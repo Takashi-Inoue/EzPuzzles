@@ -32,6 +32,8 @@ public:
     // IMinePiece
     void draw(QPainter &) override {}
     void setOpenPieceOpacity(double /*opacity*/) override {}
+    void setEffect(EffectPointer) override {}
+    void onTickFrame() override {}
 
     void open() override {}
     void lock() override {}

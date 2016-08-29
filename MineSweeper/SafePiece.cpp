@@ -34,11 +34,10 @@ SafePiece::SafePiece(int numOfAroundMines, const QRect &destRect, const QPixmap 
 {
     Q_ASSERT(numOfAroundMines >= 0 && numOfAroundMines < 9);
 
-    if (isNearMine())
+    if (isNearMine()) {
         openOpacity = 0.5;
-
-    if (numOfAroundMines > 0)
         numberPiece = NumberPieceFactory::getPiece(numOfAroundMines, rect.size());
+    }
 }
 
 void SafePiece::draw(QPainter &painter)
@@ -60,6 +59,9 @@ void SafePiece::draw(QPainter &painter)
     if (numberPiece != nullptr && isOpen())
         numberPiece->draw(painter, rect);
 
+    if (effect != nullptr)
+        effect->draw(painter, rect);
+
     painter.restore();
 
     isChanged = false;
@@ -80,6 +82,17 @@ void SafePiece::setOpenPieceOpacity(double opacity)
         oldOpacity = opacity;
         isChanged = true;
     }
+}
+
+void SafePiece::setEffect(EffectPointer effect)
+{
+    this->effect = effect;
+}
+
+void SafePiece::onTickFrame()
+{
+    if (effect != nullptr)
+        isChanged |= effect->onTickFrame();
 }
 
 void SafePiece::open()

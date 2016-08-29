@@ -19,6 +19,7 @@
 #include "GameDataMineSweeper.h"
 #include "CommonPhase/PhaseCleared.h"
 #include "MinePiecesFactory.h"
+#include "PhaseMineSweeperEnding.h"
 #include "PhaseMineSweeperGaming.h"
 #include "SaveDataMineSweeper.h"
 #include "EzPuzzles.h"
@@ -84,19 +85,15 @@ PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
         mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
 
         finalImg = std::make_shared<MineSweeperFinalImage>(sourceImg.pixmap, mineField, boardInformation);
-
-        currentPhaseType = IPhase::PhaseGaming;
-
-        return std::make_shared<PhaseMineSweeperGaming>(mineField, pieces, IPhase::PhaseCleared);
-    }
+    } // through to case IPhase::PhaseGaming
 
     case IPhase::PhasePreGame:
     case IPhase::PhaseGaming:
         currentPhaseType = IPhase::PhaseGaming;
-        return std::make_shared<PhaseMineSweeperGaming>(mineField, pieces, IPhase::PhaseCleared);
+        return std::make_shared<PhaseMineSweeperGaming>(mineField, pieces, IPhase::PhaseEnding);
 
     case IPhase::PhaseEnding:
-        break;
+        return std::make_shared<PhaseMineSweeperEnding>(boardInformation, pieces, sourceImg, IPhase::PhaseCleared);
 
     case IPhase::PhaseCleared:
         return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);

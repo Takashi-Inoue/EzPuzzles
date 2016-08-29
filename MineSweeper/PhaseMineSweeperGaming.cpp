@@ -49,9 +49,8 @@ void PhaseMineSweeperGaming::click(const QPoint &clickedPiecePos)
 void PhaseMineSweeperGaming::onTickFrame()
 {
 //    for (auto &horizontal : pieces) {
-//        for (auto &piece : horizontal) {
+//        for (auto &piece : horizontal)
 //            piece->onTickFrame();
-//        }
 //    }
 }
 

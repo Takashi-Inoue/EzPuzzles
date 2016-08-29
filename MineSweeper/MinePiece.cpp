@@ -36,9 +36,28 @@ void MinePiece::draw(QPainter &painter)
     if (!isChanged)
         return;
 
+    painter.save();
+    painter.setOpacity(1.0);
+
     blockPiece->draw(painter, rect);
 
+    if (effect != nullptr)
+        effect->draw(painter, rect);
+
+    painter.restore();
+
     isChanged = false;
+}
+
+void MinePiece::setEffect(EffectPointer effect)
+{
+    this->effect = effect;
+}
+
+void MinePiece::onTickFrame()
+{
+    if (effect != nullptr)
+        isChanged |= effect->onTickFrame();
 }
 
 void MinePiece::open()

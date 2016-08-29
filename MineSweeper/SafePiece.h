@@ -33,6 +33,8 @@ public:
     // IMinePiece
     void draw(QPainter &painter) override;
     void setOpenPieceOpacity(double opacity) override;
+    void setEffect(EffectPointer effect) override;
+    void onTickFrame() override;
 
     void open() override;
     void lock() override;
@@ -55,6 +57,8 @@ protected:
     QRect rect;
     double openOpacity;
     double oldOpacity;
+
+    EffectPointer effect;
 
     bool isChanged;
 };

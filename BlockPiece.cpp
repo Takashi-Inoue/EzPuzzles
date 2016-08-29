@@ -53,8 +53,6 @@ void BlockPiece::draw(QPainter &painter, const QPointF &pos)
 
 void BlockPiece::draw(QPainter &painter, const QRectF &rect)
 {
-    painter.setOpacity(1.0);
-
     pixmap.isNull() ? drawPiece(painter, rect.topLeft(), rect.size())
                     : painter.drawPixmap(rect, pixmap, pixmap.rect());
 }

@@ -20,6 +20,7 @@
 #define IMINEPIECE_H
 
 #include "ISwitchPiece.h"
+#include "AnimationObject/Effect/AbstractEffect.h"
 #include <memory>
 
 namespace MineSweeper {
@@ -32,6 +33,8 @@ public:
 
     virtual void draw(QPainter &painter) = 0;
     virtual void setOpenPieceOpacity(double opacity) = 0;
+    virtual void setEffect(EffectPointer) = 0;
+    virtual void onTickFrame() = 0;
 
     virtual void open() = 0;
     virtual void lock() = 0;
