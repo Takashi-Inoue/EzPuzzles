@@ -100,7 +100,7 @@ IGame *DialogSettingsFifteen::buildSimpleSlide() const
     ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
                                             : defaultBlank.select(grid->selectedCellPos());
 
-    return new GameCore(std::make_shared<GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
+    return new GameCore(std::make_shared<Slide::GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSwap() const
@@ -112,5 +112,5 @@ IGame *DialogSettingsFifteen::buildSimpleSwap() const
     ui->radioButtonBlankRandom->isChecked() ? swapTarget.randomSelect(xyCount)
                                             : swapTarget.select(grid->selectedCellPos());
 
-    return new GameCore(std::make_shared<GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
+    return new GameCore(std::make_shared<Swap::GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
 }

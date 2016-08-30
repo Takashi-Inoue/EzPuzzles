@@ -1,20 +1,20 @@
 ﻿/*
- * Copyright YEAR Takashi Inoue
+ * Copyright 2016 Takashi Inoue
  *
- * This file is part of APPNAME.
+ * This file is part of EzPuzzles.
  *
- * APPNAME is free software: you can redistribute it and/or modify
+ * EzPuzzles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * APPNAME is distributed in the hope that it will be useful,
+ * EzPuzzles is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
+ * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "ChainedTransform.h"
 
@@ -65,7 +65,7 @@ bool ChainedTransform::isFinishedAnimation()
     return index >= transforms.size();
 }
 
-void ChainedTransform::start(const QSizeF &start)
+void ChainedTransform::start(const QSizeF &size)
 {
     if (transforms.isEmpty())
         return;
@@ -73,7 +73,7 @@ void ChainedTransform::start(const QSizeF &start)
     index = 0;
 
     for (auto &transform : transforms)
-        transform->start(start);
+        transform->start(size);
 }
 
 QTransform ChainedTransform::transform() const

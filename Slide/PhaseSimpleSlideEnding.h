@@ -22,6 +22,8 @@
 #include "IPhase.h"
 #include "fifteen/PuzzlePiece.h"
 
+namespace Slide {
+
 class PhaseSimpleSlideEnding : public IPhase
 {
 public:
@@ -40,5 +42,7 @@ private:
 
     int frameMoveCount;
 };
+
+} // Slide
 
 #endif // PHASESIMPLESLIDEENDING_H

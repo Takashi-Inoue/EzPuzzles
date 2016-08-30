@@ -33,6 +33,8 @@
 
 #include <QDebug>
 
+namespace Slide {
+
 GameDataSimpleSlide::GameDataSimpleSlide(const SourceImage &img, const UniquePosition &defaultBlankPos, const QSize &xyCount) :
     rwlock(std::make_shared<QReadWriteLock>()),
     sourceImg(img),
@@ -186,3 +188,5 @@ Fifteen::PuzzlePiecePointer &GameDataSimpleSlide::getPiece(const QPoint &pos)
 {
     return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
 }
+
+} // Slide

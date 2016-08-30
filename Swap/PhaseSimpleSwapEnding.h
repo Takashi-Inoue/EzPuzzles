@@ -22,10 +22,14 @@
 #include "IPhase.h"
 #include "fifteen/PuzzlePiece.h"
 
+#include <random>
+
+namespace Swap {
+
 class PhaseSimpleSwapEnding : public IPhase
 {
 public:
-    PhaseSimpleSwapEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase);
+    PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -35,10 +39,17 @@ public:
     QString information() const override;
 
 private:
+    static const int maxWaitFrames = 40;
+    static const int quarterExpandFrames = 5;
+
+    BoardInfoPointer boardInfo;
     QList<Fifteen::PuzzlePiecePointer> &pieces;
     PhaseType nextPhase;
+    int nowFrame;
 
-    int frameMoveCount;
+    std::mt19937 mt;
 };
+
+} // Swap
 
 #endif // PHASESIMPLESWAPENDING_H

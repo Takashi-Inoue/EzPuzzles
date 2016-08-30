@@ -1,20 +1,20 @@
 ﻿/*
- * Copyright YEAR Takashi Inoue
+ * Copyright 2016 Takashi Inoue
  *
- * This file is part of APPNAME.
+ * This file is part of EzPuzzles.
  *
- * APPNAME is free software: you can redistribute it and/or modify
+ * EzPuzzles is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * APPNAME is distributed in the hope that it will be useful,
+ * EzPuzzles is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with APPNAME.  If not, see <http://www.gnu.org/licenses/>.
+ * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "TransformExpand.h"
 #include <QDebug>
@@ -27,9 +27,9 @@ Expand::Expand(ExpandType expandType, int totalFrameCount) :
 {
 }
 
-void Expand::start(const QSizeF &base)
+void Expand::start(const QSizeF &size)
 {
-    baseSize = base;
+    maxSize = size;
 
     AbstractAnimationObject::resetFrame();
 }
@@ -43,8 +43,6 @@ QTransform Expand::transform() const
 
     transform.translate(pos.x(), pos.y());
     transform.scale(scale.first, scale.second);
-
-//    qDebug() << pos << scale.first << scale.second;
 
     return transform;
 }
@@ -80,22 +78,22 @@ QPointF Expand::calcPos(const Expand::Scale &scale) const
     if ((expandType == LeftToRight) | (expandType == TopToBottom))
         return QPointF(0, 0);
 
-    QSizeF newSize(baseSize.width() * scale.first, baseSize.height() * scale.second);
+    QSizeF newSize(maxSize.width() * scale.first, maxSize.height() * scale.second);
 
     switch (expandType) {
     case RightToLeft:
-        return QPointF(baseSize.width() - newSize.width(), 0);
+        return QPointF(maxSize.width() - newSize.width(), 0);
 
     case BottomToTop:
-        return QPointF(0, baseSize.height() - newSize.height());
+        return QPointF(0, maxSize.height() - newSize.height());
 
     case HorizontalToCenter:
     case HorizontalFromCenter:
-        return QPointF((baseSize.width() - newSize.width()) / 2, 0);
+        return QPointF((maxSize.width() - newSize.width()) / 2, 0);
 
     case VerticalToCenter:
     case VerticalFromCenter:
-        return QPointF(0, (baseSize.height() - newSize.height()) / 2);
+        return QPointF(0, (maxSize.height() - newSize.height()) / 2);
 
     default:
         return QPointF(0, 0);

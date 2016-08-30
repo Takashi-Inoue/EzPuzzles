@@ -22,6 +22,8 @@
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 #include "fifteen/EffectSwapper.h"
 
+namespace Swap {
+
 PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
                                              const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent) :
     IPhase(parent),
@@ -104,3 +106,5 @@ Fifteen::PuzzlePiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)
 {
     return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
 }
+
+} // Swap

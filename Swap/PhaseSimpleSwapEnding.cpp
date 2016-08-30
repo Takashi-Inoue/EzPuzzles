@@ -17,18 +17,42 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSwapEnding.h"
-#include "AnimationObject/Effect/EffectRoundMoveFrame.h"
+#include "AnimationObject/Effect/TimeLimitedEffect.h"
+#include "AnimationObject/Transform/ChainedTransform.h"
+#include "AnimationObject/Transform/TransformExpand.h"
+#include "AnimationObject/Transform/WaitTransform.h"
 
-PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase) :
+namespace Swap {
+
+PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase) :
+    boardInfo(boardInfo),
     pieces(pieces),
     nextPhase(nextPhase),
-    frameMoveCount(120)
+    nowFrame(0),
+    mt(std::random_device()())
 {
     for (auto &piece : pieces) {
-        auto frame = std::make_shared<Effect::RoundMoveFrame>(2, Qt::transparent, Qt::transparent, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192),
-                                                              Qt::TopEdge, 0, Effect::RoundMoveFrame::RightHandTurn, frameMoveCount, false);
+        piece->setAnimation(nullptr);
 
-        piece->setEffect(frame);
+        int waitFrames = mt() % maxWaitFrames;
+
+        piece->setEffect(std::make_shared<Effect::TimeLimitedEffect>(waitFrames + quarterExpandFrames * 4, piece->effect()));
+
+        auto waitTransform = std::make_shared<Transform::WaitTransform>(waitFrames);
+        auto expand1 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter,   quarterExpandFrames * 2);
+        auto expand2 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, quarterExpandFrames * 2);
+        auto expand3 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter,   quarterExpandFrames);
+        auto expand4 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, quarterExpandFrames);
+        auto chainedTransform = std::make_shared<Transform::ChainedTransform>();
+
+        chainedTransform->addTransform(waitTransform);
+        chainedTransform->addTransform(expand1);
+        chainedTransform->addTransform(expand2);
+        chainedTransform->addTransform(expand3);
+        chainedTransform->addTransform(expand4);
+
+        piece->setTransform(chainedTransform);
+        chainedTransform->start(boardInfo->rectFromPiecePos(piece->pos().currentPos()).size());
     }
 }
 
@@ -42,7 +66,7 @@ void PhaseSimpleSwapEnding::onTickFrame()
     for (auto &piece : pieces)
         piece->onTickFrame();
 
-    if (frameMoveCount-- <= 0)
+    if (nowFrame++ >= maxWaitFrames + quarterExpandFrames * 6)
         emit toNextPhase(nextPhase);
 }
 
@@ -66,3 +90,5 @@ QString PhaseSimpleSwapEnding::information() const
 {
     return "Clear!";
 }
+
+} // Swap

@@ -25,6 +25,8 @@
 #include <QFileInfo>
 #include <QSaveFile>
 
+namespace Swap {
+
 SaveDataSimpleSwap::SaveDataSimpleSwap(const QString &fileName) :
     fileName(fileName),
     isSavedataValid(false)
@@ -148,3 +150,5 @@ bool SaveDataSimpleSwap::load()
 
     return isSavedataValid;
 }
+
+} // Swap

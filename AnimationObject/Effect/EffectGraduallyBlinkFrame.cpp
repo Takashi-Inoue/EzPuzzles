@@ -67,7 +67,7 @@ void GraduallyBlinkFrame::drawGradationFrame(QPainter &painter, const QRectF &re
 {
     painter.save();
 
-    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHints(QPainter::Antialiasing);
     painter.setClipRect(rect);
     painter.setPen(Qt::transparent);
 

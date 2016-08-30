@@ -25,6 +25,8 @@
 
 #include <QReadWriteLock>
 
+namespace Swap {
+
 class SaveDataSimpleSwap;
 
 class GameDataSimpleSwap : public IGameData
@@ -60,5 +62,7 @@ protected:
     UniquePosition swapTargetPos;
     IPhase::PhaseType currentPhaseType;
 };
+
+} // Swap
 
 #endif // GAMEDATASIMPLESLIDE_H

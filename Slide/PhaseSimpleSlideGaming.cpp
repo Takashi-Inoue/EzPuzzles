@@ -19,6 +19,8 @@
 #include "PhaseSimpleSlideGaming.h"
 #include "fifteen/FifteenPieceMover.h"
 
+namespace Slide {
+
 PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
     IPhase(parent),
     board(board),
@@ -74,3 +76,5 @@ QString PhaseSimpleSlideGaming::information() const
 {
     return QString("Blank Position [%1, %2]").arg(blankPos.x()).arg(blankPos.y());
 }
+
+} // Slide

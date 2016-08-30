@@ -24,6 +24,8 @@
 #include "fifteen/PuzzlePiece.h"
 #include "AnimationObject/IAnimationObject.h"
 
+namespace Swap {
+
 class PhaseSimpleSwapGaming : public IPhase
 {
     Q_OBJECT
@@ -51,5 +53,7 @@ protected:
 
     QList<std::shared_ptr<IAnimationObject>> frameOperations;
 };
+
+} // Swap
 
 #endif // PHASESIMPLESWAPGAMING_H

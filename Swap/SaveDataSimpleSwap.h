@@ -29,6 +29,8 @@
 #include <QList>
 #include <QPoint>
 
+namespace Swap {
+
 class SaveDataSimpleSwap : public ISaveData
 {
 public:
@@ -65,5 +67,7 @@ private:
     IPhase::PhaseType currentPhaseType;
     QList<QPoint> defaultPositions;
 };
+
+} // Swap
 
 #endif // SAVEDATASIMPLESWAP_H

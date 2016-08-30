@@ -25,6 +25,8 @@
 
 #include <QReadWriteLock>
 
+namespace Slide {
+
 class SaveDataSimpleSlide;
 
 class GameDataSimpleSlide : public IGameData
@@ -64,5 +66,7 @@ protected:
     QPoint currentBlankPos;
     IPhase::PhaseType currentPhaseType;
 };
+
+} // Slide
 
 #endif // GAMEDATASIMPLESLIDE_H

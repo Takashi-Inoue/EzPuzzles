@@ -29,6 +29,8 @@
 #include <QList>
 #include <QPoint>
 
+namespace Slide {
+
 class SaveDataSimpleSlide : public ISaveData
 {
 public:
@@ -65,5 +67,7 @@ private:
     IPhase::PhaseType currentPhaseType;
     QList<QPoint> defaultPositions;
 };
+
+} // Slide
 
 #endif // SAVEDATASIMPLESLIDE_H

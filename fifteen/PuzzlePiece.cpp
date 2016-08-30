@@ -80,8 +80,10 @@ void PuzzlePiece::draw(QPainter &painter)
     QRectF rect = drawRect;
 
     if (transformObj != nullptr) {
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
         painter.fillRect(drawRect, Qt::black);
         rect = transformObj->mapInRect(drawRect);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     }
 
     imagePiece->draw(painter, rect);

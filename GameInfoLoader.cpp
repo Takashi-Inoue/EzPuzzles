@@ -78,10 +78,10 @@ void GameInfoLoader::execImpl()
 ISaveData *GameInfoLoader::createSaveData(const QString &gameName, const QString &savedataFilePath) const
 {
     if (gameName == EzPuzzles::gameName(EzPuzzles::SimpleSlide))
-        return new SaveDataSimpleSlide(savedataFilePath);
+        return new Slide::SaveDataSimpleSlide(savedataFilePath);
 
     if (gameName == EzPuzzles::gameName(EzPuzzles::SimpleSwap))
-        return new SaveDataSimpleSwap(savedataFilePath);
+        return new Swap::SaveDataSimpleSwap(savedataFilePath);
 
     if (gameName == EzPuzzles::gameName(EzPuzzles::MineSweeper))
         return new MineSweeper::SaveDataMineSweeper(savedataFilePath);

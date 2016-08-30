@@ -25,6 +25,8 @@
 #include <QFileInfo>
 #include <QSaveFile>
 
+namespace Slide {
+
 SaveDataSimpleSlide::SaveDataSimpleSlide(const QString &fileName) :
     fileName(fileName),
     isSavedataValid(false)
@@ -150,3 +152,5 @@ bool SaveDataSimpleSlide::load()
 
     return isSavedataValid;
 }
+
+} // Slide

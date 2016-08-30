@@ -95,7 +95,9 @@ SOURCES += main.cpp\
     AnimationObject/Transform/AbstractTransform.cpp \
     fifteen/EffectSwapper.cpp \
     MineSweeper/PhaseMineSweeperEnding.cpp \
-    AnimationObject/Effect/EffectGraduallyImage.cpp
+    AnimationObject/Effect/EffectGraduallyImage.cpp \
+    AnimationObject/Transform/WaitTransform.cpp \
+    AnimationObject/Effect/TimeLimitedEffect.cpp
 
 HEADERS  += MainWindow.h \
     FormFinalImage.h \
@@ -192,7 +194,9 @@ HEADERS  += MainWindow.h \
     AnimationObject/Transform/ChainedTransform.h \
     fifteen/EffectSwapper.h \
     MineSweeper/PhaseMineSweeperEnding.h \
-    AnimationObject/Effect/EffectGraduallyImage.h
+    AnimationObject/Effect/EffectGraduallyImage.h \
+    AnimationObject/Transform/WaitTransform.h \
+    AnimationObject/Effect/TimeLimitedEffect.h
 
 FORMS    += MainWindow.ui \
     FormFinalImage.ui \

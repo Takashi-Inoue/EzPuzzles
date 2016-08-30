@@ -19,6 +19,8 @@
 #include "PhaseSimpleSlideEnding.h"
 #include "AnimationObject/Effect/EffectRoundMoveFrame.h"
 
+namespace Slide {
+
 PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase) :
     pieces(pieces),
     nextPhase(nextPhase),
@@ -68,3 +70,5 @@ QString PhaseSimpleSlideEnding::information() const
 {
     return "Clear!";
 }
+
+} // Slide

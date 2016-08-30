@@ -34,6 +34,8 @@
 
 #include <QDebug>
 
+namespace Swap {
+
 GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount) :
     rwlock(std::make_shared<QReadWriteLock>()),
     sourceImg(img),
@@ -84,7 +86,7 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
         return std::make_shared<PhaseSimpleSwapGaming>(board, pieces, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
 
     if (phaseType == IPhase::PhaseEnding)
-        return std::make_shared<PhaseSimpleSwapEnding>(pieces, IPhase::PhaseCleared);
+        return std::make_shared<PhaseSimpleSwapEnding>(board->boardInfo(), pieces, IPhase::PhaseCleared);
 
     if (phaseType == IPhase::PhaseCleared)
         return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);
@@ -167,3 +169,5 @@ void GameDataSimpleSwap::setEffectToPieces()
     for (auto &piece : pieces)
         piece->setEffect(frame);
 }
+
+} // Swap

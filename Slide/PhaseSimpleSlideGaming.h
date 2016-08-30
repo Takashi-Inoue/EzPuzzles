@@ -23,6 +23,8 @@
 #include "Board.h"
 #include "fifteen/PuzzlePiece.h"
 
+namespace Slide {
+
 class PhaseSimpleSlideGaming : public IPhase
 {
     Q_OBJECT
@@ -44,5 +46,7 @@ protected:
     int slideFrameCount;
     bool isGameCleared;
 };
+
+} // Slide
 
 #endif // PHASESIMPLESLIDEGAMING_H
