@@ -64,36 +64,64 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="comboBoxGameType"/>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Blank position</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QRadioButton" name="radioButtonBlankRandom">
-        <property name="text">
-         <string>Random</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioButtonBlankSpecified">
-        <property name="text">
-         <string>Specified</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QComboBox" name="comboBoxGameType"/>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBoxSpecifiedPosition">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="title">
+        <string>Blank position</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QRadioButton" name="radioButtonBlankRandom">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Random</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonBlankSpecified">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Specified</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
       <string>Partition</string>
      </property>
@@ -199,6 +227,15 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBoxGameType</tabstop>
+  <tabstop>radioButtonBlankRandom</tabstop>
+  <tabstop>radioButtonBlankSpecified</tabstop>
+  <tabstop>hSliderSplitX</tabstop>
+  <tabstop>spinBoxSplitX</tabstop>
+  <tabstop>hSliderSplitY</tabstop>
+  <tabstop>spinBoxSplitY</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

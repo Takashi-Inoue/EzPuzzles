@@ -42,8 +42,9 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
 
     ui->buttonBox->setVisible(showOkButton);
 
-    ui->comboBoxGameType->addItem(EzPuzzles::gameName(EzPuzzles::SimpleSlide), idFifteen);
-    ui->comboBoxGameType->addItem(EzPuzzles::gameName(EzPuzzles::SimpleSwap), idSwap);
+    ui->comboBoxGameType->setIconSize(QSize(32, 32));
+    ui->comboBoxGameType->addItem(QIcon(":/ico/gameSimpleSlide"), "Slide Mode", EzPuzzles::SimpleSlide);
+    ui->comboBoxGameType->addItem(QIcon(":/ico/gameSimpleSwap"),  "Swap Mode",  EzPuzzles::SimpleSwap);
 
     ui->imageWidget->setPixmap(sourceImage.pixmap);
     ui->imageWidget->addSubWidget(grid);
@@ -70,10 +71,10 @@ DialogSettingsFifteen::~DialogSettingsFifteen()
 
 IGame *DialogSettingsFifteen::buildGame() const
 {
-    if (ui->comboBoxGameType->currentData() == idFifteen)
+    if (ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSlide)
         return buildSimpleSlide();
 
-    if (ui->comboBoxGameType->currentData() == idSwap)
+    if (ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSwap)
         return buildSimpleSwap();
 
     Q_ASSERT(false);
@@ -89,6 +90,13 @@ void DialogSettingsFifteen::udpateGrid()
 void DialogSettingsFifteen::onChangeBlankSetting()
 {
     grid->setRandomSelect(ui->radioButtonBlankRandom->isChecked());
+}
+
+void DialogSettingsFifteen::on_comboBoxGameType_currentIndexChanged(int)
+{
+    ui->groupBoxSpecifiedPosition->setTitle(
+        ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSlide ? "Blank position" : "Swap target position"
+    );
 }
 
 IGame *DialogSettingsFifteen::buildSimpleSlide() const

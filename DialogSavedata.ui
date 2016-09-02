@@ -218,6 +218,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBox</tabstop>
+  <tabstop>listWidget</tabstop>
+  <tabstop>pushButtonRemove</tabstop>
+ </tabstops>
  <resources>
   <include location="resource.qrc"/>
  </resources>

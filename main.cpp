@@ -45,7 +45,12 @@ int main(int argc, char *argv[])
     a.installTranslator(&translator1);
     a.installTranslator(&translator2);
 
-    QApplication::setFont(QFont("Meiryo UI", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize()));
+    QFont font("Meiryo UI", QFontDatabase::systemFont(QFontDatabase::GeneralFont).pointSize());
+
+    if (font.family() != "Meiryo UI")
+        font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+
+    QApplication::setFont(font);
 
     QDir().mkpath(EzPuzzles::saveDirPath());
 

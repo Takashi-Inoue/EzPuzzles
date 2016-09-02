@@ -44,10 +44,9 @@ private slots:
     void udpateGrid();
     void onChangeBlankSetting();
 
-private:
-    const int idFifteen = 0;
-    const int idSwap = 1;
+    void on_comboBoxGameType_currentIndexChanged(int index);
 
+private:
     IGame *buildSimpleSlide() const;
     IGame *buildSimpleSwap() const;
 

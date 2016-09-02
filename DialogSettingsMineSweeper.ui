@@ -278,6 +278,15 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>pieceSizeSlider</tabstop>
+  <tabstop>spinBoxMineCount</tabstop>
+  <tabstop>pushButtonEasy</tabstop>
+  <tabstop>pushButtonNormal</tabstop>
+  <tabstop>pushButtonHard</tabstop>
+  <tabstop>pushButtonMax</tabstop>
+  <tabstop>checkBoxAutoLock</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
