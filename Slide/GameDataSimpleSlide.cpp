@@ -76,21 +76,32 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
     currentPhaseType = phaseType;
 
     if (phaseType == IPhase::PhaseReady) {
+        if (defaultBlankPos.isRandom()) {
+            defaultBlankPos.randomSelect(board->boardInfo()->boardSize());
+            currentBlankPos = defaultBlankPos.selectedPosition();
+        }
+
         initPieces();
+
         return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
     }
 
-    if (phaseType == IPhase::PhasePreGame)
+    if (phaseType == IPhase::PhasePreGame) {
         return std::make_shared<PhaseShuffle>(board, new Fifteen::SlideShuffler(pieces, board->boardInfo(), currentBlankPos, rwlock), IPhase::PhaseGaming);
+    }
 
     if (phaseType == IPhase::PhaseGaming)
-        return std::make_shared<PhaseSimpleSlideGaming>(board, currentBlankPos, IPhase::PhaseEnding, slideFrameCount);
+        return std::make_shared<PhaseSimpleSlideGaming>(board, currentBlankPos, defaultBlankPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);
 
     if (phaseType == IPhase::PhaseEnding)
-        return std::make_shared<PhaseSimpleSlideEnding>(pieces, finalPiece, currentBlankPos.y() * board->boardInfo()->xCount() + currentBlankPos.x(), IPhase::PhaseCleared);
+        return std::make_shared<PhaseSimpleSlideEnding>(board->boardInfo(), pieces, sourceImg.pixmap, currentBlankPos, IPhase::PhaseCleared);
 
-    if (phaseType == IPhase::PhaseCleared)
+    if (phaseType == IPhase::PhaseCleared) {
+        getPiece(currentBlankPos) = finalPiece;
+        finalPiece.reset();
+
         return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);
+    }
 
     qDebug() << "no such phase type" << phaseType;
 

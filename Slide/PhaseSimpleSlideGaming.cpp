@@ -21,10 +21,11 @@
 
 namespace Slide {
 
-PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
+PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, const QPoint &defaultBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
     IPhase(parent),
     board(board),
-    blankPos(currentBlankPos),
+    currentBlankPos(currentBlankPos),
+    defaultBlankPos(defaultBlankPos),
     nextPhase(nextPhase),
     slideFrameCount(slideFrameCount),
     isGameCleared(false)
@@ -34,15 +35,15 @@ PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &curre
 
 void PhaseSimpleSlideGaming::click(const QPoint &clickedPiecePos)
 {
-    if (isGameCleared | (clickedPiecePos == blankPos))
+    if (isGameCleared | (clickedPiecePos == currentBlankPos))
         return;
 
-    if ((clickedPiecePos.x() != blankPos.x()) & (clickedPiecePos.y() != blankPos.y()))
+    if ((clickedPiecePos.x() != currentBlankPos.x()) & (clickedPiecePos.y() != currentBlankPos.y()))
         return;
 
-    board->slidePiece(blankPos, clickedPiecePos);
+    board->slidePiece(currentBlankPos, clickedPiecePos);
 
-    blankPos = clickedPiecePos;
+    currentBlankPos = clickedPiecePos;
 
     isGameCleared = board->isClearerd();
 }
@@ -74,7 +75,8 @@ bool PhaseSimpleSlideGaming::canLoad() const
 
 QString PhaseSimpleSlideGaming::information() const
 {
-    return QString("Blank Position [%1, %2]").arg(blankPos.x()).arg(blankPos.y());
+    return QString("Blank Position Default[%1, %2] : Current[%3, %4]").arg(defaultBlankPos.x() + 1).arg(defaultBlankPos.y() + 1)
+                                                                      .arg(currentBlankPos.x() + 1).arg(currentBlankPos.y() + 1);
 }
 
 } // Slide

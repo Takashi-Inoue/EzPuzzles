@@ -29,7 +29,7 @@ class PhaseSimpleSlideGaming : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
+    PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, const QPoint &defaultBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
     ~PhaseSimpleSlideGaming() = default;
 
     void click(const QPoint &clickedPiecePos) override;
@@ -41,7 +41,8 @@ public:
 
 protected:
     BoardPointer board;
-    QPoint &blankPos;
+    QPoint &currentBlankPos;
+    const QPoint defaultBlankPos;
     PhaseType nextPhase;
     int slideFrameCount;
     bool isGameCleared;

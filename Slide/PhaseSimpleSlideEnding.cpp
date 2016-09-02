@@ -17,23 +17,32 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSlideEnding.h"
-#include "AnimationObject/Effect/EffectRoundMoveFrame.h"
+#include "AnimationObject/Effect/CompositeEffect.h"
+#include "AnimationObject/Effect/EffectGraduallyImage.h"
 
 namespace Slide {
 
-PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QList<Fifteen::PuzzlePiecePointer> &pieces, Fifteen::PuzzlePiecePointer finalPiece, int currentBlankIndex, PhaseType nextPhase) :
+PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces,
+                                               QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase) :
     pieces(pieces),
     nextPhase(nextPhase),
-    frameMoveCount(120)
+    nowFrame(0)
 {
-    pieces[currentBlankIndex] = finalPiece;
-
     for (auto &piece : pieces) {
-        auto frame = std::make_shared<Effect::RoundMoveFrame>(2, Qt::transparent, Qt::transparent, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192),
-                                                              Qt::TopEdge, 0, Effect::RoundMoveFrame::RightHandTurn, frameMoveCount, false);
+        auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
 
-        piece->setEffect(frame);
+        compositeEffect->addEffect(piece->effect());
+
+        auto &rect = boardInfo->rectFromPiecePos(piece->pos().defaultPos());
+        compositeEffect->addEffect(std::make_shared<Effect::GraduallyImage>(graduallyFrames, graduallyFrames, sourcePixmap, rect));
+
+        piece->setEffect(compositeEffect);
     }
+
+    auto &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
+    auto &rect = boardInfo->rectFromPiecePos(blankPiece->pos().defaultPos());
+
+    blankPiece->setEffect(std::make_shared<Effect::GraduallyImage>(0, graduallyFrames, sourcePixmap, rect));
 }
 
 void PhaseSimpleSlideEnding::click(const QPoint &)
@@ -46,7 +55,7 @@ void PhaseSimpleSlideEnding::onTickFrame()
     for (auto &piece : pieces)
         piece->onTickFrame();
 
-    if (frameMoveCount-- <= 0)
+    if (++nowFrame > graduallyFrames * 2)
         emit toNextPhase(nextPhase);
 }
 

@@ -39,10 +39,14 @@ DialogSettingsMineSweeper::DialogSettingsMineSweeper(const SourceImage &sourceIm
 
     updateLabels();
     updateMineMax();
+    updateBlockPiece();
 
     connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateLabels()));
     connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateMineMax()));
     connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSubFrame()));
+    connect(ui->pieceSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateBlockPiece()));
+
+    ui->frameCellSize->installEventFilter(this);
 }
 
 DialogSettingsMineSweeper::~DialogSettingsMineSweeper()
@@ -83,6 +87,24 @@ void DialogSettingsMineSweeper::showEvent(QShowEvent *event)
     updateSubFrame();
 }
 
+bool DialogSettingsMineSweeper::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj != ui->frameCellSize || event->type() != QEvent::Paint)
+        return QDialog::eventFilter(obj, event);
+
+    if (blockPiece == nullptr)
+        return QDialog::eventFilter(obj, event);
+
+    QPointF tl((ui->frameCellSize->geometry().width()  - ui->pieceSizeSlider->value()) / 2.0,
+               (ui->frameCellSize->geometry().height() - ui->pieceSizeSlider->value()) / 2.0);
+
+    QPainter painter(ui->frameCellSize);
+
+    blockPiece->draw(painter, tl);
+
+    return QDialog::eventFilter(obj, event);
+}
+
 void DialogSettingsMineSweeper::updateLabels()
 {
     ui->labelPixels->setText(QString("%1 x %1 pixels").arg(ui->pieceSizeSlider->value()));
@@ -110,6 +132,15 @@ void DialogSettingsMineSweeper::updateSubFrame()
     subFrame = new SubFrame(frameRect);
 
     ui->imageWidget->replaceSubWidget(0, subFrame);
+}
+
+void DialogSettingsMineSweeper::updateBlockPiece()
+{
+    QSize size(ui->pieceSizeSlider->value(), ui->pieceSizeSlider->value());
+
+    blockPiece = std::make_unique<BlockPiece>(size);
+
+    ui->frameCellSize->repaint();
 }
 
 void DialogSettingsMineSweeper::on_pushButtonEasy_clicked()

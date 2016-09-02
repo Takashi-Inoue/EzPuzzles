@@ -20,6 +20,7 @@
 #define DIALOGSETTINGSMINESWEEPER_H
 
 #include "IDialogGameSettings.h"
+#include "BlockPiece.h"
 #include <QDialog>
 #include <QSize>
 #include <memory>
@@ -44,11 +45,13 @@ public:
 
 protected:
     void showEvent(QShowEvent *) override;
+    bool eventFilter(QObject *, QEvent *) override;
 
 private slots:
     void updateLabels();
     void updateMineMax();
     void updateSubFrame();
+    void updateBlockPiece();
 
     void on_pushButtonEasy_clicked();
     void on_pushButtonNormal_clicked();
@@ -63,6 +66,8 @@ private:
 
     ISubWidget *subFrame;
     const SourceImage &sourceImage;
+
+    std::unique_ptr<IPiece> blockPiece;
 };
 
 #endif // DIALOGSETTINGSMINESWEEPER_H

@@ -79,6 +79,8 @@ void GameCore::onTickFrame()
 void GameCore::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
     phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
+
+    emit informationUpdated();
 }
 
 void GameCore::draw(QPainter &dest)
