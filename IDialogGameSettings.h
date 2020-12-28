@@ -19,8 +19,9 @@
 #ifndef IDIALOGGAMESETTINGS_H
 #define IDIALOGGAMESETTINGS_H
 
+#include <QSharedPointer>
+
 class IGame;
-class QSize;
 
 class IDialogGameSettings
 {
@@ -28,7 +29,7 @@ public:
     IDialogGameSettings() = default;
     virtual ~IDialogGameSettings() = default;
 
-    virtual IGame *buildGame() const = 0;
+    virtual QSharedPointer<IGame> buildGame() const = 0;
 };
 
 #endif // IDIALOGGAMESETTINGS_H

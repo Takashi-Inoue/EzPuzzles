@@ -19,7 +19,7 @@
 #ifndef SAVEDATAMINESWEEPER_H
 #define SAVEDATAMINESWEEPER_H
 
-#include "ISaveData.h"
+#include "AbstractSaveData.h"
 #include "SourceImage.h"
 #include "IPhase.h"
 
@@ -29,44 +29,39 @@
 
 namespace MineSweeper {
 
-class SaveDataMineSweeper : public ISaveData
+class SaveDataMineSweeper : public AbstractSaveData
 {
 public:
-    SaveDataMineSweeper(const QString &fileName);
-    ~SaveDataMineSweeper() = default;
-
-    QIcon gameTypeIcon() const override;
-    bool isValid() const override;
-
-    bool loadInfo() override;
+    SaveDataMineSweeper(QStringView fileName, QObject *parent = nullptr);
+    SaveDataMineSweeper(QStringView fileName, const QSize &boardXYCount, int mineCount
+                      , int openedCount, int missedCount, bool isAutoLock
+                      , SourceImage sourceImage, IPhase::PhaseType currentPhaseType
+                      , const QList<int> &pieces, QObject *parent = nullptr);
 
     EzPuzzles::GameType gameType() const override;
-    QString gameTypeName() const override;
-    QString imageFilePath() const override;
+    QIcon gameTypeIcon() const override;
+
+    QSharedPointer<IGame> loadGame() override;
+
     QStringList informations() const override;
 
-    IGame *loadGame() override;
+    //--
+    int mineCount() const;
 
 private:
     friend class GameDataMineSweeper;
     friend class MineField;
 
-    bool save() const;
-    bool loadInfo(QDataStream &stream);
-    bool load();
+    void readInfo(QDataStream &stream) override;
+    void readOtherData(QDataStream &) override;
+    void writeInfo(QDataStream &) const override;
+    void writeOtherData(QDataStream &) const override;
 
-    QString fileName;
-    bool isSavedataValid;
-
-    QString gameName;
-    SourceImage sourceImg;
-    QSize xyCount;
-    bool isAutoLock;
-    int mineCount;
-    int openedCount;
-    int missedCount;
-    IPhase::PhaseType currentPhaseType;
-    QList<int> pieces;
+    int m_mineCount;
+    int m_openedCount;
+    int m_missedCount;
+    bool m_isAutoLock;
+    QList<int> m_pieces;
 };
 
 } // MineSweeper

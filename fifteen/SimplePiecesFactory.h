@@ -39,7 +39,7 @@ public:
 private:
     PuzzlePiecePointer createPiece(const QPoint &defaultPos) const;
 
-    std::shared_ptr<BoardInformation> boardInfo;
+    BoardInfoPointer boardInfo;
     QPixmap sourcePixmap;
 };
 

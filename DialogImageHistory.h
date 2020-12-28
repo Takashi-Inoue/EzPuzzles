@@ -37,8 +37,8 @@ class DialogImageHistory : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogImageHistory(QWidget *parent = 0);
-    ~DialogImageHistory();
+    explicit DialogImageHistory(QWidget *parent = nullptr);
+    ~DialogImageHistory() override;
 
     QString selectedImagePath() const;
 

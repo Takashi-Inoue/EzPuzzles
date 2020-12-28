@@ -19,25 +19,24 @@
 #ifndef UNKNOWNSAVEDATA_H
 #define UNKNOWNSAVEDATA_H
 
-#include "ISaveData.h"
+#include "AbstractSaveData.h"
 
-class UnknownSaveData : public ISaveData
+class UnknownSaveData : public AbstractSaveData
 {
 public:
-    UnknownSaveData() = default;
-    ~UnknownSaveData() = default;
+    using AbstractSaveData::AbstractSaveData;
 
-    QIcon gameTypeIcon() const override;
-    bool isValid() const override;
-
-    bool loadInfo() override;
-
-    EzPuzzles::GameType gameType() const override;
     QString gameTypeName() const override;
-    QString imageFilePath() const override;
+    EzPuzzles::GameType gameType() const override;
+    QIcon gameTypeIcon() const override;
+
+    QSharedPointer<IGame> loadGame() override;
+
     QStringList informations() const override;
 
-    IGame *loadGame() override;
+    bool readInfo() override;
+    bool read() override;
+    bool write() const override;
 };
 
 #endif // UNKNOWNSAVEDATA_H

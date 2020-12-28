@@ -21,67 +21,51 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPixmap>
-#include <memory>
+#include <QSharedPointer>
 
-#include "GarbageCollector.h"
-#include "FrameTimer.h"
-#include "ToolIconWindow.h"
+#include "ThreadFrameTimer.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-class FormFinalImage;
-class GameWidget;
 class IGame;
 class SourceImage;
+class ThreadFrameTimer;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
 
 protected:
-    void closeEvent(QCloseEvent *) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
-    void on_action_Open_triggered();
-    void on_actionNew_Game_Current_image_triggered();
-    void on_actionSave_Load_triggered();
-    void on_action_Restart_triggered();
-    void on_action_Final_image_triggered(bool checked);
-    void on_actionE_xit_triggered();
+    void on_actionNewGame_triggered();
+    void on_actionFromCurrentImage_triggered();
+    void on_actionRestart_triggered();
+    void on_actionSaveLoad_triggered();
 
     void startGameWithNewImage();
     void startGameFromImageHistory();
     void saveGame();
     void loadGame();
-    void onTickFrameTimer(QMutex *mutex, QWaitCondition *wait);
+    void onTickFrameTimer(QReadWriteLock *lock, QWaitCondition *wait);
     void updateTitle(QString);
 
 private:
-    void initToolBoxies();
     void updateImageHistory(const QString &lastImagePath) const;
-    void createFinalImageWidget(IGame *game);
-    IGame *createNewGame(const SourceImage &sourceImage);
-    void startNewGame(IGame *newGame);
+    QSharedPointer<IGame> createNewGame(const SourceImage &sourceImage);
+    void startNewGame(QSharedPointer<IGame> newGame);
 
     Ui::MainWindow *ui;
 
-    FrameTimer frameTimer;
-
-    ToolIconWindow newGameToolBox;
-    ToolIconWindow diskToolBox;
-
-    IGame *game;
-    std::shared_ptr<FormFinalImage> finalImageWidget;
-
-    GameWidget *gameWidget;
-    GarbageCollector garbageCollector;
+    ThreadFrameTimer *m_threadFrameTimer;
+    QSharedPointer<IGame> m_game;
 };
 
 #endif // MAINWINDOW_H

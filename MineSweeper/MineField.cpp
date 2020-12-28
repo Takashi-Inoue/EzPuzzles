@@ -23,9 +23,9 @@ namespace MineSweeper {
 
 MineField::MineField(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, int mineCount) :
     pieces(pieces),
-    mineCount(mineCount),
-    openedCount(0),
-    missedCount(0),
+    m_mineCount(mineCount),
+    m_openedCount(0),
+    m_missedCount(0),
     mineLocker(mineLocker)
 {
 }
@@ -42,10 +42,10 @@ void MineField::open(const QPoint &pos)
     piece->open();
 
     if (piece->isMine()) {
-        ++missedCount;
+        ++m_missedCount;
         explodedPos << pos;
     } else {
-        ++openedCount;
+        ++m_openedCount;
     }
 
     if (!piece->isNearMine())
@@ -57,14 +57,14 @@ void MineField::open(const QPoint &pos)
 
 void MineField::save(SaveDataMineSweeper &savedata) const
 {
-    savedata.openedCount = openedCount;
-    savedata.missedCount = missedCount;
+    savedata.m_openedCount = m_openedCount;
+    savedata.m_missedCount = m_missedCount;
 }
 
 void MineField::load(const SaveDataMineSweeper &savedata)
 {
-    openedCount = savedata.openedCount;
-    missedCount = savedata.missedCount;
+    m_openedCount = savedata.m_openedCount;
+    m_missedCount = savedata.m_missedCount;
 
     explodedPos.clear();
 
@@ -80,36 +80,46 @@ void MineField::load(const SaveDataMineSweeper &savedata)
     }
 }
 
+int MineField::openedCount() const
+{
+    return m_openedCount;
+}
+
+int MineField::missedCount() const
+{
+    return m_missedCount;
+}
+
 double MineField::openedRate() const
 {
     double safeCount = safePiecesCount();
 
-    return openedCount / safeCount;
+    return m_openedCount / safeCount;
 }
 
 double MineField::mineRatio() const
 {
-    return static_cast<double>(mineCount) / totalPieceCount();
+    return static_cast<double>(m_mineCount) / totalPieceCount();
 }
 
 bool MineField::isAllOpened() const
 {
-    return safePiecesCount() == openedCount;
+    return safePiecesCount() == m_openedCount;
 }
 
 bool MineField::isNoMissed() const
 {
-    return missedCount == 0;
+    return m_missedCount == 0;
 }
 
 QString MineField::information() const
 {
     double safeCount = safePiecesCount();
 
-    return QString("%1/%2 %3% opend, %4 missed").arg(openedCount)
+    return QString("%1/%2 %3% opend, %4 missed").arg(m_openedCount)
                                                 .arg(safeCount)
                                                 .arg(openedRate() * 100, 0, 'f', 2)
-                                                .arg(missedCount);
+                                                .arg(m_missedCount);
 }
 
 const QList<QPoint> &MineField::explodedPositions() const
@@ -138,7 +148,7 @@ void MineField::openChaining(const QPoint &pos)
 
                 piece->open();
 
-                ++openedCount;
+                ++m_openedCount;
 
                 if (!piece->isNearMine())
                     mustCheck << checkPos;
@@ -156,7 +166,7 @@ int MineField::safePiecesCount() const
 {
     Q_ASSERT(!pieces.isEmpty());
 
-    return totalPieceCount() - mineCount;
+    return totalPieceCount() - m_mineCount;
 }
 
 } // MineSweeper

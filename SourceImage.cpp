@@ -21,54 +21,66 @@
 #include <QFileDialog>
 #include <QFileInfo>
 
-SourceImage::SourceImage(const QString &imagePath) :
-    fullPath(imagePath),
-    pixmap(QPixmap::fromImage(QImage(imagePath)))
+SourceImage::SourceImage(QStringView imagePath)
+    : SourceImage(imagePath, QPixmap::fromImage(QImage(imagePath.toString())))
 {
 }
 
-SourceImage::SourceImage(const QString &imagePath, const QPixmap &pixmap) :
-    fullPath(imagePath),
-    pixmap(pixmap)
+SourceImage::SourceImage(QStringView imagePath, const QPixmap &pixmap)
+    : m_fullPath(imagePath.toString())
+    , m_pixmap(pixmap)
 {
-}
-
-bool SourceImage::isNull() const
-{
-    return pixmap.isNull();
 }
 
 QString SourceImage::baseName() const
 {
-    return QFileInfo(fullPath).baseName();
+    return QFileInfo(m_fullPath).baseName();
+}
+
+QString SourceImage::fullPath() const
+{
+    return m_fullPath;
+}
+
+QPixmap SourceImage::pixmap() const
+{
+    return m_pixmap;
+}
+
+bool SourceImage::isNull() const
+{
+    return m_pixmap.isNull();
 }
 
 QSize SourceImage::size() const
 {
-    return pixmap.size();
+    return m_pixmap.size();
 }
 
 QRect SourceImage::rect() const
 {
-    return pixmap.rect();
+    return m_pixmap.rect();
 }
 
 int SourceImage::width() const
 {
-    return pixmap.width();
+    return m_pixmap.width();
 }
 
 int SourceImage::height() const
 {
-    return pixmap.height();
+    return m_pixmap.height();
 }
 
 bool SourceImage::saveImage() const
 {
-    QString fileName = QFileDialog::getSaveFileName(nullptr, QObject::tr("Save final image as..."), "untitled.png", "Image (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(nullptr
+                                                  , QStringLiteral("Save final image as...")
+                                                  , QStringLiteral("untitled.png")
+                                                  , QStringLiteral("Image (*.png)"));
 
     if (fileName.isEmpty())
         return true;
 
-    return pixmap.save(fileName, "PNG");
+    return m_pixmap.save(fileName, "PNG");
 }

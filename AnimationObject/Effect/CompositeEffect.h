@@ -29,7 +29,6 @@ class CompositeEffect : public AbstractEffect
 {
 public:
     CompositeEffect();
-    ~CompositeEffect() = default;
 
     void addEffect(EffectPointer effect);
 

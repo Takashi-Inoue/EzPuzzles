@@ -32,7 +32,7 @@ public:
     virtual void draw(QPainter &painter);
 
 protected:
-    QPixmap pixmap;
+    QPixmap m_pixmap;
 };
 
 typedef std::shared_ptr<FinalImage> FinalImagePointer;

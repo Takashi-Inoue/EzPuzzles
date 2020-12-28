@@ -26,16 +26,15 @@ class IGame;
 class GameWidget : public ImageWidget
 {
 public:
-    explicit GameWidget(QWidget *parent = 0);
-    ~GameWidget() = default;
+    using ImageWidget::ImageWidget;
 
-    void setGame(IGame *game);
+    void setGame(QSharedPointer<IGame> game);
 
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *) override;
 
-    IGame *game;
+    QSharedPointer<IGame> m_game;
 };
 
 #endif // GAMEWIDGET_H

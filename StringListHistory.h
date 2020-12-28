@@ -36,7 +36,7 @@ public:
     const QStringList &stringList() const;
 
 private:
-    QStringList strings;
+    QStringList m_strings;
 };
 
 #endif // STRINGLISTHISTORY_H

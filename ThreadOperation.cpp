@@ -23,10 +23,10 @@
 #include <QWriteLocker>
 #include <QDebug>
 
-ThreadOperation::ThreadOperation(QObject *parent) :
-    QObject(parent),
-    stopped(false),
-    suspended(false)
+ThreadOperation::ThreadOperation(QObject *parent)
+    : QObject(parent)
+    , suspended(false)
+    , stopped(false)
 {
     connect(this, &ThreadOperation::startOperation, this, &ThreadOperation::exec);
 }

@@ -17,20 +17,11 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "BrokenSaveData.h"
+#include "SourceImage.h"
 
-QIcon BrokenSaveData::gameTypeIcon() const
+QString BrokenSaveData::gameTypeName() const
 {
-    return QIcon(":/ico/x");
-}
-
-bool BrokenSaveData::isValid() const
-{
-    return false;
-}
-
-bool BrokenSaveData::loadInfo()
-{
-    return false;
+    return QStringLiteral("Broken data");
 }
 
 EzPuzzles::GameType BrokenSaveData::gameType() const
@@ -38,24 +29,35 @@ EzPuzzles::GameType BrokenSaveData::gameType() const
     return EzPuzzles::UnkownGame;
 }
 
-QString BrokenSaveData::gameTypeName() const
+QIcon BrokenSaveData::gameTypeIcon() const
 {
-    return "Broken data";
+    static QIcon icon(QStringLiteral(":/icons/x"));
+    return icon;
 }
 
-QString BrokenSaveData::imageFilePath() const
+QSharedPointer<IGame> BrokenSaveData::loadGame()
 {
-    return "";
+    return nullptr;
 }
 
 QStringList BrokenSaveData::informations() const
 {
     return {
-        "This data is broken."
+        QStringLiteral("This data is broken.")
     };
 }
 
-IGame *BrokenSaveData::loadGame()
+bool BrokenSaveData::readInfo()
 {
-    return nullptr;
+    return false;
+}
+
+bool BrokenSaveData::read()
+{
+    return false;
+}
+
+bool BrokenSaveData::write() const
+{
+    return false;
 }

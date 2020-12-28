@@ -19,8 +19,7 @@
 #include "DialogSettingsFifteen.h"
 #include "ui_DialogSettingsFifteen.h"
 
-#include "SelectCellGrid.h"
-#include "SourceImage.h"
+#include "CellSelectionGrid.h"
 
 #include "GameCore.h"
 #include "Slide/GameDataSimpleSlide.h"
@@ -30,11 +29,12 @@
 
 #include <QDebug>
 
-DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DialogSettingsFifteen),
-    grid(new SelectCellGrid(2, 2)),
-    sourceImage(sourceImage)
+DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton
+                                           , QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::DialogSettingsFifteen)
+    , m_grid(new CellSelectionGrid(2, 2))
+    , m_sourceImage(sourceImage)
 {
     ui->setupUi(this);
 
@@ -42,26 +42,21 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
 
     ui->buttonBox->setVisible(showOkButton);
 
-    ui->comboBoxGameType->setIconSize(QSize(32, 32));
-    ui->comboBoxGameType->addItem(QIcon(":/ico/gameSimpleSlide"), "Slide Mode", EzPuzzles::SimpleSlide);
-    ui->comboBoxGameType->addItem(QIcon(":/ico/gameSimpleSwap"),  "Swap Mode",  EzPuzzles::SimpleSwap);
+    ui->comboBoxGameType->setItemData(0, EzPuzzles::SimpleSwap);
+    ui->comboBoxGameType->setItemData(1, EzPuzzles::SimpleSlide);
 
-    ui->imageWidget->setPixmap(sourceImage.pixmap);
-    ui->imageWidget->addSubWidget(grid);
+    ui->imageWidget->setPixmap(sourceImage.pixmap());
+    ui->imageWidget->addSubWidget(m_grid);
 
     ui->spinBoxSplitX->setMaximum(sourceImage.width()  / 50);
     ui->spinBoxSplitY->setMaximum(sourceImage.height() / 50);
     ui->hSliderSplitX->setMaximum(ui->spinBoxSplitX->maximum());
     ui->hSliderSplitY->setMaximum(ui->spinBoxSplitY->maximum());
 
-    connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), ui->spinBoxSplitX, SLOT(setValue(int)));
-    connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), ui->spinBoxSplitY, SLOT(setValue(int)));
-    connect(ui->spinBoxSplitX, SIGNAL(valueChanged(int)), ui->hSliderSplitX, SLOT(setValue(int)));
-    connect(ui->spinBoxSplitY, SIGNAL(valueChanged(int)), ui->hSliderSplitY, SLOT(setValue(int)));
-    connect(ui->hSliderSplitX, SIGNAL(valueChanged(int)), this, SLOT(udpateGrid()));
-    connect(ui->hSliderSplitY, SIGNAL(valueChanged(int)), this, SLOT(udpateGrid()));
-    connect(ui->radioButtonBlankRandom,    SIGNAL(clicked()), this, SLOT(onChangeBlankSetting()));
-    connect(ui->radioButtonBlankSpecified, SIGNAL(clicked()), this, SLOT(onChangeBlankSetting()));
+    connect(ui->radioButtonBlankRandom, &QRadioButton::toggled
+          , m_grid, &CellSelectionGrid::setRandomSelection);
+
+    m_grid->setRandomSelection(ui->radioButtonBlankRandom->isChecked());
 }
 
 DialogSettingsFifteen::~DialogSettingsFifteen()
@@ -69,7 +64,7 @@ DialogSettingsFifteen::~DialogSettingsFifteen()
     delete ui;
 }
 
-IGame *DialogSettingsFifteen::buildGame() const
+QSharedPointer<IGame> DialogSettingsFifteen::buildGame() const
 {
     if (ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSlide)
         return buildSimpleSlide();
@@ -84,41 +79,45 @@ IGame *DialogSettingsFifteen::buildGame() const
 
 void DialogSettingsFifteen::udpateGrid()
 {
-    grid->setCellCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
-}
-
-void DialogSettingsFifteen::onChangeBlankSetting()
-{
-    grid->setRandomSelect(ui->radioButtonBlankRandom->isChecked());
+    m_grid->setCellCount(ushort(ui->hSliderSplitX->value()), ushort(ui->hSliderSplitY->value()));
 }
 
 void DialogSettingsFifteen::on_comboBoxGameType_currentIndexChanged(int)
 {
-    ui->groupBoxSpecifiedPosition->setTitle(
-        ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSlide ? "Blank position" : "Swap target position"
-    );
+    QMap<EzPuzzles::GameType, QString> hashText = {
+        {EzPuzzles::SimpleSlide, QStringLiteral("Blank position")},
+        {EzPuzzles::SimpleSwap, QStringLiteral("Swap target position")},
+    };
+
+    auto gameType = EzPuzzles::GameType(ui->comboBoxGameType->currentData().toInt());
+
+    ui->groupBoxSpecifiedPosition->setTitle(hashText[gameType]);
 }
 
-IGame *DialogSettingsFifteen::buildSimpleSlide() const
+QSharedPointer<IGame> DialogSettingsFifteen::buildSimpleSlide() const
 {
     QSize xyCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
 
     UniquePosition defaultBlank;
 
     ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
-                                            : defaultBlank.select(grid->selectedCellPos());
+                                            : defaultBlank.select(m_grid->selectedCellPos());
 
-    return new GameCore(std::make_shared<Slide::GameDataSimpleSlide>(sourceImage, defaultBlank, xyCount));
+    auto gameData = QSharedPointer<Slide::GameDataSimpleSlide>::create(m_sourceImage, defaultBlank, xyCount);
+
+    return QSharedPointer<GameCore>::create(gameData);
 }
 
-IGame *DialogSettingsFifteen::buildSimpleSwap() const
+QSharedPointer<IGame> DialogSettingsFifteen::buildSimpleSwap() const
 {
     QSize xyCount(ui->hSliderSplitX->value(), ui->hSliderSplitY->value());
 
     UniquePosition swapTarget;
 
     ui->radioButtonBlankRandom->isChecked() ? swapTarget.randomSelect(xyCount)
-                                            : swapTarget.select(grid->selectedCellPos());
+                                            : swapTarget.select(m_grid->selectedCellPos());
 
-    return new GameCore(std::make_shared<Swap::GameDataSimpleSwap>(sourceImage, swapTarget, xyCount));
+    auto gameData = QSharedPointer<Swap::GameDataSimpleSwap>::create(m_sourceImage, swapTarget, xyCount);
+
+    return QSharedPointer<GameCore>::create(gameData);
 }

@@ -28,7 +28,7 @@ AbstractTransform::AbstractTransform(int totalFrameCount) :
 
 QRectF AbstractTransform::mapInRect(const QRectF &baseRect)
 {
-    auto &trans = transform();
+    const QTransform &trans = transform();
 
     if (trans.isIdentity())
         return baseRect;

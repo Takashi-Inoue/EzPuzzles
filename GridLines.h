@@ -25,8 +25,10 @@
 class GridLines
 {
 public:
-    GridLines(const QRectF &rect, int vLineCount, int hLineCount);
-    GridLines(int vLineCount, int hLineCount);
+    GridLines(const QRectF &rect, ushort vLineCount, ushort hLineCount);
+    GridLines(ushort vLineCount, ushort hLineCount)
+        : GridLines(QRectF(), vLineCount, hLineCount)
+    {}
     virtual ~GridLines() = default;
 
     void setRect(const QRectF &rect);
@@ -38,12 +40,12 @@ public:
 protected:
     void createLines();
 
-    QRectF rect;
-    int vLineCount;
-    int hLineCount;
+    QRectF m_rect;
+    ushort m_vCellCount;
+    ushort m_hCellCount;
 
-    QList<double> vLines;
-    QList<double> hLines;
+    QList<double> m_vLines;
+    QList<double> m_hLines;
 };
 
 #endif // GRIDLINES_H

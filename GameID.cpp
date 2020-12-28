@@ -21,11 +21,11 @@
 #include <QDateTime>
 
 GameID::GameID() :
-    gameID(QString::number(QDateTime::currentMSecsSinceEpoch(), 16))
+    m_gameID(QString::number(QDateTime::currentMSecsSinceEpoch(), 16))
 {
 }
 
-GameID GameID::fromQString(const QString &string)
+GameID GameID::fromString(QStringView string)
 {
     return GameID(string);
 }
@@ -35,16 +35,16 @@ void GameID::swap(GameID &other)
     if (this == &other)
         return;
 
-    gameID.swap(other.gameID);
+    m_gameID.swap(other.m_gameID);
 }
 
-const QString &GameID::toString() const
+QString GameID::toString() const
 {
-    return gameID;
+    return m_gameID;
 }
 
 // private constructor
-GameID::GameID(const QString &string) :
-    gameID(string)
+GameID::GameID(QStringView string) :
+    m_gameID(string.toString())
 {
 }

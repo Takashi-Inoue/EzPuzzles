@@ -24,12 +24,10 @@
 #include <QPoint>
 #include <QSize>
 
-#include <random>
-
 class UniquePosition
 {
 public:
-    UniquePosition();
+    UniquePosition() = default;
     virtual ~UniquePosition() = default;
 
     void randomSelect(const QSize &xyCount);
@@ -43,11 +41,8 @@ public:
     QString toString() const;
 
 protected:
-    QSize xyCount;
-    bool isRandomSelect;
-    QPoint selectedPos;
-
-    std::mt19937 mt;
+    bool m_isRandomSelect = false;
+    QPoint m_selectedPos;
 };
 
 #endif // UNIQUEPOSITION_H

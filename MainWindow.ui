@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>EzPuzzles</string>
   </property>
+  <property name="iconSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="spacing">
@@ -44,7 +50,7 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
+      <widget class="GameWidget" name="gameWidget">
        <property name="geometry">
         <rect>
          <x>111</x>
@@ -59,13 +65,19 @@
    </layout>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="allowedAreas">
     <set>Qt::AllDockWidgetAreas</set>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents"/>
+   <widget class="FormFinalImage" name="widgetFinalImage"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -89,73 +101,76 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_Open"/>
-   <addaction name="actionNew_Game_Current_image"/>
-   <addaction name="actionSave_Load"/>
+   <addaction name="actionNewGame"/>
+   <addaction name="actionFromCurrentImage"/>
+   <addaction name="actionSaveLoad"/>
    <addaction name="separator"/>
-   <addaction name="action_Restart"/>
-   <addaction name="action_Final_image"/>
+   <addaction name="actionRestart"/>
+   <addaction name="actionFinalImage"/>
    <addaction name="separator"/>
-   <addaction name="actionE_xit"/>
+   <addaction name="actionExit"/>
   </widget>
-  <action name="action_Open">
+  <action name="actionNewGame">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/openImage</normaloff>:/ico/openImage</iconset>
+     <normaloff>:/icons/newGame</normaloff>:/icons/newGame</iconset>
    </property>
    <property name="text">
-    <string>New Game (&amp;open new image)</string>
+    <string>New game</string>
    </property>
   </action>
-  <action name="actionE_xit">
+  <action name="actionExit">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/exit</normaloff>:/ico/exit</iconset>
+     <normaloff>:/icons/exit</normaloff>:/icons/exit</iconset>
    </property>
    <property name="text">
-    <string>E&amp;xit</string>
+    <string>Exit</string>
    </property>
   </action>
-  <action name="action_Final_image">
+  <action name="actionFinalImage">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/icons/window-new-2.png</normaloff>:/ico/icons/window-new-2.png</iconset>
+     <normaloff>:/icons/success</normaloff>:/icons/success</iconset>
    </property>
    <property name="text">
-    <string>&amp;Final image</string>
+    <string>Final image</string>
    </property>
   </action>
-  <action name="actionNew_Game_Current_image">
+  <action name="actionFromCurrentImage">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/icons/insert-image-2.png</normaloff>:/ico/icons/insert-image-2.png</iconset>
+     <normaloff>:/icons/fromCurrent</normaloff>:/icons/fromCurrent</iconset>
    </property>
    <property name="text">
     <string>New Game (&amp;current image)</string>
    </property>
   </action>
-  <action name="action_Restart">
+  <action name="actionRestart">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/icons/view-refresh-5.png</normaloff>:/ico/icons/view-refresh-5.png</iconset>
+     <normaloff>:/icons/restart</normaloff>:/icons/restart</iconset>
    </property>
    <property name="text">
-    <string>&amp;Restart</string>
+    <string>Restart</string>
    </property>
   </action>
-  <action name="actionSave_Load">
+  <action name="actionSaveLoad">
    <property name="icon">
     <iconset resource="resource.qrc">
-     <normaloff>:/ico/saveload</normaloff>:/ico/saveload</iconset>
+     <normaloff>:/icons/saveLoad</normaloff>:/icons/saveLoad</iconset>
    </property>
    <property name="text">
     <string>Save/Load</string>
@@ -164,10 +179,188 @@
     <string>Save/Load game</string>
    </property>
   </action>
+  <action name="actionFromHistory">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/history</normaloff>:/icons/history</iconset>
+   </property>
+   <property name="text">
+    <string>Open an Image from history</string>
+   </property>
+   <property name="toolTip">
+    <string>Open an Image from history</string>
+   </property>
+  </action>
+  <action name="actionOpenImage">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/plus</normaloff>:/icons/plus</iconset>
+   </property>
+   <property name="text">
+    <string>Open new image</string>
+   </property>
+   <property name="toolTip">
+    <string>Open new image</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/save</normaloff>:/icons/save</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/icons/load</normaloff>:/icons/load</iconset>
+   </property>
+   <property name="text">
+    <string>Load</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>FormFinalImage</class>
+   <extends>QWidget</extends>
+   <header>FormFinalImage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GameWidget</class>
+   <extends>QWidget</extends>
+   <header>GameWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resource.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionFinalImage</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>dockWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>39</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dockWidget</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionFinalImage</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>39</x>
+     <y>300</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpenImage</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>startGameWithNewImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionFromHistory</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>startGameFromImageHistory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLoad</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadGame()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveGame()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>startGameWithNewImage()</slot>
+  <slot>startGameFromImageHistory()</slot>
+  <slot>saveGame()</slot>
+  <slot>loadGame()</slot>
+ </slots>
 </ui>

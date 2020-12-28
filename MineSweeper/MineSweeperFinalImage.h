@@ -23,31 +23,27 @@
 #include "BoardInformation.h"
 #include "MineField.h"
 
-#include <random>
-
 namespace MineSweeper {
 
 class MineSweeperFinalImage : public FinalImage
 {
 public:
     MineSweeperFinalImage(QPixmap pixmap, MineFieldPointer mineField, BoardInfoPointer boardInfo);
-    ~MineSweeperFinalImage() = default;
 
     void draw(QPainter &painter) override;
 
 private:
     QList<QPointF> explodedCenters() const;
     int piecePixelSize() const;
-    QMatrix createMatrix();
+    QTransform createTransform();
 
-    MineFieldPointer mineField;
-    BoardInfoPointer boardInfo;
-    QPixmap holeImg;
+    MineFieldPointer m_mineField;
+    BoardInfoPointer m_boardInfo;
+    QPixmap m_holeImg;
 
-    typedef QPair<QPoint, QMatrix> MatrixPair;
+    typedef QPair<QPoint, QTransform> TransformPair;
 
-    QList<MatrixPair> matrixPairs;
-    std::mt19937 mt;
+    QList<TransformPair> m_matrixPairs;
 };
 
 } // MineSweeper

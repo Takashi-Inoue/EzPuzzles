@@ -28,7 +28,7 @@ class IPhase : public QObject
 {
     Q_OBJECT
 public:
-    enum PhaseType {
+    enum PhaseType : qint8 {
         PhaseReady,
         PhasePreGame,
         PhaseGaming,
@@ -36,13 +36,9 @@ public:
         PhaseCleared,
     };
 
-    explicit IPhase(QObject *parent = nullptr) :
-        QObject(parent)
-    {
-        qRegisterMetaType<IPhase::PhaseType>("IPhase::PhaseType");
-    }
+    Q_ENUM(PhaseType)
 
-    virtual ~IPhase() = default;
+    explicit IPhase(QObject *parent = nullptr) : QObject(parent) {}
 
     virtual void click(const QPoint &) = 0;
     virtual void onTickFrame() = 0;

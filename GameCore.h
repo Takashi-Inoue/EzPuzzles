@@ -32,11 +32,10 @@ class GameCore : public IGame
 public:
     GameCore(GameDataPointer gameData);
     GameCore(GameDataPointer gameData, GameID id);
-    ~GameCore() = default;
 
     GameID gameID() const override;
 
-    IGame *cloneAsNewGame() const override;
+    QSharedPointer<IGame> cloneAsNewGame() const override;
     void save(const QString &saveDirPath, const QSize &screenshotSize) const override;
 
     void onTickFrame() override;

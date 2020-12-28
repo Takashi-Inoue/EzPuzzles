@@ -23,35 +23,32 @@
 #include <QMouseEvent>
 #include <QDebug>
 
-GameWidget::GameWidget(QWidget *parent) :
-    ImageWidget(parent),
-    game(nullptr)
+void GameWidget::setGame(QSharedPointer<IGame> game)
 {
-}
+    if (m_game == game)
+        return;
 
-void GameWidget::setGame(IGame *game)
-{
-    if (this->game != nullptr)
-        this->game->disconnect();
+    if (m_game != nullptr)
+        m_game->disconnect();
 
-    this->game = game;
+    m_game = game;
 }
 
 void GameWidget::paintEvent(QPaintEvent *event)
 {
     ImageWidget::paintEvent(event);
 
-    if (game == nullptr)
+    if (m_game == nullptr)
         return;
 
     QPainter painter(this);
 
-    game->draw(painter);
+    m_game->draw(painter);
 }
 
 void GameWidget::mousePressEvent(QMouseEvent *event)
 {
     ImageWidget::mousePressEvent(event);
 
-    game->click(size(), event->pos());
+    m_game->click(size(), event->pos());
 }

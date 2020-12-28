@@ -96,12 +96,12 @@ void RoundMoveFrame::draw(QPainter &painter, const QRectF &rect)
     if (lines.last() != lines.first())
         lines << lines.first();
 
-    for (int i = 0, lim = lines.size() - 1; i < lim; ++i) {
+    for (qsizetype i = 0, lim = lines.size() - 1; i < lim; ++i) {
         const auto &line1 = lines.at(i);
         const auto &line2 = lines.at(i + 1);
 
-        const QColor &outerColor = (divIndex == 0) | (i < divIndex) ? outerColor1 : outerColor2;
-        const QColor &innerColor = (divIndex == 0) | (i < divIndex) ? innerColor1 : innerColor2;
+        const QColor &outerColor = ((divIndex == 0) | (i < divIndex)) ? outerColor1 : outerColor2;
+        const QColor &innerColor = ((divIndex == 0) | (i < divIndex)) ? innerColor1 : innerColor2;
 
         drawPolygon(painter, rect, EdgeSquare(line1, line2), outerColor, innerColor);
     }

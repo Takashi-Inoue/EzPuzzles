@@ -18,14 +18,16 @@
  */
 #include "MineSweeperFinalImage.h"
 
+#include <QRandomGenerator>
+
 namespace MineSweeper {
 
-MineSweeperFinalImage::MineSweeperFinalImage(QPixmap pixmap, MineFieldPointer mineField, BoardInfoPointer boardInfo) :
-    FinalImage(pixmap),
-    mineField(mineField),
-    boardInfo(boardInfo),
-    holeImg(":/img/hole"),
-    mt(std::random_device()())
+MineSweeperFinalImage::MineSweeperFinalImage(QPixmap pixmap, MineFieldPointer mineField
+                                           , BoardInfoPointer boardInfo)
+    : FinalImage(pixmap)
+    , m_mineField(mineField)
+    , m_boardInfo(boardInfo)
+    , m_holeImg(QStringLiteral(":/img/hole"))
 {
     Q_CHECK_PTR(mineField);
     Q_CHECK_PTR(boardInfo);
@@ -35,27 +37,32 @@ void MineSweeperFinalImage::draw(QPainter &painter)
 {
     painter.save();
 
-    painter.setOpacity(mineField->openedRate());
+    painter.setOpacity(m_mineField->openedRate());
 
-    QSize destSize = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
-    QPoint tl((painter.viewport().width() - destSize.width()) / 2, (painter.viewport().height() - destSize.height()) / 2);
+    QSize destSize = m_pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
+    QPoint tl((painter.viewport().width() - destSize.width()) / 2
+            , (painter.viewport().height() - destSize.height()) / 2);
 
-    painter.drawPixmap(QRect(tl, destSize), pixmap, pixmap.rect());
+    painter.drawPixmap(QRect(tl, destSize), m_pixmap, m_pixmap.rect());
     painter.setClipRect(QRect(tl, destSize));
 
     painter.setOpacity(1);
 
-    double scale = destSize.width() / static_cast<double>(pixmap.width());
+    double scale = destSize.width() / static_cast<double>(m_pixmap.width());
 
     for (const auto &center : explodedCenters()) {
-        auto itr = std::find_if(matrixPairs.begin(), matrixPairs.end(), [&](const MatrixPair matrixPair) {
+        auto itr = std::find_if(m_matrixPairs.begin(), m_matrixPairs.end()
+                              , [&](const TransformPair matrixPair)
+        {
             return matrixPair.first == center.toPoint();
         });
 
-        if (itr == matrixPairs.end())
-            itr = matrixPairs.insert(matrixPairs.end(), MatrixPair(center.toPoint(), createMatrix()));
+        if (itr == m_matrixPairs.end()) {
+            itr = m_matrixPairs.insert(m_matrixPairs.end()
+                                     , TransformPair(center.toPoint(), createTransform()));
+        }
 
-        QPixmap pixmap = holeImg.transformed(itr->second);
+        QPixmap pixmap = m_holeImg.transformed(itr->second);
 
         QSizeF holeImgDestSize = pixmap.size() * scale;
 
@@ -74,8 +81,8 @@ QList<QPointF> MineSweeperFinalImage::explodedCenters() const
 {
     QList<QPointF> centers;
 
-    for (const auto &piecePos : mineField->explodedPositions()) {
-        const auto &rect = boardInfo->rectFromPiecePos(piecePos - QPoint(1, 1));
+    for (const auto &piecePos : m_mineField->explodedPositions()) {
+        const auto &rect = m_boardInfo->rectFromPiecePos(piecePos - QPoint(1, 1));
 
         centers << rect.center();
     }
@@ -85,23 +92,25 @@ QList<QPointF> MineSweeperFinalImage::explodedCenters() const
 
 int MineSweeperFinalImage::piecePixelSize() const
 {
-    return pixmap.width() / boardInfo->boardSize().width();
+    return m_pixmap.width() / m_boardInfo->countXY().width();
 }
 
-QMatrix MineSweeperFinalImage::createMatrix()
+QTransform MineSweeperFinalImage::createTransform()
 {
     double minHoleSize = piecePixelSize() * 3;
-    double scaleToPieceSize = qMax(minHoleSize / holeImg.width(), 1.0);
+    double scaleToPieceSize = qMax(minHoleSize / m_holeImg.width(), 1.0);
 
-    double mineRatio = mineField->mineRatio();
+    double mineRatio = m_mineField->mineRatio();
     double scaleBase = (mineRatio * mineRatio * mineRatio * 70) + scaleToPieceSize;
 
-    QMatrix matrix;
+    QTransform transform;
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
 
-    matrix.rotate(mt() % 360);
-    matrix.scale(scaleBase + (mt() % 5 + 6) / 10.0, scaleBase + (mt() % 5 + 6) / 10.0);
+    transform.rotate(randomGenerator->bounded(360));
+    transform.scale(scaleBase + (randomGenerator->bounded(5) + 6) / 10.0
+                  , scaleBase + (randomGenerator->bounded(5) + 6) / 10.0);
 
-    return matrix;
+    return transform;
 }
 
 } // MineSweeper

@@ -20,34 +20,23 @@
 #define FORMFINALIMAGE_H
 
 #include <QWidget>
-#include <QPixmap>
-
-namespace Ui {
-class FormFinalImage;
-}
+#include <QSharedPointer>
 
 class IGame;
 
 class FormFinalImage : public QWidget
 {
     Q_OBJECT
-
 public:
-    explicit FormFinalImage(IGame *game, QWidget *parent = 0);
-    ~FormFinalImage();
+    explicit FormFinalImage(QWidget *parent = nullptr);
 
-    void setGame(IGame *game);
+    void setGame(QSharedPointer<IGame> game);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
-    bool event(QEvent *) override;
 
 private:
-    Ui::FormFinalImage *ui;
-    IGame *game;
-    int grabbedEdges;
-    QSize newSize;
+    QSharedPointer<IGame> m_game;
 };
 
 #endif // FORMFINALIMAGE_H

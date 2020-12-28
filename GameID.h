@@ -22,22 +22,21 @@
 #include <QDataStream>
 #include <QString>
 
-class GameID
+class GameID final
 {
 public:
     GameID();
-    ~GameID() = default;
 
-    static GameID fromQString(const QString &string);
+    static GameID fromString(QStringView string);
 
     void swap(GameID &other);
 
-    const QString &toString() const;
+    QString toString() const;
 
 private:
-    GameID(const QString &string);
+    GameID(QStringView string);
 
-    QString gameID;
+    QString m_gameID;
 };
 
 #endif // GAMEID_H

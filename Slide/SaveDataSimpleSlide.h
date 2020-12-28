@@ -19,7 +19,7 @@
 #ifndef SAVEDATASIMPLESLIDE_H
 #define SAVEDATASIMPLESLIDE_H
 
-#include "ISaveData.h"
+#include "fifteen/SaveDataFifteen.h"
 #include "SourceImage.h"
 #include "UniquePosition.h"
 #include "IPhase.h"
@@ -31,41 +31,29 @@
 
 namespace Slide {
 
-class SaveDataSimpleSlide : public ISaveData
+class SaveDataSimpleSlide : public Fifteen::SaveDataFifteen
 {
 public:
-    SaveDataSimpleSlide(const QString &fileName);
-    ~SaveDataSimpleSlide() = default;
-
-    QIcon gameTypeIcon() const override;
-    bool isValid() const override;
-
-    bool loadInfo() override;
+    SaveDataSimpleSlide(QStringView fileName, QObject *parent = nullptr);
+    SaveDataSimpleSlide(QStringView fileName, const QSize &boardXYCount
+                      , const UniquePosition &specifiedPosition, const SourceImage &sourceImage
+                      , IPhase::PhaseType currentPhase, const QList<QPoint> &defaultPositions
+                      , const QPoint &currentBlankPos, QObject *parent = nullptr);
 
     EzPuzzles::GameType gameType() const override;
-    QString gameTypeName() const override;
-    QString imageFilePath() const override;
+    QIcon gameTypeIcon() const override;
+
+    QSharedPointer<IGame> loadGame() override;
+
     QStringList informations() const override;
 
-    IGame *loadGame() override;
+    QPoint currentBlankPosition() const;
 
-private:
-    friend class GameDataSimpleSlide;
+protected:
+    void readInfo(QDataStream &stream) override;
+    void writeInfo(QDataStream &) const override;
 
-    bool save() const;
-    bool loadInfo(QDataStream &stream);
-    bool load();
-
-    QString fileName;
-    bool isSavedataValid;
-
-    QString gameName;
-    SourceImage sourceImg;
-    QSize boardSize;
-    UniquePosition defaultBlankPos;
-    QPoint currentBlankPos;
-    IPhase::PhaseType currentPhaseType;
-    QList<QPoint> defaultPositions;
+    QPoint m_currentBlankPos;
 };
 
 } // Slide

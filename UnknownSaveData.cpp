@@ -17,20 +17,11 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "UnknownSaveData.h"
+#include "SourceImage.h"
 
-QIcon UnknownSaveData::gameTypeIcon() const
+QString UnknownSaveData::gameTypeName() const
 {
-    return QIcon(":/ico/x");
-}
-
-bool UnknownSaveData::isValid() const
-{
-    return false;
-}
-
-bool UnknownSaveData::loadInfo()
-{
-    return true;
+    return QStringLiteral("Not save data or broken.");
 }
 
 EzPuzzles::GameType UnknownSaveData::gameType() const
@@ -38,24 +29,32 @@ EzPuzzles::GameType UnknownSaveData::gameType() const
     return EzPuzzles::UnkownGame;
 }
 
-QString UnknownSaveData::gameTypeName() const
+QIcon UnknownSaveData::gameTypeIcon() const
 {
-    return "Not save data or broken.";
+    return QIcon(QStringLiteral(":/icons/x"));
 }
 
-QString UnknownSaveData::imageFilePath() const
+QSharedPointer<IGame> UnknownSaveData::loadGame()
 {
-    return "";
+    return nullptr;
 }
 
 QStringList UnknownSaveData::informations() const
 {
-    return {
-        "This data cannot be read game types."
-    };
+    return {QStringLiteral("The game type cannot be read from this data.")};
 }
 
-IGame *UnknownSaveData::loadGame()
+bool UnknownSaveData::readInfo()
 {
-    return nullptr;
+    return false;
+}
+
+bool UnknownSaveData::read()
+{
+    return false;
+}
+
+bool UnknownSaveData::write() const
+{
+    return false;
 }

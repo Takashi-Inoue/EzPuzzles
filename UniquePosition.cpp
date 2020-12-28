@@ -18,52 +18,49 @@
  */
 #include "UniquePosition.h"
 
-UniquePosition::UniquePosition() :
-    isRandomSelect(false),
-    mt(std::random_device()())
-{
-}
+#include <QRandomGenerator>
 
 void UniquePosition::randomSelect(const QSize &xyCount)
 {
     Q_ASSERT(!xyCount.isEmpty());
 
-    isRandomSelect = true;
+    m_isRandomSelect = true;
 
-    selectedPos.rx() = mt() % xyCount.width();
-    selectedPos.ry() = mt() % xyCount.height();
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+
+    m_selectedPos.rx() = randomGenerator->bounded(xyCount.width());
+    m_selectedPos.ry() = randomGenerator->bounded(xyCount.height());
 }
 
 void UniquePosition::select(const QPoint &pos)
 {
-    isRandomSelect = false;
-    selectedPos = pos;
+    m_isRandomSelect = false;
+    m_selectedPos = pos;
 }
 
 const QPoint &UniquePosition::selectedPosition() const
 {
-    return selectedPos;
+    return m_selectedPos;
 }
 
 bool UniquePosition::isRandom() const
 {
-    return isRandomSelect;
+    return m_isRandomSelect;
 }
 
 void UniquePosition::read(QDataStream &stream)
 {
-    stream >> isRandomSelect;
-    stream >> selectedPos;
+    stream >> m_isRandomSelect >> m_selectedPos;
 }
 
 void UniquePosition::write(QDataStream &stream) const
 {
-    stream << isRandomSelect;
-    stream << selectedPos;
+    stream << m_isRandomSelect << m_selectedPos;
 }
 
 QString UniquePosition::toString() const
 {
-    return isRandomSelect ? "[???]<Random>"
-                          : QString("[%1, %2]<Specified>").arg(selectedPos.x() + 1).arg(selectedPos.y() + 1);
+    return m_isRandomSelect ? QStringLiteral("[???]<Random>")
+                            : QStringLiteral("[%1, %2]<Specified>")
+                             .arg(m_selectedPos.x() + 1).arg(m_selectedPos.y() + 1);
 }

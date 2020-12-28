@@ -25,11 +25,9 @@
 #include "FinalImage.h"
 #include "SourceImage.h"
 
-#include <memory>
-
 class IGameData;
 
-typedef std::shared_ptr<IGameData> GameDataPointer;
+typedef QSharedPointer<IGameData> GameDataPointer;
 
 class IGameData
 {

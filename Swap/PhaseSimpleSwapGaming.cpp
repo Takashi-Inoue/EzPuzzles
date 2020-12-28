@@ -104,7 +104,7 @@ QString PhaseSimpleSwapGaming::information() const
 
 Fifteen::PuzzlePiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)
 {
-    return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
+    return pieces[pos.y() * board->boardInfo()->countX() + pos.x()];
 }
 
 } // Swap

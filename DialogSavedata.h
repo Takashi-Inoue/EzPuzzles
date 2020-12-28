@@ -20,19 +20,18 @@
 #define DIALOGSAVEDATA_H
 
 #include "EzPuzzles.h"
+#include "AbstractSaveData.h"
 
 #include <QDialog>
 #include <QMap>
 #include <QStringList>
-#include <QThread>
 
 namespace Ui {
 class DialogSavedata;
 }
 
 class IGame;
-class ISaveData;
-class GameInfoLoader;
+class ThreadGameInfoLoader;
 
 class QListWidgetItem;
 
@@ -41,47 +40,44 @@ class DialogSavedata : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogSavedata(QWidget *parent = 0);
-    ~DialogSavedata();
+    explicit DialogSavedata(QWidget *parent = nullptr);
+    ~DialogSavedata() override;
 
-    IGame *loadGame() const;
+    QSharedPointer<IGame> loadGame() const;
 
 private slots:
-    void saveInfoLoaded(QString savedataName, ISaveData *gameInfo);
+    void onSaveInfoLoaded(QString savedataName, QSharedPointer<AbstractSaveData> gameInfo);
+    void setUIState();
+    void onDataSelected(int row);
 
-    void on_listWidget_itemSelectionChanged();
     void on_comboBox_currentIndexChanged(int index);
     void on_pushButtonRemove_clicked();
 
 private:
-    enum ShownDataType {
-        ShowAll,
-        ShowTypeSlide,
-        ShowTypeSwap,
-        ShowSimpleSlide,
-        ShowSimpleSwap,
-        ShowMineSweeper,
+    enum class ShownData : int {
+        all,
+        typeSlide,
+        typeSwap,
+        simpleSlide,
+        simpleSwap,
+        mineSweeper,
     };
 
-    ISaveData *getSaveDataFromListItem(const QListWidgetItem *item) const;
+    QString saveDataPathName(int row) const;
+    QString thumbnailPathName(int row) const;
 
-    void onDataSelectionCleared();
-    void onDataSelected(int row);
+    QSharedPointer<AbstractSaveData> saveDataFromListItem(const QListWidgetItem *item) const;
 
     void showAllSaveData();
-    void showSpecifiedTypeData(ShownDataType shownDataType);
+    void showSpecifiedTypeData(ShownData shownDataType);
 
-    void initShowTypeMap();
     void initComboBox();
     void initListWidget();
 
     Ui::DialogSavedata *ui;
 
-    QThread loadThread;
-    GameInfoLoader *infoLoader;
-    QStringList savedataNames;
-
-    QMap<ShownDataType, QList<EzPuzzles::GameType>> showTypeMap;
+    ThreadGameInfoLoader *m_threadInfoLoader;
+    QStringList m_savedataNames;
 };
 
 #endif // DIALOGSAVEDATA_H

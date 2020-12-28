@@ -20,26 +20,20 @@
 #include "ui_DialogSavedata.h"
 
 #include "EzPuzzles.h"
-#include "ThreadOperation.h"
-#include "GameInfoLoader.h"
-#include "ISaveData.h"
-
-#include "MoveToTrashBox.h"
+#include "IGame.h"
+#include "SourceImage.h"
+#include "ThreadGameInfoLoader.h"
 
 #include <QDateTime>
 #include <QDir>
-#include <QDataStream>
-#include <QFileInfo>
 #include <QPainter>
-#include <QPushButton>
 #include <QStyledItemDelegate>
 #include <QDebug>
 
 class SaveInfoDelegate : public QStyledItemDelegate
 {
 public:
-    SaveInfoDelegate() = default;
-    ~SaveInfoDelegate() = default;
+    using QStyledItemDelegate::QStyledItemDelegate;
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
     {
@@ -47,9 +41,9 @@ public:
 
         QRect drawRect(option.rect - QMargins(2, 0, 0, 0));
 
-        QIcon ico = index.data(Qt::DecorationRole).value<QIcon>();
+        QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
 
-        if (!ico.isNull()) {
+        if (!icon.isNull()) {
             QIcon::Mode mode = QIcon::Normal;
 
             if (!(option.state & QStyle::State_Enabled))
@@ -59,12 +53,12 @@ public:
             else if (option.state & QStyle::State_Active)
                 mode = QIcon::Active;
 
-            ico.paint(painter, drawRect, Qt::AlignLeft | Qt::AlignVCenter, mode);
+            icon.paint(painter, drawRect, Qt::AlignLeft | Qt::AlignVCenter, mode);
 
-            drawRect.setLeft(drawRect.left() + ico.actualSize(drawRect.size()).width() + 2);
+            drawRect.setLeft(drawRect.left() + icon.actualSize(drawRect.size()).width() + 2);
         }
 
-        auto savedata = reinterpret_cast<ISaveData *>(index.data(Qt::UserRole).toULongLong());
+        auto savedata = index.data(Qt::UserRole).value<QSharedPointer<AbstractSaveData>>();
 
         if (savedata == nullptr)
             return;
@@ -78,62 +72,68 @@ public:
         QFont defaultFont = option.widget->font();
         QFont gameNameFont = defaultFont;
 
+        gameNameFont.setPointSizeF(defaultFont.pointSizeF() * 1.1);
         gameNameFont.setItalic(true);
         gameNameFont.setBold(true);
-        gameNameFont.setPointSizeF(gameNameFont.pointSizeF() * 1.1);
 
         painter->setFont(gameNameFont);
 
         painter->drawText(drawRect, Qt::AlignLeft | Qt::AlignTop, savedata->gameTypeName());
 
         painter->setFont(defaultFont);
-        painter->drawText(drawRect, Qt::AlignRight | Qt::AlignBottom, index.data().toString() + "\n" + QFileInfo(savedata->imageFilePath()).baseName());
+
+        QString subInfo = QStringLiteral("%1\n%2")
+                         .arg(index.data().toString(), savedata->sourceImage().baseName());
+
+        painter->drawText(drawRect, Qt::AlignRight | Qt::AlignBottom, subInfo);
 
         painter->restore();
     }
+
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const override
+    {
+        QFontInfo fontInfo(option.widget->font());
+
+        return QSize(fontInfo.pixelSize() * 18, fontInfo.pixelSize() * 4);
+    }
 };
 
-DialogSavedata::DialogSavedata(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DialogSavedata),
-    infoLoader(nullptr)
+DialogSavedata::DialogSavedata(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::DialogSavedata)
+    , m_threadInfoLoader(new ThreadGameInfoLoader(this))
 {
     ui->setupUi(this);
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
-    initShowTypeMap();
     initComboBox();
     initListWidget();
 
-    infoLoader = new GameInfoLoader(savedataNames);
-    infoLoader->moveToThread(&loadThread);
+    int pixelSize = ui->labelInformations->fontInfo().pixelSize();
+    ui->frameLabel->setMinimumWidth(pixelSize * 20);
 
-    connect(infoLoader, SIGNAL(loaded(QString,ISaveData*)), this, SLOT(saveInfoLoaded(QString,ISaveData*)));
-
-    loadThread.start();
-    infoLoader->start();
+    m_threadInfoLoader->setSaveDataNames(m_savedataNames);
+    connect(m_threadInfoLoader, &ThreadGameInfoLoader::loaded, this, &DialogSavedata::onSaveInfoLoaded);
+    m_threadInfoLoader->start();
 }
 
 DialogSavedata::~DialogSavedata()
 {
-    infoLoader->stop();
-    infoLoader->wait();
-
-    loadThread.quit();
-    loadThread.wait();
+    m_threadInfoLoader->stop();
+    m_threadInfoLoader->wait();
 
     delete ui;
 }
 
-IGame *DialogSavedata::loadGame() const
+QSharedPointer<IGame> DialogSavedata::loadGame() const
 {
-    auto selectedItems = ui->listWidget->selectedItems();
+    QListWidgetItem *item = ui->listWidget->currentItem();
 
-    if (selectedItems.isEmpty())
+    if (item == nullptr)
         return nullptr;
 
-    auto savedata = getSaveDataFromListItem(selectedItems.first());
+    auto savedata = saveDataFromListItem(item);
 
     if (savedata == nullptr)
         return nullptr;
@@ -141,135 +141,121 @@ IGame *DialogSavedata::loadGame() const
     return savedata->loadGame();
 }
 
-void DialogSavedata::saveInfoLoaded(QString savedataName, ISaveData *gameInfo)
+void DialogSavedata::onSaveInfoLoaded(QString savedataName, QSharedPointer<AbstractSaveData> gameInfo)
 {
-    int index = savedataNames.indexOf(savedataName);
+    int index = int(m_savedataNames.indexOf(savedataName));
 
     if (index == -1)
         return;
 
-    auto item = ui->listWidget->item(index);
-
-    QString lastModified = QFileInfo(EzPuzzles::saveDirPath() + "/" + savedataName).lastModified().toString(Qt::SystemLocaleLongDate);
+    QString lastModified = QFileInfo(saveDataPathName(index)).lastModified().toString(Qt::ISODate);
+    QListWidgetItem *item = ui->listWidget->item(index);
 
     item->setText(lastModified);
     item->setIcon(gameInfo->gameTypeIcon());
-    item->setData(Qt::UserRole, reinterpret_cast<uintptr_t>(gameInfo));
+    item->setData(Qt::UserRole, QVariant::fromValue<QSharedPointer<AbstractSaveData>>(gameInfo));
 }
 
-void DialogSavedata::on_listWidget_itemSelectionChanged()
+void DialogSavedata::setUIState()
 {
-    ui->labelInformations->setVisible(true);
-    ui->imageWidget->setVisible(true);
+    bool isEnableAndVisible = false;
 
-    auto selectionModel = ui->listWidget->selectionModel();
+    QListWidgetItem *item = ui->listWidget->currentItem();
 
-    selectionModel->hasSelection() ? onDataSelected(selectionModel->selectedRows().first().row()) // single select
-                                   : onDataSelectionCleared();
-}
+    if (item)
+        isEnableAndVisible = !item->isHidden();
 
-void DialogSavedata::on_comboBox_currentIndexChanged(int index)
-{
-    ShownDataType shownDataType = static_cast<ShownDataType>(ui->comboBox->itemData(index).toInt());
-
-    shownDataType == ShowAll ? showAllSaveData()
-                             : showSpecifiedTypeData(shownDataType);
-
-    auto items = ui->listWidget->selectedItems();
-
-    if (!items.isEmpty()) {
-        bool isVisible = !items.first()->isHidden(); // single select
-
-        ui->pushButtonRemove->setEnabled(isVisible);
-        ui->imageWidget->setVisible(isVisible);
-        ui->labelInformations->setVisible(isVisible);
-    }
-}
-
-void DialogSavedata::on_pushButtonRemove_clicked()
-{
-    auto selectedIndexes = ui->listWidget->selectionModel()->selectedRows();
-
-    if (selectedIndexes.isEmpty())
-        return;
-
-    int row = selectedIndexes.first().row();
-    QString savedataName = savedataNames.at(row);
-
-    QString savedataPath = EzPuzzles::saveDirPath() + "/" + savedataName;
-    QString ssPath = savedataPath.left(savedataPath.size() - 3) + "png";
-
-    MoveToTrashBox(savedataPath).exec();
-    MoveToTrashBox(ssPath).exec();
-
-    ui->listWidget->model()->removeRow(row);
-    savedataNames.removeAt(row);
-
-    if (savedataName.isEmpty())
-        onDataSelectionCleared();
-}
-
-ISaveData *DialogSavedata::getSaveDataFromListItem(const QListWidgetItem *item) const
-{
-    return reinterpret_cast<ISaveData *>(item->data(Qt::UserRole).toULongLong());
-}
-
-void DialogSavedata::onDataSelectionCleared()
-{
-    ui->pushButtonRemove->setEnabled(false);
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-    ui->labelInformations->clear();
-    ui->imageWidget->setPixmap(QPixmap());
+    ui->pushButtonRemove->setEnabled(isEnableAndVisible);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(isEnableAndVisible);
+    ui->labelInformations->setVisible(isEnableAndVisible);
+    ui->imageWidget->setVisible(isEnableAndVisible);
 }
 
 void DialogSavedata::onDataSelected(int row)
 {
-    ui->pushButtonRemove->setEnabled(true);
+    if (row == -1)
+        return;
 
-    QString dataname = savedataNames.at(row);
-    QString ssPath = EzPuzzles::saveDirPath() + "/" + dataname.left(dataname.size() - 3) + "png";
-
-    ui->imageWidget->setPixmap(QPixmap::fromImage(QImage(ssPath)));
+    ui->imageWidget->setPixmap(QPixmap::fromImage(QImage(thumbnailPathName(row))));
     ui->imageWidget->repaint();
 
-    auto savedata = getSaveDataFromListItem(ui->listWidget->item(row));
-
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(savedata != nullptr && savedata->isValid()); // savedata == null のとき false を与えるように
+    QSharedPointer<AbstractSaveData> savedata = saveDataFromListItem(ui->listWidget->item(row));
 
     if (savedata != nullptr)
         ui->labelInformations->setText(savedata->informations().join('\n'));
 }
 
+void DialogSavedata::on_comboBox_currentIndexChanged(int index)
+{
+    auto shownDataType = ShownData(ui->comboBox->itemData(index).toInt());
+
+    shownDataType == ShownData::all ? showAllSaveData()
+                                    : showSpecifiedTypeData(shownDataType);
+    setUIState();
+}
+
+void DialogSavedata::on_pushButtonRemove_clicked()
+{
+    int row = ui->listWidget->currentRow();
+
+    if (row == -1)
+        return;
+
+    if (!QFile(saveDataPathName(row)).moveToTrash()) {
+        qInfo() << QStringLiteral("Failed to move to trash can. [%1]").arg(saveDataPathName(row));
+        return;
+    }
+
+    if (!QFile(thumbnailPathName(row)).moveToTrash())
+        qInfo() << QStringLiteral("Failed to move to trash can. [%1]").arg(thumbnailPathName(row));
+
+    ui->listWidget->takeItem(row);
+    m_savedataNames.removeAt(row);
+}
+
+QString DialogSavedata::saveDataPathName(int row) const
+{
+    return QStringLiteral("%1/%2").arg(EzPuzzles::saveDirPath(), m_savedataNames[row]);
+}
+
+QString DialogSavedata::thumbnailPathName(int row) const
+{
+    return QStringLiteral("%1/%2png").arg(EzPuzzles::saveDirPath(), m_savedataNames[row].chopped(3));
+}
+
+QSharedPointer<AbstractSaveData> DialogSavedata::saveDataFromListItem(const QListWidgetItem *item) const
+{
+    return item->data(Qt::UserRole).value<QSharedPointer<AbstractSaveData>>();
+}
+
 void DialogSavedata::showAllSaveData()
 {
-    for (int i = 0, lim = ui->listWidget->model()->rowCount(); i < lim; ++i)
+    for (int i = 0, count = ui->listWidget->count(); i < count; ++i)
         ui->listWidget->item(i)->setHidden(false);
 }
 
-void DialogSavedata::showSpecifiedTypeData(ShownDataType shownDataType)
+void DialogSavedata::showSpecifiedTypeData(ShownData shownDataType)
 {
-    Q_ASSERT(shownDataType != ShowAll);
-
-    const auto &types = showTypeMap[shownDataType];
-
-    Q_ASSERT(!types.isEmpty());
-
-    for (int i = 0, lim = ui->listWidget->model()->rowCount(); i < lim; ++i) {
-        auto item = ui->listWidget->item(i);
-        auto savedata = getSaveDataFromListItem(item);
-
-        item->setHidden(!std::binary_search(types.begin(), types.end(), savedata->gameType()));
+    if (shownDataType == ShownData::all) {
+        showAllSaveData();
+        return;
     }
-}
 
-void DialogSavedata::initShowTypeMap()
-{
-    // 検索に std::binary_search を使用するので、対象が複数の場合は昇順で初期化すること
-    showTypeMap[ShowTypeSlide] = {EzPuzzles::SimpleSlide};
-    showTypeMap[ShowTypeSwap]  = {EzPuzzles::SimpleSwap};
-    showTypeMap[ShowSimpleSlide] = {EzPuzzles::SimpleSlide};
-    showTypeMap[ShowSimpleSwap]  = {EzPuzzles::SimpleSwap};
-    showTypeMap[ShowMineSweeper] = {EzPuzzles::MineSweeper};
+    static const QMap<ShownData, QList<EzPuzzles::GameType>> showTypeMap = {
+        {ShownData::typeSlide,   {EzPuzzles::SimpleSlide}},
+        {ShownData::typeSwap,    {EzPuzzles::SimpleSwap}},
+        {ShownData::simpleSlide, {EzPuzzles::SimpleSlide}},
+        {ShownData::simpleSwap,  {EzPuzzles::SimpleSwap}},
+        {ShownData::mineSweeper, {EzPuzzles::MineSweeper}},
+    };
+
+    const QList<EzPuzzles::GameType> &types = showTypeMap[shownDataType];
+
+    for (int i = 0, count = ui->listWidget->count(); i < count; ++i) {
+        QListWidgetItem *item = ui->listWidget->item(i);
+
+        item->setHidden(!types.contains(saveDataFromListItem(item)->gameType()));
+    }
 }
 
 void DialogSavedata::initComboBox()
@@ -280,29 +266,32 @@ void DialogSavedata::initComboBox()
     view->setAlternatingRowColors(true);
 
     ui->comboBox->setView(view);
-    ui->comboBox->setStyleSheet("QAbstractItemView::item {min-height: 20px;}");
 
-    ui->comboBox->addItem(QIcon(":/ico/gameAll"),         "All",         ShowAll);
-    ui->comboBox->addItem(QIcon(":/ico/gameSimpleSlide"), "Slide",       ShowSimpleSlide);
-    ui->comboBox->addItem(QIcon(":/ico/gameSwap"),        "Swap",        ShowSimpleSwap);
-    ui->comboBox->addItem(QIcon(":/ico/gameMine"),        "MineSweeper", ShowMineSweeper);
+    ui->comboBox->addItem(QIcon(QStringLiteral(":/icons/all")),   QStringLiteral("All"),         int(ShownData::all));
+    ui->comboBox->addItem(QIcon(QStringLiteral(":/icons/slide")), QStringLiteral("Slide"),       int(ShownData::simpleSlide));
+    ui->comboBox->addItem(QIcon(QStringLiteral(":/icons/swap")),  QStringLiteral("Swap"),        int(ShownData::simpleSwap));
+    ui->comboBox->addItem(QIcon(QStringLiteral(":/icons/mine")),  QStringLiteral("MineSweeper"), int(ShownData::mineSweeper));
 }
 
 void DialogSavedata::initListWidget()
 {
     QDir saveDir(EzPuzzles::saveDirPath());
 
-    savedataNames = saveDir.entryList({"*.dat"}, QDir::Files, QDir::Time);
+    m_savedataNames = saveDir.entryList({"*.dat"}, QDir::Files, QDir::Time);
 
-    ui->listWidget->setItemDelegate(new SaveInfoDelegate());
+    ui->listWidget->setItemDelegate(new SaveInfoDelegate(ui->listWidget));
     ui->listWidget->setWordWrap(true);
-    ui->listWidget->setStyleSheet("QListWidget::item {min-height: 40px;}");
 
     QPixmap pixmap(ui->listWidget->iconSize());
     pixmap.fill(Qt::white);
 
     QIcon icon(pixmap);
 
-    for (auto &name : savedataNames)
+    for (auto &name : m_savedataNames)
         ui->listWidget->addItem(new QListWidgetItem(icon, name));
+
+    int fontPixelSize = ui->listWidget->fontInfo().pixelSize();
+
+    ui->listWidget->setMinimumWidth(fontPixelSize * 21);
+    ui->listWidget->setMinimumHeight(fontPixelSize * 25);
 }

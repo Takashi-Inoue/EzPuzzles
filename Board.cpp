@@ -41,7 +41,7 @@ QList<Fifteen::PuzzlePiecePointer> Board::slidePiece(const QPoint &from, const Q
         return {};
     }
 
-    Fifteen::PieceMover mover(pieces, boardInformation->xCount());
+    Fifteen::PieceMover mover(pieces, boardInformation->countX());
 
     return from.x() == to.x() ? mover.slideVertical(from, to)
                               : mover.slideHorizontal(from, to);
@@ -98,5 +98,5 @@ BoardInfoPointer Board::boardInfo() const
 
 Fifteen::PuzzlePiecePointer &Board::getPiece(const QPoint &pos)
 {
-    return pieces[pos.y() * boardInformation->xCount() + pos.x()];
+    return pieces[pos.y() * boardInformation->countX() + pos.x()];
 }

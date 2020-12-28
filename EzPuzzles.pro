@@ -8,15 +8,16 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = EzPuzzles
-TEMPLATE = app
+CONFIG += c++17
 
-QMAKE_LFLAGS_DEBUG += /LTCG
-QMAKE_LFLAGS_RELEASE += /LTCG
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 TRANSLATIONS += ezpz_ja.ts
 
 SOURCES += main.cpp\
+    CellSelectionGrid.cpp \
         MainWindow.cpp \
     FormFinalImage.cpp \
     DialogSettingsFifteen.cpp \
@@ -34,28 +35,27 @@ SOURCES += main.cpp\
     SwitchImagePiece.cpp \
     MineSweeper/SafePiece.cpp \
     MineSweeper/NumberPieceFactory.cpp \
+    ThreadFrameTimer.cpp \
+    ThreadGameInfoLoader.cpp \
     ThreadOperation.cpp \
-    GarbageCollector.cpp \
     ImageFragmentPiece.cpp \
     MineSweeper/MineLocker.cpp \
     DialogImageHistory.cpp \
     ImageLoader.cpp \
     StringListHistory.cpp \
     EzPuzzles.cpp \
-    ToolIconWindow.cpp \
     DialogSavedata.cpp \
     SourceImage.cpp \
     fifteen/PuzzlePiece.cpp \
     MineSweeper/MinePiecesFactory.cpp \
+    fifteen/SaveDataFifteen.cpp \
     fifteen/SimplePiecesFactory.cpp \
     fifteen/FifteenSlideShuffler.cpp \
     fifteen/FifteenPieceMover.cpp \
     GameID.cpp \
     fifteen/FifteenSwapShuffler.cpp \
-    GameInfoLoader.cpp \
     BrokenSaveData.cpp \
     UnknownSaveData.cpp \
-    MoveToTrashBox.cpp \
     AnimationObject/AbstractAnimationObject.cpp \
     AnimationObject/Animation/AnimationLineMove.cpp \
     AnimationObject/Animation/AnimationWarpMove.cpp \
@@ -64,10 +64,8 @@ SOURCES += main.cpp\
     BoardInformation.cpp \
     Position.cpp \
     fifteen/SlideBlankPiece.cpp \
-    FrameTimer.cpp \
     AnimationObject/Effect/CompositeEffect.cpp \
     GridLines.cpp \
-    SelectCellGrid.cpp \
     UniquePosition.cpp \
     CommonPhase/PhaseShowFinalImage.cpp \
     CommonPhase/PhaseShuffle.cpp \
@@ -100,6 +98,8 @@ SOURCES += main.cpp\
     AnimationObject/Effect/TimeLimitedEffect.cpp
 
 HEADERS  += MainWindow.h \
+    AbstractSaveData.h \
+    CellSelectionGrid.h \
     FormFinalImage.h \
     DialogSettingsFifteen.h \
     ImageWidget.h \
@@ -123,8 +123,9 @@ HEADERS  += MainWindow.h \
     MineSweeper/IMinePiece.h \
     MineSweeper/SafePiece.h \
     MineSweeper/NumberPieceFactory.h \
+    ThreadFrameTimer.h \
+    ThreadGameInfoLoader.h \
     ThreadOperation.h \
-    GarbageCollector.h \
     ImageFragmentPiece.h \
     MineSweeper/MineLocker.h \
     Utility.h \
@@ -132,23 +133,20 @@ HEADERS  += MainWindow.h \
     ImageLoader.h \
     StringListHistory.h \
     EzPuzzles.h \
-    ToolIconWindow.h \
     DialogSavedata.h \
     SourceImage.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
     MineSweeper/MinePiecesFactory.h \
+    fifteen/SaveDataFifteen.h \
     fifteen/SimplePiecesFactory.h \
     fifteen/FifteenSlideShuffler.h \
     fifteen/FifteenPieceMover.h \
     GameID.h \
     fifteen/FifteenSwapShuffler.h \
     IDialogGameSettings.h \
-    GameInfoLoader.h \
-    ISaveData.h \
     BrokenSaveData.h \
     UnknownSaveData.h \
-    MoveToTrashBox.h \
     AnimationObject/AbstractAnimationObject.h \
     AnimationObject/IAnimationObject.h \
     AnimationObject/Animation/AbstractAnimation.h \
@@ -161,10 +159,8 @@ HEADERS  += MainWindow.h \
     Position.h \
     fifteen/SlideBlankPiece.h \
     fifteen/FifteenAbstractShuffler.h \
-    FrameTimer.h \
     AnimationObject/Effect/CompositeEffect.h \
     GridLines.h \
-    SelectCellGrid.h \
     UniquePosition.h \
     IPhase.h \
     IGameData.h \
@@ -199,13 +195,16 @@ HEADERS  += MainWindow.h \
     AnimationObject/Effect/TimeLimitedEffect.h
 
 FORMS    += MainWindow.ui \
-    FormFinalImage.ui \
     DialogSettingsFifteen.ui \
-    ImageWidget.ui \
     DialogGameStart.ui \
     DialogSettingsMineSweeper.ui \
     DialogImageHistory.ui \
     DialogSavedata.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
     resource.qrc
@@ -213,3 +212,8 @@ RESOURCES += \
 DISTFILES += \
     gameCore.qmodel \
     Games.qmodel
+
+VERSION = 0.1.0.0
+#RC_ICONS = res/images/icon.ico
+QMAKE_TARGET_PRODUCT = EzPuzzles
+QMAKE_TARGET_COPYRIGHT = "Copyright 2016 Takashi Inoue"

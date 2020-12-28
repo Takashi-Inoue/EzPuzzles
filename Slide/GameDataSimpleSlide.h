@@ -34,7 +34,6 @@ class GameDataSimpleSlide : public IGameData
 public:
     GameDataSimpleSlide(const SourceImage &img, const UniquePosition &defaultBlankPos, const QSize &xyCount);
     GameDataSimpleSlide(const SaveDataSimpleSlide &loadedSavedata);
-    ~GameDataSimpleSlide() = default;
 
     // IGameData
     GameDataPointer cloneAsNewGame() const override;

@@ -22,9 +22,10 @@
 #include "IDialogGameSettings.h"
 #include <QDialog>
 
+#include "SourceImage.h"
+
 class IGame;
-class SelectCellGrid;
-class SourceImage;
+class CellSelectionGrid;
 
 namespace Ui {
 class DialogSettingsFifteen;
@@ -35,26 +36,25 @@ class DialogSettingsFifteen : public QDialog, public IDialogGameSettings
     Q_OBJECT
 
 public:
-    explicit DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = 0);
-    ~DialogSettingsFifteen();
+    explicit DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = nullptr);
+    ~DialogSettingsFifteen() override;
 
-    IGame *buildGame() const override;
+    QSharedPointer<IGame> buildGame() const override;
 
 private slots:
     void udpateGrid();
-    void onChangeBlankSetting();
 
     void on_comboBoxGameType_currentIndexChanged(int index);
 
 private:
-    IGame *buildSimpleSlide() const;
-    IGame *buildSimpleSwap() const;
+    QSharedPointer<IGame> buildSimpleSlide() const;
+    QSharedPointer<IGame> buildSimpleSwap() const;
 
     Ui::DialogSettingsFifteen *ui;
 
-    SelectCellGrid *grid;
+    CellSelectionGrid *m_grid;
 
-    const SourceImage &sourceImage;
+    SourceImage m_sourceImage;
 };
 
 #endif // DIALOGSETTINGSFIFTEEN_H

@@ -33,14 +33,14 @@ PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList
 
         compositeEffect->addEffect(piece->effect());
 
-        auto &rect = boardInfo->rectFromPiecePos(piece->pos().defaultPos());
+        const QRectF &rect = boardInfo->rectFromPiecePos(piece->pos().defaultPos());
         compositeEffect->addEffect(std::make_shared<Effect::GraduallyImage>(graduallyFrames, graduallyFrames, sourcePixmap, rect));
 
         piece->setEffect(compositeEffect);
     }
 
-    auto &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
-    auto &rect = boardInfo->rectFromPiecePos(blankPiece->pos().defaultPos());
+    Fifteen::PuzzlePiecePointer &blankPiece = pieces[blankPos.y() * boardInfo->countX() + blankPos.x()];
+    const QRectF &rect = boardInfo->rectFromPiecePos(blankPiece->pos().defaultPos());
 
     blankPiece->setEffect(std::make_shared<Effect::GraduallyImage>(0, graduallyFrames, sourcePixmap, rect));
 }

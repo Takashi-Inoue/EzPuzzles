@@ -26,13 +26,16 @@ class SourceImage
 {
 public:
     SourceImage() = default;
-    SourceImage(const QString &imagePath);
-    SourceImage(const QString &imagePath, const QPixmap &pixmap);
+    SourceImage(QStringView imagePath);
+    SourceImage(QStringView imagePath, const QPixmap &pixmap);
 
     ~SourceImage() = default;
 
-    bool isNull() const;
     QString baseName() const;
+    QString fullPath() const;
+    QPixmap pixmap() const;
+
+    bool isNull() const;
     QSize size() const;
     QRect rect() const;
     int width() const;
@@ -40,8 +43,9 @@ public:
 
     bool saveImage() const;
 
-    QString fullPath;
-    QPixmap pixmap;
+private:
+    QString m_fullPath;
+    QPixmap m_pixmap;
 };
 
 #endif // SOURCEIMAGE_H

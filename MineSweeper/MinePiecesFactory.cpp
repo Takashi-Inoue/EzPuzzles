@@ -21,7 +21,7 @@
 #include "SafePiece.h"
 #include "WallPiece.h"
 
-#include <QTime>
+#include <QElapsedTimer>
 #include <QDebug>
 
 namespace MineSweeper {
@@ -73,8 +73,8 @@ QVector<QVector<MinePiecePointer>> PiecesFactory::toPieces(const QList<int> &int
 
     for (int i = 0, lim = intList.size(); i < lim; ++i) {
         const int num = intList.at(i);
-        int x = i % boardInformation->xCount() + 1;
-        int y = i / boardInformation->xCount() + 1;
+        int x = i % boardInformation->countX() + 1;
+        int y = i / boardInformation->countX() + 1;
 
         if ((num & 0b1111) == mineID) {
             createMinePiece(pieces, x, y);
@@ -112,8 +112,8 @@ const QList<QPoint> &PiecesFactory::getMinesPositions() const
 
 void PiecesFactory::fillWithNull(QVector<QVector<MinePiecePointer> > &pieces) const
 {
-    int cx = boardInformation->xCount() + 2;
-    int cy = boardInformation->yCount() + 2;
+    int cx = boardInformation->countX() + 2;
+    int cy = boardInformation->countY() + 2;
 
     for (int y = 0; y < cy; ++y)
         pieces << QVector<MinePiecePointer>(cx, nullptr);
@@ -121,11 +121,11 @@ void PiecesFactory::fillWithNull(QVector<QVector<MinePiecePointer> > &pieces) co
 
 void PiecesFactory::createWallPieces(QVector<QVector<MinePiecePointer>> &pieces) const
 {
-    QTime time;
-    time.start();
+    QElapsedTimer timer;
+    timer.start();
 
-    int cx = boardInformation->xCount() + 2;
-    int cy = boardInformation->yCount() + 2;
+    int cx = boardInformation->countX() + 2;
+    int cy = boardInformation->countY() + 2;
 
     Q_ASSERT(pieces.size() == cy);
 
@@ -141,33 +141,33 @@ void PiecesFactory::createWallPieces(QVector<QVector<MinePiecePointer>> &pieces)
         pieces[y][cx - 1] = wallPiece;
     }
 
-    qDebug() << "create Wall pieces" << time.elapsed() << "ms";
+    qDebug() << "create Wall pieces" << timer.elapsed() << "ms";
 }
 
 void PiecesFactory::createMinePieces(QVector<QVector<MinePiecePointer>> &pieces)
 {
-    Q_ASSERT(pieces.size() == boardInformation->yCount() + 2);
+    Q_ASSERT(pieces.size() == boardInformation->countY() + 2);
 
-    QTime time;
-    time.start();
+    QElapsedTimer timer;
+    timer.start();
 
-    const int xCount = boardInformation->xCount();
-    const int yCount = boardInformation->yCount();
+    const int countX = boardInformation->countX();
+    const int countY = boardInformation->countY();
 
-    const int halfX = xCount / 2 + 1;
-    const int halfY = yCount / 2 + 1;
+    const int halfX = countX / 2 + 1;
+    const int halfY = countY / 2 + 1;
     const int numOfCreatedMines = mineCount / 4;
 
     createMinePieces(pieces,         1, halfX,          1, halfY,  numOfCreatedMines);
-    createMinePieces(pieces, halfX + 1, xCount,         1, halfY,  numOfCreatedMines);
-    createMinePieces(pieces,         1, halfX,  halfY + 1, yCount, numOfCreatedMines);
-    createMinePieces(pieces, halfX + 1, xCount, halfY + 1, yCount, numOfCreatedMines);
+    createMinePieces(pieces, halfX + 1, countX,         1, halfY,  numOfCreatedMines);
+    createMinePieces(pieces,         1, halfX,  halfY + 1, countY, numOfCreatedMines);
+    createMinePieces(pieces, halfX + 1, countX, halfY + 1, countY, numOfCreatedMines);
 
     int remian = mineCount % 4;
 
     for (int i = 0; i < remian; ++i) {
-        int x = (mt() % xCount)  + 1;
-        int y = (mt() % yCount) + 1;
+        int x = (mt() % countX)  + 1;
+        int y = (mt() % countY) + 1;
 
         if (pieces[y][x] == nullptr)
             createMinePiece(pieces, x, y);
@@ -175,7 +175,7 @@ void PiecesFactory::createMinePieces(QVector<QVector<MinePiecePointer>> &pieces)
             --i;
     }
 
-    qDebug() << "create Mine pieces" << time.elapsed() << "ms";
+    qDebug() << "create Mine pieces" << timer.elapsed() << "ms";
 }
 
 void PiecesFactory::createMinePieces(QVector<QVector<MinePiecePointer>> &pieces, int minX, int maxX, int minY, int maxY, int numberOfMines)
@@ -213,11 +213,11 @@ void PiecesFactory::createMinePieces(QVector<QVector<MinePiecePointer>> &pieces,
 
 void PiecesFactory::createSafePieces(QVector<QVector<MinePiecePointer>> &pieces) const
 {
-    QTime time;
-    time.start();
+    QElapsedTimer timer;
+    timer.start();
 
-    int cx = boardInformation->xCount() + 2;
-    int cy = boardInformation->yCount() + 2;
+    int cx = boardInformation->countX() + 2;
+    int cy = boardInformation->countY() + 2;
 
     Q_ASSERT(pieces.size() == cy);
 
@@ -237,13 +237,13 @@ void PiecesFactory::createSafePieces(QVector<QVector<MinePiecePointer>> &pieces)
         }
     }
 
-    qDebug() << "create Safe pieces" << time.elapsed() << "ms";
+    qDebug() << "create Safe pieces" << timer.elapsed() << "ms";
 }
 
 QList<MinePiecePointer> PiecesFactory::getAroundPieces(const QVector<QVector<MinePiecePointer>> &pieces, int x, int y) const
 {
-    Q_ASSERT(x >= 1 && x < boardInformation->xCount() + 1);
-    Q_ASSERT(y >= 1 && y < boardInformation->yCount() + 1);
+    Q_ASSERT(x >= 1 && x < boardInformation->countX() + 1);
+    Q_ASSERT(y >= 1 && y < boardInformation->countY() + 1);
 
     QList<MinePiecePointer> result = {
         pieces[y - 1][x - 1],

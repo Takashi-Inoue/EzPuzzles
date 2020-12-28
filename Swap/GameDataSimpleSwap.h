@@ -34,7 +34,6 @@ class GameDataSimpleSwap : public IGameData
 public:
     GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount);
     GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData);
-    ~GameDataSimpleSwap() = default;
 
     // IGameData
     GameDataPointer cloneAsNewGame() const override;
@@ -54,13 +53,13 @@ protected:
 
     static const unsigned char warpWaitCount = 6;
 
-    std::shared_ptr<QReadWriteLock> rwlock;
+    std::shared_ptr<QReadWriteLock> m_rwlock;
 
-    QList<Fifteen::PuzzlePiecePointer> pieces;
-    SourceImage sourceImg;
-    BoardPointer board;
-    UniquePosition swapTargetPos;
-    IPhase::PhaseType currentPhaseType;
+    QList<Fifteen::PuzzlePiecePointer> m_pieces;
+    SourceImage m_sourceImg;
+    BoardPointer m_board;
+    UniquePosition m_swapTargetPos;
+    IPhase::PhaseType m_currentPhaseType;
 };
 
 } // Swap

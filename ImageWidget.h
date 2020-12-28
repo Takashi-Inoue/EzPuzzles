@@ -22,11 +22,7 @@
 #include <QFrame>
 #include <QPixmap>
 #include <QList>
-#include <memory>
-
-namespace Ui {
-class ImageWidget;
-}
+#include <QSharedPointer>
 
 class ISubWidget;
 
@@ -35,8 +31,7 @@ class ImageWidget : public QFrame
     Q_OBJECT
 
 public:
-    explicit ImageWidget(QWidget *parent = 0);
-    ~ImageWidget();
+    explicit ImageWidget(QWidget *parent = nullptr);
 
     virtual void setPixmap(const QPixmap &pixmap);
     void addSubWidget(ISubWidget *subWidget);
@@ -52,7 +47,7 @@ protected:
     void mousePressEvent(QMouseEvent *) override;
     void mouseReleaseEvent(QMouseEvent *) override;
     void mouseMoveEvent(QMouseEvent *) override;
-    void enterEvent(QEvent *event) override;
+    void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
     QPixmap pixmap;
@@ -61,8 +56,7 @@ protected:
 private:
     void calcImageRect();
 
-    Ui::ImageWidget *ui;
-    QList<std::shared_ptr<ISubWidget>> subWidgets;
+    QList<QSharedPointer<ISubWidget>> subWidgets;
 };
 
 #endif // IMAGEWIDGET_H

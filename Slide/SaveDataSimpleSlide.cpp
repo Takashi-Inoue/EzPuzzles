@@ -27,31 +27,21 @@
 
 namespace Slide {
 
-SaveDataSimpleSlide::SaveDataSimpleSlide(const QString &fileName) :
-    fileName(fileName),
-    isSavedataValid(false)
+SaveDataSimpleSlide::SaveDataSimpleSlide(QStringView fileName, QObject *parent)
+    : SaveDataFifteen(fileName, parent)
 {
-    Q_ASSERT(!fileName.isEmpty());
 }
 
-QIcon SaveDataSimpleSlide::gameTypeIcon() const
+SaveDataSimpleSlide::SaveDataSimpleSlide(QStringView fileName, const QSize &boardXYCount
+                                       , const UniquePosition &specifiedPosition
+                                       , const SourceImage &sourceImage
+                                       , IPhase::PhaseType currentPhase
+                                       , const QList<QPoint> &defaultPositions
+                                       , const QPoint &currentBlankPos, QObject *parent)
+    : SaveDataFifteen(fileName, boardXYCount, specifiedPosition, sourceImage
+                    , currentPhase, defaultPositions, parent)
+    , m_currentBlankPos(currentBlankPos)
 {
-    return QIcon(":/ico/gameSimpleSlide");
-}
-
-bool SaveDataSimpleSlide::isValid() const
-{
-    return isSavedataValid;
-}
-
-bool SaveDataSimpleSlide::loadInfo()
-{
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly))
-        return (isSavedataValid = false);
-
-    return loadInfo(QDataStream(&file));
 }
 
 EzPuzzles::GameType SaveDataSimpleSlide::gameType() const
@@ -59,98 +49,55 @@ EzPuzzles::GameType SaveDataSimpleSlide::gameType() const
     return EzPuzzles::SimpleSlide;
 }
 
-QString SaveDataSimpleSlide::gameTypeName() const
+QIcon SaveDataSimpleSlide::gameTypeIcon() const
 {
-    return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
+    static QIcon icon(QStringLiteral(":/icons/slide"));
+    return icon;
 }
 
-QString SaveDataSimpleSlide::imageFilePath() const
+QSharedPointer<IGame> SaveDataSimpleSlide::loadGame()
 {
-    return sourceImg.fullPath;
+    if (!read())
+        return nullptr;
+
+    const GameID &gameID = GameID::fromString(QFileInfo(m_fileName).completeBaseName());
+
+    return QSharedPointer<GameCore>::create(QSharedPointer<GameDataSimpleSlide>::create(*this), gameID);
 }
 
 QStringList SaveDataSimpleSlide::informations() const
 {
     return {
-        QString("W%1 x H%2 : %3 pieces").arg(boardSize.width()).arg(boardSize.height()).arg(boardSize.width() * boardSize.height()),
-        "",
-        QString("Default blank ") + defaultBlankPos.toString(),
+        QStringLiteral("W%1 x H%2 : %3 pieces")
+                      .arg(m_boardXYCount.width()).arg(m_boardXYCount.height())
+                      .arg(m_boardXYCount.width() * m_boardXYCount.height()),
+        QString(),
+        QStringLiteral("Default blank %1").arg(m_specifiedPosition.toString()),
     };
 }
 
-IGame *SaveDataSimpleSlide::loadGame()
+QPoint SaveDataSimpleSlide::currentBlankPosition() const
 {
-    if (!load())
-        return nullptr;
-
-    auto &gameID = GameID::fromQString(QFileInfo(fileName).completeBaseName());
-
-    return new GameCore(std::make_shared<GameDataSimpleSlide>(*this), gameID);
+    return m_currentBlankPos;
 }
 
-bool SaveDataSimpleSlide::save() const
+void SaveDataSimpleSlide::readInfo(QDataStream &stream)
 {
-    QSaveFile file(fileName);
+    SaveDataFifteen::readInfo(stream);
 
-    if (!file.open(QIODevice::WriteOnly))
-        return false;
+    if (!m_isSavedataValid)
+        return;
 
-    QDataStream stream(&file);
+    stream >> m_currentBlankPos;
 
-    stream << gameTypeName();
-    stream << boardSize;
-    defaultBlankPos.write(stream);
-    stream << currentBlankPos;
-    stream << sourceImg.fullPath;
-    stream << sourceImg.pixmap;
-    stream << static_cast<qint8>(currentPhaseType);
-    stream << defaultPositions;
-
-    return file.commit();
+    m_isSavedataValid = (stream.status() == QDataStream::Ok);
 }
 
-bool SaveDataSimpleSlide::loadInfo(QDataStream &stream)
+void SaveDataSimpleSlide::writeInfo(QDataStream &stream) const
 {
-    stream >> gameName;
+    SaveDataFifteen::writeInfo(stream);
 
-    if (gameName != gameTypeName())
-        return (isSavedataValid = false);
-
-    stream >> boardSize;
-    defaultBlankPos.read(stream);
-    stream >> currentBlankPos;
-    stream >> sourceImg.fullPath;
-
-    isSavedataValid = (stream.status() == QDataStream::Ok);
-
-    return isSavedataValid;
-}
-
-bool SaveDataSimpleSlide::load()
-{
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly))
-        return (isSavedataValid = false);
-
-    QDataStream stream(&file);
-
-    if (!loadInfo(stream))
-        return false;
-
-    stream >> sourceImg.pixmap;
-
-    qint8 phaseType;
-
-    stream >> phaseType;
-
-    currentPhaseType = static_cast<IPhase::PhaseType>(phaseType);
-
-    stream >> defaultPositions;
-
-    isSavedataValid = (stream.status() == QDataStream::Ok);
-
-    return isSavedataValid;
+    stream << m_currentBlankPos;
 }
 
 } // Slide

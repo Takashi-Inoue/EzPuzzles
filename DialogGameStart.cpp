@@ -40,15 +40,15 @@ DialogGameStart::~DialogGameStart()
     delete ui;
 }
 
-IGame *DialogGameStart::buildGame() const
+QSharedPointer<IGame> DialogGameStart::buildGame() const
 {
     IDialogGameSettings *dialog = nullptr;
 
     if (ui->tabWidget->currentWidget() == ui->tabLikeFifteen)
-        dialog = static_cast<IDialogGameSettings *>(ui->tabLikeFifteen->findChild<DialogSettingsFifteen *>());
+        dialog = ui->tabLikeFifteen->findChild<DialogSettingsFifteen *>();
 
     if (ui->tabWidget->currentWidget() == ui->tabMineSweeper)
-        dialog = static_cast<IDialogGameSettings *>(ui->tabMineSweeper->findChild<DialogSettingsMineSweeper *>());
+        dialog = ui->tabMineSweeper->findChild<DialogSettingsMineSweeper *>();
 
     if (dialog)
         return dialog->buildGame();

@@ -40,7 +40,7 @@ void PhaseCleared::onTickFrame()
 
 void PhaseCleared::draw(QPainter &painter)
 {
-    painter.drawPixmap(painter.viewport(), sourceImage.pixmap);
+    painter.drawPixmap(painter.viewport(), sourceImage.pixmap());
     effect->draw(painter, painter.viewport());
 }
 

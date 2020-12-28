@@ -29,7 +29,6 @@ class SimpleFrame : public GraduallyBlinkFrame
 public:
     SimpleFrame(const QColor &color);
     SimpleFrame(int width, const QColor &outer, const QColor &inner);
-    ~SimpleFrame() = default;
 };
 
 } // Effect

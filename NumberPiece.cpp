@@ -17,6 +17,7 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "NumberPiece.h"
+#include <QPainterPath>
 #include <QDebug>
 
 NumberPiece::NumberPiece(int number, QColor color, QSize pieceSize) :
@@ -59,7 +60,7 @@ void NumberPiece::init()
     pixmap.fill(Qt::transparent);
 
     QFont font;
-    font.setPixelSize(pixmap.height() * 0.8);
+    font.setPixelSize(int(pixmap.height() * 0.8));
 
     QPointF outlinePos = calcOutlinePos(font);
     font.setStyleStrategy(QFont::ForceOutline);

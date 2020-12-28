@@ -48,13 +48,13 @@ GameID GameCore::gameID() const
     return gameId;
 }
 
-IGame *GameCore::cloneAsNewGame() const
+QSharedPointer<IGame> GameCore::cloneAsNewGame() const
 {
     auto game = new GameCore(gameData->cloneAsNewGame());
 
     const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
 
-    return game;
+    return QSharedPointer<IGame>(game);
 }
 
 void GameCore::save(const QString &saveDirPath, const QSize &screenshotSize) const
@@ -103,7 +103,7 @@ QSize GameCore::maxFieldSize() const
 
 void GameCore::drawFinalImage(QPainter &dest) const
 {
-    auto &finalImage = gameData->finalImage();
+    const FinalImagePointer &finalImage = gameData->finalImage();
 
     if (finalImage != nullptr)
         finalImage->draw(dest);

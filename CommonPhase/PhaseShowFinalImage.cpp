@@ -33,7 +33,7 @@ void PhaseShowFinalImage::click(const QPoint &)
 
 void PhaseShowFinalImage::draw(QPainter &painter)
 {
-    painter.drawPixmap(painter.viewport(), sourceImage.pixmap);
+    painter.drawPixmap(painter.viewport(), sourceImage.pixmap());
 }
 
 bool PhaseShowFinalImage::canSave() const

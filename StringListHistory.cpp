@@ -24,41 +24,33 @@ void StringListHistory::load(const QString &iniFilePath)
 {
     QSettings settings(iniFilePath, QSettings::IniFormat);
 
-    strings = settings.value("paths", QStringList()).toStringList();
+    m_strings = settings.value("history", QStringList()).toStringList();
 }
 
 void StringListHistory::save(const QString &iniFilePath)
 {
     QSettings settings(iniFilePath, QSettings::IniFormat);
 
-    settings.setValue("paths", strings);
+    settings.setValue("history", m_strings);
 }
 
 void StringListHistory::addString(const QString &string, bool isUnique)
 {
-    if (isUnique)
-        strings.removeOne(string);
+    m_strings.push_front(string);
 
-    strings.push_front(string);
+    if (isUnique)
+        m_strings.removeDuplicates();
 }
 
 void StringListHistory::addStrings(const QStringList &strings, bool isUnique)
 {
-    if (!isUnique) {
-        for (auto &string : strings)
-            this->strings.push_front(string);
+    m_strings = strings + m_strings;
 
-        return;
-    }
-
-    // ソート不可なので一つ一つ調べる
-    for (auto &string : strings) {
-        if (!this->strings.contains(string))
-            this->strings.push_front(string);
-    }
+    if (isUnique)
+        m_strings.removeDuplicates();
 }
 
 const QStringList &StringListHistory::stringList() const
 {
-    return strings;
+    return m_strings;
 }

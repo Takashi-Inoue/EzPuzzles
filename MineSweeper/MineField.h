@@ -38,6 +38,8 @@ public:
     void save(SaveDataMineSweeper &) const;
     void load(const SaveDataMineSweeper &);
 
+    int openedCount() const;
+    int missedCount() const;
     double openedRate() const;
     double mineRatio() const;
     bool isAllOpened() const;
@@ -53,9 +55,9 @@ private:
     int safePiecesCount() const;
 
     QVector<QVector<MinePiecePointer>> &pieces;
-    int mineCount;
-    int openedCount;
-    int missedCount;
+    int m_mineCount;
+    int m_openedCount;
+    int m_missedCount;
 
     MineLockerPointer mineLocker;
 

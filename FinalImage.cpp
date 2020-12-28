@@ -19,15 +19,15 @@
 #include "FinalImage.h"
 
 FinalImage::FinalImage(QPixmap pixmap) :
-    pixmap(pixmap)
+    m_pixmap(pixmap)
 {
     Q_ASSERT(!pixmap.isNull());
 }
 
 void FinalImage::draw(QPainter &painter)
 {
-    QSize destSize = pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
+    QSize destSize = m_pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
     QPoint tl((painter.viewport().width() - destSize.width()) / 2, (painter.viewport().height() - destSize.height()) / 2);
 
-    painter.drawPixmap(QRect(tl, destSize), pixmap, pixmap.rect());
+    painter.drawPixmap(QRect(tl, destSize), m_pixmap, m_pixmap.rect());
 }

@@ -34,8 +34,6 @@ public:
     {
     }
 
-    ~AbstractEffect() = default;
-
     virtual void draw(QPainter &, const QRectF &) = 0;
 };
 

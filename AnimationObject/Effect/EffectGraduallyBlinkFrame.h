@@ -31,7 +31,6 @@ class GraduallyBlinkFrame : public AbstractEffect
 public:
     GraduallyBlinkFrame(const QColor &outerStart, const QColor &outerEnd, int totalFrameCount, bool isLoop);
     GraduallyBlinkFrame(int width, const QColor &outerStart, const QColor &innerStart, const QColor &outerEnd, const QColor &innerEnd, int totalFrameCount, bool isLoop);
-    ~GraduallyBlinkFrame() = default;
 
     // AbstractEffect
     void draw(QPainter &painter, const QRectF &rect) override;

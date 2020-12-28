@@ -32,10 +32,10 @@ QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces() const
 {
     QList<PuzzlePiecePointer> pieces;
 
-    int xCount = boardInfo->xCount();
+    int countX = boardInfo->countX();
 
-    for (int i = 0, lim = xCount * boardInfo->yCount(); i < lim; ++i)
-        pieces << createPiece(QPoint(i % xCount, i / xCount));
+    for (int i = 0, lim = countX * boardInfo->countY(); i < lim; ++i)
+        pieces << createPiece(QPoint(i % countX, i / countX));
 
     return pieces;
 }
@@ -44,10 +44,10 @@ QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces(const QList<QPoint> 
 {
     QList<PuzzlePiecePointer> pieces;
 
-    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount(); i < lim; ++i) {
+    for (int i = 0, lim = boardInfo->countX() * boardInfo->countY(); i < lim; ++i) {
         auto piece = createPiece(defaultPositions.at(i));
 
-        piece->setPosWithoutAnimation(QPoint(i % boardInfo->xCount(), i / boardInfo->xCount()));
+        piece->setPosWithoutAnimation(QPoint(i % boardInfo->countX(), i / boardInfo->countX()));
 
         pieces << piece;
     }

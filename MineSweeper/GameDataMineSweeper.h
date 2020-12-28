@@ -32,7 +32,7 @@ class SaveDataMineSweeper;
 class GameDataMineSweeper : public IGameData
 {
 public:
-    GameDataMineSweeper(const SourceImage &sourceImage, const QSize &xyCount, int mineCount, bool isAutoLock);
+    GameDataMineSweeper(const SourceImage &sourceImage, const QSize &countXY, int mineCount, bool isAutoLock);
     GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata);
 
     // IGameData

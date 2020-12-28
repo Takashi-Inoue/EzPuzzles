@@ -18,11 +18,11 @@
  */
 #include "BoardInformation.h"
 
-BoardInformation::BoardInformation(const QSize &xyCount, const QSize &pixelSize) :
-    xyCount(xyCount),
-    pixelSize(pixelSize)
+BoardInformation::BoardInformation(const QSize &countXY, const QSize &pixelSize) :
+    m_countXY(countXY),
+    m_pixelSize(pixelSize)
 {
-    Q_ASSERT(!xyCount.isEmpty());
+    Q_ASSERT(countXY.isValid());
     Q_ASSERT(!pixelSize.isEmpty());
 }
 
@@ -31,39 +31,39 @@ QRectF BoardInformation::rectFromPiecePos(const QPoint &piecePos) const
     double x = piecePos.x();
     double y = piecePos.y();
 
-    QPointF tl((x       * pixelSize.width()) / xCount(), (y       * pixelSize.height()) / yCount());
-    QPointF br(((x + 1) * pixelSize.width()) / xCount(), ((y + 1) * pixelSize.height()) / yCount());
+    QPointF tl((x       * m_pixelSize.width()) / countX(), (y       * m_pixelSize.height()) / countY());
+    QPointF br(((x + 1) * m_pixelSize.width()) / countX(), ((y + 1) * m_pixelSize.height()) / countY());
 
     return QRectF(tl, br);
 }
 
 QPoint BoardInformation::piecePosFromPixelPos(const QPoint &pixelPos) const
 {
-    return QPoint((pixelPos.x() * xCount()) / pixelSize.width(),
-                  (pixelPos.y() * yCount()) / pixelSize.height());
+    return QPoint((pixelPos.x() * int(countX())) / m_pixelSize.width(),
+                  (pixelPos.y() * int(countY())) / m_pixelSize.height());
 }
 
-int BoardInformation::xCount() const
+int BoardInformation::countX() const
 {
-    return xyCount.width();
+    return m_countXY.width();
 }
 
-int BoardInformation::yCount() const
+int BoardInformation::countY() const
 {
-    return xyCount.height();
+    return m_countXY.height();
+}
+
+QSize BoardInformation::countXY() const
+{
+    return m_countXY;
 }
 
 int BoardInformation::pieceCount() const
 {
-    return xCount() * yCount();
-}
-
-const QSize &BoardInformation::boardSize() const
-{
-    return xyCount;
+    return countX() * countY();
 }
 
 const QSize &BoardInformation::boardPixelSize() const
 {
-    return pixelSize;
+    return m_pixelSize;
 }

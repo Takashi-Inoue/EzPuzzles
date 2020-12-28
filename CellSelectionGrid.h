@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -16,21 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SELECTCELLGRID_H
-#define SELECTCELLGRID_H
+#ifndef CELLSELECTIONGRID_H
+#define CELLSELECTIONGRID_H
 
 #include "ISubWidget.h"
 #include "GridLines.h"
 #include <QList>
-#include <QPair>
 #include <QPen>
 
-class SelectCellGrid : public ISubWidget
+class CellSelectionGrid : public ISubWidget
 {
 public:
-    SelectCellGrid(int vCellCount, int hCellCount);
-    SelectCellGrid(const QPen &pen, int vSplitterCount, int hSplitterCount);
-    ~SelectCellGrid() = default;
+    CellSelectionGrid(ushort vCellCount, ushort hCellCount, QObject *parent = nullptr);
 
     void draw(QPainter &) override;
     void mousePress(QMouseEvent *) override;
@@ -40,21 +37,24 @@ public:
     void mouseLeave(QEvent *) override;
     QPoint pos() const override;
 
-    void setRandomSelect(bool isRandom);
-    void setCellCount(int vCellCount, int hCellCount);
+    void setCellCount(ushort vCellCount, ushort hCellCount);
     const QPoint &selectedCellPos() const;
 
+public slots:
+    void setRandomSelection(bool isRandom);
+
 private:
-    QPoint invalidPoint() const;
+    constexpr QPoint invalidCell() const {return QPoint(-1, -1);}
 
-    QPen pen;
-    GridLines gridLines;
+    void drawOnMouseEffect(QPainter &painter);
 
-    bool isPressed;
-    QPoint onMousePos;
-    QPoint selectedPos;
+    GridLines m_gridLines;
 
-    bool isRandomSelect;
+    bool m_isPressed;
+    QPoint m_onMouseCell;
+    QPoint m_selectedCell;
+
+    bool m_isRandomSelect;
 };
 
 #endif // GRIDSPLITTER_H

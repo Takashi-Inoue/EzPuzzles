@@ -29,8 +29,7 @@ class ISubWidget : public QObject
 {
     Q_OBJECT
 public:
-    ISubWidget() = default;
-    virtual ~ISubWidget() = default;
+    using QObject::QObject;
 
     virtual void draw(QPainter &) = 0;
     virtual void mousePress(QMouseEvent *) = 0;

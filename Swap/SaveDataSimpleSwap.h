@@ -19,53 +19,26 @@
 #ifndef SAVEDATASIMPLESWAP_H
 #define SAVEDATASIMPLESWAP_H
 
-#include "ISaveData.h"
-#include "SourceImage.h"
-#include "UniquePosition.h"
-#include "IPhase.h"
+#include "fifteen/SaveDataFifteen.h"
 
-#include <QDataStream>
 #include <QIcon>
 #include <QList>
 #include <QPoint>
 
 namespace Swap {
 
-class SaveDataSimpleSwap : public ISaveData
+class SaveDataSimpleSwap : public Fifteen::SaveDataFifteen
 {
 public:
-    SaveDataSimpleSwap(const QString &fileName);
-    ~SaveDataSimpleSwap() = default;
+    using Fifteen::SaveDataFifteen::SaveDataFifteen;
 
-    // ISaveData
-    QIcon gameTypeIcon() const override;
-    bool isValid() const override;
-
-    bool loadInfo() override;
-
+    // AbstractSaveData
     EzPuzzles::GameType gameType() const override;
-    QString gameTypeName() const override;
-    QString imageFilePath() const override;
+    QIcon gameTypeIcon() const override;
+
+    QSharedPointer<IGame> loadGame() override;
+
     QStringList informations() const override;
-
-    IGame *loadGame() override;
-
-private:
-    friend class GameDataSimpleSwap;
-
-    bool save() const;
-    bool loadInfo(QDataStream &stream);
-    bool load();
-
-    QString fileName;
-    bool isSavedataValid;
-
-    QString gameName;
-    SourceImage sourceImg;
-    QSize boardSize;
-    UniquePosition swapTargetPos;
-    IPhase::PhaseType currentPhaseType;
-    QList<QPoint> defaultPositions;
 };
 
 } // Swap

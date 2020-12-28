@@ -32,9 +32,8 @@ class GameCoreMineSweeper : public GameCore
 public:
     GameCoreMineSweeper(GameDataPointer gameData);
     GameCoreMineSweeper(GameDataPointer gameData, GameID id);
-    ~GameCoreMineSweeper() = default;
 
-    IGame *cloneAsNewGame() const override;
+    QSharedPointer<IGame> cloneAsNewGame() const override;
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
 };
 

@@ -28,31 +28,25 @@
 
 namespace MineSweeper {
 
-SaveDataMineSweeper::SaveDataMineSweeper(const QString &fileName) :
-    fileName(fileName),
-    isSavedataValid(false)
+SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, QObject *parent)
+    : AbstractSaveData(fileName, parent)
 {
-    Q_ASSERT(!fileName.isEmpty());
 }
 
-QIcon SaveDataMineSweeper::gameTypeIcon() const
+SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, const QSize &boardXYCount
+                                       , int mineCount, int openedCount, int missedCount
+                                       , bool isAutoLock, SourceImage sourceImage
+                                       , IPhase::PhaseType currentPhaseType
+                                       , const QList<int> &pieces, QObject *parent)
+    : AbstractSaveData(fileName, sourceImage.fullPath(), sourceImage.pixmap()
+                     , boardXYCount, currentPhaseType, parent)
+    , m_mineCount(mineCount)
+    , m_openedCount(openedCount)
+    , m_missedCount(missedCount)
+    , m_isAutoLock(isAutoLock)
+    , m_pieces(pieces)
 {
-    return QIcon(":/ico/gameMine");
-}
-
-bool SaveDataMineSweeper::isValid() const
-{
-    return isSavedataValid;
-}
-
-bool SaveDataMineSweeper::loadInfo()
-{
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly))
-        return (isSavedataValid = false);
-
-    return loadInfo(QDataStream(&file));
+    Q_ASSERT(!boardXYCount.isEmpty());
 }
 
 EzPuzzles::GameType SaveDataMineSweeper::gameType() const
@@ -60,113 +54,76 @@ EzPuzzles::GameType SaveDataMineSweeper::gameType() const
     return EzPuzzles::MineSweeper;
 }
 
-QString SaveDataMineSweeper::gameTypeName() const
+QIcon SaveDataMineSweeper::gameTypeIcon() const
 {
-    return EzPuzzles::gameName(EzPuzzles::MineSweeper);
+    static QIcon icon(QStringLiteral(":/icons/mine"));
+    return icon;
 }
 
-QString SaveDataMineSweeper::imageFilePath() const
+QSharedPointer<IGame> SaveDataMineSweeper::loadGame()
 {
-    return sourceImg.fullPath;
+    if (!read())
+        return nullptr;
+
+    const GameID &gameID = GameID::fromString(QFileInfo(m_fileName).completeBaseName());
+
+    return QSharedPointer<GameCoreMineSweeper>::create(
+                QSharedPointer<GameDataMineSweeper>::create(*this), gameID);
 }
 
 QStringList SaveDataMineSweeper::informations() const
 {
-    int cellCount = xyCount.width() * xyCount.height();
-    int safePieceCount = cellCount - mineCount;
-
-    QString openedDescription = QString("%1/%2 opened (%3%), %4 missed").arg(openedCount)
-                                                                        .arg(safePieceCount)
-                                                                        .arg((openedCount * 100.0) / safePieceCount, 0, 'f', 2)
-                                                                        .arg(missedCount);
+    int cellCount = m_boardXYCount.width() * m_boardXYCount.height();
+    int safePieceCount = cellCount - m_mineCount;
+    double openRate = (m_openedCount * 100.0) / safePieceCount;
+    double mineRate = (m_mineCount * 100.0) / cellCount;
+    QString autoLock = m_isAutoLock ? QStringLiteral("On") : QStringLiteral("Off");
 
     return {
-        QString("W%1 x H%2 : %3 cells").arg(xyCount.width()).arg(xyCount.height()).arg(cellCount),
-        "",
-        QString("%1 mines (%2%)").arg(mineCount).arg((mineCount * 100.0) / cellCount, 0, 'f', 2),
-        openedDescription,
-        "",
-        QString("Autolock naked mines : ") + (isAutoLock ? "On" : "Off"),
+        QStringLiteral("W%1 x H%2 : %3 cells")
+                .arg(m_boardXYCount.width()).arg(m_boardXYCount.height()).arg(cellCount),
+        QString(),
+        QStringLiteral("%1 mines (%2%)").arg(m_mineCount).arg(mineRate, 0, 'f', 2),
+        QStringLiteral("%1/%2 opened (%3%), %4 missed")
+                .arg(m_openedCount).arg(safePieceCount).arg(openRate, 0, 'f', 2).arg(m_missedCount),
+        QString(),
+        QStringLiteral("Autolock naked mines : %1").arg(autoLock),
     };
 }
 
-IGame *SaveDataMineSweeper::loadGame()
+int SaveDataMineSweeper::mineCount() const
 {
-    if (!load())
-        return nullptr;
-
-    auto &gameID = GameID::fromQString(QFileInfo(fileName).completeBaseName());
-
-    return new GameCoreMineSweeper(std::make_shared<GameDataMineSweeper>(*this), gameID);
+    return m_mineCount;
 }
 
-bool SaveDataMineSweeper::save() const
+void SaveDataMineSweeper::readInfo(QDataStream &stream)
 {
-    QSaveFile file(fileName);
+    stream >> m_mineCount;
+    stream >> m_openedCount;
+    stream >> m_missedCount;
+    stream >> m_isAutoLock;
 
-    if (!file.open(QIODevice::WriteOnly))
-        return false;
-
-    QDataStream stream(&file);
-
-    stream << gameTypeName();
-    stream << xyCount;
-    stream << mineCount;
-    stream << openedCount;
-    stream << missedCount;
-    stream << isAutoLock;
-    stream << sourceImg.fullPath;
-    stream << sourceImg.pixmap;
-    stream << static_cast<qint8>(currentPhaseType);
-    stream << pieces;
-
-    return file.commit();
+    m_isSavedataValid = (stream.status() == QDataStream::Ok);
 }
 
-bool SaveDataMineSweeper::loadInfo(QDataStream &stream)
+void SaveDataMineSweeper::readOtherData(QDataStream &stream)
 {
-    stream >> gameName;
+    stream >> m_pieces;
 
-    if (gameName != gameTypeName())
-        return (isSavedataValid = false);
-
-    stream >> xyCount;
-    stream >> mineCount;
-    stream >> openedCount;
-    stream >> missedCount;
-    stream >> isAutoLock;
-    stream >> sourceImg.fullPath;
-
-    isSavedataValid = (stream.status() == QDataStream::Ok);
-
-    return isSavedataValid;
+    m_isSavedataValid = (stream.status() == QDataStream::Ok);
 }
 
-bool SaveDataMineSweeper::load()
+void SaveDataMineSweeper::writeInfo(QDataStream &stream) const
 {
-    QFile file(fileName);
+    stream << m_mineCount;
+    stream << m_openedCount;
+    stream << m_missedCount;
+    stream << m_isAutoLock;
+}
 
-    if (!file.open(QIODevice::ReadOnly))
-        return (isSavedataValid = false);
-
-    QDataStream stream(&file);
-
-    if (!loadInfo(stream))
-        return false;
-
-    stream >> sourceImg.pixmap;
-
-    qint8 phaseType;
-
-    stream >> phaseType;
-
-    currentPhaseType = static_cast<IPhase::PhaseType>(phaseType);
-
-    stream >> pieces;
-
-    isSavedataValid = (stream.status() == QDataStream::Ok);
-
-    return isSavedataValid;
+void SaveDataMineSweeper::writeOtherData(QDataStream &stream) const
+{
+    stream << m_pieces;
 }
 
 } // MineSweeper

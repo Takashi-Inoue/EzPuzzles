@@ -21,9 +21,10 @@
 
 #include "IDialogGameSettings.h"
 #include "BlockPiece.h"
+
 #include <QDialog>
+#include <QScopedPointer>
 #include <QSize>
-#include <memory>
 
 class ISubWidget;
 class SourceImage;
@@ -37,11 +38,12 @@ class DialogSettingsMineSweeper : public QDialog, public IDialogGameSettings
     Q_OBJECT
 
 public:
-    explicit DialogSettingsMineSweeper(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = 0);
-    ~DialogSettingsMineSweeper();
+    explicit DialogSettingsMineSweeper(const SourceImage &sourceImage, bool showOkButton = true
+                                     , QWidget *parent = nullptr);
+    ~DialogSettingsMineSweeper() override;
 
     // IDialogGameSettings
-    IGame *buildGame() const override;
+    QSharedPointer<IGame> buildGame() const override;
 
 protected:
     void showEvent(QShowEvent *) override;
@@ -64,10 +66,10 @@ private:
 
     Ui::DialogSettingsMineSweeper *ui;
 
-    ISubWidget *subFrame;
-    const SourceImage &sourceImage;
+    ISubWidget *m_subFrame;
+    const SourceImage &m_sourceImage;
 
-    std::unique_ptr<IPiece> blockPiece;
+    QScopedPointer<IPiece> m_blockPiece;
 };
 
 #endif // DIALOGSETTINGSMINESWEEPER_H

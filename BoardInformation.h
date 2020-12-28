@@ -20,28 +20,28 @@
 #define BOARDINFORMATION_H
 
 #include <QRectF>
-#include <memory>
+#include <QSharedPointer>
 
 class BoardInformation
 {
 public:
-    BoardInformation(const QSize &xyCount, const QSize &pixelSize);
+    BoardInformation(const QSize &countXY, const QSize &pixelSize);
 
     QRectF rectFromPiecePos(const QPoint &piecePos) const;
     QPoint piecePosFromPixelPos(const QPoint &pixelPos) const;
 
-    int xCount() const;
-    int yCount() const;
+    int countX() const;
+    int countY() const;
+    QSize countXY() const;
     int pieceCount() const;
 
-    const QSize &boardSize() const;
     const QSize &boardPixelSize() const;
 
 private:
-    QSize xyCount;
-    QSize pixelSize;
+    QSize m_countXY;
+    QSize m_pixelSize;
 };
 
-typedef std::shared_ptr<BoardInformation> BoardInfoPointer;
+typedef QSharedPointer<BoardInformation> BoardInfoPointer;
 
 #endif // BOARDINFORMATION_H

@@ -37,7 +37,7 @@ void SwapShuffler::execImpl()
     Q_ASSERT(!pieces.isEmpty());
     Q_ASSERT(boardInfo != nullptr);
 
-    int xCount = boardInfo->xCount();
+    int countX = boardInfo->countX();
 
     for (int i = pieces.size() - 1; i > 0; --i) {
         int r = mt() % i;
@@ -45,10 +45,10 @@ void SwapShuffler::execImpl()
         auto &lhs = pieces[i];
         auto &rhs = pieces[r];
 
-        int lx = i % xCount;
-        int ly = i / xCount;
-        int rx = r % xCount;
-        int ry = r / xCount;
+        int lx = i % countX;
+        int ly = i / countX;
+        int rx = r % countX;
+        int ry = r / countX;
 
         rwlock->lockForWrite();
 

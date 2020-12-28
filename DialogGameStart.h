@@ -33,10 +33,10 @@ class DialogGameStart : public QDialog
     Q_OBJECT
 
 public:
-    explicit DialogGameStart(const SourceImage &sourceImage, QWidget *parent = 0);
-    ~DialogGameStart();
+    DialogGameStart(const SourceImage &sourceImage, QWidget *parent = nullptr);
+    ~DialogGameStart() override;
 
-    IGame *buildGame() const;
+    QSharedPointer<IGame> buildGame() const;
 
 private:
     Ui::DialogGameStart *ui;

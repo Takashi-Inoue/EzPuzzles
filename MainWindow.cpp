@@ -33,118 +33,91 @@
 #include "SourceImage.h"
 
 #include <QFileDialog>
-#include <QLabel>
-#include <QImage>
-#include <QPushButton>
-#include <QElapsedTimer>
 #include <QThread>
 #include <QDebug>
 
-QThread garbageThread;
-QThread timerThread;
+#include <QMenu>
+
 QThread gameThread;
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    frameTimer(120),
-    newGameToolBox(this),
-    diskToolBox(this),
-    game(nullptr),
-    gameWidget(new GameWidget())
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+    , m_threadFrameTimer(new ThreadFrameTimer(120, this))
 {
     qDebug() << "MainThread :" << thread()->currentThreadId();
 
     ui->setupUi(this);
 
-    initToolBoxies();
+    ui->gameWidget->resize(1, 1);
 
-    garbageCollector.moveToThread(&garbageThread);
-    garbageThread.start();
-    garbageThread.setPriority(QThread::LowPriority);
+    connect(ui->widgetFinalImage, &QWidget::windowTitleChanged, ui->dockWidget, &QWidget::setWindowTitle);
+    connect(ui->widgetFinalImage, &QWidget::windowTitleChanged, this, &MainWindow::updateTitle);
 
-    gameWidget->resize(1, 1);
-    ui->scrollArea->setWidget(gameWidget);
+    connect(m_threadFrameTimer, &ThreadFrameTimer::tick, this, &MainWindow::onTickFrameTimer);
 
-    QFont font(ui->dockWidget->font());
-    font.setBold(true);
-    ui->dockWidget->setFont(font);
-
-    ui->action_Final_image->setChecked(ui->dockWidget->isVisible());
-
-    connect(ui->dockWidget, SIGNAL(visibilityChanged(bool)), ui->action_Final_image, SLOT(setChecked(bool)));
-
-    frameTimer.moveToThread(&timerThread);
-
-    connect(&frameTimer, SIGNAL(tick(QMutex*,QWaitCondition*)), this, SLOT(onTickFrameTimer(QMutex*,QWaitCondition*)));
-
-    timerThread.start();
-    frameTimer.start();
+    m_threadFrameTimer->start();
 
     gameThread.start();
 }
 
-MainWindow::~MainWindow()
+void MainWindow::closeEvent(QCloseEvent *)
 {
-    frameTimer.stop();
-    frameTimer.wait();
-
-    timerThread.quit();
-    timerThread.wait();
+    m_threadFrameTimer->stop();
+    m_threadFrameTimer->wait();
 
     gameThread.quit();
     gameThread.wait();
+}
 
-    garbageCollector.stop();
-    garbageCollector.wait();
-
-    garbageThread.quit();
-    garbageThread.wait();
-
-    delete gameWidget;
+MainWindow::~MainWindow()
+{
     delete ui;
 }
 
-void MainWindow::closeEvent(QCloseEvent *)
+void MainWindow::on_actionNewGame_triggered()
 {
+    static QMenu *menu;
+
+    if (menu == nullptr) {
+        menu = new QMenu(this);
+        menu->addActions({ui->actionOpenImage, ui->actionFromHistory});
+    }
+
+    menu->popup(QCursor::pos());
 }
 
-void MainWindow::on_action_Open_triggered()
+void MainWindow::on_actionFromCurrentImage_triggered()
 {
-    newGameToolBox.show(QCursor::pos());
-}
-
-void MainWindow::on_actionNew_Game_Current_image_triggered()
-{
-    auto newGame = createNewGame(game->sourceImage());
+    auto newGame = createNewGame(m_game->sourceImage());
 
     if (newGame != nullptr)
         startNewGame(newGame);
 }
 
-void MainWindow::on_actionSave_Load_triggered()
+void MainWindow::on_actionRestart_triggered()
 {
-    diskToolBox.show(QCursor::pos());
+    startNewGame(m_game->cloneAsNewGame());
 }
 
-void MainWindow::on_action_Restart_triggered()
+void MainWindow::on_actionSaveLoad_triggered()
 {
-    startNewGame(game->cloneAsNewGame());
-}
+    static QMenu *menu;
 
-void MainWindow::on_action_Final_image_triggered(bool checked)
-{
-    ui->dockWidget->setVisible(checked);
-}
+    if (menu == nullptr) {
+        menu = new QMenu(this);
+        menu->addActions({ui->actionLoad, ui->actionSave});
+    }
 
-void MainWindow::on_actionE_xit_triggered()
-{
-    close();
+    menu->popup(QCursor::pos());
 }
 
 void MainWindow::startGameWithNewImage()
 {
-    QString imagePath = QFileDialog::getOpenFileName(this, tr("Open image..."), "", tr("Images (*.png *.bmp *.jpg *.jpeg)"));
+    QString imagePath = QFileDialog::getOpenFileName(
+                            this
+                          , QStringLiteral("Open image..."), QStringLiteral("")
+                          , QStringLiteral("Images (*.png *.bmp *.jpg *.jpeg)"));
 
     SourceImage sourceImage(imagePath);
 
@@ -185,13 +158,11 @@ void MainWindow::startGameFromImageHistory()
 
 void MainWindow::saveGame()
 {
-    diskToolBox.close();
-
-    if (game == nullptr)
+    if (m_game == nullptr)
         return;
 
     EzPuzzles::createSaveDirPath();
-    game->save(EzPuzzles::saveDirPath(), EzPuzzles::screenshotSize());
+    m_game->save(EzPuzzles::saveDirPath(), EzPuzzles::screenshotSize());
 }
 
 void MainWindow::loadGame()
@@ -201,52 +172,34 @@ void MainWindow::loadGame()
     if (dialog.exec() != QDialog::Accepted)
         return;
 
-    auto game = dialog.loadGame();
+    QSharedPointer<IGame> game = dialog.loadGame();
 
     if (game == nullptr)
         return;
 
     startNewGame(game);
-    updateImageHistory(game->sourceImage().fullPath);
+    updateImageHistory(game->sourceImage().fullPath());
 }
 
-void MainWindow::onTickFrameTimer(QMutex *mutex, QWaitCondition *wait)
+void MainWindow::onTickFrameTimer(QReadWriteLock *lock, QWaitCondition *wait)
 {
-    mutex->lock();
+    lock->lockForWrite();
 
 //    qDebug() << "onTickFrameTimer lock";
 
-    if (game != nullptr)
-        game->onTickFrame();
+    if (m_game != nullptr)
+        m_game->onTickFrame();
 
-    gameWidget->repaint();
+    ui->gameWidget->repaint();
 
 //    qDebug() << "onTickFrameTimer wake";
     wait->wakeAll();
-    mutex->unlock();
+    lock->unlock();
 }
 
 void MainWindow::updateTitle(QString finalImageWidgetTitle)
 {
-    setWindowTitle("EzPuzzles : " + finalImageWidgetTitle);
-}
-
-void MainWindow::initToolBoxies()
-{
-    auto buttonOpenImage = newGameToolBox.addIcon(QIcon(":/ico/openImage"), "Open new image");
-    auto buttonHistory = newGameToolBox.addIcon(QIcon(":/ico/historyImage"), "Select an image from history");
-
-    connect(buttonOpenImage, SIGNAL(clicked(bool)), this, SLOT(startGameWithNewImage()));
-    connect(buttonHistory,   SIGNAL(clicked(bool)), this, SLOT(startGameFromImageHistory()));
-
-    auto buttonSaveGame = diskToolBox.addIcon(QIcon(":/ico/save"), "Save");
-    auto buttonLoadGame = diskToolBox.addIcon(QIcon(":/ico/load"), "Load");
-
-    connect(buttonSaveGame, SIGNAL(clicked(bool)), this, SLOT(saveGame()));
-    connect(buttonLoadGame, SIGNAL(clicked(bool)), this, SLOT(loadGame()));
-
-    buttonSaveGame->setObjectName("pushButtonSaveGame");
-    buttonSaveGame->setEnabled(false);
+    setWindowTitle(QStringLiteral("EzPuzzles : %1").arg(finalImageWidgetTitle));
 }
 
 void MainWindow::updateImageHistory(const QString &lastImagePath) const
@@ -258,20 +211,7 @@ void MainWindow::updateImageHistory(const QString &lastImagePath) const
     history.save(EzPuzzles::imageHistoryPath());
 }
 
-void MainWindow::createFinalImageWidget(IGame *game)
-{
-    Q_CHECK_PTR(game);
-    Q_ASSERT(finalImageWidget == nullptr);
-
-    finalImageWidget = std::make_shared<FormFinalImage>(game);
-
-    ui->dockWidget->setWidget(finalImageWidget.get());
-
-    connect(finalImageWidget.get(), SIGNAL(windowTitleChanged(QString)), ui->dockWidget, SLOT(setWindowTitle(QString)));
-    connect(finalImageWidget.get(), SIGNAL(windowTitleChanged(QString)), this, SLOT(updateTitle(QString)));
-}
-
-IGame *MainWindow::createNewGame(const SourceImage &sourceImage)
+QSharedPointer<IGame> MainWindow::createNewGame(const SourceImage &sourceImage)
 {
     DialogGameStart dialog(sourceImage, this);
 
@@ -281,37 +221,28 @@ IGame *MainWindow::createNewGame(const SourceImage &sourceImage)
     return dialog.buildGame();
 }
 
-void MainWindow::startNewGame(IGame *newGame)
+void MainWindow::startNewGame(QSharedPointer<IGame> newGame)
 {
     Q_CHECK_PTR(newGame);
 
-    if (game != nullptr)
-        game->disconnect();
+    if (newGame == m_game)
+        return;
 
-    if (finalImageWidget == nullptr)
-        createFinalImageWidget(newGame);
+    if (m_game != nullptr)
+        m_game->disconnect();
 
-    finalImageWidget->setGame(newGame);
-    finalImageWidget->repaint();
+    ui->widgetFinalImage->setGame(newGame);
+    ui->widgetFinalImage->repaint();
 
-    connect(newGame, SIGNAL(informationUpdated()), finalImageWidget.get(), SLOT(repaint()));
+    connect(newGame.get(), &IGame::informationUpdated, ui->widgetFinalImage, qOverload<>(&QWidget::repaint));
 
-    gameWidget->resize(newGame->maxFieldSize());
-    gameWidget->setGame(newGame);
+    ui->gameWidget->resize(newGame->maxFieldSize());
+    ui->gameWidget->setGame(newGame);
 
-    gameWidget->repaint();
+    ui->actionFromCurrentImage->setEnabled(true);
+    ui->actionRestart->setEnabled(true);
+    ui->actionSave->setEnabled(true);
 
-    ui->actionNew_Game_Current_image->setEnabled(true);
-    ui->action_Restart->setEnabled(true);
-
-    diskToolBox.setChildEnabled("pushButtonSaveGame", true);
-
-    auto oldGame = game;
-    game = newGame;
-
-    if (oldGame != nullptr) {
-        garbageCollector.push(oldGame);
-        garbageCollector.start();
-    }
+    m_game = newGame;
 }
 

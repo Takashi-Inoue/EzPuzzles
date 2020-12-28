@@ -17,7 +17,6 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "ImageWidget.h"
-#include "ui_ImageWidget.h"
 
 #include "ISubWidget.h"
 
@@ -25,16 +24,9 @@
 #include <QMouseEvent>
 #include <QDebug>
 
-ImageWidget::ImageWidget(QWidget *parent) :
-    QFrame(parent),
-    ui(new Ui::ImageWidget)
+ImageWidget::ImageWidget(QWidget *parent)
+    : QFrame(parent)
 {
-    ui->setupUi(this);
-}
-
-ImageWidget::~ImageWidget()
-{
-    delete ui;
 }
 
 void ImageWidget::setPixmap(const QPixmap &pixmap)
@@ -44,7 +36,7 @@ void ImageWidget::setPixmap(const QPixmap &pixmap)
 
 void ImageWidget::addSubWidget(ISubWidget *subWidget)
 {
-    subWidgets.push_back(std::shared_ptr<ISubWidget>(subWidget));
+    subWidgets.push_back(QSharedPointer<ISubWidget>(subWidget));
 
     connect(subWidget, SIGNAL(updated()), this, SLOT(repaint()));
 }
@@ -140,7 +132,7 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
         subWidget->mouseMove(event);
 }
 
-void ImageWidget::enterEvent(QEvent *event)
+void ImageWidget::enterEvent(QEnterEvent *event)
 {
     QFrame::enterEvent(event);
 

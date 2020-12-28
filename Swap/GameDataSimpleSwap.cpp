@@ -37,32 +37,33 @@
 namespace Swap {
 
 GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount) :
-    rwlock(std::make_shared<QReadWriteLock>()),
-    sourceImg(img),
-    board(std::make_shared<Board>(std::make_shared<BoardInformation>(xyCount, img.size()), pieces, rwlock)),
-    swapTargetPos(swapTargetPos),
-    currentPhaseType(IPhase::PhaseReady)
+    m_rwlock(std::make_shared<QReadWriteLock>()),
+    m_sourceImg(img),
+    m_board(std::make_shared<Board>(QSharedPointer<BoardInformation>::create(xyCount, img.size()), m_pieces, m_rwlock)),
+    m_swapTargetPos(swapTargetPos),
+    m_currentPhaseType(IPhase::PhaseReady)
 {
     Q_ASSERT(!img.isNull());
 }
 
 GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData) :
-    rwlock(std::make_shared<QReadWriteLock>()),
-    sourceImg(loadedSaveData.sourceImg),
-    board(std::make_shared<Board>(std::make_shared<BoardInformation>(loadedSaveData.boardSize, sourceImg.size()), pieces, rwlock)),
-    swapTargetPos(loadedSaveData.swapTargetPos),
-    currentPhaseType(loadedSaveData.currentPhaseType)
+    m_rwlock(std::make_shared<QReadWriteLock>()),
+    m_sourceImg(loadedSaveData.sourceImage()),
+    m_board(std::make_shared<Board>(loadedSaveData.boardInformation(), m_pieces, m_rwlock)),
+    m_swapTargetPos(loadedSaveData.specifiedPosition()),
+    m_currentPhaseType(loadedSaveData.currentPhase())
 {
     Q_ASSERT(loadedSaveData.isValid());
 
-    pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces(loadedSaveData.defaultPositions);
+    m_pieces = Fifteen::SimplePiecesFactory(m_board->boardInfo(), m_sourceImg.pixmap())
+            .createPieces(loadedSaveData.defaultPositions());
 
     initPieces();
 }
 
 GameDataPointer GameDataSimpleSwap::cloneAsNewGame() const
 {
-    return std::make_shared<GameDataSimpleSwap>(sourceImg, swapTargetPos, board->boardInfo()->boardSize());
+    return QSharedPointer<GameDataSimpleSwap>::create(m_sourceImg, m_swapTargetPos, m_board->boardInfo()->countXY());
 }
 
 QString GameDataSimpleSwap::gameName() const
@@ -72,75 +73,72 @@ QString GameDataSimpleSwap::gameName() const
 
 PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
 {
-    currentPhaseType = phaseType;
+    m_currentPhaseType = phaseType;
 
     if (phaseType == IPhase::PhaseReady) {
         initPieces();
-        return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
+        return std::make_shared<PhaseShowFinalImage>(m_sourceImg, IPhase::PhasePreGame);
     }
 
     if (phaseType == IPhase::PhasePreGame)
-        return std::make_shared<PhaseShuffle>(board, new Fifteen::SwapShuffler(pieces, board->boardInfo(), rwlock), IPhase::PhaseGaming);
+        return std::make_shared<PhaseShuffle>(m_board, new Fifteen::SwapShuffler(m_pieces, m_board->boardInfo(), m_rwlock), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
-        return std::make_shared<PhaseSimpleSwapGaming>(board, pieces, swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
+        return std::make_shared<PhaseSimpleSwapGaming>(m_board, m_pieces, m_swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
 
     if (phaseType == IPhase::PhaseEnding)
-        return std::make_shared<PhaseSimpleSwapEnding>(board->boardInfo(), pieces, IPhase::PhaseCleared);
+        return std::make_shared<PhaseSimpleSwapEnding>(m_board->boardInfo(), m_pieces, IPhase::PhaseCleared);
 
     if (phaseType == IPhase::PhaseCleared)
-        return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);
+        return std::make_shared<PhaseCleared>(m_sourceImg, IPhase::PhaseReady);
 
     qDebug() << "no such phase type" << phaseType;
 
-    currentPhaseType = IPhase::PhaseReady;
+    m_currentPhaseType = IPhase::PhaseReady;
 
-    return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
+    return std::make_shared<PhaseShowFinalImage>(m_sourceImg, IPhase::PhasePreGame);
 }
 
 IPhase::PhaseType GameDataSimpleSwap::currentPhase() const
 {
-    return currentPhaseType;
+    return m_currentPhaseType;
 }
 
 const SourceImage &GameDataSimpleSwap::sourceImage() const
 {
-    return sourceImg;
+    return m_sourceImg;
 }
 
 FinalImagePointer GameDataSimpleSwap::finalImage() const
 {
-    return std::make_shared<FinalImage>(sourceImg.pixmap);
+    return std::make_shared<FinalImage>(m_sourceImg.pixmap());
 }
 
 BoardInfoPointer GameDataSimpleSwap::boardInfo() const
 {
-    return board->boardInfo();
+    return m_board->boardInfo();
 }
 
 bool GameDataSimpleSwap::save(const QString &fileName) const
 {
-    if (currentPhaseType == IPhase::PhaseCleared)
-        return sourceImg.saveImage();
+    if (m_currentPhaseType == IPhase::PhaseCleared)
+        return m_sourceImg.saveImage();
 
-    SaveDataSimpleSwap savedata(fileName);
+    QList<QPoint> defaultPositions;
 
-    savedata.gameName         = gameName();
-    savedata.boardSize        = board->boardInfo()->boardSize();
-    savedata.swapTargetPos    = swapTargetPos;
-    savedata.sourceImg        = sourceImg;
-    savedata.currentPhaseType = currentPhaseType;
+    for (const auto &piece : m_pieces)
+        defaultPositions << piece->pos().defaultPos();
 
-    for (const auto &piece : pieces)
-        savedata.defaultPositions << piece->pos().defaultPos();
+    SaveDataSimpleSwap savedata(fileName, m_board->boardInfo()->countXY(), m_swapTargetPos, m_sourceImg
+                              , m_currentPhaseType, defaultPositions);
 
-    return savedata.save();
+    return savedata.write();
 }
 
 void GameDataSimpleSwap::initPieces()
 {
-    if (pieces.isEmpty())
-        pieces = Fifteen::SimplePiecesFactory(board->boardInfo(), sourceImg.pixmap).createPieces();
+    if (m_pieces.isEmpty())
+        m_pieces = Fifteen::SimplePiecesFactory(m_board->boardInfo(), m_sourceImg.pixmap()).createPieces();
 
     setAnimationToPieces();
     setEffectToPieces();
@@ -148,9 +146,9 @@ void GameDataSimpleSwap::initPieces()
 
 void GameDataSimpleSwap::setAnimationToPieces()
 {
-    Q_ASSERT(!pieces.isEmpty());
+    Q_ASSERT(!m_pieces.isEmpty());
 
-    for (auto &piece : pieces) {
+    for (auto &piece : m_pieces) {
         auto chainTransform = std::make_shared<Transform::ChainedTransform>();
         chainTransform->addTransform(std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter, warpWaitCount));
         chainTransform->addTransform(std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, warpWaitCount));
@@ -162,11 +160,11 @@ void GameDataSimpleSwap::setAnimationToPieces()
 
 void GameDataSimpleSwap::setEffectToPieces()
 {
-    Q_ASSERT(!pieces.isEmpty());
+    Q_ASSERT(!m_pieces.isEmpty());
 
     auto frame = std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
 
-    for (auto &piece : pieces)
+    for (auto &piece : m_pieces)
         piece->setEffect(frame);
 }
 

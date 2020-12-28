@@ -34,12 +34,11 @@ class IGame : public QObject
 {
     Q_OBJECT
 public:
-    IGame() = default;
-    virtual ~IGame() = default;
+    using QObject::QObject;
 
     virtual GameID gameID() const = 0;
 
-    virtual IGame *cloneAsNewGame() const = 0;
+    virtual QSharedPointer<IGame> cloneAsNewGame() const = 0;
     virtual void save(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
 
     virtual void onTickFrame() = 0;

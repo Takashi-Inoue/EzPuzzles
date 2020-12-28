@@ -19,6 +19,7 @@
 #include "SaveDataSimpleSwap.h"
 #include "GameDataSimpleSwap.h"
 #include "GameCore.h"
+#include "BoardInformation.h"
 #include "EzPuzzles.h"
 
 #include <QFile>
@@ -27,128 +28,36 @@
 
 namespace Swap {
 
-SaveDataSimpleSwap::SaveDataSimpleSwap(const QString &fileName) :
-    fileName(fileName),
-    isSavedataValid(false)
-{
-    Q_ASSERT(!fileName.isEmpty());
-}
-
-QIcon SaveDataSimpleSwap::gameTypeIcon() const
-{
-    return QIcon(":/ico/gameSimpleSwap");
-}
-
-bool SaveDataSimpleSwap::isValid() const
-{
-    return isSavedataValid;
-}
-
-bool SaveDataSimpleSwap::loadInfo()
-{
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly))
-        return (isSavedataValid = false);
-
-    return loadInfo(QDataStream(&file));
-}
-
 EzPuzzles::GameType SaveDataSimpleSwap::gameType() const
 {
     return EzPuzzles::SimpleSwap;
 }
 
-QString SaveDataSimpleSwap::gameTypeName() const
+QIcon SaveDataSimpleSwap::gameTypeIcon() const
 {
-    return EzPuzzles::gameName(EzPuzzles::SimpleSwap);
+    static QIcon icon(QStringLiteral(":/icons/swap"));
+    return icon;
 }
 
-QString SaveDataSimpleSwap::imageFilePath() const
+QSharedPointer<IGame> SaveDataSimpleSwap::loadGame()
 {
-    return sourceImg.fullPath;
+    if (!read())
+        return nullptr;
+
+    const GameID &gameID = GameID::fromString(QFileInfo(m_fileName).completeBaseName());
+
+    return QSharedPointer<GameCore>::create(QSharedPointer<GameDataSimpleSwap>::create(*this), gameID);
 }
 
 QStringList SaveDataSimpleSwap::informations() const
 {
     return {
-        QString("W%1 x H%2 : %3 pieces").arg(boardSize.width()).arg(boardSize.height()).arg(boardSize.width() * boardSize.height()),
-        "",
-        QString("Swap target ") + swapTargetPos.toString(),
+        QStringLiteral("W%1 x H%2 : %3 pieces")
+                .arg(m_boardXYCount.width()).arg(m_boardXYCount.height())
+                .arg(m_boardXYCount.width() * m_boardXYCount.height()),
+        QString(),
+        QStringLiteral("Swap target %1").arg(m_specifiedPosition.toString()),
     };
-}
-
-IGame *SaveDataSimpleSwap::loadGame()
-{
-    if (!load())
-        return nullptr;
-
-    auto &gameID = GameID::fromQString(QFileInfo(fileName).completeBaseName());
-
-    return new GameCore(std::make_shared<GameDataSimpleSwap>(*this), gameID);
-}
-
-bool SaveDataSimpleSwap::save() const
-{
-    QSaveFile file(fileName);
-
-    if (!file.open(QIODevice::WriteOnly))
-        return false;
-
-    QDataStream stream(&file);
-
-    stream << gameTypeName();
-    stream << boardSize;
-    swapTargetPos.write(stream);
-    stream << sourceImg.fullPath;
-    stream << sourceImg.pixmap;
-    stream << static_cast<qint8>(currentPhaseType);
-    stream << defaultPositions;
-
-    return file.commit();
-}
-
-bool SaveDataSimpleSwap::loadInfo(QDataStream &stream)
-{
-    stream >> gameName;
-
-    if (gameName != gameTypeName())
-        return (isSavedataValid = false);
-
-    stream >> boardSize;
-    swapTargetPos.read(stream);
-    stream >> sourceImg.fullPath;
-
-    isSavedataValid = (stream.status() == QDataStream::Ok);
-
-    return isSavedataValid;
-}
-
-bool SaveDataSimpleSwap::load()
-{
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly))
-        return (isSavedataValid = false);
-
-    QDataStream stream(&file);
-
-    if (!loadInfo(stream))
-        return false;
-
-    stream >> sourceImg.pixmap;
-
-    qint8 phaseType;
-
-    stream >> phaseType;
-
-    currentPhaseType = static_cast<IPhase::PhaseType>(phaseType);
-
-    stream >> defaultPositions;
-
-    isSavedataValid = (stream.status() == QDataStream::Ok);
-
-    return isSavedataValid;
 }
 
 } // Swap
