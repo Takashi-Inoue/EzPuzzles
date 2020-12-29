@@ -16,5 +16,6 @@
         <file alias="icons/history">res/icons/history.svg</file>
         <file alias="icons/success">res/icons/success.svg</file>
         <file alias="icons/plus">res/icons/plus.svg</file>
+        <file alias="icons/remove">res/icons/x.svg</file>
     </qresource>
 </RCC>

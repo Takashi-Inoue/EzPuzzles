@@ -24,9 +24,8 @@
 #include <QPushButton>
 #include <QStringList>
 #include <QShortcut>
-#include <QThread>
 
-#include "ImageLoader.h"
+#include "ThreadImageLoader.h"
 
 namespace Ui {
 class DialogImageHistory;
@@ -43,14 +42,11 @@ public:
     QString selectedImagePath() const;
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event) override;
     void done(int result) override;
 
 private slots:
-    void imageLoaded(const QString &imagePath, const QPixmap &pixmap);
-    void removeImagePath(const QString &imagePath);
+    void removeImagePath(QString imagePath);
     void removeSelected();
-    void onRemoveButtonPressed();
 
     void on_listWidget_doubleClicked(const QModelIndex &index);
     void on_listWidget_itemSelectionChanged();
@@ -60,21 +56,9 @@ private:
     void removeHistory(int index);
     void saveImageHistory();
 
-    void setupRemoveButton();
-    void drawIconEdge(int edgeWidth, QRect iconImageRect);
-    QSize iconImageSize(int edgeWidth) const;
-    QPoint iconImageTopLeft(const QSize &iconPixmapSize) const;
-
     Ui::DialogImageHistory *ui;
 
-    QThread loadThread;
-    ImageLoader imageLoader;
-
-    QPixmap iconBase;
     QStringList imagePaths;
-
-    QPushButton buttonRemove;
-    QShortcut shortcutRemove;
 
     bool isHistoryChanged;
 };

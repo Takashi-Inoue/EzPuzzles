@@ -52,7 +52,7 @@ private:
 
     Ui::DialogSettingsFifteen *ui;
 
-    CellSelectionGrid *m_grid;
+    QSharedPointer<CellSelectionGrid> m_grid;
 
     SourceImage m_sourceImage;
 };

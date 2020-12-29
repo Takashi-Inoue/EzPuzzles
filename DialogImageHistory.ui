@@ -11,30 +11,33 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ImageHistory</string>
+   <string>Image history</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QListWidget" name="listWidget">
-     <property name="whatsThis">
-      <string>&lt;html&gt;
+  <property name="whatsThis">
+   <string>&lt;html&gt;
 &lt;body&gt;
 
-&lt;p&gt;Image history:&lt;/p&gt;
-&lt;p&gt;
-- use an image from history -&lt;br&gt;
-Double click an image or&lt;br&gt;
-Select it and push &amp;quot;OK&amp;quot; button.
-&lt;/p&gt;
+&lt;h4&gt;Start game.&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Double click an image.&lt;/li&gt;
+&lt;li&gt;Select an image and push the &amp;quot;OK&amp;quot; button.&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;
-- remove an image from history -&lt;br&gt;
-Click each remove button on top right corner or&lt;br&gt;
-Select an image and press &amp;quot;Delete&amp;quot; key.
-&lt;/p&gt;
+&lt;h4&gt;Remove an image.&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Click remove button on top right corner.&lt;/li&gt;
+&lt;li&gt;Select an image and press the &amp;quot;Delete&amp;quot; key.&lt;/li&gt;
+&lt;li&gt;Select &amp;quot;Remove&amp;quot; in context menu.&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;/body&gt;
 &lt;/html&gt;</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="ListWidgetImageHistory" name="listWidget">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
      </property>
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
@@ -44,6 +47,12 @@ Select an image and press &amp;quot;Delete&amp;quot; key.
        <width>128</width>
        <height>128</height>
       </size>
+     </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+     <property name="horizontalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
      <property name="movement">
       <enum>QListView::Static</enum>
@@ -56,6 +65,9 @@ Select an image and press &amp;quot;Delete&amp;quot; key.
      </property>
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -74,6 +86,13 @@ Select an image and press &amp;quot;Delete&amp;quot; key.
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ListWidgetImageHistory</class>
+   <extends>QListWidget</extends>
+   <header>widgets/ListWidgetImageHistory.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

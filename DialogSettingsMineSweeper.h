@@ -66,7 +66,7 @@ private:
 
     Ui::DialogSettingsMineSweeper *ui;
 
-    ISubWidget *m_subFrame;
+    QSharedPointer<ISubWidget> m_subFrame;
     const SourceImage &m_sourceImage;
 
     QScopedPointer<IPiece> m_blockPiece;

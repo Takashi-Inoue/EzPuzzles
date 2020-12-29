@@ -29,7 +29,6 @@
 DialogSettingsMineSweeper::DialogSettingsMineSweeper(const SourceImage &sourceImage, bool showOkButton, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogSettingsMineSweeper),
-    m_subFrame(nullptr),
     m_sourceImage(sourceImage)
 {
     ui->setupUi(this);
@@ -130,7 +129,7 @@ void DialogSettingsMineSweeper::updateSubFrame()
     QSize frameSize = (xyCount() * ui->pieceSizeSlider->value()) * ui->imageWidget->imageScale();
     QRect frameRect(QPoint(0, 0), frameSize);
 
-    m_subFrame = new SubFrame(frameRect);
+    m_subFrame = QSharedPointer<SubFrame>::create(frameRect);
 
     ui->imageWidget->replaceSubWidget(0, m_subFrame);
 }

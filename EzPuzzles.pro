@@ -37,15 +37,16 @@ SOURCES += main.cpp\
     MineSweeper/NumberPieceFactory.cpp \
     ThreadFrameTimer.cpp \
     ThreadGameInfoLoader.cpp \
+    ThreadImageLoader.cpp \
     ThreadOperation.cpp \
     ImageFragmentPiece.cpp \
     MineSweeper/MineLocker.cpp \
     DialogImageHistory.cpp \
-    ImageLoader.cpp \
     StringListHistory.cpp \
     EzPuzzles.cpp \
     DialogSavedata.cpp \
     SourceImage.cpp \
+    commands/RemoveListWidgetItem.cpp \
     fifteen/PuzzlePiece.cpp \
     MineSweeper/MinePiecesFactory.cpp \
     fifteen/SaveDataFifteen.cpp \
@@ -95,7 +96,9 @@ SOURCES += main.cpp\
     MineSweeper/PhaseMineSweeperEnding.cpp \
     AnimationObject/Effect/EffectGraduallyImage.cpp \
     AnimationObject/Transform/WaitTransform.cpp \
-    AnimationObject/Effect/TimeLimitedEffect.cpp
+    AnimationObject/Effect/TimeLimitedEffect.cpp \
+    widgets/ListWidgetImageHistory.cpp \
+    widgets/ListWidgetImages.cpp
 
 HEADERS  += MainWindow.h \
     AbstractSaveData.h \
@@ -125,16 +128,17 @@ HEADERS  += MainWindow.h \
     MineSweeper/NumberPieceFactory.h \
     ThreadFrameTimer.h \
     ThreadGameInfoLoader.h \
+    ThreadImageLoader.h \
     ThreadOperation.h \
     ImageFragmentPiece.h \
     MineSweeper/MineLocker.h \
     Utility.h \
     DialogImageHistory.h \
-    ImageLoader.h \
     StringListHistory.h \
     EzPuzzles.h \
     DialogSavedata.h \
     SourceImage.h \
+    commands/RemoveListWidgetItem.h \
     fifteen/IPuzzlePiece.h \
     fifteen/PuzzlePiece.h \
     MineSweeper/MinePiecesFactory.h \
@@ -192,7 +196,9 @@ HEADERS  += MainWindow.h \
     MineSweeper/PhaseMineSweeperEnding.h \
     AnimationObject/Effect/EffectGraduallyImage.h \
     AnimationObject/Transform/WaitTransform.h \
-    AnimationObject/Effect/TimeLimitedEffect.h
+    AnimationObject/Effect/TimeLimitedEffect.h \
+    widgets/ListWidgetImageHistory.h \
+    widgets/ListWidgetImages.h
 
 FORMS    += MainWindow.ui \
     DialogSettingsFifteen.ui \

@@ -33,7 +33,7 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
                                            , QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::DialogSettingsFifteen)
-    , m_grid(new CellSelectionGrid(2, 2))
+    , m_grid(QSharedPointer<CellSelectionGrid>::create(2, 2))
     , m_sourceImage(sourceImage)
 {
     ui->setupUi(this);
@@ -54,7 +54,7 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
     ui->hSliderSplitY->setMaximum(ui->spinBoxSplitY->maximum());
 
     connect(ui->radioButtonBlankRandom, &QRadioButton::toggled
-          , m_grid, &CellSelectionGrid::setRandomSelection);
+          , m_grid.get(), &CellSelectionGrid::setRandomSelection);
 
     m_grid->setRandomSelection(ui->radioButtonBlankRandom->isChecked());
 }

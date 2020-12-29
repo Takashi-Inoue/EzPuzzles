@@ -24,62 +24,57 @@
 #include <QMouseEvent>
 #include <QDebug>
 
-ImageWidget::ImageWidget(QWidget *parent)
-    : QFrame(parent)
-{
-}
-
 void ImageWidget::setPixmap(const QPixmap &pixmap)
 {
-    this->pixmap = pixmap;
+    m_pixmap = pixmap;
 }
 
-void ImageWidget::addSubWidget(ISubWidget *subWidget)
+void ImageWidget::addSubWidget(QSharedPointer<ISubWidget> subWidget)
 {
-    subWidgets.push_back(QSharedPointer<ISubWidget>(subWidget));
+    m_subWidgets.push_back(subWidget);
 
-    connect(subWidget, SIGNAL(updated()), this, SLOT(repaint()));
+    connect(subWidget.get(), &ISubWidget::updated, this, qOverload<>(&QWidget::repaint));
 }
 
-void ImageWidget::replaceSubWidget(int index, ISubWidget *subWidget)
+void ImageWidget::replaceSubWidget(int index, QSharedPointer<ISubWidget> subWidget)
 {
-    if (subWidgets.empty()) {
+    if (m_subWidgets.empty()) {
         addSubWidget(subWidget);
         return;
     }
 
-    Q_ASSERT(index >= 0 && index < subWidgets.size());
+    Q_ASSERT(index >= 0 && index < m_subWidgets.size());
 
-    subWidgets[index]->disconnect();
-    subWidgets[index].reset(subWidget);
+    m_subWidgets[index]->disconnect();
+    m_subWidgets[index] = subWidget;
 
-    connect(subWidget, SIGNAL(updated()), this, SLOT(repaint()));
+    connect(subWidget.get(), &ISubWidget::updated, this, qOverload<>(&QWidget::repaint));
 }
 
 const QPixmap &ImageWidget::originalPixmap() const
 {
-    return pixmap;
+    return m_pixmap;
 }
 
 QRect ImageWidget::imageRect() const
 {
-    Q_ASSERT(!pixmap.isNull());
+    Q_ASSERT(!m_pixmap.isNull());
 
-    return imageRectangle;
+    return m_imageRectangle;
 }
 
 double ImageWidget::imageScale() const
 {
-    Q_ASSERT(!pixmap.isNull());
+    Q_ASSERT(!m_pixmap.isNull());
 
-    return static_cast<double>(imageRect().width()) / pixmap.width();
+    return double(imageRect().width()) / m_pixmap.width();
 }
 
 void ImageWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
 
-    if (pixmap.isNull())
+    if (m_pixmap.isNull())
         return;
 
     QPainter painter(this);
@@ -87,17 +82,17 @@ void ImageWidget::paintEvent(QPaintEvent *event)
 
     calcImageRect();
 
-    if (imageRectangle.size() == size()) {
-        painter.drawPixmap(0, 0, pixmap);
+    if (m_imageRectangle.size() == size()) {
+        painter.drawPixmap(0, 0, m_pixmap);
         return;
     }
 
-    painter.drawPixmap(imageRectangle, pixmap, pixmap.rect());
+    painter.drawPixmap(m_imageRectangle, m_pixmap, m_pixmap.rect());
 
     painter.setClipping(true);
-    painter.setClipRect(imageRectangle);
+    painter.setClipRect(m_imageRectangle);
 
-    for (auto &subWidget : subWidgets)
+    for (auto &subWidget : m_subWidgets)
         subWidget->draw(painter);
 }
 
@@ -112,7 +107,7 @@ void ImageWidget::mousePressEvent(QMouseEvent *event)
 {
     QFrame::mousePressEvent(event);
 
-    for (auto &subWidget : subWidgets)
+    for (auto &subWidget : m_subWidgets)
         subWidget->mousePress(event);
 }
 
@@ -120,7 +115,7 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     QFrame::mouseReleaseEvent(event);
 
-    for (auto &subWidget : subWidgets)
+    for (auto &subWidget : m_subWidgets)
         subWidget->mouseRelease(event);
 }
 
@@ -128,7 +123,7 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QFrame::mouseMoveEvent(event);
 
-    for (auto &subWidget : subWidgets)
+    for (auto &subWidget : m_subWidgets)
         subWidget->mouseMove(event);
 }
 
@@ -136,7 +131,7 @@ void ImageWidget::enterEvent(QEnterEvent *event)
 {
     QFrame::enterEvent(event);
 
-    for (auto &subWidget : subWidgets)
+    for (auto &subWidget : m_subWidgets)
         subWidget->mouseEnter(event);
 }
 
@@ -144,23 +139,23 @@ void ImageWidget::leaveEvent(QEvent *event)
 {
     QFrame::leaveEvent(event);
 
-    for (auto &subWidget : subWidgets)
+    for (auto &subWidget : m_subWidgets)
         subWidget->mouseLeave(event);
 }
 
 void ImageWidget::calcImageRect()
 {
-    if (pixmap.isNull()) {
-        imageRectangle = QRect();
+    if (m_pixmap.isNull()) {
+        m_imageRectangle = QRect();
         return;
     }
 
-    QSize pixSize = pixmap.size();
+    QSize pixSize = m_pixmap.size();
 
     pixSize.scale(size(), Qt::KeepAspectRatio);
 
-    imageRectangle.setTop((size().height() - pixSize.height()) / 2);
-    imageRectangle.setLeft((size().width()  - pixSize.width())  / 2);
+    m_imageRectangle.setTop((size().height() - pixSize.height()) / 2);
+    m_imageRectangle.setLeft((size().width()  - pixSize.width())  / 2);
 
-    imageRectangle.setSize(pixSize);
+    m_imageRectangle.setSize(pixSize);
 }

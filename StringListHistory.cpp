@@ -20,23 +20,29 @@
 
 #include <QSettings>
 
-void StringListHistory::load(const QString &iniFilePath)
+void StringListHistory::load(QStringView iniFilePath, QString section, QString key)
 {
-    QSettings settings(iniFilePath, QSettings::IniFormat);
+    QSettings settings(iniFilePath.toString(), QSettings::IniFormat);
 
-    m_strings = settings.value("history", QStringList()).toStringList();
+    if (!section.isEmpty())
+        key.prepend(QString("%1/").arg(section));
+
+    m_strings = settings.value(key, QStringList()).toStringList();
 }
 
-void StringListHistory::save(const QString &iniFilePath)
+void StringListHistory::save(QStringView iniFilePath, QString section, QString key)
 {
-    QSettings settings(iniFilePath, QSettings::IniFormat);
+    QSettings settings(iniFilePath.toString(), QSettings::IniFormat);
 
-    settings.setValue("history", m_strings);
+    if (!section.isEmpty())
+        key.prepend(QString("%1/").arg(section));
+
+    settings.setValue(key, m_strings);
 }
 
-void StringListHistory::addString(const QString &string, bool isUnique)
+void StringListHistory::addString(QStringView string, bool isUnique)
 {
-    m_strings.push_front(string);
+    m_strings.push_front(string.toString());
 
     if (isUnique)
         m_strings.removeDuplicates();

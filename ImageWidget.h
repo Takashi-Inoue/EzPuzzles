@@ -31,11 +31,11 @@ class ImageWidget : public QFrame
     Q_OBJECT
 
 public:
-    explicit ImageWidget(QWidget *parent = nullptr);
+    using QFrame::QFrame;
 
     virtual void setPixmap(const QPixmap &pixmap);
-    void addSubWidget(ISubWidget *subWidget);
-    void replaceSubWidget(int index, ISubWidget *subWidget);
+    void addSubWidget(QSharedPointer<ISubWidget> subWidget);
+    void replaceSubWidget(int index, QSharedPointer<ISubWidget> subWidget);
 
     const QPixmap &originalPixmap() const;
     QRect imageRect() const;
@@ -50,13 +50,13 @@ protected:
     void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
-    QPixmap pixmap;
-    QRect imageRectangle;
+    QPixmap m_pixmap;
+    QRect m_imageRectangle;
 
 private:
     void calcImageRect();
 
-    QList<QSharedPointer<ISubWidget>> subWidgets;
+    QList<QSharedPointer<ISubWidget>> m_subWidgets;
 };
 
 #endif // IMAGEWIDGET_H
