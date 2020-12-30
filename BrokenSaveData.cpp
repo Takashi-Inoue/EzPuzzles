@@ -24,9 +24,9 @@ QString BrokenSaveData::gameTypeName() const
     return QStringLiteral("Broken data");
 }
 
-EzPuzzles::GameType BrokenSaveData::gameType() const
+Application::GameType BrokenSaveData::gameType() const
 {
-    return EzPuzzles::UnkownGame;
+    return Application::UnkownGame;
 }
 
 QIcon BrokenSaveData::gameTypeIcon() const

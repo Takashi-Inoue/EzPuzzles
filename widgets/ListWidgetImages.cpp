@@ -42,6 +42,9 @@ ListWidgetImages::~ListWidgetImages()
 
 void ListWidgetImages::addPath(QStringView imagePathName)
 {
+    if (imagePathName.isEmpty())
+        return;
+
     int row = count();
 
     createNewItem(imagePathName);
@@ -50,8 +53,11 @@ void ListWidgetImages::addPath(QStringView imagePathName)
     m_imageLoader->start();
 }
 
-void ListWidgetImages::addPath(const QStringList &imagePathNames)
+void ListWidgetImages::addPaths(const QStringList &imagePathNames)
 {
+    if (imagePathNames.isEmpty())
+        return;
+
     int row = count();
 
     QList<QPair<QString, QVariant>> items;
@@ -61,7 +67,7 @@ void ListWidgetImages::addPath(const QStringList &imagePathNames)
 
     createNewItem(imagePathNames);
 
-    m_imageLoader->addItem(items);
+    m_imageLoader->addItems(items);
     m_imageLoader->start();
 }
 
@@ -99,7 +105,7 @@ void ListWidgetImages::onIconSizeChanged()
     for (int row = 0; row < rowCount; ++row)
         items << qMakePair(item(row)->data(PathNameRole).toString(), row);
 
-    m_imageLoader->addItem(items);
+    m_imageLoader->addItems(items);
     m_imageLoader->start();
 }
 

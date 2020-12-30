@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef EZPUZZLES_H
-#define EZPUZZLES_H
+#ifndef APPLICATION_H
+#define APPLICATION_H
 
 #include <QSize>
 #include <QString>
+#include <QApplication>
 
-class EzPuzzles
+class Application : public QApplication
 {
 public:
-    EzPuzzles() = default;
-    ~EzPuzzles() = default;
+    Application(int &argc, char **argv);
 
     enum GameType {
         UnkownGame,
@@ -39,9 +39,10 @@ public:
 
     static QSize screenshotSize();
 
+    static QString iniFilePathName();
     static QString imageHistoryPath();
-    static QString saveDirPath();
-    static void createSaveDirPath();
+    static QString userDataDirPath();
+    static bool createUserDataDir();
 };
 
-#endif // EZPUZZLES_H
+#endif // APPLICATION_H

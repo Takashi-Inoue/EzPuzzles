@@ -38,7 +38,7 @@ public:
                       , SourceImage sourceImage, IPhase::PhaseType currentPhaseType
                       , const QList<int> &pieces, QObject *parent = nullptr);
 
-    EzPuzzles::GameType gameType() const override;
+    Application::GameType gameType() const override;
     QIcon gameTypeIcon() const override;
 
     QSharedPointer<IGame> loadGame() override;

@@ -25,10 +25,10 @@ class StringListHistory
 {
 public:
     StringListHistory() = default;
-    ~StringListHistory() = default;
+    virtual ~StringListHistory() = default;
 
-    void load(QStringView iniFilePath, QString section = QString(), QString key = QStringLiteral("history"));
-    void save(QStringView iniFilePath, QString section = QString(), QString key = QStringLiteral("history"));
+    virtual void load(QStringView iniFilePath, QString section = QString(), QString key = QStringLiteral("history"));
+    virtual void save(QStringView iniFilePath, QString section = QString(), QString key = QStringLiteral("history"));
 
     void addString(QStringView string, bool isUnique = true);
     void addStrings(const QStringList &strings, bool isUnique = true);

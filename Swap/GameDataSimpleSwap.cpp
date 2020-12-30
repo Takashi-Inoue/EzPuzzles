@@ -30,7 +30,7 @@
 #include "AnimationObject/Transform/ChainedTransform.h"
 #include "AnimationObject/Transform/TransformExpand.h"
 #include "SaveDataSimpleSwap.h"
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QDebug>
 
@@ -68,7 +68,7 @@ GameDataPointer GameDataSimpleSwap::cloneAsNewGame() const
 
 QString GameDataSimpleSwap::gameName() const
 {
-    return EzPuzzles::gameName(EzPuzzles::SimpleSwap);
+    return Application::gameName(Application::SimpleSwap);
 }
 
 PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)

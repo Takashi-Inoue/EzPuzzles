@@ -32,9 +32,9 @@ public:
     using QThread::QThread;
 
     void addPath(QStringView filePathName, QVariant data = QVariant());
-    void addPath(const QStringList &filePathNames);
+    void addPaths(const QStringList &filePathNames);
     void addItem(const QPair<QString, QVariant> &item);
-    void addItem(const QList<QPair<QString, QVariant>> &items);
+    void addItems(const QList<QPair<QString, QVariant>> &items);
 
     void stop();
 

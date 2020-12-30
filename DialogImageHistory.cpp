@@ -19,34 +19,33 @@
 #include "DialogImageHistory.h"
 #include "ui_DialogImageHistory.h"
 
-#include "EzPuzzles.h"
-#include "StringListHistory.h"
+#include "Application.h"
+#include "ImageHistory.h"
 
 #include <QDebug>
 
-DialogImageHistory::DialogImageHistory(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DialogImageHistory),
-    isHistoryChanged(false)
+DialogImageHistory::DialogImageHistory(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::DialogImageHistory)
 {
     ui->setupUi(this);
 
-    ui->listWidget->viewport()->setMouseTracking(true);
+    ui->labelDescription->setText(QStringLiteral("Shortcut: [Remove] %1, [Undo] %2, [Redo] %3")
+                                 .arg(QKeySequence(QKeySequence::Delete).toString()
+                                    , QKeySequence(QKeySequence::Undo).toString()
+                                    , QKeySequence(QKeySequence::Redo).toString()));
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start game"));
-    ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(false);
-    ui->buttonBox->button(QDialogButtonBox::Apply)->setText(tr("Apply changes"));
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setToolTip(
+                QStringLiteral("Start game using selected image."));
 
-    StringListHistory history;
-    history.load(EzPuzzles::imageHistoryPath());
+    ui->buttonBox->button(QDialogButtonBox::Close)->setToolTip(
+                QStringLiteral("Close dialog. \nChanges to the image history will be retained."));
 
-    imagePaths = history.stringList();
+    ImageHistory history;
+    history.load();
 
-    if (imagePaths.isEmpty())
-        return;
-
-    ui->listWidget->addPath(imagePaths);
+    ui->listWidget->addPaths(history.stringList());
 }
 
 DialogImageHistory::~DialogImageHistory()
@@ -61,28 +60,10 @@ QString DialogImageHistory::selectedImagePath() const
 
 void DialogImageHistory::done(int result)
 {
-    if (isHistoryChanged && result == QDialog::Accepted)
+    if (ui->listWidget->isHistoryChanged())
         saveImageHistory();
 
     QDialog::done(result);
-}
-
-void DialogImageHistory::removeImagePath(QString imagePath)
-{
-    int index = -1;
-
-    while ((index = imagePaths.indexOf(imagePath)) != -1)
-        removeHistory(index);
-}
-
-void DialogImageHistory::removeSelected()
-{
-    int row = ui->listWidget->currentRow();
-
-    if (row == -1)
-        return;
-
-    removeHistory(row);
 }
 
 void DialogImageHistory::on_listWidget_doubleClicked(const QModelIndex &/*index*/)
@@ -94,37 +75,13 @@ void DialogImageHistory::on_listWidget_itemSelectionChanged()
 {
     bool hasSelection = ui->listWidget->selectionModel()->hasSelection();
 
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(isHistoryChanged | hasSelection);
-}
-
-void DialogImageHistory::on_buttonBox_clicked(QAbstractButton *button)
-{
-    if (ui->buttonBox->buttonRole(button) != QDialogButtonBox::ApplyRole)
-        return;
-
-    saveImageHistory();
-}
-
-void DialogImageHistory::removeHistory(int index)
-{
-    Q_ASSERT(index >= 0 && index < imagePaths.size());
-
-    imagePaths.removeAt(index);
-    ui->listWidget->model()->removeRow(index);
-
-    isHistoryChanged = true;
-
-    ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(true);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(hasSelection);
 }
 
 void DialogImageHistory::saveImageHistory()
 {
-    StringListHistory history;
+    ImageHistory history;
 
-    history.addStrings(imagePaths, false);
-    history.save(EzPuzzles::imageHistoryPath());
-
-    isHistoryChanged = false;
-
-    ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(false);
+    history.addStrings(ui->listWidget->allImagePathNames(), false);
+    history.save();
 }

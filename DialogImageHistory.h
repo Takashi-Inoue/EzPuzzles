@@ -45,22 +45,14 @@ protected:
     void done(int result) override;
 
 private slots:
-    void removeImagePath(QString imagePath);
-    void removeSelected();
-
     void on_listWidget_doubleClicked(const QModelIndex &index);
     void on_listWidget_itemSelectionChanged();
-    void on_buttonBox_clicked(QAbstractButton *button);
 
 private:
     void removeHistory(int index);
     void saveImageHistory();
 
     Ui::DialogImageHistory *ui;
-
-    QStringList imagePaths;
-
-    bool isHistoryChanged;
 };
 
 #endif // DIALOGIMAGEHISTORY_H

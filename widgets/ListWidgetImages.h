@@ -32,7 +32,7 @@ public:
     ~ListWidgetImages() override;
 
     void addPath(QStringView imagePathName);
-    void addPath(const QStringList &imagePathNames);
+    void addPaths(const QStringList &imagePathNames);
 
     QString currentImagePathName() const;
     QStringList allImagePathNames() const;

@@ -18,22 +18,20 @@
  */
 
 #include "MainWindow.h"
-#include "EzPuzzles.h"
+#include "Application.h"
 
-#include <QApplication>
 #include <QDir>
-#include <QFontDatabase>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    Application a(argc, argv);
 
     QApplication::setFont(QApplication::font("QMenu"));
 
     QCoreApplication::setApplicationName("EzPuzzles");
     QCoreApplication::setApplicationVersion("0.1.0.0");
 
-    QDir().mkpath(EzPuzzles::saveDirPath());
+    QDir().mkpath(Application::userDataDirPath());
 
     MainWindow w;
     w.show();

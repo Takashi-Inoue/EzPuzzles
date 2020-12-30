@@ -31,10 +31,17 @@ ListWidgetImageHistory::ListWidgetImageHistory(QWidget *parent)
 {
     setMouseTracking(true);
 
+    QAction *actionUndo = m_undoStack.createUndoAction(this);
+    QAction *actionRedo = m_undoStack.createRedoAction(this);
+
+    actionUndo->setIcon(QIcon(":/icons/undo"));
+    actionRedo->setIcon(QIcon(":/icons/redo"));
+    actionUndo->setShortcut(QKeySequence::Undo);
+    actionRedo->setShortcut(QKeySequence::Redo);
+    m_actionRemove.setShortcut(QKeySequence::Delete);
     m_actionRemove.setEnabled(false);
-    addAction(&m_actionRemove);
-    addAction(m_undoStack.createUndoAction(this));
-    addAction(m_undoStack.createRedoAction(this));
+
+    addActions({&m_actionRemove, actionUndo, actionRedo});
 
     m_buttonRemove.close();
     m_buttonRemove.resize(18, 18);
@@ -45,6 +52,16 @@ ListWidgetImageHistory::ListWidgetImageHistory(QWidget *parent)
     connect(&m_actionRemove, &QAction::triggered, this, &ListWidgetImageHistory::onActionRemoveTriggered);
     connect(&m_buttonRemove, &QPushButton::clicked, this, &ListWidgetImageHistory::onButtonRemoveClicked);
     connect(this, &QListWidget::itemEntered, this, &ListWidgetImageHistory::onItemEntered);
+
+    for (auto item: findChildren<QAbstractSlider *>()) {
+        connect(item, &QAbstractSlider::valueChanged
+              , this, &ListWidgetImageHistory::onSliderValueChanged);
+    }
+}
+
+bool ListWidgetImageHistory::isHistoryChanged() const
+{
+    return m_undoStack.canUndo();
 }
 
 void ListWidgetImageHistory::selectionChanged(const QItemSelection &selected
@@ -61,19 +78,9 @@ void ListWidgetImageHistory::mouseMoveEvent(QMouseEvent *event)
         m_buttonRemove.close();
 }
 
-void ListWidgetImageHistory::wheelEvent(QWheelEvent *e)
-{
-    ListWidgetImages::wheelEvent(e);
-
-    if (m_buttonRemove.isVisible() && itemAt(e->position().toPoint()) == nullptr)
-        m_buttonRemove.close();
-}
-
 void ListWidgetImageHistory::onItemEntered(QListWidgetItem *item)
 {
-    QPoint buttonTL = visualItemRect(item).topRight() + QPoint(-17, 3);
-
-    m_buttonRemove.move(buttonTL);
+    m_buttonRemove.move(buttonPosOnItem(item));
     m_buttonRemove.show();
 }
 
@@ -88,6 +95,26 @@ void ListWidgetImageHistory::onButtonRemoveClicked()
         m_buttonRemove.close();
 
     removeItem(indexAt(m_buttonRemove.pos()).row());
+}
+
+void ListWidgetImageHistory::onSliderValueChanged()
+{
+    QListWidgetItem *item = itemAt(mapFromGlobal(QCursor::pos()));
+
+    if (item == nullptr) {
+        m_buttonRemove.close();
+
+        return;
+    }
+
+    m_buttonRemove.move(buttonPosOnItem(item));
+    m_buttonRemove.show();
+}
+
+QPoint ListWidgetImageHistory::buttonPosOnItem(QListWidgetItem *item) const
+{
+    Q_CHECK_PTR(item);
+    return visualItemRect(item).topRight() + QPoint(-17, 3);
 }
 
 void ListWidgetImageHistory::removeItem(int row)

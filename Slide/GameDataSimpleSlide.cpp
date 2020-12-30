@@ -29,7 +29,7 @@
 #include "AnimationObject/Effect/EffectSimpleFrame.h"
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 #include "SaveDataSimpleSlide.h"
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QDebug>
 
@@ -69,7 +69,7 @@ GameDataPointer GameDataSimpleSlide::cloneAsNewGame() const
 
 QString GameDataSimpleSlide::gameName() const
 {
-    return EzPuzzles::gameName(EzPuzzles::SimpleSlide);
+    return Application::gameName(Application::SimpleSlide);
 }
 
 PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)

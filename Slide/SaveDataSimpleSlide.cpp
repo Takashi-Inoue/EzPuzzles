@@ -19,7 +19,7 @@
 #include "SaveDataSimpleSlide.h"
 #include "GameDataSimpleSlide.h"
 #include "GameCore.h"
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -44,9 +44,9 @@ SaveDataSimpleSlide::SaveDataSimpleSlide(QStringView fileName, const QSize &boar
 {
 }
 
-EzPuzzles::GameType SaveDataSimpleSlide::gameType() const
+Application::GameType SaveDataSimpleSlide::gameType() const
 {
-    return EzPuzzles::SimpleSlide;
+    return Application::SimpleSlide;
 }
 
 QIcon SaveDataSimpleSlide::gameTypeIcon() const

@@ -19,7 +19,7 @@
 #ifndef IGAMEDATA_H
 #define IGAMEDATA_H
 
-#include "EzPuzzles.h"
+#include "Application.h"
 #include "IPhase.h"
 #include "BoardInformation.h"
 #include "FinalImage.h"

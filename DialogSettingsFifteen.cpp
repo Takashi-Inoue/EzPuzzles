@@ -25,7 +25,7 @@
 #include "Slide/GameDataSimpleSlide.h"
 #include "Swap/GameDataSimpleSwap.h"
 
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QDebug>
 
@@ -42,8 +42,8 @@ DialogSettingsFifteen::DialogSettingsFifteen(const SourceImage &sourceImage, boo
 
     ui->buttonBox->setVisible(showOkButton);
 
-    ui->comboBoxGameType->setItemData(0, EzPuzzles::SimpleSwap);
-    ui->comboBoxGameType->setItemData(1, EzPuzzles::SimpleSlide);
+    ui->comboBoxGameType->setItemData(0, Application::SimpleSwap);
+    ui->comboBoxGameType->setItemData(1, Application::SimpleSlide);
 
     ui->imageWidget->setPixmap(sourceImage.pixmap());
     ui->imageWidget->addSubWidget(m_grid);
@@ -66,10 +66,10 @@ DialogSettingsFifteen::~DialogSettingsFifteen()
 
 QSharedPointer<IGame> DialogSettingsFifteen::buildGame() const
 {
-    if (ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSlide)
+    if (ui->comboBoxGameType->currentData() == Application::SimpleSlide)
         return buildSimpleSlide();
 
-    if (ui->comboBoxGameType->currentData() == EzPuzzles::SimpleSwap)
+    if (ui->comboBoxGameType->currentData() == Application::SimpleSwap)
         return buildSimpleSwap();
 
     Q_ASSERT(false);
@@ -84,12 +84,12 @@ void DialogSettingsFifteen::udpateGrid()
 
 void DialogSettingsFifteen::on_comboBoxGameType_currentIndexChanged(int)
 {
-    QMap<EzPuzzles::GameType, QString> hashText = {
-        {EzPuzzles::SimpleSlide, QStringLiteral("Blank position")},
-        {EzPuzzles::SimpleSwap, QStringLiteral("Swap target position")},
+    QMap<Application::GameType, QString> hashText = {
+        {Application::SimpleSlide, QStringLiteral("Blank position")},
+        {Application::SimpleSwap, QStringLiteral("Swap target position")},
     };
 
-    auto gameType = EzPuzzles::GameType(ui->comboBoxGameType->currentData().toInt());
+    auto gameType = Application::GameType(ui->comboBoxGameType->currentData().toInt());
 
     ui->groupBoxSpecifiedPosition->setTitle(hashText[gameType]);
 }

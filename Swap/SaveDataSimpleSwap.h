@@ -33,7 +33,7 @@ public:
     using Fifteen::SaveDataFifteen::SaveDataFifteen;
 
     // AbstractSaveData
-    EzPuzzles::GameType gameType() const override;
+    Application::GameType gameType() const override;
     QIcon gameTypeIcon() const override;
 
     QSharedPointer<IGame> loadGame() override;

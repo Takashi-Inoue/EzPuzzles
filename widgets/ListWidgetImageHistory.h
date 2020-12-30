@@ -31,17 +31,20 @@ class ListWidgetImageHistory : public ListWidgetImages
 public:
     ListWidgetImageHistory(QWidget *parent = nullptr);
 
+    bool isHistoryChanged() const;
+
 protected:
     void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void wheelEvent(QWheelEvent *e) override;
 
 private slots:
     void onItemEntered(QListWidgetItem *item);
     void onActionRemoveTriggered();
     void onButtonRemoveClicked();
+    void onSliderValueChanged();
 
 private:
+    QPoint buttonPosOnItem(QListWidgetItem *item) const;
     void removeItem(int row);
 
     QAction m_actionRemove;

@@ -28,8 +28,8 @@
 #include "IGame.h"
 #include "GameWidget.h"
 
-#include "EzPuzzles.h"
-#include "StringListHistory.h"
+#include "Application.h"
+#include "ImageHistory.h"
 #include "SourceImage.h"
 
 #include <QFileDialog>
@@ -161,8 +161,8 @@ void MainWindow::saveGame()
     if (m_game == nullptr)
         return;
 
-    EzPuzzles::createSaveDirPath();
-    m_game->save(EzPuzzles::saveDirPath(), EzPuzzles::screenshotSize());
+    Application::createUserDataDir();
+    m_game->save(Application::userDataDirPath(), Application::screenshotSize());
 }
 
 void MainWindow::loadGame()
@@ -204,11 +204,11 @@ void MainWindow::updateTitle(QString finalImageWidgetTitle)
 
 void MainWindow::updateImageHistory(const QString &lastImagePath) const
 {
-    StringListHistory history;
+    ImageHistory history;
 
-    history.load(EzPuzzles::imageHistoryPath());
+    history.load();
     history.addString(lastImagePath);
-    history.save(EzPuzzles::imageHistoryPath());
+    history.save();
 }
 
 QSharedPointer<IGame> MainWindow::createNewGame(const SourceImage &sourceImage)

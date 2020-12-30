@@ -20,7 +20,7 @@
 #include "GameDataSimpleSwap.h"
 #include "GameCore.h"
 #include "BoardInformation.h"
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -28,9 +28,9 @@
 
 namespace Swap {
 
-EzPuzzles::GameType SaveDataSimpleSwap::gameType() const
+Application::GameType SaveDataSimpleSwap::gameType() const
 {
-    return EzPuzzles::SimpleSwap;
+    return Application::SimpleSwap;
 }
 
 QIcon SaveDataSimpleSwap::gameTypeIcon() const

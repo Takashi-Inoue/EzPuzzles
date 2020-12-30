@@ -16,41 +16,53 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "EzPuzzles.h"
+#include "Application.h"
 
-#include <QCoreApplication>
 #include <QDir>
+#include <QDebug>
 
-QString EzPuzzles::gameName(EzPuzzles::GameType gameType)
+Application::Application(int &argc, char **argv)
+    : QApplication(argc, argv)
 {
-    if (gameType == SimpleSlide)
-        return "Simple Slide";
-
-    if (gameType == SimpleSwap)
-        return "Simple Swap";
-
-    if (gameType == MineSweeper)
-        return "MineSweeper";
-
-    return "";
+    if (!createUserDataDir())
+        qInfo() << QStringLiteral("Failed to create userdata directory. [%1]").arg(userDataDirPath());
 }
 
-QSize EzPuzzles::screenshotSize()
+QString Application::gameName(Application::GameType gameType)
+{
+    if (gameType == SimpleSlide)
+        return QStringLiteral("Simple Slide");
+
+    if (gameType == SimpleSwap)
+        return QStringLiteral("Simple Swap");
+
+    if (gameType == MineSweeper)
+        return QStringLiteral("MineSweeper");
+
+    return QString();
+}
+
+QSize Application::screenshotSize()
 {
     return QSize(256, 256);
 }
 
-QString EzPuzzles::imageHistoryPath()
+QString Application::iniFilePathName()
+{
+    return QCoreApplication::applicationDirPath() + QStringLiteral("/EzPuzzles.ini");
+}
+
+QString Application::imageHistoryPath()
 {
     return QCoreApplication::applicationDirPath() + "/" + "imageHistory.ini";
 }
 
-QString EzPuzzles::saveDirPath()
+QString Application::userDataDirPath()
 {
-    return QCoreApplication::applicationDirPath() + "/" + "savedata";
+    return QCoreApplication::applicationDirPath() + QStringLiteral("/savedata");
 }
 
-void EzPuzzles::createSaveDirPath()
+bool Application::createUserDataDir()
 {
-    QDir().mkpath(saveDirPath());
+    return QDir().mkpath(userDataDirPath());
 }

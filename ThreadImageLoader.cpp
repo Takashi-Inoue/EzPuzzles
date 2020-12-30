@@ -30,7 +30,7 @@ void ThreadImageLoader::addPath(QStringView filePathName, QVariant data)
     m_items << qMakePair(filePathName.toString(), data);
 }
 
-void ThreadImageLoader::addPath(const QStringList &filePathNames)
+void ThreadImageLoader::addPaths(const QStringList &filePathNames)
 {
     QWriteLocker locker(&m_lock);
 
@@ -45,7 +45,7 @@ void ThreadImageLoader::addItem(const QPair<QString, QVariant> &item)
     m_items << item;
 }
 
-void ThreadImageLoader::addItem(const QList<QPair<QString, QVariant>> &items)
+void ThreadImageLoader::addItems(const QList<QPair<QString, QVariant>> &items)
 {
     QWriteLocker locker(&m_lock);
 

@@ -23,7 +23,7 @@
 #include "IPhase.h"
 #include "SourceImage.h"
 
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QFile>
 #include <QSaveFile>
@@ -64,10 +64,10 @@ public:
 
     virtual QString gameTypeName() const
     {
-        return EzPuzzles::gameName(gameType());
+        return Application::gameName(gameType());
     }
 
-    virtual EzPuzzles::GameType gameType() const = 0;
+    virtual Application::GameType gameType() const = 0;
     virtual QIcon gameTypeIcon() const = 0;
     virtual QSharedPointer<IGame> loadGame() = 0;
     virtual QStringList informations() const = 0;

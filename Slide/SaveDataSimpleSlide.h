@@ -40,7 +40,7 @@ public:
                       , IPhase::PhaseType currentPhase, const QList<QPoint> &defaultPositions
                       , const QPoint &currentBlankPos, QObject *parent = nullptr);
 
-    EzPuzzles::GameType gameType() const override;
+    Application::GameType gameType() const override;
     QIcon gameTypeIcon() const override;
 
     QSharedPointer<IGame> loadGame() override;

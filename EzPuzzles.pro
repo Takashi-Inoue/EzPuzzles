@@ -17,7 +17,9 @@ CONFIG += c++17
 TRANSLATIONS += ezpz_ja.ts
 
 SOURCES += main.cpp\
+    Application.cpp \
     CellSelectionGrid.cpp \
+    ImageHistory.cpp \
         MainWindow.cpp \
     FormFinalImage.cpp \
     DialogSettingsFifteen.cpp \
@@ -43,7 +45,6 @@ SOURCES += main.cpp\
     MineSweeper/MineLocker.cpp \
     DialogImageHistory.cpp \
     StringListHistory.cpp \
-    EzPuzzles.cpp \
     DialogSavedata.cpp \
     SourceImage.cpp \
     commands/RemoveListWidgetItem.cpp \
@@ -102,9 +103,11 @@ SOURCES += main.cpp\
 
 HEADERS  += MainWindow.h \
     AbstractSaveData.h \
+    Application.h \
     CellSelectionGrid.h \
     FormFinalImage.h \
     DialogSettingsFifteen.h \
+    ImageHistory.h \
     ImageWidget.h \
     GameWidget.h \
     IGame.h \
@@ -135,7 +138,6 @@ HEADERS  += MainWindow.h \
     Utility.h \
     DialogImageHistory.h \
     StringListHistory.h \
-    EzPuzzles.h \
     DialogSavedata.h \
     SourceImage.h \
     commands/RemoveListWidgetItem.h \

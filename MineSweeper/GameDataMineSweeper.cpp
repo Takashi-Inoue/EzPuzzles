@@ -22,7 +22,7 @@
 #include "PhaseMineSweeperEnding.h"
 #include "PhaseMineSweeperGaming.h"
 #include "SaveDataMineSweeper.h"
-#include "EzPuzzles.h"
+#include "Application.h"
 
 namespace MineSweeper {
 
@@ -67,7 +67,7 @@ GameDataPointer GameDataMineSweeper::cloneAsNewGame() const
 
 QString GameDataMineSweeper::gameName() const
 {
-    return EzPuzzles::gameName(EzPuzzles::MineSweeper);
+    return Application::gameName(Application::MineSweeper);
 }
 
 PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)

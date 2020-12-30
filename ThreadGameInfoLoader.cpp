@@ -19,7 +19,7 @@
 
 #include "ThreadGameInfoLoader.h"
 
-#include "EzPuzzles.h"
+#include "Application.h"
 #include "MineSweeper/SaveDataMineSweeper.h"
 #include "Slide/SaveDataSimpleSlide.h"
 #include "Swap/SaveDataSimpleSwap.h"
@@ -51,7 +51,7 @@ void ThreadGameInfoLoader::run()
     m_isStopRequested = false;
     m_lock.unlock();
 
-    const QString savedataDir = EzPuzzles::saveDirPath() + "/";
+    const QString savedataDir = Application::userDataDirPath() + "/";
 
     for (QStringView saveDataName : m_saveDataNames) {
         qInfo() << QStringLiteral("ThreadGameInfoLoader read save data. [%1]").arg(saveDataName);
@@ -94,13 +94,13 @@ bool ThreadGameInfoLoader::isStopRequested() const
 QSharedPointer<AbstractSaveData> ThreadGameInfoLoader::createSaveData(
         QStringView gameName, QStringView savedataFilePath) const
 {
-    if (gameName == EzPuzzles::gameName(EzPuzzles::SimpleSlide))
+    if (gameName == Application::gameName(Application::SimpleSlide))
         return QSharedPointer<Slide::SaveDataSimpleSlide>::create(savedataFilePath);
 
-    if (gameName == EzPuzzles::gameName(EzPuzzles::SimpleSwap))
+    if (gameName == Application::gameName(Application::SimpleSwap))
         return QSharedPointer<Swap::SaveDataSimpleSwap>::create(savedataFilePath);
 
-    if (gameName == EzPuzzles::gameName(EzPuzzles::MineSweeper))
+    if (gameName == Application::gameName(Application::MineSweeper))
         return QSharedPointer<MineSweeper::SaveDataMineSweeper>::create(savedataFilePath);
 
     return QSharedPointer<UnknownSaveData>::create(savedataFilePath);

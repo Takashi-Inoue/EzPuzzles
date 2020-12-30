@@ -19,7 +19,7 @@
 #ifndef DIALOGSAVEDATA_H
 #define DIALOGSAVEDATA_H
 
-#include "EzPuzzles.h"
+#include "Application.h"
 #include "AbstractSaveData.h"
 
 #include <QDialog>

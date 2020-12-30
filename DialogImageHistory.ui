@@ -23,7 +23,7 @@
 &lt;li&gt;Select an image and push the &amp;quot;OK&amp;quot; button.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4&gt;Remove an image.&lt;/h4&gt;
+&lt;h4&gt;Remove an image from list.&lt;/h4&gt;
 &lt;ul&gt;
 &lt;li&gt;Click remove button on top right corner.&lt;/li&gt;
 &lt;li&gt;Select an image and press the &amp;quot;Delete&amp;quot; key.&lt;/li&gt;
@@ -32,6 +32,9 @@
 
 &lt;/body&gt;
 &lt;/html&gt;</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -72,17 +75,28 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-     <property name="centerButtons">
-      <bool>false</bool>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelDescription">
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+       </property>
+       <property name="centerButtons">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

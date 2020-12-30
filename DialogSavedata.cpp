@@ -19,7 +19,7 @@
 #include "DialogSavedata.h"
 #include "ui_DialogSavedata.h"
 
-#include "EzPuzzles.h"
+#include "Application.h"
 #include "IGame.h"
 #include "SourceImage.h"
 #include "ThreadGameInfoLoader.h"
@@ -215,12 +215,12 @@ void DialogSavedata::on_pushButtonRemove_clicked()
 
 QString DialogSavedata::saveDataPathName(int row) const
 {
-    return QStringLiteral("%1/%2").arg(EzPuzzles::saveDirPath(), m_savedataNames[row]);
+    return QStringLiteral("%1/%2").arg(Application::userDataDirPath(), m_savedataNames[row]);
 }
 
 QString DialogSavedata::thumbnailPathName(int row) const
 {
-    return QStringLiteral("%1/%2png").arg(EzPuzzles::saveDirPath(), m_savedataNames[row].chopped(3));
+    return QStringLiteral("%1/%2png").arg(Application::userDataDirPath(), m_savedataNames[row].chopped(3));
 }
 
 QSharedPointer<AbstractSaveData> DialogSavedata::saveDataFromListItem(const QListWidgetItem *item) const
@@ -241,15 +241,15 @@ void DialogSavedata::showSpecifiedTypeData(ShownData shownDataType)
         return;
     }
 
-    static const QMap<ShownData, QList<EzPuzzles::GameType>> showTypeMap = {
-        {ShownData::typeSlide,   {EzPuzzles::SimpleSlide}},
-        {ShownData::typeSwap,    {EzPuzzles::SimpleSwap}},
-        {ShownData::simpleSlide, {EzPuzzles::SimpleSlide}},
-        {ShownData::simpleSwap,  {EzPuzzles::SimpleSwap}},
-        {ShownData::mineSweeper, {EzPuzzles::MineSweeper}},
+    static const QMap<ShownData, QList<Application::GameType>> showTypeMap = {
+        {ShownData::typeSlide,   {Application::SimpleSlide}},
+        {ShownData::typeSwap,    {Application::SimpleSwap}},
+        {ShownData::simpleSlide, {Application::SimpleSlide}},
+        {ShownData::simpleSwap,  {Application::SimpleSwap}},
+        {ShownData::mineSweeper, {Application::MineSweeper}},
     };
 
-    const QList<EzPuzzles::GameType> &types = showTypeMap[shownDataType];
+    const QList<Application::GameType> &types = showTypeMap[shownDataType];
 
     for (int i = 0, count = ui->listWidget->count(); i < count; ++i) {
         QListWidgetItem *item = ui->listWidget->item(i);
@@ -275,7 +275,7 @@ void DialogSavedata::initComboBox()
 
 void DialogSavedata::initListWidget()
 {
-    QDir saveDir(EzPuzzles::saveDirPath());
+    QDir saveDir(Application::userDataDirPath());
 
     m_savedataNames = saveDir.entryList({"*.dat"}, QDir::Files, QDir::Time);
 

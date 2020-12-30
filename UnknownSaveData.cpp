@@ -24,9 +24,9 @@ QString UnknownSaveData::gameTypeName() const
     return QStringLiteral("Not save data or broken.");
 }
 
-EzPuzzles::GameType UnknownSaveData::gameType() const
+Application::GameType UnknownSaveData::gameType() const
 {
-    return EzPuzzles::UnkownGame;
+    return Application::UnkownGame;
 }
 
 QIcon UnknownSaveData::gameTypeIcon() const

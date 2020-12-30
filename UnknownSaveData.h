@@ -27,7 +27,7 @@ public:
     using AbstractSaveData::AbstractSaveData;
 
     QString gameTypeName() const override;
-    EzPuzzles::GameType gameType() const override;
+    Application::GameType gameType() const override;
     QIcon gameTypeIcon() const override;
 
     QSharedPointer<IGame> loadGame() override;

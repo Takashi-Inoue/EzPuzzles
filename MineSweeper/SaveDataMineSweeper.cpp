@@ -20,7 +20,7 @@
 #include "GameDataMineSweeper.h"
 #include "GameCoreMineSweeper.h"
 
-#include "EzPuzzles.h"
+#include "Application.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -49,9 +49,9 @@ SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, const QSize &boar
     Q_ASSERT(!boardXYCount.isEmpty());
 }
 
-EzPuzzles::GameType SaveDataMineSweeper::gameType() const
+Application::GameType SaveDataMineSweeper::gameType() const
 {
-    return EzPuzzles::MineSweeper;
+    return Application::MineSweeper;
 }
 
 QIcon SaveDataMineSweeper::gameTypeIcon() const
