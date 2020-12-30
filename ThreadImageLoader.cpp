@@ -52,6 +52,13 @@ void ThreadImageLoader::addItems(const QList<QPair<QString, QVariant>> &items)
     m_items += items;
 }
 
+void ThreadImageLoader::clear()
+{
+    QWriteLocker locker(&m_lock);
+
+    m_items.clear();
+}
+
 void ThreadImageLoader::stop()
 {
     QWriteLocker locker(&m_lock);

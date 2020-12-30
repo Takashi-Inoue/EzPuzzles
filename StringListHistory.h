@@ -35,7 +35,7 @@ public:
 
     const QStringList &stringList() const;
 
-private:
+protected:
     QStringList m_strings;
 };
 

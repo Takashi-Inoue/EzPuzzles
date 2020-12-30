@@ -65,8 +65,10 @@ bool ListWidgetImageHistory::isHistoryChanged() const
 }
 
 void ListWidgetImageHistory::selectionChanged(const QItemSelection &selected
-                                            , const QItemSelection &/*deselected*/)
+                                            , const QItemSelection &deselected)
 {
+    ListWidgetImages::selectionChanged(selected, deselected);
+
     m_actionRemove.setEnabled(!selected.isEmpty());
 }
 

@@ -35,6 +35,7 @@ public:
     void addPaths(const QStringList &filePathNames);
     void addItem(const QPair<QString, QVariant> &item);
     void addItems(const QList<QPair<QString, QVariant>> &items);
+    void clear();
 
     void stop();
 

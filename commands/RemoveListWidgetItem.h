@@ -29,6 +29,7 @@ class RemoveListWidgetItem : public QUndoCommand
 {
 public:
     RemoveListWidgetItem(QListWidget *listWidget, int row);
+    ~RemoveListWidgetItem() override;
 
     void redo() override;
     void undo() override;

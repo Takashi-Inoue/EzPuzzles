@@ -107,6 +107,9 @@ DialogSavedata::DialogSavedata(QWidget *parent)
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
+    ui->imageWidget->setMinimumSize(Application::screenshotSize());
+    ui->imageWidget->setMaximumSize(Application::screenshotSize());
+
     initComboBox();
     initListWidget();
 

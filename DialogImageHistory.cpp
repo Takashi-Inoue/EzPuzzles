@@ -42,9 +42,18 @@ DialogImageHistory::DialogImageHistory(QWidget *parent)
     ui->buttonBox->button(QDialogButtonBox::Close)->setToolTip(
                 QStringLiteral("Close dialog. \nChanges to the image history will be retained."));
 
+    for (int size : ImageHistory::thumbnailSizeList())
+        ui->comboBox->addItem(QString("%1").arg(size));
+
     ImageHistory history;
+
     history.load();
 
+    m_defaultThumbSize = history.thumbnailSize();
+
+    ui->comboBox->setCurrentText(QString("%1").arg(m_defaultThumbSize));
+
+    ui->listWidget->setIconSize(QSize(m_defaultThumbSize, m_defaultThumbSize));
     ui->listWidget->addPaths(history.stringList());
 }
 
@@ -60,10 +69,19 @@ QString DialogImageHistory::selectedImagePath() const
 
 void DialogImageHistory::done(int result)
 {
-    if (ui->listWidget->isHistoryChanged())
+    if (ui->listWidget->isHistoryChanged()
+     || ui->listWidget->iconSize().width() != m_defaultThumbSize)
+    {
         saveImageHistory();
+    }
 
     QDialog::done(result);
+}
+
+void DialogImageHistory::on_comboBox_currentTextChanged(const QString &arg1)
+{
+    int size = arg1.toInt();
+    ui->listWidget->setIconSize(QSize(size, size));
 }
 
 void DialogImageHistory::on_listWidget_doubleClicked(const QModelIndex &/*index*/)
@@ -82,6 +100,7 @@ void DialogImageHistory::saveImageHistory()
 {
     ImageHistory history;
 
+    history.setThumbnailSize(ui->comboBox->currentText().toInt());
     history.addStrings(ui->listWidget->allImagePathNames(), false);
     history.save();
 }

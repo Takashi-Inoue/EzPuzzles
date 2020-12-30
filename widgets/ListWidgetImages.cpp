@@ -98,14 +98,19 @@ void ListWidgetImages::onIconSizeChanged()
 {
     int rowCount = count();
 
-    QList<QPair<QString, QVariant>> items;
+    for (int i = 0; i < rowCount; ++i)
+        item(i)->setSizeHint(iconSize() + QSize(4, 4)); // do layout
 
-    items.reserve(rowCount);
+    QList<QPair<QString, QVariant>> pathRowPairs;
+
+    pathRowPairs.reserve(rowCount);
 
     for (int row = 0; row < rowCount; ++row)
-        items << qMakePair(item(row)->data(PathNameRole).toString(), row);
+        pathRowPairs << qMakePair(item(row)->data(PathNameRole).toString(), row);
 
-    m_imageLoader->addItems(items);
+    m_imageLoader->clear();
+    m_imageLoader->wait();
+    m_imageLoader->addItems(pathRowPairs);
     m_imageLoader->start();
 }
 

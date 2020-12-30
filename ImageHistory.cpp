@@ -20,14 +20,49 @@
 #include "ImageHistory.h"
 #include "Application.h"
 
+#include <QSettings>
+
+QList<int> ImageHistory::thumbnailSizeList()
+{
+    return {128, 192, 256, 320, 384, 448, 512};
+}
+
+int ImageHistory::thumbnailSize() const
+{
+    return m_thumbnailSize;
+}
+
+void ImageHistory::setThumbnailSize(int size)
+{
+    m_thumbnailSize = size;
+
+    QList<int> sizeList = thumbnailSizeList();
+
+    if (!sizeList.contains(m_thumbnailSize))
+        m_thumbnailSize = sizeList.first();
+}
+
 void ImageHistory::load()
 {
-    StringListHistory::load(Application::iniFilePathName()
-                          , QStringLiteral("ImageHistroy"), QStringLiteral("Paths"));
+    QSettings settings(Application::iniFilePathName(), QSettings::IniFormat);
+
+    settings.beginGroup(m_groupName);
+    m_strings       = settings.value("Paths", QStringList()).toStringList();
+    m_thumbnailSize = settings.value("ThumbnailSize", 128).toInt();
+    settings.endGroup();
+
+    QList<int> sizeList = thumbnailSizeList();
+
+    if (!sizeList.contains(m_thumbnailSize))
+        m_thumbnailSize = sizeList.first();
 }
 
 void ImageHistory::save()
 {
-    StringListHistory::save(Application::iniFilePathName()
-                          , QStringLiteral("ImageHistroy"), QStringLiteral("Paths"));
+    QSettings settings(Application::iniFilePathName(), QSettings::IniFormat);
+
+    settings.beginGroup(m_groupName);
+    settings.setValue("Paths",         m_strings);
+    settings.setValue("ThumbnailSize", m_thumbnailSize);
+    settings.endGroup();
 }

@@ -40,7 +40,6 @@ public:
     static QSize screenshotSize();
 
     static QString iniFilePathName();
-    static QString imageHistoryPath();
     static QString userDataDirPath();
     static bool createUserDataDir();
 };

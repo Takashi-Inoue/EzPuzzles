@@ -28,6 +28,11 @@ RemoveListWidgetItem::RemoveListWidgetItem(QListWidget *listWidget, int row)
     Q_CHECK_PTR(listWidget);
 }
 
+RemoveListWidgetItem::~RemoveListWidgetItem()
+{
+    delete m_listWidgetItem;
+}
+
 void RemoveListWidgetItem::redo()
 {
     m_listWidgetItem = m_listWidget->takeItem(m_row);

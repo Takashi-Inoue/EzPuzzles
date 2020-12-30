@@ -27,12 +27,21 @@ class ImageHistory : public StringListHistory
 public:
     using StringListHistory::StringListHistory;
 
+    static QList<int> thumbnailSizeList();
+
+    int thumbnailSize() const;
+    void setThumbnailSize(int size);
+
     void load();
     void save();
 
 private:
     void load(QStringView, QString, QString) override {}
     void save(QStringView, QString, QString) override {}
+
+    static constexpr char m_groupName[] = "ImageHistory";
+
+    int m_thumbnailSize = -1;
 };
 
 #endif // IMAGEHISTORY_H

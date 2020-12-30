@@ -19,11 +19,16 @@
 #include "Application.h"
 
 #include <QDir>
+#include <QFont>
+#include <QSettings>
+
 #include <QDebug>
 
 Application::Application(int &argc, char **argv)
     : QApplication(argc, argv)
 {
+    QApplication::setFont(QApplication::font("QMenu"));
+
     if (!createUserDataDir())
         qInfo() << QStringLiteral("Failed to create userdata directory. [%1]").arg(userDataDirPath());
 }
@@ -50,11 +55,6 @@ QSize Application::screenshotSize()
 QString Application::iniFilePathName()
 {
     return QCoreApplication::applicationDirPath() + QStringLiteral("/EzPuzzles.ini");
-}
-
-QString Application::imageHistoryPath()
-{
-    return QCoreApplication::applicationDirPath() + "/" + "imageHistory.ini";
 }
 
 QString Application::userDataDirPath()

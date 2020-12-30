@@ -45,6 +45,7 @@ protected:
     void done(int result) override;
 
 private slots:
+    void on_comboBox_currentTextChanged(const QString &arg1);
     void on_listWidget_doubleClicked(const QModelIndex &index);
     void on_listWidget_itemSelectionChanged();
 
@@ -53,6 +54,8 @@ private:
     void saveImageHistory();
 
     Ui::DialogImageHistory *ui;
+
+    int m_defaultThumbSize = -1;
 };
 
 #endif // DIALOGIMAGEHISTORY_H
