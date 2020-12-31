@@ -45,6 +45,9 @@ public:
 
     QSharedPointer<IGame> loadGame() const;
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private slots:
     void onSaveInfoLoaded(QString savedataName, QSharedPointer<AbstractSaveData> gameInfo);
     void setUIState();

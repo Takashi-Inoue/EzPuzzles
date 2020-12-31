@@ -50,6 +50,8 @@ private slots:
     void on_listWidget_itemSelectionChanged();
 
 private:
+    static constexpr char m_geometryKey[] = "DialogImageHistory_Geometry";
+
     void removeHistory(int index);
     void saveImageHistory();
 

@@ -18,28 +18,28 @@
  */
 #include "Position.h"
 
-Position::Position(const QPoint &defaultPosition) :
-    defaultPosition(defaultPosition),
-    currentPosition(defaultPosition)
+Position::Position(const QPoint &defaultPosition)
+    : m_defaultPosition(defaultPosition)
+    , m_currentPosition(defaultPosition)
 {
 }
 
 void Position::setPos(const QPoint &pos)
 {
-    currentPosition = pos;
+    m_currentPosition = pos;
 }
 
 QPoint Position::defaultPos() const
 {
-    return defaultPosition;
+    return m_defaultPosition;
 }
 
 QPoint Position::currentPos() const
 {
-    return currentPosition;
+    return m_currentPosition;
 }
 
 bool Position::isCorrect() const
 {
-    return defaultPosition == currentPosition;
+    return m_defaultPosition == m_currentPosition;
 }

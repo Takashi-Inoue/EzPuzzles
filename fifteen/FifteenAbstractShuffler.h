@@ -54,4 +54,6 @@ protected:
 
 } // Fifteen
 
+using ShufflerPtr = QSharedPointer<Fifteen::AbstractShuffler>;
+
 #endif // FIFTEENABSTRACTSHUFFLER_H

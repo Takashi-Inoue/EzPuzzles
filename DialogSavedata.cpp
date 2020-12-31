@@ -144,6 +144,14 @@ QSharedPointer<IGame> DialogSavedata::loadGame() const
     return savedata->loadGame();
 }
 
+void DialogSavedata::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent(event);
+
+    if (ui->listWidget->currentRow() == -1)
+        ui->listWidget->setCurrentRow(0);
+}
+
 void DialogSavedata::onSaveInfoLoaded(QString savedataName, QSharedPointer<AbstractSaveData> gameInfo)
 {
     int index = int(m_savedataNames.indexOf(savedataName));

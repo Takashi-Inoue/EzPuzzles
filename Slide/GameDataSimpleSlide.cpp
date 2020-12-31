@@ -88,7 +88,7 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
     }
 
     if (phaseType == IPhase::PhasePreGame) {
-        return std::make_shared<PhaseShuffle>(board, new Fifteen::SlideShuffler(pieces, board->boardInfo(), currentBlankPos, rwlock), IPhase::PhaseGaming);
+        return std::make_shared<PhaseShuffle>(board, QSharedPointer<Fifteen::SlideShuffler>::create(pieces, board->boardInfo(), currentBlankPos, rwlock), IPhase::PhaseGaming);
     }
 
     if (phaseType == IPhase::PhaseGaming)
@@ -123,7 +123,7 @@ const SourceImage &GameDataSimpleSlide::sourceImage() const
 
 FinalImagePointer GameDataSimpleSlide::finalImage() const
 {
-    return std::make_shared<FinalImage>(sourceImg.pixmap());
+    return FinalImagePointer::create(sourceImg.pixmap());
 }
 
 BoardInfoPointer GameDataSimpleSlide::boardInfo() const

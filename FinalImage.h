@@ -20,8 +20,7 @@
 #define FINALIMAGE_H
 
 #include <QPainter>
-
-#include <memory>
+#include <QSharedPointer>
 
 class FinalImage
 {
@@ -32,9 +31,11 @@ public:
     virtual void draw(QPainter &painter);
 
 protected:
+    QRect drawFinalImage(QPainter &painter) const;
+
     QPixmap m_pixmap;
 };
 
-typedef std::shared_ptr<FinalImage> FinalImagePointer;
+typedef QSharedPointer<FinalImage> FinalImagePointer;
 
 #endif // FINALIMAGE_H

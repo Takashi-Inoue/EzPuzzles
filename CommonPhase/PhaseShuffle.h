@@ -22,14 +22,13 @@
 #include "IPhase.h"
 #include "Board.h"
 #include "fifteen/FifteenAbstractShuffler.h"
-#include "fifteen/PuzzlePiece.h"
 
 class PhaseShuffle : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseShuffle(BoardPointer board, Fifteen::AbstractShuffler *shuffler, PhaseType nextPhase, QObject *parent = 0);
-    ~PhaseShuffle();
+    PhaseShuffle(BoardPointer board, ShufflerPtr shuffler, PhaseType nextPhaseType
+               , QObject *parent = nullptr);
 
     void click(const QPoint &) override;
     void onTickFrame() override {}
@@ -39,14 +38,14 @@ public:
     QString information() const override;
 
 private slots:
-    void completeShuffling();
+    void onShufflingCompleted();
 
 private:
-    BoardPointer board;
-    Fifteen::AbstractShuffler *shuffler;
-    PhaseType nextPhase;
+    BoardPointer m_board;
+    ShufflerPtr m_shuffler;
+    PhaseType m_nextPhaseType;
 
-    bool isEnableDraw;
+    bool m_isEnableDraw;
 };
 
 #endif // SIMPLESLIDEPHASEPREGAME_H

@@ -27,7 +27,7 @@
 class SubFrame : public ISubWidget
 {
 public:
-    SubFrame(const QRect &rect);
+    SubFrame(const QRect &subFrameRect);
 
     void draw(QPainter &) override;
     void mousePress(QMouseEvent *) override;
@@ -40,9 +40,9 @@ public:
 protected:
     void correctPosition();
 
-    QRect rect;
-    QRect maxRect;
-    Dragger dragger;
+    QRect m_subFrameRect;
+    QRect m_maxRect;
+    Dragger m_dragger;
 };
 
 #endif // SUBFRAME_H

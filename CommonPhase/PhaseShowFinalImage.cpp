@@ -18,22 +18,22 @@
  */
 #include "PhaseShowFinalImage.h"
 
-PhaseShowFinalImage::PhaseShowFinalImage(const SourceImage &img, PhaseType nextPhase, QObject *parent) :
-    IPhase(parent),
-    sourceImage(img),
-    nextPhase(nextPhase)
+PhaseShowFinalImage::PhaseShowFinalImage(const SourceImage &img, PhaseType nextPhase, QObject *parent)
+    : IPhase(parent)
+    , m_sourceImage(img)
+    , m_nextPhaseType(nextPhase)
 {
     Q_ASSERT(!img.isNull());
 }
 
 void PhaseShowFinalImage::click(const QPoint &)
 {
-    emit toNextPhase(nextPhase);
+    emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseShowFinalImage::draw(QPainter &painter)
 {
-    painter.drawPixmap(painter.viewport(), sourceImage.pixmap());
+    painter.drawPixmap(painter.viewport(), m_sourceImage.pixmap());
 }
 
 bool PhaseShowFinalImage::canSave() const
@@ -48,5 +48,5 @@ bool PhaseShowFinalImage::canLoad() const
 
 QString PhaseShowFinalImage::information() const
 {
-    return "";
+    return QString();
 }

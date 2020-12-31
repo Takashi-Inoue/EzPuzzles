@@ -54,10 +54,11 @@ GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSaveda
         mineLocker->addMinesPositions(factory.getMinesPositions());
     }
 
-    mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
+    mineField = MineFieldPointer::create(pieces, mineLocker, mineCount);
     mineField->load(loadedSavedata);
 
-    finalImg = std::make_shared<MineSweeperFinalImage>(sourceImg.pixmap(), mineField, boardInformation);
+    finalImg = QSharedPointer<MineSweeperFinalImage>::create(
+                   sourceImg.pixmap(), mineField, boardInformation);
 }
 
 GameDataPointer GameDataMineSweeper::cloneAsNewGame() const
@@ -82,9 +83,10 @@ PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
         if (mineLocker != nullptr)
             mineLocker->setMinesPositions(factory.getMinesPositions());
 
-        mineField = std::make_shared<MineField>(pieces, mineLocker, mineCount);
+        mineField = MineFieldPointer::create(pieces, mineLocker, mineCount);
 
-        finalImg = std::make_shared<MineSweeperFinalImage>(sourceImg.pixmap(), mineField, boardInformation);
+        finalImg = QSharedPointer<MineSweeperFinalImage>::create(
+                       sourceImg.pixmap(), mineField, boardInformation);
     } // through to case IPhase::PhaseGaming
     [[fallthrough]];
 

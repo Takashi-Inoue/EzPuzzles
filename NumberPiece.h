@@ -34,11 +34,11 @@ public:
 
 protected:
     void init();
-    QPointF calcOutlinePos(const QFont &font);
+    QPointF calcPathPos(const QFont &font);
 
-    int num;
-    QColor color;
-    QPixmap pixmap;
+    int m_number;
+    QColor m_color;
+    QPixmap m_pixmap;
 };
 
 #endif // NUMBERPIECE_H

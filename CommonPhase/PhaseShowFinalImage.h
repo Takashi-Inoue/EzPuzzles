@@ -26,8 +26,7 @@ class PhaseShowFinalImage : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseShowFinalImage(const SourceImage &img, PhaseType nextPhase, QObject *parent = 0);
-    ~PhaseShowFinalImage() = default;
+    PhaseShowFinalImage(const SourceImage &img, PhaseType nextPhase, QObject *parent = nullptr);
 
     void click(const QPoint &) override;
     void onTickFrame() override {}
@@ -37,8 +36,8 @@ public:
     QString information() const override;
 
 private:
-    SourceImage sourceImage;
-    PhaseType nextPhase;
+    SourceImage m_sourceImage;
+    PhaseType m_nextPhaseType;
 };
 
 #endif // SIMPLESLIDEPHASEREADY_H

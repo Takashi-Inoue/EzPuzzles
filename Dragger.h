@@ -24,7 +24,7 @@
 class Dragger
 {
 public:
-    Dragger();
+    Dragger() = default;
     ~Dragger() = default;
 
     void mouseDown(const QPoint &pos);
@@ -34,9 +34,9 @@ public:
     bool isDragging() const;
 
 private:
-    QPoint pos;
-    QPoint subPos;
-    bool isDrag;
+    QPoint m_pos;
+    QPoint m_subPos;
+    bool m_isDragging = false;
 };
 
 #endif // DRAGGER_H

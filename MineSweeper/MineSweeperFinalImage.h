@@ -41,7 +41,7 @@ private:
     BoardInfoPointer m_boardInfo;
     QPixmap m_holeImg;
 
-    typedef QPair<QPoint, QTransform> TransformPair;
+    using TransformPair = QPair<QPoint, QTransform>;
 
     QList<TransformPair> m_matrixPairs;
 };

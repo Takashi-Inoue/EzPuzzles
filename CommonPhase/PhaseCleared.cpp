@@ -19,29 +19,31 @@
 #include "PhaseCleared.h"
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 
-PhaseCleared::PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent) :
-    IPhase(parent),
-    sourceImage(image),
-    nextPhase(nextPhase),
-    effect(std::make_unique<Effect::GraduallyBlinkFrame>(10, QColor(255, 224, 96, 224), QColor(255, 255, 96, 0), QColor(255, 255, 96, 32), QColor(255, 255, 96, 0), 240, true))
+PhaseCleared::PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent)
+    : IPhase(parent)
+    , m_sourceImage(image)
+    , m_nextPhaseType(nextPhase)
+    , m_effect(new Effect::GraduallyBlinkFrame(10, QColor(255, 224, 96, 224), QColor(255, 255, 96, 0)
+                                                 , QColor(255, 255, 96, 32),  QColor(255, 255, 96, 0)
+                                                 , 240, true))
 {
     Q_ASSERT(!image.isNull());
 }
 
 void PhaseCleared::click(const QPoint &)
 {
-    emit toNextPhase(nextPhase);
+    emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseCleared::onTickFrame()
 {
-    effect->onTickFrame();
+    m_effect->onTickFrame();
 }
 
 void PhaseCleared::draw(QPainter &painter)
 {
-    painter.drawPixmap(painter.viewport(), sourceImage.pixmap());
-    effect->draw(painter, painter.viewport());
+    painter.drawPixmap(painter.viewport(), m_sourceImage.pixmap());
+    m_effect->draw(painter, painter.viewport());
 }
 
 bool PhaseCleared::canSave() const
@@ -56,5 +58,5 @@ bool PhaseCleared::canLoad() const
 
 QString PhaseCleared::information() const
 {
-    return "Cleared!";
+    return QStringLiteral("Cleared!");
 }

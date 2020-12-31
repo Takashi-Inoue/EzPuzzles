@@ -22,6 +22,7 @@
 #include "Application.h"
 #include "ImageHistory.h"
 
+#include <QSettings>
 #include <QDebug>
 
 DialogImageHistory::DialogImageHistory(QWidget *parent)
@@ -44,6 +45,12 @@ DialogImageHistory::DialogImageHistory(QWidget *parent)
 
     for (int size : ImageHistory::thumbnailSizeList())
         ui->comboBox->addItem(QString("%1").arg(size));
+
+    QVariant savedGeometry = QSettings(Application::iniFilePathName(), QSettings::IniFormat)
+                             .value(m_geometryKey);
+
+    if (savedGeometry.isValid())
+        restoreGeometry(savedGeometry.toByteArray());
 
     ImageHistory history;
 
@@ -69,11 +76,16 @@ QString DialogImageHistory::selectedImagePath() const
 
 void DialogImageHistory::done(int result)
 {
+    ui->listWidget->stopLoading();
+
     if (ui->listWidget->isHistoryChanged()
      || ui->listWidget->iconSize().width() != m_defaultThumbSize)
     {
         saveImageHistory();
     }
+
+    QSettings(Application::iniFilePathName(), QSettings::IniFormat)
+            .setValue(m_geometryKey, saveGeometry());
 
     QDialog::done(result);
 }

@@ -81,7 +81,7 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
     }
 
     if (phaseType == IPhase::PhasePreGame)
-        return std::make_shared<PhaseShuffle>(m_board, new Fifteen::SwapShuffler(m_pieces, m_board->boardInfo(), m_rwlock), IPhase::PhaseGaming);
+        return std::make_shared<PhaseShuffle>(m_board, QSharedPointer<Fifteen::SwapShuffler>::create(m_pieces, m_board->boardInfo(), m_rwlock), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
         return std::make_shared<PhaseSimpleSwapGaming>(m_board, m_pieces, m_swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
@@ -111,7 +111,7 @@ const SourceImage &GameDataSimpleSwap::sourceImage() const
 
 FinalImagePointer GameDataSimpleSwap::finalImage() const
 {
-    return std::make_shared<FinalImage>(m_sourceImg.pixmap());
+    return FinalImagePointer::create(m_sourceImg.pixmap());
 }
 
 BoardInfoPointer GameDataSimpleSwap::boardInfo() const

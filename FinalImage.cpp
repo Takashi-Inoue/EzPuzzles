@@ -26,8 +26,18 @@ FinalImage::FinalImage(QPixmap pixmap) :
 
 void FinalImage::draw(QPainter &painter)
 {
-    QSize destSize = m_pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
-    QPoint tl((painter.viewport().width() - destSize.width()) / 2, (painter.viewport().height() - destSize.height()) / 2);
+    drawFinalImage(painter);
+}
 
-    painter.drawPixmap(QRect(tl, destSize), m_pixmap, m_pixmap.rect());
+QRect FinalImage::drawFinalImage(QPainter &painter) const
+{
+    QSize destSize = m_pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
+    QPoint tl((painter.viewport().width()  - destSize.width())  / 2
+            , (painter.viewport().height() - destSize.height()) / 2);
+
+    QRect destRect(tl, destSize);
+
+    painter.drawPixmap(destRect, m_pixmap, m_pixmap.rect());
+
+    return destRect;
 }

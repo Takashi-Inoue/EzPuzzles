@@ -18,34 +18,29 @@
  */
 #include "Dragger.h"
 
-Dragger::Dragger() :
-    isDrag(false)
-{
-}
-
 void Dragger::mouseDown(const QPoint &pos)
 {
-    this->pos = pos;
-    isDrag = true;
+    m_pos = pos;
+    m_isDragging = true;
 }
 
 void Dragger::mouseRelease(const QPoint &)
 {
-    isDrag = false;
+    m_isDragging = false;
 }
 
 void Dragger::mouseMove(const QPoint &pos)
 {
-    subPos = pos - this->pos;
-    this->pos = pos;
+    m_subPos = pos - m_pos;
+    m_pos = pos;
 }
 
 const QPoint &Dragger::sub() const
 {
-    return subPos;
+    return m_subPos;
 }
 
 bool Dragger::isDragging() const
 {
-    return isDrag;
+    return m_isDragging;
 }

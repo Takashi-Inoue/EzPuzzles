@@ -37,6 +37,9 @@ public:
     QString currentImagePathName() const;
     QStringList allImagePathNames() const;
 
+public slots:
+    void stopLoading();
+
 protected:
     ThreadImageLoader *m_imageLoader;
 

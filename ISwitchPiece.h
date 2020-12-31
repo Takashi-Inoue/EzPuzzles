@@ -25,7 +25,7 @@ class ISwitchPiece : public IPiece
 {
 public:
     ISwitchPiece() = default;
-    virtual ~ISwitchPiece() = default;
+    virtual ~ISwitchPiece() override = default;
 
     virtual void open() = 0;
     virtual void close() = 0;

@@ -34,8 +34,8 @@ public:
     bool isCorrect() const;
 
 protected:
-    const QPoint defaultPosition;
-    QPoint currentPosition;
+    const QPoint m_defaultPosition;
+    QPoint m_currentPosition;
 };
 
 #endif // POSITION_H

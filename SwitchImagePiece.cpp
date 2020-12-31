@@ -22,54 +22,50 @@
 #include "ImagePiece.h"
 #include "ImageFragmentPiece.h"
 
-SwitchImagePiece::SwitchImagePiece(const QPixmap &pixmap, const QRect sourceRect) :
-    blockPiece(std::make_unique<BlockPiece>(pixmap.size())),
-    imagePiece(nullptr),
-    isOpened(false),
-    isLocked(false)
+SwitchImagePiece::SwitchImagePiece(const QPixmap &pixmap, const QRect sourceRect)
 {
     if (sourceRect.isNull()) {
-        blockPiece = std::make_unique<BlockPiece>(pixmap.size());
-        imagePiece = std::make_unique<ImagePiece>(pixmap);
+        m_blockPiece.reset(new BlockPiece(pixmap.size()));
+        m_imagePiece.reset(new ImagePiece(pixmap));
     } else {
-        blockPiece = std::make_unique<BlockPiece>(sourceRect.size());
-        imagePiece = std::make_unique<ImageFragmentPiece>(pixmap, sourceRect);
+        m_blockPiece.reset(new BlockPiece(sourceRect.size()));
+        m_imagePiece.reset(new ImageFragmentPiece(pixmap, sourceRect));
     }
 }
 
 void SwitchImagePiece::draw(QPainter &painter, const QPointF &pos)
 {
-    isOpen() ? imagePiece->draw(painter, pos)
-             : blockPiece->draw(painter, pos);
+    isOpen() ? m_imagePiece->draw(painter, pos)
+             : m_blockPiece->draw(painter, pos);
 }
 
 void SwitchImagePiece::draw(QPainter &painter, const QRectF &rect)
 {
-    isOpen() ? imagePiece->draw(painter, rect)
-             : blockPiece->draw(painter, rect);
+    isOpen() ? m_imagePiece->draw(painter, rect)
+             : m_blockPiece->draw(painter, rect);
 }
 
 void SwitchImagePiece::open()
 {
-    isOpened = true;
+    m_isOpened = true;
 }
 
 void SwitchImagePiece::close()
 {
-    isOpened = false;
+    m_isOpened = false;
 }
 
 void SwitchImagePiece::lock()
 {
-    isLocked = true;
+    m_isLocked = true;
 }
 
 bool SwitchImagePiece::isOpen() const
 {
-    return isOpened;
+    return m_isOpened;
 }
 
 bool SwitchImagePiece::isLock() const
 {
-    return isLocked;
+    return m_isLocked;
 }

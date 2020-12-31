@@ -20,7 +20,7 @@
 #define SWITCHIMAGEPIECE_H
 
 #include "ISwitchPiece.h"
-#include <memory>
+#include <QScopedPointer>
 
 class QPixmap;
 
@@ -28,7 +28,6 @@ class SwitchImagePiece : public ISwitchPiece
 {
 public:
     SwitchImagePiece(const QPixmap &pixmap, const QRect sourceRect = QRect());
-    ~SwitchImagePiece() = default;
 
     // IPiece
     void draw(QPainter &painter, const QPointF &pos) override;
@@ -42,11 +41,11 @@ public:
     bool isLock() const override;
 
 protected:
-    std::unique_ptr<IPiece> blockPiece;
-    std::unique_ptr<IPiece> imagePiece;
+    QScopedPointer<IPiece> m_blockPiece;
+    QScopedPointer<IPiece> m_imagePiece;
 
-    bool isOpened;
-    bool isLocked;
+    bool m_isOpened = false;
+    bool m_isLocked = false;
 };
 
 #endif // SWITCHIMAGEPIECE_H

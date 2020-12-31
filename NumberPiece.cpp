@@ -21,9 +21,9 @@
 #include <QDebug>
 
 NumberPiece::NumberPiece(int number, QColor color, QSize pieceSize) :
-    num(number),
-    color(color),
-    pixmap(pieceSize)
+    m_number(number),
+    m_color(color),
+    m_pixmap(pieceSize)
 {
     if (!pieceSize.isEmpty())
         init();
@@ -31,7 +31,7 @@ NumberPiece::NumberPiece(int number, QColor color, QSize pieceSize) :
 
 void NumberPiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, QRectF(pos, pixmap.size()));
+    draw(painter, QRectF(pos, m_pixmap.size()));
 }
 
 void NumberPiece::draw(QPainter &painter, const QRectF &rect)
@@ -39,57 +39,46 @@ void NumberPiece::draw(QPainter &painter, const QRectF &rect)
     if (rect.isEmpty())
         return;
 
-    if (rect.size() != pixmap.size()) {
-        pixmap = QPixmap(rect.size().toSize());
+    if (rect.size() != m_pixmap.size()) {
+        m_pixmap = QPixmap(rect.size().toSize());
         init();
     }
 
     painter.setOpacity(1.0);
-    painter.drawPixmap(rect.topLeft(), pixmap);
+    painter.drawPixmap(rect.topLeft(), m_pixmap);
 }
 
 int NumberPiece::number() const
 {
-    return num;
+    return m_number;
 }
 
 void NumberPiece::init()
 {
-    qDebug() << "INIT NumberPiece :" << num;
+    qDebug() << "INIT NumberPiece :" << m_number;
 
-    pixmap.fill(Qt::transparent);
+    m_pixmap.fill(Qt::transparent);
 
     QFont font;
-    font.setPixelSize(int(pixmap.height() * 0.8));
-
-    QPointF outlinePos = calcOutlinePos(font);
-    font.setStyleStrategy(QFont::ForceOutline);
+    font.setPixelSize(int(m_pixmap.height() * 0.9));
+    font.setWeight(QFont::Black);
 
     QPainterPath path;
-    path.addText(outlinePos, font, QString("%1").arg(num));
+    path.addText(calcPathPos(font), font, QString::number(m_number));
 
-    font.setBold(true);
+    QPainter painter(&m_pixmap);
 
-    QPainter painter(&pixmap);
-
-    painter.setPen(QPen(Qt::white, 3));
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    painter.drawPath(path);
-
-    painter.setFont(font);
-    painter.setPen(color);
-    painter.drawText(0, 0, pixmap.width(), pixmap.height(), Qt::AlignCenter, QString("%1").arg(num));
+    painter.setRenderHints(QPainter::Antialiasing);
+    painter.strokePath(path, QPen(Qt::white, 3));
+    painter.fillPath(path, m_color);
 }
 
-QPointF NumberPiece::calcOutlinePos(const QFont &font)
+QPointF NumberPiece::calcPathPos(const QFont &font)
 {
-    QPainter painter(&pixmap);
+    QFontMetricsF fMetricsF(font);
 
-    painter.setPen(QColor(0, 0, 0, 0));
-    painter.setFont(font);
+    qreal charWidth = fMetricsF.boundingRect(QString::number(m_number)).width();
 
-    QRect boundingRect;
-    painter.drawText(0, 0, pixmap.width(), pixmap.height(), Qt::AlignCenter, QString("%1").arg(num), &boundingRect);
-
-    return QPointF((pixmap.width() - boundingRect.width()) / 2, pixmap.height() * 0.8);
+    return QPointF((m_pixmap.width()  - charWidth) / 2.0
+                 , (m_pixmap.height() + fMetricsF.capHeight()) / 2.0);
 }

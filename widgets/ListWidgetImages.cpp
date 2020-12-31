@@ -94,9 +94,18 @@ QStringList ListWidgetImages::allImagePathNames() const
     return paths;
 }
 
+void ListWidgetImages::stopLoading()
+{
+    m_imageLoader->stop();
+    m_imageLoader->wait();
+}
+
 void ListWidgetImages::onIconSizeChanged()
 {
     int rowCount = count();
+
+    if (rowCount == 0)
+        return;
 
     for (int i = 0; i < rowCount; ++i)
         item(i)->setSizeHint(iconSize() + QSize(4, 4)); // do layout

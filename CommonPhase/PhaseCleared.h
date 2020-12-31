@@ -23,14 +23,13 @@
 #include "AnimationObject/Effect/AbstractEffect.h"
 #include "SourceImage.h"
 
-#include <memory>
+#include <QScopedPointer>
 
 class PhaseCleared : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent = 0);
-    ~PhaseCleared() = default;
+    PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent = nullptr);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -40,9 +39,9 @@ public:
     QString information() const override;
 
 private:
-    SourceImage sourceImage;
-    PhaseType nextPhase;
-    std::unique_ptr<Effect::AbstractEffect> effect;
+    SourceImage m_sourceImage;
+    PhaseType m_nextPhaseType;
+    QScopedPointer<Effect::AbstractEffect> m_effect;
 };
 
 #endif // PHASECLEARED_H

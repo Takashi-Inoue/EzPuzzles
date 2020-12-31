@@ -21,41 +21,45 @@
 #include <QPainter>
 #include <QDebug>
 
-SubFrame::SubFrame(const QRect &rect) :
-    rect(rect)
+SubFrame::SubFrame(const QRect &subFrameRect) :
+    m_subFrameRect(subFrameRect)
 {
-    Q_ASSERT(rect.isValid());
+    Q_ASSERT(subFrameRect.isValid());
 }
 
 void SubFrame::draw(QPainter &painter)
 {
-    if (maxRect != painter.clipBoundingRect()) {
-        maxRect = painter.clipBoundingRect().toRect();
+    if (m_maxRect != painter.clipBoundingRect()) {
+        m_maxRect = painter.clipBoundingRect().toRect();
+
+        if (m_maxRect.width() < m_subFrameRect.width() || m_maxRect.height() < m_subFrameRect.height())
+            qWarning() << "The SubFrame will protrude." << m_subFrameRect << m_maxRect;
+
         correctPosition();
     }
 
     painter.setPen(Qt::red);
-    painter.drawRect(rect);
+    painter.drawRect(m_subFrameRect);
 }
 
 void SubFrame::mousePress(QMouseEvent *event)
 {
-    dragger.mouseDown(event->pos());
+    m_dragger.mouseDown(event->pos());
 }
 
 void SubFrame::mouseRelease(QMouseEvent *event)
 {
-    dragger.mouseRelease(event->pos());
+    m_dragger.mouseRelease(event->pos());
 }
 
 void SubFrame::mouseMove(QMouseEvent *event)
 {
-    dragger.mouseMove(event->pos());
+    m_dragger.mouseMove(event->pos());
 
-    if (!dragger.isDragging())
+    if (!m_dragger.isDragging())
         return;
 
-    rect.moveTopLeft(rect.topLeft() + dragger.sub());
+    m_subFrameRect.moveTopLeft(m_subFrameRect.topLeft() + m_dragger.sub());
 
     correctPosition();
 
@@ -64,20 +68,20 @@ void SubFrame::mouseMove(QMouseEvent *event)
 
 QPoint SubFrame::pos() const
 {
-    return rect.topLeft();
+    return m_subFrameRect.topLeft();
 }
 
 void SubFrame::correctPosition()
 {
-    if (rect.left() < maxRect.left())
-        rect.moveLeft(maxRect.left());
+    if (m_subFrameRect.left() < m_maxRect.left())
+        m_subFrameRect.moveLeft(m_maxRect.left());
 
-    if (rect.right() > maxRect.right())
-        rect.moveRight(maxRect.right());
+    if (m_subFrameRect.right() > m_maxRect.right())
+        m_subFrameRect.moveRight(m_maxRect.right());
 
-    if (rect.top() < maxRect.top())
-        rect.moveTop(maxRect.top());
+    if (m_subFrameRect.top() < m_maxRect.top())
+        m_subFrameRect.moveTop(m_maxRect.top());
 
-    if (rect.bottom() > maxRect.bottom())
-        rect.moveBottom(maxRect.bottom());
+    if (m_subFrameRect.bottom() > m_maxRect.bottom())
+        m_subFrameRect.moveBottom(m_maxRect.bottom());
 }

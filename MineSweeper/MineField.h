@@ -23,7 +23,7 @@
 #include "MineSweeper/MineLocker.h"
 
 #include <QList>
-#include <memory>
+#include <QSharedPointer>
 
 namespace MineSweeper {
 
@@ -64,7 +64,7 @@ private:
     QList<QPoint> explodedPos;
 };
 
-typedef std::shared_ptr<MineField> MineFieldPointer;
+using MineFieldPointer = QSharedPointer<MineField>;
 
 } // MineSweeper
 

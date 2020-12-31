@@ -27,7 +27,7 @@ MineSweeperFinalImage::MineSweeperFinalImage(QPixmap pixmap, MineFieldPointer mi
     : FinalImage(pixmap)
     , m_mineField(mineField)
     , m_boardInfo(boardInfo)
-    , m_holeImg(QStringLiteral(":/img/hole"))
+    , m_holeImg(QStringLiteral(":/images/hole"))
 {
     Q_CHECK_PTR(mineField);
     Q_CHECK_PTR(boardInfo);
@@ -39,39 +39,33 @@ void MineSweeperFinalImage::draw(QPainter &painter)
 
     painter.setOpacity(m_mineField->openedRate());
 
-    QSize destSize = m_pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
-    QPoint tl((painter.viewport().width() - destSize.width()) / 2
-            , (painter.viewport().height() - destSize.height()) / 2);
-
-    painter.drawPixmap(QRect(tl, destSize), m_pixmap, m_pixmap.rect());
-    painter.setClipRect(QRect(tl, destSize));
+    QRect destRect = drawFinalImage(painter);
 
     painter.setOpacity(1);
+    painter.setClipRect(destRect);
 
-    double scale = destSize.width() / static_cast<double>(m_pixmap.width());
+    double scale = destRect.width() / double(m_pixmap.width());
 
-    for (const auto &center : explodedCenters()) {
+    for (const QPointF &center : explodedCenters()) {
         auto itr = std::find_if(m_matrixPairs.begin(), m_matrixPairs.end()
-                              , [&](const TransformPair matrixPair)
+                              , [&](const TransformPair &matrixPair)
         {
             return matrixPair.first == center.toPoint();
         });
 
-        if (itr == m_matrixPairs.end()) {
-            itr = m_matrixPairs.insert(m_matrixPairs.end()
-                                     , TransformPair(center.toPoint(), createTransform()));
-        }
+        if (itr == m_matrixPairs.end())
+            itr = m_matrixPairs.insert(itr, TransformPair(center.toPoint(), createTransform()));
 
-        QPixmap pixmap = m_holeImg.transformed(itr->second);
+        QPixmap holeImg = m_holeImg.transformed(itr->second);
 
-        QSizeF holeImgDestSize = pixmap.size() * scale;
+        QSizeF holeImgDestSize = holeImg.size() * scale;
 
         double divW = holeImgDestSize.width()  / 2;
         double divH = holeImgDestSize.height() / 2;
 
-        QPointF holeTL(center * scale - QPointF(divW, divH) + tl);
+        QPointF holeTL(center * scale - QPointF(divW, divH) + destRect.topLeft());
 
-        painter.drawPixmap(QRectF(holeTL, holeImgDestSize), pixmap, pixmap.rect());
+        painter.drawPixmap(QRectF(holeTL, holeImgDestSize), holeImg, holeImg.rect());
     }
 
     painter.restore();
@@ -81,8 +75,8 @@ QList<QPointF> MineSweeperFinalImage::explodedCenters() const
 {
     QList<QPointF> centers;
 
-    for (const auto &piecePos : m_mineField->explodedPositions()) {
-        const auto &rect = m_boardInfo->rectFromPiecePos(piecePos - QPoint(1, 1));
+    for (const QPoint &piecePos : m_mineField->explodedPositions()) {
+        const QRectF &rect = m_boardInfo->rectFromPiecePos(piecePos - QPoint(1, 1));
 
         centers << rect.center();
     }
