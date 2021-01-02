@@ -43,7 +43,6 @@ SOURCES += main.cpp\
     ThreadImageLoader.cpp \
     ThreadOperation.cpp \
     ImageFragmentPiece.cpp \
-    MineSweeper/MineLocker.cpp \
     DialogImageHistory.cpp \
     StringListHistory.cpp \
     DialogSavedata.cpp \
@@ -134,7 +133,6 @@ HEADERS  += MainWindow.h \
     ThreadImageLoader.h \
     ThreadOperation.h \
     ImageFragmentPiece.h \
-    MineSweeper/MineLocker.h \
     Utility.h \
     DialogImageHistory.h \
     StringListHistory.h \

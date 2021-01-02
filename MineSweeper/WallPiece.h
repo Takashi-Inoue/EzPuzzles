@@ -26,8 +26,7 @@ namespace MineSweeper {
 class WallPiece : public IMinePiece
 {
 public:
-    WallPiece() = default;
-    ~WallPiece() = default;
+    using IMinePiece::IMinePiece;
 
     // IMinePiece
     void draw(QPainter &) override {}

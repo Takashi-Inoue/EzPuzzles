@@ -17,7 +17,6 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseMineSweeperGaming.h"
-#include "MineLocker.h"
 
 namespace MineSweeper {
 

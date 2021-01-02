@@ -26,13 +26,10 @@
 
 namespace MineSweeper {
 
-class MineLocker;
-
 class PhaseMineSweeperGaming : public IPhase
 {
 public:
     PhaseMineSweeperGaming(MineFieldPointer mineField, QVector<QVector<MinePiecePointer>> &pieces, PhaseType nextPhase);
-    ~PhaseMineSweeperGaming() = default;
 
     void click(const QPoint &clickedPiecePos) override;
     void onTickFrame() override;

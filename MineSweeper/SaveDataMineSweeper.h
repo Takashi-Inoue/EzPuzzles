@@ -46,12 +46,13 @@ public:
     QStringList informations() const override;
 
     //--
+    bool isAutoLock() const;
     int mineCount() const;
+    int missedCount() const;
+    int openedCount() const;
+    QList<int> piecesAsIntList() const;
 
 private:
-    friend class GameDataMineSweeper;
-    friend class MineField;
-
     void readInfo(QDataStream &stream) override;
     void readOtherData(QDataStream &) override;
     void writeInfo(QDataStream &) const override;

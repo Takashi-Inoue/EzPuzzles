@@ -37,7 +37,7 @@ bool WallPiece::isMine() const
 
 bool WallPiece::isNearMine() const
 {
-    return true;
+    return false;
 }
 
 bool WallPiece::isWall() const

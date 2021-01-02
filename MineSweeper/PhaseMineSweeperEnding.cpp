@@ -53,7 +53,7 @@ void PhaseMineSweeperEnding::draw(QPainter &painter)
             piece->draw(painter);
     }
 
-    double opacity = qMin(1.0, static_cast<double>(nowFrame - (maxWaitFrame + eraseFrames)) / (eraseFrames * 2) / 10);
+    double opacity = qMin(1.0, double(nowFrame - (maxWaitFrame + eraseFrames)) / (eraseFrames * 2) / 10);
 
     if (opacity > 0) {
         painter.save();
@@ -95,7 +95,7 @@ void PhaseMineSweeperEnding::setEffectToPieces(BoardInfoPointer boardInfo)
                 piece->setEffect(QSharedPointer<Effect::GraduallyImage>::create(mt() % maxWaitFrame, eraseFrames, sourceImage.pixmap(), rect));
 //            } else if (piece->isNearMine()) {
 //                auto rect = boardInfo->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect();
-//                piece->setEffect(std::make_shared<Effect::GraduallyImage>(maxWaitFrame + totalEraseFrames, totalEraseFrames, sourceImage.pixmap, rect));
+//                piece->setEffect(QSharedPointer<Effect::GraduallyImage>::create(maxWaitFrame + eraseFrames, eraseFrames, sourceImage.pixmap(), rect));
             }
         }
     }

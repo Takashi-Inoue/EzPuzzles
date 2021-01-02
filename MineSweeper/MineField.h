@@ -19,24 +19,23 @@
 #ifndef MINEFIELD_H
 #define MINEFIELD_H
 
-#include "MineSweeper/MinePiece.h"
-#include "MineSweeper/MineLocker.h"
+#include "MinePiece.h"
 
 #include <QList>
 #include <QSharedPointer>
 
 namespace MineSweeper {
 
-class SaveDataMineSweeper;
-
 class MineField
 {
 public:
-    MineField(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, int mineCount);
+    using MinePiece2DList = QList<QList<MinePiecePointer>>;
+
+    MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount);
+    MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
+            , int openedCount, int missedCount);
 
     void open(const QPoint &pos);
-    void save(SaveDataMineSweeper &) const;
-    void load(const SaveDataMineSweeper &);
 
     int openedCount() const;
     int missedCount() const;
@@ -49,17 +48,22 @@ public:
     const QList<QPoint> &explodedPositions() const;
 
 private:
-    void openChaining(const QPoint &pos);
+    void lockMines(QList<QPoint> &pointsToCheckToLock);
+    void lockMinesInAround(int x, int y);
+    void openChaining(const QPoint &pos, QList<QPoint> &openedPointsNearMines);
 
     int totalPieceCount() const;
     int safePiecesCount() const;
 
-    QVector<QVector<MinePiecePointer>> &pieces;
+    QList<QPoint> aroundPos(const QPoint &centerPos) const;
+    void gatherAroundPointsToLock(const QPoint &centerPos, QList<QPoint> &openedPointsNearMines) const;
+
+    MinePiece2DList &pieces;
     int m_mineCount;
     int m_openedCount;
     int m_missedCount;
 
-    MineLockerPointer mineLocker;
+    bool m_isAutoLock;
 
     QList<QPoint> explodedPos;
 };

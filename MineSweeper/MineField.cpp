@@ -19,25 +19,48 @@
 #include "MineField.h"
 #include "SaveDataMineSweeper.h"
 
+#include <QElapsedTimer>
+
 namespace MineSweeper {
 
-MineField::MineField(QVector<QVector<MinePiecePointer>> &pieces, MineLockerPointer mineLocker, int mineCount) :
-    pieces(pieces),
-    m_mineCount(mineCount),
-    m_openedCount(0),
-    m_missedCount(0),
-    mineLocker(mineLocker)
+MineField::MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount)
+    : MineField(pieces, isAutoLock, mineCount, 0, 0)
 {
+}
+
+MineField::MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
+                   , int openedCount, int missedCount)
+    : pieces(pieces)
+    , m_mineCount(mineCount)
+    , m_openedCount(openedCount)
+    , m_missedCount(missedCount)
+    , m_isAutoLock(isAutoLock)
+{
+    if (m_missedCount <= 0)
+        return;
+
+    for (qsizetype y = 0, ylim = pieces.size(); y < ylim; ++y) {
+        const QList<MinePiecePointer> &horizontal = pieces[y];
+
+        for (qsizetype x = 0, xlim = horizontal.size(); x < xlim; ++x) {
+            const MinePiecePointer &piece = horizontal[x];
+
+            if (piece->isMine() && piece->isOpen())
+                explodedPos << QPoint(int(x), int(y));
+        }
+    }
 }
 
 void MineField::open(const QPoint &pos)
 {
     Q_ASSERT(!pieces.isEmpty());
 
-    auto &piece = pieces[pos.y()][pos.x()];
+    MinePiecePointer &piece = pieces[pos.y()][pos.x()];
 
     if (piece->isOpen() | piece->isLock())
         return;
+
+    QList<QPoint> openedPointsNearMines;
 
     piece->open();
 
@@ -48,36 +71,14 @@ void MineField::open(const QPoint &pos)
         ++m_openedCount;
     }
 
-    if (!piece->isNearMine())
-        openChaining(pos);
-
-    if (mineLocker != nullptr)
-        mineLocker->lockMines();
-}
-
-void MineField::save(SaveDataMineSweeper &savedata) const
-{
-    savedata.m_openedCount = m_openedCount;
-    savedata.m_missedCount = m_missedCount;
-}
-
-void MineField::load(const SaveDataMineSweeper &savedata)
-{
-    m_openedCount = savedata.m_openedCount;
-    m_missedCount = savedata.m_missedCount;
-
-    explodedPos.clear();
-
-    for (int y = 0, ylim = pieces.size(); y < ylim; ++y) {
-        const auto &horizontal = pieces.at(y);
-
-        for (int x = 0, xlim = horizontal.size(); x < xlim; ++x) {
-            const auto &piece = horizontal.at(x);
-
-            if (piece->isMine() & piece->isOpen())
-                explodedPos << QPoint(x, y);
-        }
+    if (!piece->isNearMine()) {
+        openChaining(pos, openedPointsNearMines);
+    } else if (m_isAutoLock) {
+        openedPointsNearMines << pos;
+        gatherAroundPointsToLock(pos, openedPointsNearMines);
     }
+
+    lockMines(openedPointsNearMines);
 }
 
 int MineField::openedCount() const
@@ -99,7 +100,7 @@ double MineField::openedRate() const
 
 double MineField::mineRatio() const
 {
-    return static_cast<double>(m_mineCount) / totalPieceCount();
+    return double(m_mineCount) / totalPieceCount();
 }
 
 bool MineField::isAllOpened() const
@@ -127,31 +128,78 @@ const QList<QPoint> &MineField::explodedPositions() const
     return explodedPos;
 }
 
-void MineField::openChaining(const QPoint &pos)
+void MineField::lockMines(QList<QPoint> &pointsToCheckToLock)
+{
+    if (!m_isAutoLock)
+        return;
+
+//    QElapsedTimer timer;
+//    timer.start();
+
+    std::sort(pointsToCheckToLock.begin(), pointsToCheckToLock.end()
+            , [](const QPoint &lhs, const QPoint &rhs) {
+        if (lhs.x() != rhs.x())
+            return lhs.x() < rhs.x();
+
+        return lhs.y() < rhs.y();
+    });
+
+    auto itr = std::unique(pointsToCheckToLock.begin(), pointsToCheckToLock.end());
+    pointsToCheckToLock.erase(itr, pointsToCheckToLock.end());
+
+    for (const QPoint &centerPos : pointsToCheckToLock)
+        lockMinesInAround(centerPos.x(), centerPos.y());
+
+//    qDebug() << QStringLiteral("lockMines: %1ms").arg(timer.elapsed()) << pointsToCheckToLock.size();
+}
+
+void MineField::lockMinesInAround(int x, int y)
+{
+    QList<MinePiecePointer> aroundPieces = {
+        pieces[y - 1][x - 1], pieces[y - 1][x    ], pieces[y - 1][x + 1],
+        pieces[y    ][x - 1],                       pieces[y    ][x + 1],
+        pieces[y + 1][x - 1], pieces[y + 1][x    ], pieces[y + 1][x + 1],
+    };
+
+    QList<MinePiecePointer> mines;
+    int closedPieceCount = 8;
+
+    for (MinePiecePointer &aroundPiece : aroundPieces) {
+        if (aroundPiece->isMine())
+            mines << aroundPiece;
+        else if (aroundPiece->isOpen())
+            --closedPieceCount;
+    }
+
+    if (closedPieceCount == mines.size()) {
+        for (MinePiecePointer &mine : mines)
+            mine->lock();
+    }
+}
+
+void MineField::openChaining(const QPoint &pos, QList<QPoint> &openedPointsNearMines)
 {
     QList<QPoint> mustCheck = {pos};
 
     while (!mustCheck.isEmpty()) {
-        QPoint center = mustCheck.takeFirst();
+        QPoint centerPos = mustCheck.takeFirst();
+        QList<QPoint> positions = aroundPos(centerPos);
 
-        for (int dy = -1; dy <= 1; ++dy) {
-            for (int dx = -1; dx <= 1; ++dx) {
-                if ((dx | dy) == 0)
-                    continue;
+        for (const QPoint &pos : positions) {
+            MinePiecePointer &piece = pieces[pos.y()][pos.x()];
 
-                QPoint checkPos(center + QPoint(dx, dy));
+            if (piece->isOpen() || piece->isMine())
+                continue;
 
-                auto &piece = pieces[checkPos.y()][checkPos.x()];
+            piece->open();
 
-                if (piece->isOpen() || piece->isMine())
-                    continue;
+            ++m_openedCount;
 
-                piece->open();
-
-                ++m_openedCount;
-
-                if (!piece->isNearMine())
-                    mustCheck << checkPos;
+            if (!piece->isNearMine()) {
+                mustCheck << pos;
+            } else if (m_isAutoLock) {
+                openedPointsNearMines << pos;
+                gatherAroundPointsToLock(pos, openedPointsNearMines);
             }
         }
     }
@@ -159,7 +207,9 @@ void MineField::openChaining(const QPoint &pos)
 
 int MineField::totalPieceCount() const
 {
-    return (pieces.size() - 2) * (pieces.first().size() - 2);
+    Q_ASSERT(!pieces.isEmpty());
+
+    return int((pieces.size() - 2) * (pieces[0].size() - 2));
 }
 
 int MineField::safePiecesCount() const
@@ -167,6 +217,34 @@ int MineField::safePiecesCount() const
     Q_ASSERT(!pieces.isEmpty());
 
     return totalPieceCount() - m_mineCount;
+}
+
+QList<QPoint> MineField::aroundPos(const QPoint &centerPos) const
+{
+    const int x = centerPos.x();
+    const int y = centerPos.y();
+
+    return {
+        QPoint(x - 1, y - 1),
+        QPoint(x    , y - 1),
+        QPoint(x + 1, y - 1),
+        QPoint(x - 1, y    ),
+        QPoint(x + 1, y    ),
+        QPoint(x - 1, y + 1),
+        QPoint(x    , y + 1),
+        QPoint(x + 1, y + 1),
+    };
+}
+
+void MineField::gatherAroundPointsToLock(const QPoint &centerPos
+                                       , QList<QPoint> &openedPointsNearMines) const
+{
+    for (const QPoint &aroundPoint : aroundPos(centerPos)) {
+        auto &piece = pieces[aroundPoint.y()][aroundPoint.x()];
+
+        if (piece->isOpen() & piece->isNearMine() & !piece->isMine())
+            openedPointsNearMines << aroundPoint;
+    }
 }
 
 } // MineSweeper

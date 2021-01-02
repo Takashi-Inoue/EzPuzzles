@@ -22,7 +22,6 @@
 #include "IGameData.h"
 #include "MineField.h"
 #include "MinePiece.h"
-#include "MineLocker.h"
 #include "MineSweeperFinalImage.h"
 
 namespace MineSweeper {
@@ -55,7 +54,7 @@ private:
     IPhase::PhaseType currentPhaseType;
 
     QVector<QVector<MinePiecePointer>> pieces;
-    MineLockerPointer mineLocker;
+    bool m_isAutoLock;
     MineFieldPointer mineField;
 
     FinalImagePointer finalImg;

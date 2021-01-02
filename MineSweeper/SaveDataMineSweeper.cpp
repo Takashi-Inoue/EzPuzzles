@@ -49,6 +49,11 @@ SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, const QSize &boar
     Q_ASSERT(!boardXYCount.isEmpty());
 }
 
+bool SaveDataMineSweeper::isAutoLock() const
+{
+    return m_isAutoLock;
+}
+
 Application::GameType SaveDataMineSweeper::gameType() const
 {
     return Application::MineSweeper;
@@ -94,6 +99,21 @@ QStringList SaveDataMineSweeper::informations() const
 int SaveDataMineSweeper::mineCount() const
 {
     return m_mineCount;
+}
+
+int SaveDataMineSweeper::missedCount() const
+{
+    return m_missedCount;
+}
+
+int SaveDataMineSweeper::openedCount() const
+{
+    return m_openedCount;
+}
+
+QList<int> SaveDataMineSweeper::piecesAsIntList() const
+{
+    return m_pieces;
 }
 
 void SaveDataMineSweeper::readInfo(QDataStream &stream)

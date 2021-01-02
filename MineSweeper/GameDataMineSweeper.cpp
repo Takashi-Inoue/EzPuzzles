@@ -30,32 +30,26 @@ GameDataMineSweeper::GameDataMineSweeper(const SourceImage &sourceImage, const Q
     sourceImg(sourceImage),
     boardInformation(QSharedPointer<BoardInformation>::create(countXY, sourceImage.size())),
     mineCount(mineCount),
-    currentPhaseType(IPhase::PhaseReady)
+    currentPhaseType(IPhase::PhaseReady),
+    m_isAutoLock(isAutoLock)
 {
-    // pieces の初期化は createPhase で
-
-    if (isAutoLock)
-        mineLocker = std::make_shared<MineLocker>(pieces);
+    // Initializing pieces is in createPhase
 }
 
 GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSavedata) :
     sourceImg(loadedSavedata.sourceImage()),
     boardInformation(loadedSavedata.boardInformation()),
     mineCount(loadedSavedata.mineCount()),
-    currentPhaseType(loadedSavedata.currentPhase())
+    currentPhaseType(loadedSavedata.currentPhase()),
+    m_isAutoLock(loadedSavedata.isAutoLock())
 {
     Q_ASSERT(loadedSavedata.isValid());
 
-    PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount, loadedSavedata.m_isAutoLock);
-    pieces = factory.toPieces(loadedSavedata.m_pieces);
+    PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount, m_isAutoLock);
+    pieces = factory.toPieces(loadedSavedata.piecesAsIntList());
 
-    if (loadedSavedata.m_isAutoLock) {
-        mineLocker = std::make_shared<MineLocker>(pieces);
-        mineLocker->addMinesPositions(factory.minesPositions());
-    }
-
-    mineField = MineFieldPointer::create(pieces, mineLocker, mineCount);
-    mineField->load(loadedSavedata);
+    mineField = MineFieldPointer::create(pieces, m_isAutoLock, mineCount
+                                       , loadedSavedata.openedCount(), loadedSavedata.missedCount());
 
     finalImg = QSharedPointer<MineSweeperFinalImage>::create(
                    sourceImg.pixmap(), mineField, boardInformation);
@@ -63,7 +57,8 @@ GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSaveda
 
 GameDataPointer GameDataMineSweeper::cloneAsNewGame() const
 {
-    return QSharedPointer<GameDataMineSweeper>::create(sourceImg, boardInformation->xyCount(), mineCount, mineLocker != nullptr);
+    return QSharedPointer<GameDataMineSweeper>::create(
+                sourceImg, boardInformation->xyCount(), mineCount, m_isAutoLock);
 }
 
 QString GameDataMineSweeper::gameName() const
@@ -77,13 +72,10 @@ PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
 
     switch (phaseType) {
     case IPhase::PhaseReady: {
-        PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount, mineLocker != nullptr);
+        PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount, m_isAutoLock);
         pieces = factory.createPieces();
 
-        if (mineLocker != nullptr)
-            mineLocker->setMinesPositions(factory.minesPositions());
-
-        mineField = MineFieldPointer::create(pieces, mineLocker, mineCount);
+        mineField = MineFieldPointer::create(pieces, m_isAutoLock, mineCount);
 
         finalImg = QSharedPointer<MineSweeperFinalImage>::create(
                        sourceImg.pixmap(), mineField, boardInformation);
@@ -129,7 +121,7 @@ bool GameDataMineSweeper::save(QStringView fileName) const
 {
     SaveDataMineSweeper savedata(fileName, boardInformation->xyCount(), mineCount
                                , mineField->openedCount(), mineField->missedCount()
-                               , mineLocker != nullptr, sourceImg, currentPhaseType
+                               , m_isAutoLock, sourceImg, currentPhaseType
                                , PiecesFactory::toIntList(pieces));
 
     return savedata.write();
