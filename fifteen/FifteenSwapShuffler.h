@@ -30,7 +30,7 @@ namespace Fifteen {
 class SwapShuffler : public AbstractShuffler
 {
 public:
-    SwapShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces);
+    SwapShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces);
     ~SwapShuffler() = default;
 
 protected:

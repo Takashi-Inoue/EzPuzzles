@@ -64,7 +64,8 @@ GameDataSimpleSlide::GameDataSimpleSlide(const SaveDataSimpleSlide &loadedSaveda
 
 GameDataPointer GameDataSimpleSlide::cloneAsNewGame() const
 {
-    return QSharedPointer<GameDataSimpleSlide>::create(sourceImg, defaultBlankPos, board->boardInfo()->countXY());
+    return QSharedPointer<GameDataSimpleSlide>::create(
+                sourceImg, defaultBlankPos, board->boardInfo()->xyCount());
 }
 
 QString GameDataSimpleSlide::gameName() const
@@ -78,37 +79,37 @@ PhasePointer GameDataSimpleSlide::createPhase(IPhase::PhaseType phaseType)
 
     if (phaseType == IPhase::PhaseReady) {
         if (defaultBlankPos.isRandom()) {
-            defaultBlankPos.randomSelect(board->boardInfo()->countXY());
+            defaultBlankPos.randomSelect(board->boardInfo()->xyCount());
             currentBlankPos = defaultBlankPos.selectedPosition();
         }
 
         initPieces();
 
-        return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
+        return QSharedPointer<PhaseShowFinalImage>::create(sourceImg, IPhase::PhasePreGame);
     }
 
     if (phaseType == IPhase::PhasePreGame) {
-        return std::make_shared<PhaseShuffle>(board, QSharedPointer<Fifteen::SlideShuffler>::create(pieces, board->boardInfo(), currentBlankPos, rwlock), IPhase::PhaseGaming);
+        return QSharedPointer<PhaseShuffle>::create(board, QSharedPointer<Fifteen::SlideShuffler>::create(pieces, board->boardInfo(), currentBlankPos, rwlock), IPhase::PhaseGaming);
     }
 
     if (phaseType == IPhase::PhaseGaming)
-        return std::make_shared<PhaseSimpleSlideGaming>(board, currentBlankPos, defaultBlankPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);
+        return QSharedPointer<PhaseSimpleSlideGaming>::create(board, currentBlankPos, defaultBlankPos.selectedPosition(), IPhase::PhaseEnding, slideFrameCount);
 
     if (phaseType == IPhase::PhaseEnding)
-        return std::make_shared<PhaseSimpleSlideEnding>(board->boardInfo(), pieces, sourceImg.pixmap(), currentBlankPos, IPhase::PhaseCleared);
+        return QSharedPointer<PhaseSimpleSlideEnding>::create(board->boardInfo(), pieces, sourceImg.pixmap(), currentBlankPos, IPhase::PhaseCleared);
 
     if (phaseType == IPhase::PhaseCleared) {
         getPiece(currentBlankPos) = finalPiece;
         finalPiece.reset();
 
-        return std::make_shared<PhaseCleared>(sourceImg, IPhase::PhaseReady);
+        return QSharedPointer<PhaseCleared>::create(sourceImg, IPhase::PhaseReady);
     }
 
     qDebug() << QStringLiteral("no such phase type") << phaseType;
 
     currentPhaseType = IPhase::PhaseReady;
 
-    return std::make_shared<PhaseShowFinalImage>(sourceImg, IPhase::PhasePreGame);
+    return QSharedPointer<PhaseShowFinalImage>::create(sourceImg, IPhase::PhasePreGame);
 }
 
 IPhase::PhaseType GameDataSimpleSlide::currentPhase() const
@@ -131,7 +132,7 @@ BoardInfoPointer GameDataSimpleSlide::boardInfo() const
     return board->boardInfo();
 }
 
-bool GameDataSimpleSlide::save(const QString &fileName) const
+bool GameDataSimpleSlide::save(QStringView fileName) const
 {
     if (currentPhaseType == IPhase::PhaseCleared)
         return sourceImg.saveImage();
@@ -141,7 +142,7 @@ bool GameDataSimpleSlide::save(const QString &fileName) const
     for (const auto &piece : pieces)
         defaultPositions << piece->pos().defaultPos();
 
-    SaveDataSimpleSlide savedata(fileName, board->boardInfo()->countXY(), defaultBlankPos
+    SaveDataSimpleSlide savedata(fileName, board->boardInfo()->xyCount(), defaultBlankPos
                                , sourceImg, currentPhaseType, defaultPositions, currentBlankPos);
 
     return savedata.write();
@@ -166,7 +167,7 @@ void GameDataSimpleSlide::createBlankPiece()
 
     auto &blankPiece = getPiece(currentBlankPos);
 
-    blankPiece = std::make_shared<Fifteen::SlideBlankPiece>(board->boardInfo(), defaultBlankPos.selectedPosition(), Qt::black, slideFrameCount);
+    blankPiece = QSharedPointer<Fifteen::SlideBlankPiece>::create(board->boardInfo(), defaultBlankPos.selectedPosition(), Qt::black, slideFrameCount);
     blankPiece->setPosWithoutAnimation(currentBlankPos);
 }
 
@@ -175,26 +176,26 @@ void GameDataSimpleSlide::setSlideAnimationToPieces()
     Q_ASSERT(!pieces.isEmpty());
 
     for (auto &piece : pieces)
-        piece->setAnimation(std::make_shared<Animation::LineMove>(slideFrameCount, false));
+        piece->setAnimation(QSharedPointer<Animation::LineMove>::create(slideFrameCount, false));
 }
 
 void GameDataSimpleSlide::setEffectToPieces()
 {
     Q_ASSERT(!pieces.isEmpty());
 
-    auto frame = std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
+    auto frame = QSharedPointer<Effect::SimpleFrame>::create(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
 
     for (auto &piece : pieces)
         piece->setEffect(frame);
 
-    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(15, QColor(0, 0, 0), QColor(0, 0, 0), QColor(64, 192, 224, 224), QColor(16, 64, 96, 224), 120, true);
+    auto graduallyFrame = QSharedPointer<Effect::GraduallyBlinkFrame>::create(15, QColor(0, 0, 0), QColor(0, 0, 0), QColor(64, 192, 224, 224), QColor(16, 64, 96, 224), 120, true);
 
     getPiece(currentBlankPos)->setEffect(graduallyFrame);
 }
 
-Fifteen::PuzzlePiecePointer &GameDataSimpleSlide::getPiece(const QPoint &pos)
+FifteenPiecePointer &GameDataSimpleSlide::getPiece(const QPoint &pos)
 {
-    return pieces[pos.y() * board->boardInfo()->countX() + pos.x()];
+    return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
 }
 
 } // Slide

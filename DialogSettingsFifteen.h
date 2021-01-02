@@ -36,7 +36,8 @@ class DialogSettingsFifteen : public QDialog, public IDialogGameSettings
     Q_OBJECT
 
 public:
-    explicit DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton = true, QWidget *parent = nullptr);
+    explicit DialogSettingsFifteen(const SourceImage &sourceImage, bool showOkButton = true
+                                 , QWidget *parent = nullptr);
     ~DialogSettingsFifteen() override;
 
     QSharedPointer<IGame> buildGame() const override;

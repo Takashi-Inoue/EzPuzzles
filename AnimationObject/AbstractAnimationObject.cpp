@@ -21,56 +21,56 @@
 #include <QDebug>
 
 AbstractAnimationObject::AbstractAnimationObject(int totalFrameCount, bool isLoop) :
-    totalFrameCount(totalFrameCount),
-    nowFrameCount(0),
-    isLoop(isLoop)
+    m_totalFrameCount(totalFrameCount),
+    m_nowFrameCount(0),
+    m_isLoop(isLoop)
 {
     Q_ASSERT(totalFrameCount >= 0);
 }
 
 bool AbstractAnimationObject::onTickFrame()
 {
-    if (isLoop) {
-        nowFrameCount = ++nowFrameCount % totalFrameCount;
+    if (m_isLoop) {
+        m_nowFrameCount = ++m_nowFrameCount % m_totalFrameCount;
 
         return true;
     }
 
-    if (nowFrameCount == totalFrameCount)
+    if (m_nowFrameCount == m_totalFrameCount)
         return false;
 
-    ++nowFrameCount;
+    ++m_nowFrameCount;
 
     return true;
 }
 
 void AbstractAnimationObject::skipAnimation()
 {
-    if (!isLoop)
-        nowFrameCount = totalFrameCount;
+    if (!m_isLoop)
+        m_nowFrameCount = m_totalFrameCount;
 }
 
 bool AbstractAnimationObject::isLoopAnimation()
 {
-    return isLoop;
+    return m_isLoop;
 }
 
 bool AbstractAnimationObject::isFinishedAnimation()
 {
-    return !isLoop & (nowFrameCount >= totalFrameCount);
+    return !m_isLoop & (m_nowFrameCount >= m_totalFrameCount);
 }
 
 void AbstractAnimationObject::resetFrame()
 {
-    nowFrameCount = 0;
+    m_nowFrameCount = 0;
 }
 
 double AbstractAnimationObject::totalFrames() const
 {
-    return totalFrameCount;
+    return m_totalFrameCount;
 }
 
 double AbstractAnimationObject::nowFrame() const
 {
-    return nowFrameCount;
+    return m_nowFrameCount;
 }

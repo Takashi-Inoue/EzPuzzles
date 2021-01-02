@@ -19,20 +19,18 @@
 #ifndef IMAGEFRAGMENTPIECE_H
 #define IMAGEFRAGMENTPIECE_H
 
-#include "IPiece.h"
+#include "ImagePiece.h"
 
-class ImageFragmentPiece : public IPiece
+class ImageFragmentPiece : public ImagePiece
 {
 public:
     ImageFragmentPiece(const QPixmap &sourcePixmap, const QRectF &sourceRect);
-    ~ImageFragmentPiece() = default;
 
     void draw(QPainter &painter, const QPointF &pos) override;
     void draw(QPainter &painter, const QRectF &rect) override;
 
 protected:
-    QPixmap sourcePixmap;
-    QRectF sourceRect;
+    QRectF m_sourceRect;
 };
 
 #endif // IMAGEFRAGMENTPIECE_H

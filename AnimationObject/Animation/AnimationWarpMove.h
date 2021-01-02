@@ -27,15 +27,14 @@ class WarpMove : public AbstractAnimation
 {
 public:
     WarpMove(int waitFrameCount);
-    ~WarpMove() = default;
 
     // AbstractAnimation
     void start(const QRectF &from, const QRectF &to) override;
     QRectF rect() override;
 
 protected:
-    QRectF rectFrom;
-    QRectF rectTo;
+    QRectF m_rectFrom;
+    QRectF m_rectTo;
 };
 
 } // Animation

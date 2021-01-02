@@ -18,22 +18,21 @@
  */
 #include "ImageFragmentPiece.h"
 
-ImageFragmentPiece::ImageFragmentPiece(const QPixmap &sourcePixmap, const QRectF &sourceRect) :
-    sourcePixmap(sourcePixmap),
-    sourceRect(sourceRect)
+ImageFragmentPiece::ImageFragmentPiece(const QPixmap &sourcePixmap, const QRectF &sourceRect)
+    : ImagePiece(sourcePixmap)
+    , m_sourceRect(sourceRect)
 {
-    Q_ASSERT(!sourcePixmap.isNull());
     Q_ASSERT(sourceRect.isValid());
 }
 
 void ImageFragmentPiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, QRectF(pos, sourceRect.size()));
+    draw(painter, QRectF(pos, m_sourceRect.size()));
 }
 
 void ImageFragmentPiece::draw(QPainter &painter, const QRectF &rect)
 {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    painter.drawPixmap(rect, sourcePixmap, sourceRect);
+    painter.drawPixmap(rect, m_pixmap, m_sourceRect);
 }

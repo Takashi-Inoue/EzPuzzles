@@ -34,7 +34,7 @@ class AbstractShuffler : public ThreadOperation
 {
     Q_OBJECT
 public:
-    explicit AbstractShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces, QObject *parent = 0) :
+    explicit AbstractShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces, QObject *parent = 0) :
         ThreadOperation(parent),
         pieces(pieces),
         boardInfo(boardInfo),
@@ -46,7 +46,7 @@ public:
     virtual ~AbstractShuffler() = default;
 
 protected:
-    QList<PuzzlePiecePointer> &pieces;
+    QList<FifteenPiecePointer> &pieces;
     BoardInfoPointer boardInfo;
 
     std::shared_ptr<QReadWriteLock> rwlock;

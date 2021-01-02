@@ -21,34 +21,34 @@
 
 namespace Effect {
 
-GraduallyImage::GraduallyImage(int waitFrames, int graduallyFrames, const QPixmap &pixmap, const QRectF &sourceRect) :
-    AbstractEffect(waitFrames + graduallyFrames, false),
-    waitFrames(waitFrames),
-    graduallyFrames(graduallyFrames),
-    pixmap(pixmap),
-    sourceRect(sourceRect),
-    frameCounter(waitFrames)
+GraduallyImage::GraduallyImage(int waitFrames, int graduallyFrames, const QPixmap &pixmap
+                             , const QRectF &sourceRect)
+    : AbstractEffect(waitFrames + graduallyFrames, false)
+    , m_waitFrames(waitFrames)
+    , m_graduallyFrames(graduallyFrames)
+    , m_pixmap(pixmap)
+    , m_sourceRect(sourceRect)
+    , m_waitCounter(waitFrames)
 {
     Q_ASSERT(sourceRect.isValid());
 }
 
 bool GraduallyImage::onTickFrame()
 {
-    frameCounter = qMax(--frameCounter, 0);
+    m_waitCounter = qMax(--m_waitCounter, 0);
 
-    return (frameCounter == 0) & AbstractEffect::onTickFrame();
+    return (m_waitCounter == 0) & AbstractEffect::onTickFrame();
 }
 
 void GraduallyImage::draw(QPainter &painter, const QRectF &rect)
 {
-    if (frameCounter != 0)
+    if (m_waitCounter != 0)
         return;
 
     painter.save();
-//    painter.setOpacity((nowFrame() - waitFrames) / graduallyFrames);
-    painter.setOpacity(nowFrame() / totalFrames());
+    painter.setOpacity((nowFrame() - m_waitFrames) / m_graduallyFrames);
 
-    painter.drawPixmap(rect, pixmap, sourceRect);
+    painter.drawPixmap(rect, m_pixmap, m_sourceRect);
 
     painter.restore();
 }

@@ -18,11 +18,11 @@
  */
 #include "BoardInformation.h"
 
-BoardInformation::BoardInformation(const QSize &countXY, const QSize &pixelSize) :
-    m_countXY(countXY),
+BoardInformation::BoardInformation(const QSize &xyCount, const QSize &pixelSize) :
+    m_xyCount(xyCount),
     m_pixelSize(pixelSize)
 {
-    Q_ASSERT(countXY.isValid());
+    Q_ASSERT(xyCount.isValid());
     Q_ASSERT(!pixelSize.isEmpty());
 }
 
@@ -31,36 +31,36 @@ QRectF BoardInformation::rectFromPiecePos(const QPoint &piecePos) const
     double x = piecePos.x();
     double y = piecePos.y();
 
-    QPointF tl((x       * m_pixelSize.width()) / countX(), (y       * m_pixelSize.height()) / countY());
-    QPointF br(((x + 1) * m_pixelSize.width()) / countX(), ((y + 1) * m_pixelSize.height()) / countY());
+    QPointF tl((x       * m_pixelSize.width()) / xCount(), (y       * m_pixelSize.height()) / yCount());
+    QPointF br(((x + 1) * m_pixelSize.width()) / xCount(), ((y + 1) * m_pixelSize.height()) / yCount());
 
     return QRectF(tl, br);
 }
 
 QPoint BoardInformation::piecePosFromPixelPos(const QPoint &pixelPos) const
 {
-    return QPoint((pixelPos.x() * int(countX())) / m_pixelSize.width(),
-                  (pixelPos.y() * int(countY())) / m_pixelSize.height());
+    return QPoint((pixelPos.x() * int(xCount())) / m_pixelSize.width(),
+                  (pixelPos.y() * int(yCount())) / m_pixelSize.height());
 }
 
-int BoardInformation::countX() const
+int BoardInformation::xCount() const
 {
-    return m_countXY.width();
+    return m_xyCount.width();
 }
 
-int BoardInformation::countY() const
+int BoardInformation::yCount() const
 {
-    return m_countXY.height();
+    return m_xyCount.height();
 }
 
-QSize BoardInformation::countXY() const
+QSize BoardInformation::xyCount() const
 {
-    return m_countXY;
+    return m_xyCount;
 }
 
 int BoardInformation::pieceCount() const
 {
-    return countX() * countY();
+    return xCount() * yCount();
 }
 
 const QSize &BoardInformation::boardPixelSize() const

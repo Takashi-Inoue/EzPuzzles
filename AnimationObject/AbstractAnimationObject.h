@@ -38,9 +38,9 @@ protected:
     double nowFrame() const;
 
 private:
-    int totalFrameCount;
-    int nowFrameCount;
-    bool isLoop;
+    int m_totalFrameCount;
+    int m_nowFrameCount;
+    bool m_isLoop;
 };
 
 #endif // ABSTRACTANIMATIONOBJECT_H

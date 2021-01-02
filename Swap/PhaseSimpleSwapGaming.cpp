@@ -24,7 +24,7 @@
 
 namespace Swap {
 
-PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
+PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<FifteenPiecePointer> &pieces,
                                              const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent) :
     IPhase(parent),
     board(board),
@@ -37,10 +37,10 @@ PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::
     Q_ASSERT(totalMoveFrame >= 0);
 
 
-    auto graduallyFrame = std::make_shared<Effect::GraduallyBlinkFrame>(
+    auto graduallyFrame = QSharedPointer<Effect::GraduallyBlinkFrame>::create(
                               8, QColor(255, 128, 64, 224), QColor(255, 255, 64, 0), QColor(255, 255, 64, 224), QColor(255, 128, 64, 0), 240, true);
 
-    auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
+    auto compositeEffect = QSharedPointer<Effect::CompositeEffect>::create();
 
     auto piece = getPiece(swapTargetPos);
 
@@ -102,9 +102,9 @@ QString PhaseSimpleSwapGaming::information() const
     return QString("Swap Position [%1, %2]").arg(swapTargetPos.x() + 1).arg(swapTargetPos.y() + 1);
 }
 
-Fifteen::PuzzlePiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)
+FifteenPiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)
 {
-    return pieces[pos.y() * board->boardInfo()->countX() + pos.x()];
+    return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
 }
 
 } // Swap

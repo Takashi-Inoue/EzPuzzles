@@ -21,49 +21,50 @@
 
 #include "IMinePiece.h"
 #include "BoardInformation.h"
+
 #include <QList>
 #include <QPixmap>
-
-#include <memory>
-#include <random>
 
 namespace MineSweeper {
 
 class PiecesFactory
 {
 public:
-    PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation, int mineCount, bool isKeepMinesPositions);
+    PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation, int mineCount
+                , bool isKeepMinesPositions);
     ~PiecesFactory() = default;
 
-    static QList<int> toIntList(const QVector<QVector<MinePiecePointer>> &pieces);
-    QVector<QVector<MinePiecePointer>> toPieces(const QList<int> &intList);
+    using MinePiece2DList = QList<QList<MinePiecePointer>>;
 
-    QVector<QVector<MinePiecePointer>> createPieces();
-    const QList<QPoint> &getMinesPositions() const;
+    static QList<int> toIntList(const MinePiece2DList &pieces);
+    MinePiece2DList toPieces(const QList<int> &intList);
+
+    MinePiece2DList createPieces();
+    const QList<QPoint> &minesPositions() const;
 
 private:
-    static const int openFlag = (1 << 8);
-    static const int lockFlag = (1 << 9);
-    static const int mineID = 9;
+    static constexpr int m_openFlag = (1 << 8);
+    static constexpr int m_lockFlag = (1 << 9);
+    static constexpr int m_mineID   = 0b1111;
 
-    void fillWithNull(QVector<QVector<MinePiecePointer>> &pieces) const;
-    void createWallPieces(QVector<QVector<MinePiecePointer>> &pieces) const;
-    void createMinePieces(QVector<QVector<MinePiecePointer>> &pieces);
-    void createMinePieces(QVector<QVector<MinePiecePointer>> &pieces, int minX, int maxX, int minY, int maxY, int numberOfMines);
-    void createSafePieces(QVector<QVector<MinePiecePointer>> &pieces) const;
+    MinePiece2DList createNullPiecesList() const;
 
-    QList<MinePiecePointer> getAroundPieces(const QVector<QVector<MinePiecePointer>> &pieces, int x, int y) const;
-    void createMinePiece(QVector<QVector<MinePiecePointer>> &pieces, int x, int y);
-    void createSafePiece(QVector<QVector<MinePiecePointer>> &pieces, int x, int y, int numberOfAroundMines) const;
+    void createMinePieces(MinePiece2DList &pieces);
+    void createMinePiece(MinePiece2DList &pieces, int x, int y);
 
-    const QPixmap &sourcePixmap;
-    BoardInfoPointer boardInformation;
-    int mineCount;
-    bool isKeepMinesPositions;
+    void createSafePieces(MinePiece2DList &pieces) const;
+    void createSafePiece(MinePiece2DList &pieces, int x, int y, int numberOfAroundMines) const;
 
-    QList<QPoint> minesPositions;
+    void createWallPieces(MinePiece2DList &pieces) const;
 
-    std::mt19937 mt;
+    QList<MinePiecePointer> getAroundPieces(const MinePiece2DList &pieces, int x, int y) const;
+
+    QPixmap m_sourcePixmap;
+    BoardInfoPointer m_boardInformation;
+    int m_mineCount;
+    bool m_isKeepMinesPositions;
+
+    QList<QPoint> m_minesPositions;
 };
 
 } // MineSweeper

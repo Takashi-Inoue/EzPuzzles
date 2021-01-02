@@ -26,9 +26,7 @@ class GridLines
 {
 public:
     GridLines(const QRectF &rect, ushort vLineCount, ushort hLineCount);
-    GridLines(ushort vLineCount, ushort hLineCount)
-        : GridLines(QRectF(), vLineCount, hLineCount)
-    {}
+    GridLines(ushort vLineCount, ushort hLineCount);
     virtual ~GridLines() = default;
 
     void setRect(const QRectF &rect);

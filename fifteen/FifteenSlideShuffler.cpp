@@ -22,7 +22,7 @@
 
 namespace Fifteen {
 
-SlideShuffler::SlideShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces) :
+SlideShuffler::SlideShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces) :
     AbstractShuffler(pieces, boardInfo, rwlockForPieces),
     blankPos(blankPos),
     mt(std::random_device()())
@@ -43,19 +43,19 @@ void SlideShuffler::execImpl()
 
     Direction from = right;
 
-    for (int i = 0, lim = boardInfo->countX() * boardInfo->countY() * 4; i < lim; ++i) {
+    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount() * 4; i < lim; ++i) {
         Direction to = nextDirection(from);
         QPoint nextPos = nextBlankPosition(to);
 
         rwlock->lockForWrite();
 
-        changedPos = isHorizontal(to) ? Utility::slideHorizontal2Dlist<PuzzlePiecePointer>(pieces, boardInfo->countX(), blankPos, nextPos)
-                                      : Utility::slideVertical2Dlist<PuzzlePiecePointer>(pieces, boardInfo->countX(), blankPos, nextPos);
+        changedPos = isHorizontal(to) ? Utility::slideHorizontal2Dlist<FifteenPiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos)
+                                      : Utility::slideVertical2Dlist<FifteenPiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos);
         blankPos = nextPos;
         from = reverse(to);
 
         for (const auto &pos : changedPos) {
-            auto &piece = pieces[pos.y() * boardInfo->countX() + pos.x()];
+            auto &piece = pieces[pos.y() * boardInfo->xCount() + pos.x()];
 
             piece->setPosWithoutAnimation(pos);
         }
@@ -77,7 +77,7 @@ SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction f
         if (blankPos.x() > 0)
             dirs << left;
 
-        if (blankPos.x() < boardInfo->countX() - 1)
+        if (blankPos.x() < boardInfo->xCount() - 1)
             dirs << right;
 
         break;
@@ -87,7 +87,7 @@ SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction f
         if (blankPos.y() > 0)
             dirs << top;
 
-        if (blankPos.y() < boardInfo->countY() - 1)
+        if (blankPos.y() < boardInfo->yCount() - 1)
             dirs << bottom;
 
         break;
@@ -119,7 +119,7 @@ QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
     }
 
     if (to == right) {
-        next.rx() += (mt() % (boardInfo->countX() - blankPos.x() - 1) + 1);
+        next.rx() += (mt() % (boardInfo->xCount() - blankPos.x() - 1) + 1);
         return next;
     }
 
@@ -129,7 +129,7 @@ QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
     }
 
     // bottom
-    next.ry() += (mt() % (boardInfo->countY() - blankPos.y() - 1) + 1);
+    next.ry() += (mt() % (boardInfo->yCount() - blankPos.y() - 1) + 1);
     return next;
 }
 

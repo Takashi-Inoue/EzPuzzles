@@ -20,27 +20,24 @@
 
 namespace Animation {
 
-LineMove::LineMove(int totalFrameCount, bool isLoop) :
-    AbstractAnimation(totalFrameCount, isLoop)
-{
-}
-
 void LineMove::start(const QRectF &from, const QRectF &to)
 {
-    rectFrom = from;
-    rectTo = to;
+    m_rectFrom = from;
+    m_rectTo = to;
 
     AbstractAnimationObject::resetFrame();
 }
 
 QRectF LineMove::rect()
 {
-    double rev = nowFrame() / totalFrames();
+    const qreal rev = nowFrame() / totalFrames();
 
-    QPointF tl((rectTo.left()  - rectFrom.left())  * rev + rectFrom.left(),  (rectTo.top()    - rectFrom.top())    * rev + rectFrom.top());
-    QPointF br((rectTo.right() - rectFrom.right()) * rev + rectFrom.right(), (rectTo.bottom() - rectFrom.bottom()) * rev + rectFrom.bottom());
+    qreal left   = (m_rectTo.left()   - m_rectFrom.left())   * rev + m_rectFrom.left();
+    qreal top    = (m_rectTo.top()    - m_rectFrom.top())    * rev + m_rectFrom.top();
+    qreal right  = (m_rectTo.right()  - m_rectFrom.right())  * rev + m_rectFrom.right();
+    qreal bottom = (m_rectTo.bottom() - m_rectFrom.bottom()) * rev + m_rectFrom.bottom();
 
-    return QRectF(tl, br);
+    return QRectF(QPointF(left,  top), QPointF(right, bottom));
 }
 
 } // Animation

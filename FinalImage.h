@@ -36,6 +36,6 @@ protected:
     QPixmap m_pixmap;
 };
 
-typedef QSharedPointer<FinalImage> FinalImagePointer;
+using FinalImagePointer = QSharedPointer<FinalImage>;
 
 #endif // FINALIMAGE_H

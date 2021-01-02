@@ -27,7 +27,7 @@ namespace Slide {
 class PhaseSimpleSlideEnding : public IPhase
 {
 public:
-    PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces, QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase);
+    PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces, QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -39,7 +39,7 @@ public:
 private:
     static const int graduallyFrames = 60;
 
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
+    QList<FifteenPiecePointer> &pieces;
     PhaseType nextPhase;
 
     int nowFrame;

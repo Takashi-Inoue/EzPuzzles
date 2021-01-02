@@ -21,7 +21,7 @@
 
 namespace Fifteen {
 
-SwapShuffler::SwapShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces) :
+SwapShuffler::SwapShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces) :
     AbstractShuffler(pieces, boardInfo, rwlockForPieces),
     mt(std::random_device()())
 {
@@ -37,7 +37,7 @@ void SwapShuffler::execImpl()
     Q_ASSERT(!pieces.isEmpty());
     Q_ASSERT(boardInfo != nullptr);
 
-    int countX = boardInfo->countX();
+    int countX = boardInfo->xCount();
 
     for (int i = pieces.size() - 1; i > 0; --i) {
         int r = mt() % i;

@@ -36,6 +36,7 @@ public:
     void mouseEnter(QEvent *) override {}
     void mouseLeave(QEvent *) override {}
     QPoint pos() const override;
+    QPoint posOnImage() const override;
 
 protected:
     void correctPosition();

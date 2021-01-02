@@ -17,16 +17,12 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "GameCore.h"
-#include "SourceImage.h"
 
-#include <QDataStream>
-#include <QFile>
-#include <QFileInfo>
 #include <QDebug>
 
 GameCore::GameCore(GameDataPointer gameData) :
-    gameData(gameData),
-    backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
+    m_gameData(gameData),
+    m_backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
 {
     Q_CHECK_PTR(gameData);
 
@@ -34,9 +30,9 @@ GameCore::GameCore(GameDataPointer gameData) :
 }
 
 GameCore::GameCore(GameDataPointer gameData, GameID id) :
-    gameData(gameData),
-    gameId(id),
-    backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
+    m_gameData(gameData),
+    m_gameId(id),
+    m_backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
 {
     Q_CHECK_PTR(gameData);
 
@@ -45,65 +41,65 @@ GameCore::GameCore(GameDataPointer gameData, GameID id) :
 
 GameID GameCore::gameID() const
 {
-    return gameId;
+    return m_gameId;
 }
 
 QSharedPointer<IGame> GameCore::cloneAsNewGame() const
 {
-    auto game = new GameCore(gameData->cloneAsNewGame());
+    auto game = new GameCore(m_gameData->cloneAsNewGame());
 
-    const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
+    const_cast<GameID *>(&m_gameId)->swap(*const_cast<GameID *>(&game->m_gameId));
 
     return QSharedPointer<IGame>(game);
 }
 
-void GameCore::save(const QString &saveDirPath, const QSize &screenshotSize) const
+void GameCore::save(QStringView saveDirPath, const QSize &screenshotSize) const
 {
-    if (!phase->canSave())
+    if (!m_phase->canSave())
         return;
 
-    QString fileName = saveDirPath + "/" + gameId.toString() + ".dat";
+    QString fileName = QStringLiteral("%1/%2.dat").arg(saveDirPath, m_gameId.toString());
 
-    gameData->save(fileName);
+    m_gameData->save(fileName);
 
     saveScreenshot(saveDirPath, screenshotSize);
 }
 
 void GameCore::onTickFrame()
 {
-    Q_CHECK_PTR(phase);
+    Q_CHECK_PTR(m_phase);
 
-    phase->onTickFrame();
+    m_phase->onTickFrame();
 }
 
 void GameCore::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
-    phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
+    m_phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
 
     emit informationUpdated();
 }
 
 void GameCore::draw(QPainter &dest)
 {
-    QPainter painter(&backBuffer);
+    QPainter painter(&m_backBuffer);
 
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    phase->draw(painter);
+    m_phase->draw(painter);
 
     dest.save();
     dest.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    dest.drawPixmap(dest.viewport(), backBuffer);
+    dest.drawPixmap(dest.viewport(), m_backBuffer);
     dest.restore();
 }
 
 QSize GameCore::maxFieldSize() const
 {
-    return backBuffer.size();
+    return m_backBuffer.size();
 }
 
 void GameCore::drawFinalImage(QPainter &dest) const
 {
-    const FinalImagePointer &finalImage = gameData->finalImage();
+    FinalImagePointer finalImage = m_gameData->finalImage();
 
     if (finalImage != nullptr)
         finalImage->draw(dest);
@@ -111,39 +107,40 @@ void GameCore::drawFinalImage(QPainter &dest) const
 
 QString GameCore::shortInformation() const
 {
-    return gameData->gameName() + " - " + phase->information();
+    return QStringLiteral("%1 - %2").arg(m_gameData->gameName(), m_phase->information());
 }
 
 const SourceImage &GameCore::sourceImage() const
 {
-    return gameData->sourceImage();
+    return m_gameData->sourceImage();
 }
 
 void GameCore::changePhase(IPhase::PhaseType phaseType)
 {
     qDebug() << "changePhase" << phaseType;
 
-    if (phase != nullptr)
-        phase->disconnect();
+    if (m_phase != nullptr)
+        m_phase->disconnect();
 
-    phase = gameData->createPhase(phaseType);
+    m_phase = m_gameData->createPhase(phaseType);
 
-    connect(phase.get(), SIGNAL(toNextPhase(IPhase::PhaseType)), this, SLOT(changePhase(IPhase::PhaseType)));
+    connect(m_phase.get(), &IPhase::toNextPhase, this, &GameCore::changePhase);
 
     emit informationUpdated();
 }
 
-void GameCore::saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const
+void GameCore::saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const
 {
-    QString ssPath = saveDirPath + "/" + gameId.toString() + ".png";
-    backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation).save(ssPath, "PNG");
+    QString ssPath = QStringLiteral("%1/%2.png").arg(saveDirPath, m_gameId.toString());
+    m_backBuffer.scaled(screenshotSize, Qt::KeepAspectRatio, Qt::SmoothTransformation)
+            .save(ssPath, "PNG");
 }
 
 QPoint GameCore::piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const
 {
-    const auto &boardInfo = gameData->boardInfo();
+    BoardInfoPointer boardInfo = m_gameData->boardInfo();
 
-    double scale = static_cast<double>(boardInfo->boardPixelSize().width()) / fieldSize.width();
+    double scale = double(boardInfo->boardPixelSize().width()) / fieldSize.width();
 
     return boardInfo->piecePosFromPixelPos(cursorPos * scale);
 }

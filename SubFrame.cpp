@@ -33,7 +33,7 @@ void SubFrame::draw(QPainter &painter)
         m_maxRect = painter.clipBoundingRect().toRect();
 
         if (m_maxRect.width() < m_subFrameRect.width() || m_maxRect.height() < m_subFrameRect.height())
-            qWarning() << "The SubFrame will protrude." << m_subFrameRect << m_maxRect;
+            qWarning() << "The SubFrame will protrude. SubFrame =" << m_subFrameRect << "Max =" << m_maxRect;
 
         correctPosition();
     }
@@ -71,17 +71,27 @@ QPoint SubFrame::pos() const
     return m_subFrameRect.topLeft();
 }
 
+QPoint SubFrame::posOnImage() const
+{
+    return m_subFrameRect.topLeft() - m_maxRect.topLeft();
+}
+
 void SubFrame::correctPosition()
 {
+    if (m_subFrameRect.size() == m_maxRect.size()) {
+        m_subFrameRect.moveTopLeft(m_maxRect.topLeft());
+        return;
+    }
+
     if (m_subFrameRect.left() < m_maxRect.left())
         m_subFrameRect.moveLeft(m_maxRect.left());
 
     if (m_subFrameRect.right() > m_maxRect.right())
-        m_subFrameRect.moveRight(m_maxRect.right());
+        m_subFrameRect.moveRight(m_maxRect.right() - 1);
 
     if (m_subFrameRect.top() < m_maxRect.top())
         m_subFrameRect.moveTop(m_maxRect.top());
 
     if (m_subFrameRect.bottom() > m_maxRect.bottom())
-        m_subFrameRect.moveBottom(m_maxRect.bottom());
+        m_subFrameRect.moveBottom(m_maxRect.bottom() - 1);
 }

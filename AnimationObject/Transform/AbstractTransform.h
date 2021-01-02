@@ -21,10 +21,8 @@
 
 #include "AnimationObject/AbstractAnimationObject.h"
 
-#include <QSize>
+#include <QSharedPointer>
 #include <QTransform>
-
-#include <memory>
 
 namespace Transform {
 
@@ -32,7 +30,6 @@ class AbstractTransform : public AbstractAnimationObject
 {
 public:
     AbstractTransform(int totalFrameCount);
-    ~AbstractTransform() = default;
 
     virtual void start(const QSizeF &) = 0;
     virtual QTransform transform() const = 0;
@@ -41,6 +38,6 @@ public:
 
 } // Transform
 
-typedef std::shared_ptr<Transform::AbstractTransform> TransformPointer;
+using TransformPointer = QSharedPointer<Transform::AbstractTransform>;
 
 #endif // ABSTRACTTRANSFORM_H

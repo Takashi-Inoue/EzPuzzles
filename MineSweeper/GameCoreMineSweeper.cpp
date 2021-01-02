@@ -32,9 +32,9 @@ GameCoreMineSweeper::GameCoreMineSweeper(GameDataPointer gameData, GameID id) :
 
 QSharedPointer<IGame> GameCoreMineSweeper::cloneAsNewGame() const
 {
-    auto game = new GameCoreMineSweeper(gameData->cloneAsNewGame());
+    auto game = new GameCoreMineSweeper(m_gameData->cloneAsNewGame());
 
-    const_cast<GameID *>(&gameId)->swap(*const_cast<GameID *>(&game->gameId));
+    const_cast<GameID *>(&m_gameId)->swap(*const_cast<GameID *>(&game->m_gameId));
 
     return QSharedPointer<IGame>(game);
 }
@@ -43,7 +43,7 @@ void GameCoreMineSweeper::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
     const auto &piecePos = piecePosFromCursorPos(fieldSize, cursorPos);
 
-    phase->click(piecePos + QPoint(1, 1));
+    m_phase->click(piecePos + QPoint(1, 1));
 
     emit informationUpdated();
 }

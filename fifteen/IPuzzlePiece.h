@@ -23,7 +23,8 @@
 #include "AnimationObject/Animation/AbstractAnimation.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
 #include "AnimationObject/Transform/AbstractTransform.h"
-#include <memory>
+
+#include <QSharedPointer>
 
 namespace Fifteen {
 
@@ -48,8 +49,8 @@ public:
     virtual const Position &pos() const = 0;
 };
 
-typedef std::shared_ptr<IPuzzlePiece> PuzzlePiecePointer;
-
 } // Fifteen
+
+using FifteenPiecePointer = QSharedPointer<Fifteen::IPuzzlePiece>;
 
 #endif // IPUZZLEPIECE_H

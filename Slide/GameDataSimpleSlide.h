@@ -44,21 +44,21 @@ public:
     FinalImagePointer finalImage() const override;
     BoardInfoPointer boardInfo() const override;
 
-    bool save(const QString &fileName) const override;
+    bool save(QStringView fileName) const override;
 
 protected:
     void initPieces();
     void createBlankPiece();
     void setSlideAnimationToPieces();
     void setEffectToPieces();
-    Fifteen::PuzzlePiecePointer &getPiece(const QPoint &pos);
+    FifteenPiecePointer &getPiece(const QPoint &pos);
 
     static const unsigned char slideFrameCount = 20;
 
     std::shared_ptr<QReadWriteLock> rwlock;
 
-    QList<Fifteen::PuzzlePiecePointer> pieces;
-    Fifteen::PuzzlePiecePointer finalPiece;
+    QList<FifteenPiecePointer> pieces;
+    FifteenPiecePointer finalPiece;
     SourceImage sourceImg;
     BoardPointer board;
     UniquePosition defaultBlankPos;

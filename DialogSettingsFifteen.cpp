@@ -103,7 +103,8 @@ QSharedPointer<IGame> DialogSettingsFifteen::buildSimpleSlide() const
     ui->radioButtonBlankRandom->isChecked() ? defaultBlank.randomSelect(xyCount)
                                             : defaultBlank.select(m_grid->selectedCellPos());
 
-    auto gameData = QSharedPointer<Slide::GameDataSimpleSlide>::create(m_sourceImage, defaultBlank, xyCount);
+    auto gameData = QSharedPointer<Slide::GameDataSimpleSlide>::create(
+                        m_sourceImage, defaultBlank, xyCount);
 
     return QSharedPointer<GameCore>::create(gameData);
 }
@@ -117,7 +118,8 @@ QSharedPointer<IGame> DialogSettingsFifteen::buildSimpleSwap() const
     ui->radioButtonBlankRandom->isChecked() ? swapTarget.randomSelect(xyCount)
                                             : swapTarget.select(m_grid->selectedCellPos());
 
-    auto gameData = QSharedPointer<Swap::GameDataSimpleSwap>::create(m_sourceImage, swapTarget, xyCount);
+    auto gameData = QSharedPointer<Swap::GameDataSimpleSwap>::create(
+                        m_sourceImage, swapTarget, xyCount);
 
     return QSharedPointer<GameCore>::create(gameData);
 }

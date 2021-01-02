@@ -17,6 +17,7 @@ CONFIG += c++17
 TRANSLATIONS += ezpz_ja.ts
 
 SOURCES += main.cpp\
+    AbstractSaveData.cpp \
     Application.cpp \
     CellSelectionGrid.cpp \
     ImageHistory.cpp \
@@ -120,7 +121,6 @@ HEADERS  += MainWindow.h \
     ISubWidget.h \
     Dragger.h \
     SubFrame.h \
-    IDrawer.h \
     ImagePiece.h \
     NumberPiece.h \
     ISwitchPiece.h \

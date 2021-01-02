@@ -42,7 +42,7 @@ public:
     void draw(QPainter &painter, const QRectF &rect) override;
 
 protected:
-    QList<EffectPointer> effects;
+    QList<EffectPointer> m_effects;
 };
 
 } // Effect

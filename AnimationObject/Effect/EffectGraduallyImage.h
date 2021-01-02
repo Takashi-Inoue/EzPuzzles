@@ -35,12 +35,12 @@ public:
     void draw(QPainter &, const QRectF &) override;
 
 private:
-    const int waitFrames;
-    const int graduallyFrames;
-    QPixmap pixmap;
-    QRectF sourceRect;
+    const int m_waitFrames;
+    const int m_graduallyFrames;
+    QPixmap m_pixmap;
+    QRectF m_sourceRect;
 
-    int frameCounter;
+    int m_waitCounter;
 };
 
 } // Effect

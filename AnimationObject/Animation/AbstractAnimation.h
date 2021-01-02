@@ -22,19 +22,14 @@
 #include "AnimationObject/AbstractAnimationObject.h"
 
 #include <QRectF>
-#include <memory>
+#include <QSharedPointer>
 
 namespace Animation {
 
 class AbstractAnimation : public AbstractAnimationObject
 {
 public:
-    AbstractAnimation(int totalFrameCount, bool isLoop) :
-        AbstractAnimationObject(totalFrameCount, isLoop)
-    {
-    }
-
-    ~AbstractAnimation() = default;
+    using AbstractAnimationObject::AbstractAnimationObject;
 
     virtual void start(const QRectF &from, const QRectF &to) = 0;
     virtual QRectF rect() = 0;
@@ -42,6 +37,6 @@ public:
 
 } // Animation
 
-typedef std::shared_ptr<Animation::AbstractAnimation> AnimationPointer;
+using AnimationPointer = QSharedPointer<Animation::AbstractAnimation>;
 
 #endif // ABSTRACTANIMATION_H

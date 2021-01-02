@@ -20,7 +20,7 @@
 
 namespace Fifteen {
 
-EffectSwapper::EffectSwapper(PuzzlePiecePointer piece1, PuzzlePiecePointer piece2, int waitFrame) :
+EffectSwapper::EffectSwapper(FifteenPiecePointer piece1, FifteenPiecePointer piece2, int waitFrame) :
     AbstractAnimationObject(waitFrame, false),
     piece1(piece1),
     piece2(piece2)

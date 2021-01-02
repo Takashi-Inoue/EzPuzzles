@@ -10,8 +10,8 @@ SlideBlankPiece::SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defau
     boardInfo(boardInfo),
     position(defaultPos),
     brush(brush),
-    oldAnimation(std::make_shared<Animation::LineMove>(animationFrames, false)),
-    newAnimation(std::make_shared<Animation::LineMove>(animationFrames, false))
+    oldAnimation(QSharedPointer<Animation::LineMove>::create(animationFrames, false)),
+    newAnimation(QSharedPointer<Animation::LineMove>::create(animationFrames, false))
 {
 }
 

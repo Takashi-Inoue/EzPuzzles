@@ -43,7 +43,7 @@ public:
     const SourceImage &sourceImage() const override;
     FinalImagePointer finalImage() const override;
     BoardInfoPointer boardInfo() const override;
-    bool save(const QString &fileName) const override;
+    bool save(QStringView fileName) const override;
 
     double openedRate() const;
     QList<QPointF> explodedCenters() const;

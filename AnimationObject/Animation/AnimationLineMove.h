@@ -26,16 +26,15 @@ namespace Animation {
 class LineMove : public AbstractAnimation
 {
 public:
-    LineMove(int totalFrameCount, bool isLoop);
-    ~LineMove() = default;
+    using AbstractAnimation::AbstractAnimation;
 
     // AbstractAnimation
     void start(const QRectF &from, const QRectF &to) override;
     QRectF rect() override;
 
 protected:
-    QRectF rectFrom;
-    QRectF rectTo;
+    QRectF m_rectFrom;
+    QRectF m_rectTo;
 };
 
 } // Animation

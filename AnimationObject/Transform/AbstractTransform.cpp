@@ -21,8 +21,8 @@
 
 namespace Transform {
 
-AbstractTransform::AbstractTransform(int totalFrameCount) :
-    AbstractAnimationObject(totalFrameCount, false)
+AbstractTransform::AbstractTransform(int totalFrameCount)
+    : AbstractAnimationObject(totalFrameCount, false)
 {
 }
 
@@ -33,9 +33,10 @@ QRectF AbstractTransform::mapInRect(const QRectF &baseRect)
     if (trans.isIdentity())
         return baseRect;
 
-    QRectF rect = trans.mapRect(QRectF(QPoint(0, 0), baseRect.size()));
+    QRectF rectF = trans.mapRect(QRectF(QPoint(0, 0), baseRect.size()));
+    QMarginsF marginsF(baseRect.left(), baseRect.top(), -baseRect.left(), -baseRect.top());
 
-    return rect.marginsRemoved(QMarginsF(baseRect.left(), baseRect.top(), -baseRect.left(), -baseRect.top()));
+    return rectF.marginsRemoved(marginsF);
 }
 
 } // Transform

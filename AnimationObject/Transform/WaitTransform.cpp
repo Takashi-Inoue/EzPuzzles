@@ -20,12 +20,6 @@
 
 namespace Transform {
 
-WaitTransform::WaitTransform(int waitFrameCount) :
-    AbstractTransform(waitFrameCount)
-{
-    Q_ASSERT(waitFrameCount >= 0);
-}
-
 void WaitTransform::start(const QSizeF &)
 {
     AbstractAnimationObject::resetFrame();

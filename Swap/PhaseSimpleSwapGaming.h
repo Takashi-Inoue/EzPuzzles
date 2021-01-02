@@ -30,7 +30,7 @@ class PhaseSimpleSwapGaming : public IPhase
 {
     Q_OBJECT
 public:
-    PhaseSimpleSwapGaming(BoardPointer board, QList<Fifteen::PuzzlePiecePointer> &pieces,
+    PhaseSimpleSwapGaming(BoardPointer board, QList<FifteenPiecePointer> &pieces,
                           const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent = 0);
     ~PhaseSimpleSwapGaming() = default;
 
@@ -42,10 +42,10 @@ public:
     QString information() const override;
 
 protected:
-    Fifteen::PuzzlePiecePointer &getPiece(const QPoint &pos);
+    FifteenPiecePointer &getPiece(const QPoint &pos);
 
     BoardPointer board;
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
+    QList<FifteenPiecePointer> &pieces;
     QPoint swapTargetPos;
     PhaseType nextPhase;
     int totalMoveFrame;

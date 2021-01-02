@@ -89,7 +89,7 @@ void MainWindow::on_actionNewGame_triggered()
 
 void MainWindow::on_actionFromCurrentImage_triggered()
 {
-    auto newGame = createNewGame(m_game->sourceImage());
+    auto newGame = createNewGame(SourceImage(m_game->sourceImage().fullPath()));
 
     if (newGame != nullptr)
         startNewGame(newGame);

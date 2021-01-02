@@ -29,7 +29,7 @@ namespace Fifteen {
 class SlideShuffler : public AbstractShuffler
 {
 public:
-    SlideShuffler(QList<PuzzlePiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces);
+    SlideShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces);
     ~SlideShuffler() = default;
 
 protected:

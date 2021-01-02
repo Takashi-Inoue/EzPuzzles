@@ -24,7 +24,7 @@
 
 namespace Swap {
 
-PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase) :
+PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces, PhaseType nextPhase) :
     boardInfo(boardInfo),
     pieces(pieces),
     nextPhase(nextPhase),
@@ -36,14 +36,14 @@ PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<F
 
         int waitFrames = mt() % maxWaitFrames;
 
-        piece->setEffect(std::make_shared<Effect::TimeLimitedEffect>(waitFrames + quarterExpandFrames * 4, piece->effect()));
+        piece->setEffect(QSharedPointer<Effect::TimeLimitedEffect>::create(waitFrames + quarterExpandFrames * 4, piece->effect()));
 
-        auto waitTransform = std::make_shared<Transform::WaitTransform>(waitFrames);
-        auto expand1 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter,   quarterExpandFrames * 2);
-        auto expand2 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, quarterExpandFrames * 2);
-        auto expand3 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter,   quarterExpandFrames);
-        auto expand4 = std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, quarterExpandFrames);
-        auto chainedTransform = std::make_shared<Transform::ChainedTransform>();
+        auto waitTransform = QSharedPointer<Transform::WaitTransform>::create(waitFrames);
+        auto expand1 = QSharedPointer<Transform::Expand>::create(Transform::Expand::HorizontalToCenter,   quarterExpandFrames * 2);
+        auto expand2 = QSharedPointer<Transform::Expand>::create(Transform::Expand::HorizontalFromCenter, quarterExpandFrames * 2);
+        auto expand3 = QSharedPointer<Transform::Expand>::create(Transform::Expand::HorizontalToCenter,   quarterExpandFrames);
+        auto expand4 = QSharedPointer<Transform::Expand>::create(Transform::Expand::HorizontalFromCenter, quarterExpandFrames);
+        auto chainedTransform = QSharedPointer<Transform::ChainedTransform>::create();
 
         chainedTransform->addTransform(waitTransform);
         chainedTransform->addTransform(expand1);

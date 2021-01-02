@@ -20,7 +20,6 @@
 #define IMAGEPIECE_H
 
 #include "IPiece.h"
-#include <QPixmap>
 
 class ImagePiece : public IPiece
 {
@@ -31,7 +30,7 @@ public:
     void draw(QPainter &painter, const QRectF &rect) override;
 
 protected:
-    QPixmap pixmap;
+    QPixmap m_pixmap;
 };
 
 #endif // IMAGEPIECE_H

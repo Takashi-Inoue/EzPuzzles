@@ -19,19 +19,19 @@
 #include "ImagePiece.h"
 
 ImagePiece::ImagePiece(const QPixmap &pixmap) :
-    pixmap(pixmap)
+    m_pixmap(pixmap)
 {
     Q_ASSERT(!pixmap.isNull());
 }
 
 void ImagePiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, QRectF(pos, pixmap.size()));
+    draw(painter, QRectF(pos, m_pixmap.size()));
 }
 
 void ImagePiece::draw(QPainter &painter, const QRectF &rect)
 {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
-    painter.drawPixmap(rect, pixmap, pixmap.rect());
+    painter.drawPixmap(rect, m_pixmap, m_pixmap.rect());
 }

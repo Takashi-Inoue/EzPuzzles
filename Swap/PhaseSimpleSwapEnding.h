@@ -29,7 +29,7 @@ namespace Swap {
 class PhaseSimpleSwapEnding : public IPhase
 {
 public:
-    PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces, PhaseType nextPhase);
+    PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces, PhaseType nextPhase);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -43,7 +43,7 @@ private:
     static const int quarterExpandFrames = 5;
 
     BoardInfoPointer boardInfo;
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
+    QList<FifteenPiecePointer> &pieces;
     PhaseType nextPhase;
     int nowFrame;
 

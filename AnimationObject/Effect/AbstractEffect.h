@@ -22,23 +22,20 @@
 #include "AnimationObject/AbstractAnimationObject.h"
 
 #include <QPainter>
-#include <memory>
+#include <QSharedPointer>
 
 namespace Effect {
 
 class AbstractEffect : public AbstractAnimationObject
 {
 public:
-    AbstractEffect(int totalFrameCount, bool isLoop) :
-        AbstractAnimationObject(totalFrameCount, isLoop)
-    {
-    }
+    using AbstractAnimationObject::AbstractAnimationObject;
 
     virtual void draw(QPainter &, const QRectF &) = 0;
 };
 
 } // Effect
 
-typedef std::shared_ptr<Effect::AbstractEffect> EffectPointer;
+using EffectPointer = QSharedPointer<Effect::AbstractEffect>;
 
 #endif // ABSTRACTEFFECT_H

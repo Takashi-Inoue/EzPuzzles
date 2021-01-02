@@ -22,7 +22,7 @@ namespace Effect {
 
 TimeLimitedEffect::TimeLimitedEffect(int limitFrames, EffectPointer limitedEffect) :
     AbstractEffect(limitFrames, false),
-    limitedEffect(limitedEffect)
+    m_limitedEffect(limitedEffect)
 {
 }
 
@@ -31,16 +31,16 @@ bool TimeLimitedEffect::onTickFrame()
     if (!AbstractAnimationObject::onTickFrame())
         return false;
 
-    return limitedEffect->onTickFrame();
+    return m_limitedEffect->onTickFrame();
 }
 
 void TimeLimitedEffect::draw(QPainter &painter, const QRectF &rect)
 {
-    if (limitedEffect == nullptr)
+    if (m_limitedEffect == nullptr)
         return;
 
     if (!isFinishedAnimation())
-        limitedEffect->draw(painter, rect);
+        m_limitedEffect->draw(painter, rect);
 }
 
 } // Effect

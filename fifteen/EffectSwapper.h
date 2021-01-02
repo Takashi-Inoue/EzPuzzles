@@ -27,13 +27,13 @@ namespace Fifteen {
 class EffectSwapper : public AbstractAnimationObject
 {
 public:
-    EffectSwapper(PuzzlePiecePointer piece1, PuzzlePiecePointer piece2, int waitFrame);
+    EffectSwapper(FifteenPiecePointer piece1, FifteenPiecePointer piece2, int waitFrame);
 
     bool onTickFrame() override;
 
 private:
-    PuzzlePiecePointer piece1;
-    PuzzlePiecePointer piece2;
+    FifteenPiecePointer piece1;
+    FifteenPiecePointer piece2;
 };
 
 } // Fifteen

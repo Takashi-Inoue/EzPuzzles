@@ -29,12 +29,12 @@
 class Board
 {
 public:
-    Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock);
+    Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock);
     ~Board() = default;
 
 public:
-    QList<Fifteen::PuzzlePiecePointer> slidePiece(const QPoint &from, const QPoint &to);
-    QList<Fifteen::PuzzlePiecePointer> swapPiece(const QPoint &from, const QPoint &to);
+    QList<FifteenPiecePointer> slidePiece(const QPoint &from, const QPoint &to);
+    QList<FifteenPiecePointer> swapPiece(const QPoint &from, const QPoint &to);
 
     void draw(QPainter &painter);
     void onTickFrame();
@@ -45,11 +45,11 @@ public:
     BoardInfoPointer boardInfo() const;
 
 protected:
-    void addAnimationPieces(QList<Fifteen::PuzzlePiecePointer> pieces);
-    Fifteen::PuzzlePiecePointer &getPiece(const QPoint &pos);
+    void addAnimationPieces(QList<FifteenPiecePointer> pieces);
+    FifteenPiecePointer &getPiece(const QPoint &pos);
 
     BoardInfoPointer boardInformation;
-    QList<Fifteen::PuzzlePiecePointer> &pieces;
+    QList<FifteenPiecePointer> &pieces;
 
     std::shared_ptr<QReadWriteLock> rwlock;
 };

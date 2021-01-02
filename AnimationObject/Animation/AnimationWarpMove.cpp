@@ -27,15 +27,15 @@ WarpMove::WarpMove(int waitFrameCount) :
 
 void WarpMove::start(const QRectF &from, const QRectF &to)
 {
-    rectFrom = from;
-    rectTo = to;
+    m_rectFrom = from;
+    m_rectTo = to;
 
     AbstractAnimationObject::resetFrame();
 }
 
 QRectF WarpMove::rect()
 {
-    return isFinishedAnimation() ? rectTo : rectFrom;
+    return isFinishedAnimation() ? m_rectTo : m_rectFrom;
 }
 
 } // Animation

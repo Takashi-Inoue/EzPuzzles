@@ -21,77 +21,78 @@
 #include <QPainter>
 #include <QDebug>
 
-QMap<BlockPiece::Info, QPixmap> BlockPiece::pixmapMap;
+QMap<BlockPiece::Info, QPixmap> BlockPiece::m_pixmapMap;
 
-BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, QColor darkLine) :
-    foregroundColor(foreground),
-    lightLineColor(lightLine),
-    darkLineColor(darkLine)
+BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, QColor darkLine)
+    : m_foregroundColor(foreground)
+    , m_lightLineColor(lightLine)
+    , m_darkLineColor(darkLine)
 {
     if (size.isEmpty())
         return;
 
     Info info(size, foreground.rgba(), lightLine.rgba(), darkLine.rgba());
 
-    pixmap = pixmapMap[info];
+    m_pixmap = m_pixmapMap[info];
 
-    if (!pixmap.isNull())
+    if (!m_pixmap.isNull())
         return;
 
-    pixmap = QPixmap(size);
+    m_pixmap = QPixmap(size);
 
-    QPainter painter(&pixmap);
-    drawPiece(painter, QPoint(0, 0), pixmap.size());
+    QPainter painter(&m_pixmap);
+    drawPiece(painter, m_pixmap.size());
 
-    pixmapMap[info] = pixmap;
+    m_pixmapMap[info] = m_pixmap;
 }
 
 void BlockPiece::draw(QPainter &painter, const QPointF &pos)
 {
-    draw(painter, QRectF(pos, pixmap.size()));
+    draw(painter, QRectF(pos, m_pixmap.size()));
 }
 
 void BlockPiece::draw(QPainter &painter, const QRectF &rect)
 {
-    pixmap.isNull() ? drawPiece(painter, rect.topLeft(), rect.size())
-                    : painter.drawPixmap(rect, pixmap, pixmap.rect());
+    painter.drawPixmap(rect, m_pixmap, m_pixmap.rect());
 }
 
-void BlockPiece::drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &targetSize)
+void BlockPiece::drawPiece(QPainter &painter, const QSize &targetSize)
 {
+    QPoint pos(0, 0);
+
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
     painter.setOpacity(1.0);
 
-    painter.fillRect(QRectF(pos, targetSize - QSize(1, 1)), foregroundColor);
+    painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), m_foregroundColor);
 
-    painter.setPen(darkLineColor);
-    painter.drawRect(QRectF(pos, targetSize - QSize(1, 1)));
+    painter.setPen(m_darkLineColor);
+    painter.drawRect(QRect(pos, targetSize - QSize(1, 1)));
 
-    painter.setPen(lightLineColor);
-    painter.drawRect(QRectF(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
+    painter.setPen(m_lightLineColor);
+    painter.drawRect(QRect(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
 }
 
-BlockPiece::Info::Info(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3) :
-    sizeInt(size.width()),
-    color1(rgba1),
-    color2(rgba3)
+BlockPiece::Info::Info(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3)
+    : m_sizeInt(size.width())
+    , m_color1(rgba1)
+    , m_color2(rgba3)
 {
     Q_ASSERT(!size.isEmpty());
 
-    sizeInt <<= 32;
-    sizeInt |= size.height();
+    m_sizeInt <<= 32;
+    m_sizeInt |= size.height();
 
-    color1 <<= 32;
-    color1 |= rgba2;
+    m_color1 <<= 32;
+    m_color1 |= rgba2;
 }
 
 bool BlockPiece::Info::operator<(const BlockPiece::Info &other) const
 {
-    if (sizeInt != other.sizeInt)
-        return sizeInt < other.sizeInt;
+    if (m_sizeInt != other.m_sizeInt)
+        return m_sizeInt < other.m_sizeInt;
 
-    if (color1 != other.color1)
-        return color1 < other.color1;
+    if (m_color1 != other.m_color1)
+        return m_color1 < other.m_color1;
 
-    return color2 < other.color2;
+    return m_color2 < other.m_color2;
 }

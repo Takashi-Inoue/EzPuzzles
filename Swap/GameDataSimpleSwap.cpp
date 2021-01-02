@@ -63,7 +63,8 @@ GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData)
 
 GameDataPointer GameDataSimpleSwap::cloneAsNewGame() const
 {
-    return QSharedPointer<GameDataSimpleSwap>::create(m_sourceImg, m_swapTargetPos, m_board->boardInfo()->countXY());
+    return QSharedPointer<GameDataSimpleSwap>::create(
+                m_sourceImg, m_swapTargetPos, m_board->boardInfo()->xyCount());
 }
 
 QString GameDataSimpleSwap::gameName() const
@@ -77,26 +78,26 @@ PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
 
     if (phaseType == IPhase::PhaseReady) {
         initPieces();
-        return std::make_shared<PhaseShowFinalImage>(m_sourceImg, IPhase::PhasePreGame);
+        return QSharedPointer<PhaseShowFinalImage>::create(m_sourceImg, IPhase::PhasePreGame);
     }
 
     if (phaseType == IPhase::PhasePreGame)
-        return std::make_shared<PhaseShuffle>(m_board, QSharedPointer<Fifteen::SwapShuffler>::create(m_pieces, m_board->boardInfo(), m_rwlock), IPhase::PhaseGaming);
+        return QSharedPointer<PhaseShuffle>::create(m_board, QSharedPointer<Fifteen::SwapShuffler>::create(m_pieces, m_board->boardInfo(), m_rwlock), IPhase::PhaseGaming);
 
     if (phaseType == IPhase::PhaseGaming)
-        return std::make_shared<PhaseSimpleSwapGaming>(m_board, m_pieces, m_swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
+        return QSharedPointer<PhaseSimpleSwapGaming>::create(m_board, m_pieces, m_swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
 
     if (phaseType == IPhase::PhaseEnding)
-        return std::make_shared<PhaseSimpleSwapEnding>(m_board->boardInfo(), m_pieces, IPhase::PhaseCleared);
+        return QSharedPointer<PhaseSimpleSwapEnding>::create(m_board->boardInfo(), m_pieces, IPhase::PhaseCleared);
 
     if (phaseType == IPhase::PhaseCleared)
-        return std::make_shared<PhaseCleared>(m_sourceImg, IPhase::PhaseReady);
+        return QSharedPointer<PhaseCleared>::create(m_sourceImg, IPhase::PhaseReady);
 
     qDebug() << "no such phase type" << phaseType;
 
     m_currentPhaseType = IPhase::PhaseReady;
 
-    return std::make_shared<PhaseShowFinalImage>(m_sourceImg, IPhase::PhasePreGame);
+    return QSharedPointer<PhaseShowFinalImage>::create(m_sourceImg, IPhase::PhasePreGame);
 }
 
 IPhase::PhaseType GameDataSimpleSwap::currentPhase() const
@@ -119,7 +120,7 @@ BoardInfoPointer GameDataSimpleSwap::boardInfo() const
     return m_board->boardInfo();
 }
 
-bool GameDataSimpleSwap::save(const QString &fileName) const
+bool GameDataSimpleSwap::save(QStringView fileName) const
 {
     if (m_currentPhaseType == IPhase::PhaseCleared)
         return m_sourceImg.saveImage();
@@ -129,7 +130,7 @@ bool GameDataSimpleSwap::save(const QString &fileName) const
     for (const auto &piece : m_pieces)
         defaultPositions << piece->pos().defaultPos();
 
-    SaveDataSimpleSwap savedata(fileName, m_board->boardInfo()->countXY(), m_swapTargetPos, m_sourceImg
+    SaveDataSimpleSwap savedata(fileName, m_board->boardInfo()->xyCount(), m_swapTargetPos, m_sourceImg
                               , m_currentPhaseType, defaultPositions);
 
     return savedata.write();
@@ -149,11 +150,11 @@ void GameDataSimpleSwap::setAnimationToPieces()
     Q_ASSERT(!m_pieces.isEmpty());
 
     for (auto &piece : m_pieces) {
-        auto chainTransform = std::make_shared<Transform::ChainedTransform>();
-        chainTransform->addTransform(std::make_shared<Transform::Expand>(Transform::Expand::HorizontalToCenter, warpWaitCount));
-        chainTransform->addTransform(std::make_shared<Transform::Expand>(Transform::Expand::HorizontalFromCenter, warpWaitCount));
+        auto chainTransform = QSharedPointer<Transform::ChainedTransform>::create();
+        chainTransform->addTransform(QSharedPointer<Transform::Expand>::create(Transform::Expand::HorizontalToCenter, warpWaitCount));
+        chainTransform->addTransform(QSharedPointer<Transform::Expand>::create(Transform::Expand::HorizontalFromCenter, warpWaitCount));
 
-        piece->setAnimation(std::make_shared<Animation::WarpMove>(warpWaitCount));
+        piece->setAnimation(QSharedPointer<Animation::WarpMove>::create(warpWaitCount));
         piece->setTransform(chainTransform);
     }
 }
@@ -162,7 +163,7 @@ void GameDataSimpleSwap::setEffectToPieces()
 {
     Q_ASSERT(!m_pieces.isEmpty());
 
-    auto frame = std::make_shared<Effect::SimpleFrame>(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
+    auto frame = QSharedPointer<Effect::SimpleFrame>::create(2, QColor(32, 32, 32, 192), QColor(160, 160, 160, 192));
 
     for (auto &piece : m_pieces)
         piece->setEffect(frame);

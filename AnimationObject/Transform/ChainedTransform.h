@@ -27,7 +27,6 @@ class ChainedTransform : public AbstractTransform
 {
 public:
     ChainedTransform();
-    ~ChainedTransform() = default;
 
     void addTransform(TransformPointer transform);
 
@@ -42,8 +41,8 @@ public:
     QTransform transform() const override;
 
 protected:
-    QList<TransformPointer> transforms;
-    int index;
+    QList<TransformPointer> m_transforms;
+    int m_index = INT_MAX;
 };
 
 } // Transform

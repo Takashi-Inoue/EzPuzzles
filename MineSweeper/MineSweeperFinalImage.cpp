@@ -86,7 +86,7 @@ QList<QPointF> MineSweeperFinalImage::explodedCenters() const
 
 int MineSweeperFinalImage::piecePixelSize() const
 {
-    return m_pixmap.width() / m_boardInfo->countXY().width();
+    return m_pixmap.width() / m_boardInfo->xyCount().width();
 }
 
 QTransform MineSweeperFinalImage::createTransform()

@@ -19,7 +19,6 @@
 #ifndef IGAMEDATA_H
 #define IGAMEDATA_H
 
-#include "Application.h"
 #include "IPhase.h"
 #include "BoardInformation.h"
 #include "FinalImage.h"
@@ -27,7 +26,7 @@
 
 class IGameData;
 
-typedef QSharedPointer<IGameData> GameDataPointer;
+using GameDataPointer = QSharedPointer<IGameData>;
 
 class IGameData
 {
@@ -44,7 +43,7 @@ public:
     virtual FinalImagePointer finalImage() const = 0;
     virtual BoardInfoPointer boardInfo() const = 0;
 
-    virtual bool save(const QString &fileName) const = 0;
+    virtual bool save(QStringView fileName) const = 0;
 };
 
 #endif // IPHASEFACTORY_H

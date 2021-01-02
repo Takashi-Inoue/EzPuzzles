@@ -46,14 +46,15 @@ public:
     QSharedPointer<IGame> buildGame() const override;
 
 protected:
+    void resizeEvent(QResizeEvent *event) override;
     void showEvent(QShowEvent *) override;
     bool eventFilter(QObject *, QEvent *) override;
 
 private slots:
-    void updateLabels();
-    void updateMineMax();
-    void updateSubFrame();
-    void updateBlockPiece();
+    void updateLabels(int piecePixelSide);
+    void updateMineMax(int piecePixelSide);
+    void updateSubFrame(int piecePixelSide);
+    void updateBlockPiece(int piecePixelSide);
 
     void on_pushButtonEasy_clicked();
     void on_pushButtonNormal_clicked();

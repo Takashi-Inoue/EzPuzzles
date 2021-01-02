@@ -27,7 +27,6 @@ class BlockPiece : public IPiece
 {
 public:
     BlockPiece(const QSize &size = QSize(0, 0), QColor foreground = QColor(224, 224, 224), QColor lightLine = QColor(192, 192, 192), QColor darkLine = QColor(96, 96, 96));
-    ~BlockPiece() = default;
 
     // IPiece
     void draw(QPainter &painter, const QPointF &pos) override;
@@ -43,20 +42,20 @@ protected:
         bool operator<(const Info &other) const;
 
     private:
-        uint64_t sizeInt;
-        uint64_t color1;
-        uint color2;
+        int64_t m_sizeInt;
+        uint64_t m_color1;
+        uint m_color2;
     };
 
-    static QMap<Info, QPixmap> pixmapMap;
+    static QMap<Info, QPixmap> m_pixmapMap;
 
-    void drawPiece(QPainter &painter, const QPointF &pos, const QSizeF &targetSize);
+    void drawPiece(QPainter &painter, const QSize &targetSize);
 
-    QColor foregroundColor;
-    QColor lightLineColor;
-    QColor darkLineColor;
+    QColor m_foregroundColor;
+    QColor m_lightLineColor;
+    QColor m_darkLineColor;
 
-    QPixmap pixmap;
+    QPixmap m_pixmap;
 };
 
 #endif // BLOCKPIECE_H

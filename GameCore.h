@@ -23,7 +23,6 @@
 #include "IGameData.h"
 #include "GameID.h"
 
-#include <QList>
 #include <QPixmap>
 
 class GameCore : public IGame
@@ -36,7 +35,7 @@ public:
     GameID gameID() const override;
 
     QSharedPointer<IGame> cloneAsNewGame() const override;
-    void save(const QString &saveDirPath, const QSize &screenshotSize) const override;
+    void save(QStringView saveDirPath, const QSize &screenshotSize) const override;
 
     void onTickFrame() override;
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
@@ -50,16 +49,16 @@ protected slots:
     void changePhase(IPhase::PhaseType phaseType);
 
 protected:
-    void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const override;
+    void saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const override;
     QPoint piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const;
 
-    PhasePointer phase;
-    GameDataPointer gameData;
+    PhasePointer m_phase;
+    GameDataPointer m_gameData;
 
-    GameID gameId;
+    GameID m_gameId;
 
 private:
-    QPixmap backBuffer;
+    QPixmap m_backBuffer;
 };
 
 #endif // GAMECORE_H

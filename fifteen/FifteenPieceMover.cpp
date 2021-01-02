@@ -21,22 +21,22 @@
 
 namespace Fifteen {
 
-PieceMover::PieceMover(QList<PuzzlePiecePointer> &pieces, int xCount) :
+PieceMover::PieceMover(QList<FifteenPiecePointer> &pieces, int xCount) :
     pieces(pieces),
     xCount(xCount)
 {
 }
 
-QList<PuzzlePiecePointer> PieceMover::slideVertical(const QPoint &from, const QPoint &to)
+QList<FifteenPiecePointer> PieceMover::slideVertical(const QPoint &from, const QPoint &to)
 {
     if (from == to || pieces.isEmpty())
-        return QList<PuzzlePiecePointer>();
+        return QList<FifteenPiecePointer>();
 
     Q_ASSERT(from.x() == to.x());
 
-    auto changedPos = Utility::slideVertical2Dlist<PuzzlePiecePointer>(pieces, xCount, from, to);
+    auto changedPos = Utility::slideVertical2Dlist<FifteenPiecePointer>(pieces, xCount, from, to);
 
-    QList<PuzzlePiecePointer> changedPieces;
+    QList<FifteenPiecePointer> changedPieces;
 
     for (const auto &pos : changedPos) {
         auto piece = pieces[pos.y() * xCount + pos.x()];
@@ -49,16 +49,16 @@ QList<PuzzlePiecePointer> PieceMover::slideVertical(const QPoint &from, const QP
     return changedPieces;
 }
 
-QList<PuzzlePiecePointer> PieceMover::slideHorizontal(const QPoint &from, const QPoint &to)
+QList<FifteenPiecePointer> PieceMover::slideHorizontal(const QPoint &from, const QPoint &to)
 {
     if (from == to || pieces.isEmpty())
-        return QList<PuzzlePiecePointer>();
+        return QList<FifteenPiecePointer>();
 
     Q_ASSERT(from.y() == to.y());
 
-    auto changedPos = Utility::slideHorizontal2Dlist<PuzzlePiecePointer>(pieces, xCount, from, to);
+    auto changedPos = Utility::slideHorizontal2Dlist<FifteenPiecePointer>(pieces, xCount, from, to);
 
-    QList<PuzzlePiecePointer> changedPieces;
+    QList<FifteenPiecePointer> changedPieces;
 
     for (const auto &pos : changedPos) {
         auto piece = pieces[pos.y() * xCount + pos.x()];

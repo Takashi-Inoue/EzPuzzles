@@ -22,82 +22,81 @@
 #include "WallPiece.h"
 
 #include <QElapsedTimer>
+#include <QRandomGenerator>
 #include <QDebug>
 
 namespace MineSweeper {
 
-PiecesFactory::PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation, int mineCount, bool isKeepMinesPositions) :
-    sourcePixmap(sourcePixmap),
-    boardInformation(boardInformation),
-    mineCount(mineCount),
-    isKeepMinesPositions(isKeepMinesPositions),
-    mt(std::random_device()())
+PiecesFactory::PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation
+                           , int mineCount, bool isKeepMinesPositions)
+    : m_sourcePixmap(sourcePixmap)
+    , m_boardInformation(boardInformation)
+    , m_mineCount(mineCount)
+    , m_isKeepMinesPositions(isKeepMinesPositions)
 {
     Q_ASSERT(!sourcePixmap.isNull());
     Q_ASSERT(mineCount > 0 && mineCount < boardInformation->pieceCount());
 }
 
-QList<int> PiecesFactory::toIntList(const QVector<QVector<MinePiecePointer>> &pieces)
+QList<int> PiecesFactory::toIntList(const MinePiece2DList &pieces)
 {
     Q_ASSERT(!pieces.isEmpty());
 
     QList<int> result;
 
-    int xMax = pieces.at(0).size() - 1;
-    int yMax = pieces.size() - 1;
+    qsizetype xMax = pieces[0].size() - 1;
+    qsizetype yMax = pieces.size() - 1;
 
     for (int y = 1; y < yMax; ++y) {
         for (int x = 1; x < xMax; ++x) {
-            const auto &piece = pieces.at(y).at(x);
+            const MinePiecePointer &piece = pieces[y][x];
 
-            int value = piece->isMine() ? mineID : piece->numberOfAroundMines();
+            int value = piece->isMine() ? m_mineID : piece->numberOfAroundMines();
 
             if (piece->isLock())
-                value |= lockFlag;
+                value |= m_lockFlag;
 
-            result << (piece->isOpen() ? (value | openFlag) : value);
+            result << (piece->isOpen() ? (value | m_openFlag) : value);
         }
     }
 
     return result;
 }
 
-QVector<QVector<MinePiecePointer>> PiecesFactory::toPieces(const QList<int> &intList)
+PiecesFactory::MinePiece2DList PiecesFactory::toPieces(const QList<int> &intList)
 {
-    minesPositions.clear();
+    m_minesPositions.clear();
 
-    QVector<QVector<MinePiecePointer>> pieces;
+    MinePiece2DList pieces = createNullPiecesList();
 
-    fillWithNull(pieces);
     createWallPieces(pieces);
 
-    for (int i = 0, lim = intList.size(); i < lim; ++i) {
-        const int num = intList.at(i);
-        int x = i % boardInformation->countX() + 1;
-        int y = i / boardInformation->countX() + 1;
+    for (int i = 0, lim = int(intList.size()); i < lim; ++i) {
+        const int num = intList[i];
+        const int x = i % m_boardInformation->xCount() + 1;
+        const int y = i / m_boardInformation->xCount() + 1;
 
-        if ((num & 0b1111) == mineID) {
+        if ((num & m_mineID) > 8) { // 8 == Max mines around
             createMinePiece(pieces, x, y);
-            minesPositions << QPoint(x, y);
+            m_minesPositions << QPoint(x, y);
         } else {
-            createSafePiece(pieces, x, y, num & 0b1111);
+            createSafePiece(pieces, x, y, num & m_mineID);
         }
 
-        if (num & openFlag)
+        if (num & m_openFlag)
             pieces[y][x]->open();
 
-        if (num & lockFlag)
+        if (num & m_lockFlag)
             pieces[y][x]->lock();
     }
 
     return pieces;
 }
 
-QVector<QVector<MinePiecePointer>> PiecesFactory::createPieces()
+PiecesFactory::MinePiece2DList PiecesFactory::createPieces()
 {
-    QVector<QVector<MinePiecePointer>> pieces;
+    MinePiece2DList pieces = createNullPiecesList();
 
-    fillWithNull(pieces);
     createWallPieces(pieces);
     createMinePieces(pieces);
     createSafePieces(pieces);
@@ -105,31 +104,118 @@ QVector<QVector<MinePiecePointer>> PiecesFactory::createPieces()
     return pieces;
 }
 
-const QList<QPoint> &PiecesFactory::getMinesPositions() const
+const QList<QPoint> &PiecesFactory::minesPositions() const
 {
-    return minesPositions;
+    return m_minesPositions;
 }
 
-void PiecesFactory::fillWithNull(QVector<QVector<MinePiecePointer> > &pieces) const
+PiecesFactory::MinePiece2DList PiecesFactory::createNullPiecesList() const
 {
-    int cx = boardInformation->countX() + 2;
-    int cy = boardInformation->countY() + 2;
+    int cx = m_boardInformation->xCount() + 2;
+    int cy = m_boardInformation->yCount() + 2;
 
-    for (int y = 0; y < cy; ++y)
-        pieces << QVector<MinePiecePointer>(cx, nullptr);
+    MinePiece2DList pieces(cy, QList<MinePiecePointer>(cx, nullptr));
+
+    return pieces;
 }
 
-void PiecesFactory::createWallPieces(QVector<QVector<MinePiecePointer>> &pieces) const
+void PiecesFactory::createMinePieces(MinePiece2DList &pieces)
+{
+    Q_ASSERT(pieces.size() == m_boardInformation->yCount() + 2);
+
+    QElapsedTimer timer;
+    timer.start();
+
+    const int xCount = m_boardInformation->xCount();
+    const int yCount = m_boardInformation->yCount();
+    const int numberOfPieces = xCount * yCount;
+
+    QList<int> indices(numberOfPieces);
+
+    std::iota(indices.begin(), indices.end(), 0);
+
+    for (int i = numberOfPieces - 1; i >= 0; --i) {
+        int randIndex = QRandomGenerator::global()->bounded(i + 1);
+        int index = indices[randIndex];
+        std::swap(indices[randIndex], indices[i]);
+
+        int x = index % xCount + 1;
+        int y = index / xCount + 1;
+
+        Q_ASSERT(pieces[y][x] == nullptr);
+
+        createMinePiece(pieces, x, y);
+
+        if (m_mineCount + i == numberOfPieces)
+            break;
+    }
+
+    qDebug() << "create Mine pieces" << timer.elapsed() << "ms";
+}
+
+void PiecesFactory::createMinePiece(MinePiece2DList &pieces, int x, int y)
+{
+    auto minePiece = QSharedPointer<MinePiece>::create(
+                         m_boardInformation->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect());
+
+    pieces[y][x] = minePiece;
+
+    if (m_isKeepMinesPositions)
+        m_minesPositions << QPoint(x, y);
+}
+
+void PiecesFactory::createSafePieces(MinePiece2DList &pieces) const
 {
     QElapsedTimer timer;
     timer.start();
 
-    int cx = boardInformation->countX() + 2;
-    int cy = boardInformation->countY() + 2;
+    int cx = m_boardInformation->xCount() + 2;
+    int cy = m_boardInformation->yCount() + 2;
 
     Q_ASSERT(pieces.size() == cy);
 
-    auto wallPiece = std::make_shared<WallPiece>();
+    for (int y = 1; y < cy - 1; ++y) {
+        for (int x = 1; x < cx - 1; ++x) {
+            if (pieces[y][x] != nullptr)
+                continue;
+
+            QList<MinePiecePointer> aroundPieces = getAroundPieces(pieces, x, y);
+
+            auto numberOfAroundMines = std::count_if(aroundPieces.begin(), aroundPieces.end()
+                                                   , [](MinePiecePointer &piece)
+            {
+                return piece != nullptr ? piece->isMine() : false;
+            });
+
+            createSafePiece(pieces, x, y, int(numberOfAroundMines));
+        }
+    }
+
+    qDebug() << "create Safe pieces" << timer.elapsed() << "ms";
+}
+
+void PiecesFactory::createSafePiece(MinePiece2DList &pieces, int x, int y, int numberOfAroundMines) const
+{
+    QRect rect = m_boardInformation->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect();
+
+    auto safePiece = QSharedPointer<SafePiece>::create(
+                         numberOfAroundMines, rect, m_sourcePixmap, rect);
+
+    safePiece->setOpenPieceOpacity(0.5);
+    pieces[y][x] = safePiece;
+}
+
+void PiecesFactory::createWallPieces(MinePiece2DList &pieces) const
+{
+    QElapsedTimer timer;
+    timer.start();
+
+    int cx = m_boardInformation->xCount() + 2;
+    int cy = m_boardInformation->yCount() + 2;
+
+    Q_ASSERT(pieces.size() == cy);
+
+    auto wallPiece = QSharedPointer<WallPiece>::create();
 
     for (int x = 0; x < cx; ++x) {
         pieces[     0][x] = wallPiece;
@@ -144,106 +230,10 @@ void PiecesFactory::createWallPieces(QVector<QVector<MinePiecePointer>> &pieces)
     qDebug() << "create Wall pieces" << timer.elapsed() << "ms";
 }
 
-void PiecesFactory::createMinePieces(QVector<QVector<MinePiecePointer>> &pieces)
+QList<MinePiecePointer> PiecesFactory::getAroundPieces(const MinePiece2DList &pieces, int x, int y) const
 {
-    Q_ASSERT(pieces.size() == boardInformation->countY() + 2);
-
-    QElapsedTimer timer;
-    timer.start();
-
-    const int countX = boardInformation->countX();
-    const int countY = boardInformation->countY();
-
-    const int halfX = countX / 2 + 1;
-    const int halfY = countY / 2 + 1;
-    const int numOfCreatedMines = mineCount / 4;
-
-    createMinePieces(pieces,         1, halfX,          1, halfY,  numOfCreatedMines);
-    createMinePieces(pieces, halfX + 1, countX,         1, halfY,  numOfCreatedMines);
-    createMinePieces(pieces,         1, halfX,  halfY + 1, countY, numOfCreatedMines);
-    createMinePieces(pieces, halfX + 1, countX, halfY + 1, countY, numOfCreatedMines);
-
-    int remian = mineCount % 4;
-
-    for (int i = 0; i < remian; ++i) {
-        int x = (mt() % countX)  + 1;
-        int y = (mt() % countY) + 1;
-
-        if (pieces[y][x] == nullptr)
-            createMinePiece(pieces, x, y);
-        else
-            --i;
-    }
-
-    qDebug() << "create Mine pieces" << timer.elapsed() << "ms";
-}
-
-void PiecesFactory::createMinePieces(QVector<QVector<MinePiecePointer>> &pieces, int minX, int maxX, int minY, int maxY, int numberOfMines)
-{
-    if (numberOfMines == 0)
-        return;
-
-    const int width  = maxX - minX + 1;
-    const int height = maxY - minY + 1;
-    const int numberOfPieces = width * height;
-
-
-    QList<int> indexes;
-    indexes.reserve(numberOfPieces);
-
-    for (int i = 0; i < numberOfPieces; ++i)
-        indexes << i;
-
-    for (int i = numberOfPieces - 1; i >= 0; --i) {
-        int randIndex = mt() % (i + 1);
-        int index = indexes[randIndex];
-        std::swap(indexes[randIndex], indexes[i]);
-
-        int x = index % width + minX;
-        int y = index / width + minY;
-
-        Q_ASSERT(pieces[y][x] == nullptr);
-
-        createMinePiece(pieces, x, y);
-
-        if (numberOfMines + i == numberOfPieces)
-            break;
-    }
-}
-
-void PiecesFactory::createSafePieces(QVector<QVector<MinePiecePointer>> &pieces) const
-{
-    QElapsedTimer timer;
-    timer.start();
-
-    int cx = boardInformation->countX() + 2;
-    int cy = boardInformation->countY() + 2;
-
-    Q_ASSERT(pieces.size() == cy);
-
-    for (int y = 1; y < cy - 1; ++y) {
-        for (int x = 1; x < cx - 1; ++x) {
-            if (pieces[y][x] != nullptr)
-                continue;
-
-            auto arounds = getAroundPieces(pieces, x, y);
-
-            int numberOfAroundMines = std::count_if(arounds.begin(), arounds.end(), [](MinePiecePointer &piece) {
-                return piece != nullptr ? piece->isMine()
-                                        : false;
-            });
-
-            createSafePiece(pieces, x, y, numberOfAroundMines);
-        }
-    }
-
-    qDebug() << "create Safe pieces" << timer.elapsed() << "ms";
-}
-
-QList<MinePiecePointer> PiecesFactory::getAroundPieces(const QVector<QVector<MinePiecePointer>> &pieces, int x, int y) const
-{
-    Q_ASSERT(x >= 1 && x < boardInformation->countX() + 1);
-    Q_ASSERT(y >= 1 && y < boardInformation->countY() + 1);
+    Q_ASSERT(x >= 1 && x < m_boardInformation->xCount() + 1);
+    Q_ASSERT(y >= 1 && y < m_boardInformation->yCount() + 1);
 
     QList<MinePiecePointer> result = {
         pieces[y - 1][x - 1],
@@ -257,26 +247,6 @@ QList<MinePiecePointer> PiecesFactory::getAroundPieces(const QVector<QVector<Min
     };
 
     return result;
-}
-
-void PiecesFactory::createMinePiece(QVector<QVector<MinePiecePointer>> &pieces, int x, int y)
-{
-    auto minePiece = std::make_shared<MinePiece>(boardInformation->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect());
-
-    pieces[y][x] = minePiece;
-
-    if (isKeepMinesPositions)
-        minesPositions << QPoint(x, y);
-}
-
-void PiecesFactory::createSafePiece(QVector<QVector<MinePiecePointer> > &pieces, int x, int y, int numberOfAroundMines) const
-{
-    QRect rect = boardInformation->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect();
-
-    auto safePiece = std::make_shared<SafePiece>(numberOfAroundMines, rect, sourcePixmap, rect);
-
-    safePiece->setOpenPieceOpacity(0.5);
-    pieces[y][x] = safePiece;
 }
 
 } // MineSweeper

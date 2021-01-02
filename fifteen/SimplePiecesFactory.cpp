@@ -28,26 +28,26 @@ SimplePiecesFactory::SimplePiecesFactory(BoardInfoPointer boardInfo, const QPixm
     Q_ASSERT(!sourcePixmap.isNull());
 }
 
-QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces() const
+QList<FifteenPiecePointer> SimplePiecesFactory::createPieces() const
 {
-    QList<PuzzlePiecePointer> pieces;
+    QList<FifteenPiecePointer> pieces;
 
-    int countX = boardInfo->countX();
+    int countX = boardInfo->xCount();
 
-    for (int i = 0, lim = countX * boardInfo->countY(); i < lim; ++i)
+    for (int i = 0, lim = countX * boardInfo->yCount(); i < lim; ++i)
         pieces << createPiece(QPoint(i % countX, i / countX));
 
     return pieces;
 }
 
-QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces(const QList<QPoint> &defaultPositions) const
+QList<FifteenPiecePointer> SimplePiecesFactory::createPieces(const QList<QPoint> &defaultPositions) const
 {
-    QList<PuzzlePiecePointer> pieces;
+    QList<FifteenPiecePointer> pieces;
 
-    for (int i = 0, lim = boardInfo->countX() * boardInfo->countY(); i < lim; ++i) {
+    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount(); i < lim; ++i) {
         auto piece = createPiece(defaultPositions.at(i));
 
-        piece->setPosWithoutAnimation(QPoint(i % boardInfo->countX(), i / boardInfo->countX()));
+        piece->setPosWithoutAnimation(QPoint(i % boardInfo->xCount(), i / boardInfo->xCount()));
 
         pieces << piece;
     }
@@ -55,9 +55,9 @@ QList<PuzzlePiecePointer> SimplePiecesFactory::createPieces(const QList<QPoint> 
     return pieces;
 }
 
-PuzzlePiecePointer SimplePiecesFactory::createPiece(const QPoint &defaultPos) const
+FifteenPiecePointer SimplePiecesFactory::createPiece(const QPoint &defaultPos) const
 {
-    return std::make_shared<PuzzlePiece>(boardInfo, defaultPos, sourcePixmap);
+    return QSharedPointer<PuzzlePiece>::create(boardInfo, defaultPos, sourcePixmap);
 }
 
 } // Fifteen

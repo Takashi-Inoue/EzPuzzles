@@ -33,11 +33,11 @@ public:
     SimplePiecesFactory(BoardInfoPointer boardInfo, const QPixmap &sourcePixmap);
     ~SimplePiecesFactory() = default;
 
-    QList<PuzzlePiecePointer> createPieces() const;
-    QList<PuzzlePiecePointer> createPieces(const QList<QPoint> &defaultPositions) const;
+    QList<FifteenPiecePointer> createPieces() const;
+    QList<FifteenPiecePointer> createPieces(const QList<QPoint> &defaultPositions) const;
 
 private:
-    PuzzlePiecePointer createPiece(const QPoint &defaultPos) const;
+    FifteenPiecePointer createPiece(const QPoint &defaultPos) const;
 
     BoardInfoPointer boardInfo;
     QPixmap sourcePixmap;

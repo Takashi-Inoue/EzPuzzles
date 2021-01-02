@@ -20,9 +20,8 @@
 #define IPHASE_H
 
 #include <QPainter>
+#include <QSharedPointer>
 #include <QString>
-
-#include <memory>
 
 class IPhase : public QObject
 {
@@ -38,7 +37,7 @@ public:
 
     Q_ENUM(PhaseType)
 
-    explicit IPhase(QObject *parent = nullptr) : QObject(parent) {}
+    using QObject::QObject;
 
     virtual void click(const QPoint &) = 0;
     virtual void onTickFrame() = 0;
@@ -51,6 +50,6 @@ signals:
     void toNextPhase(IPhase::PhaseType);
 };
 
-typedef std::shared_ptr<IPhase> PhasePointer;
+using PhasePointer = QSharedPointer<IPhase>;
 
 #endif // IPHASE_H

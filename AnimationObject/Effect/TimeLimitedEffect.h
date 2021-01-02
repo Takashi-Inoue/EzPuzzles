@@ -32,7 +32,7 @@ public:
     void draw(QPainter &, const QRectF &) override;
 
 private:
-    EffectPointer limitedEffect;
+    EffectPointer m_limitedEffect;
 };
 
 } // Effect

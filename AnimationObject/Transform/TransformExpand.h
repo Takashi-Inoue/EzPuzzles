@@ -38,19 +38,18 @@ public:
     };
 
     Expand(ExpandType expandType, int totalFrameCount);
-    ~Expand() = default;
 
     void start(const QSizeF &) override;
     QTransform transform() const override;
 
 protected:
-    typedef QPair<double, double> Scale;
+    using Scale = QPair<double, double>;
 
     Scale calcScale() const;
     QPointF calcPos(const Scale &scale) const;
 
-    QSizeF maxSize;
-    ExpandType expandType;
+    QSizeF m_maxSize;
+    ExpandType m_expandType;
 };
 
 } // Transform

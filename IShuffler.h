@@ -26,19 +26,12 @@ class IShuffler : public QObject
 {
     Q_OBJECT
 public:
-    explicit IShuffler(QObject *parent = 0) :
-        QObject(parent)
-    {
-    }
-
-    virtual ~IShuffler() = default;
+    using QObject::QObject;
 
     virtual void exec() = 0;
 
 signals:
     void update(QList<int> &changed);
-
-public slots:
 };
 
 #endif // ISHUFFLER_H

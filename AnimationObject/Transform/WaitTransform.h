@@ -26,11 +26,10 @@ namespace Transform {
 class WaitTransform : public AbstractTransform
 {
 public:
-    WaitTransform(int waitFrameCount);
-    ~WaitTransform() = default;
+    using AbstractTransform::AbstractTransform;
 
-    void start(const QSizeF &);
-    QTransform transform() const;
+    void start(const QSizeF &) override;
+    QTransform transform() const override;
 };
 
 } // Transform

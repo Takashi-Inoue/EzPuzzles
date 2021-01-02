@@ -19,14 +19,10 @@
 #ifndef ABSTRACTSAVEDATA_H
 #define ABSTRACTSAVEDATA_H
 
-#include "BoardInformation.h"
+#include "Application.h"
 #include "IPhase.h"
 #include "SourceImage.h"
 
-#include "Application.h"
-
-#include <QFile>
-#include <QSaveFile>
 #include <QStringList>
 #include <QIcon>
 #include <QSharedPointer>
@@ -38,125 +34,28 @@ class AbstractSaveData : public QObject
 {
     Q_OBJECT
 public:
-    AbstractSaveData(QStringView fileName, QObject *parent = nullptr)
-        : QObject(parent)
-        , m_fileName(fileName.toString())
-        , m_currentPhase(IPhase::PhaseReady)
-    {
-        Q_ASSERT(!fileName.isEmpty());
-    }
-
+    AbstractSaveData(QStringView fileName, QObject *parent = nullptr);
     AbstractSaveData(QStringView fileName, QString sourceImageFullPathName
                    , QPixmap sourceImagePixmap, QSize boardXYCount
-                   , IPhase::PhaseType currentPhase, QObject *parent = nullptr)
-        : QObject(parent)
-        , m_fileName(fileName.toString())
-        , m_sourceImageFullPathName(sourceImageFullPathName)
-        , m_sourceImagePixmap(sourceImagePixmap)
-        , m_boardXYCount(boardXYCount)
-        , m_currentPhase(currentPhase)
-    {
-        Q_ASSERT(!fileName.isEmpty());
-        Q_ASSERT(!sourceImageFullPathName.isEmpty());
-        Q_ASSERT(!sourceImagePixmap.isNull());
-        Q_ASSERT(!boardXYCount.isEmpty());
-    }
-
-    virtual QString gameTypeName() const
-    {
-        return Application::gameName(gameType());
-    }
+                   , IPhase::PhaseType currentPhase, QObject *parent = nullptr);
 
     virtual Application::GameType gameType() const = 0;
     virtual QIcon gameTypeIcon() const = 0;
     virtual QSharedPointer<IGame> loadGame() = 0;
     virtual QStringList informations() const = 0;
 
-    QSharedPointer<BoardInformation> boardInformation() const
-    {
-        Q_ASSERT(!m_boardXYCount.isEmpty());
-        Q_ASSERT(!m_sourceImagePixmap.isNull());
+    virtual QString gameTypeName() const;
 
-        if (m_boardXYCount.isEmpty() || m_sourceImagePixmap.isNull())
-            return nullptr;
+    QSharedPointer<BoardInformation> boardInformation() const;
 
-        return QSharedPointer<BoardInformation>::create(m_boardXYCount, m_sourceImagePixmap.size());
-    }
+    IPhase::PhaseType currentPhase() const;
+    bool isValid() const;
 
-    IPhase::PhaseType currentPhase() const {return m_currentPhase;}
-    bool isValid() const {return m_isSavedataValid;}
+    SourceImage sourceImage() const;
 
-    SourceImage sourceImage() const
-    {
-        if (m_sourceImageFullPathName.isEmpty() && m_sourceImagePixmap.isNull())
-            return SourceImage();
-
-        return SourceImage(m_sourceImageFullPathName, m_sourceImagePixmap);
-    }
-
-    virtual bool readInfo()
-    {
-        QFile file(m_fileName);
-
-        if (!file.open(QIODevice::ReadOnly))
-            return (m_isSavedataValid = false);
-
-        QDataStream stream(&file);
-        QString gameName;
-
-        stream >> gameName >> m_boardXYCount >> m_sourceImageFullPathName;
-
-        if (gameName != gameTypeName())
-            return (m_isSavedataValid = false);
-
-        readInfo(stream);
-
-        return m_isSavedataValid;
-    }
-
-    virtual bool read()
-    {
-        QFile file(m_fileName);
-
-        if (!file.open(QIODevice::ReadOnly))
-            return (m_isSavedataValid = false);
-
-        QDataStream stream(&file);
-        QString gameName;
-
-        stream >> gameName >> m_boardXYCount >> m_sourceImageFullPathName;
-
-        if (gameName != gameTypeName())
-            return (m_isSavedataValid = false);
-
-        readInfo(stream);
-
-        stream >> m_sourceImagePixmap >> m_currentPhase;
-
-        readOtherData(stream);
-
-        return m_isSavedataValid;
-    }
-
-    virtual bool write() const
-    {
-        QSaveFile file(m_fileName);
-
-        if (!file.open(QIODevice::WriteOnly))
-            return false;
-
-        QDataStream stream(&file);
-
-        stream << gameTypeName() << m_boardXYCount << m_sourceImageFullPathName;
-
-        writeInfo(stream);
-
-        stream << m_sourceImagePixmap << m_currentPhase;
-
-        writeOtherData(stream);
-
-        return file.commit();
-    }
+    virtual bool readInfo();
+    virtual bool read();
+    virtual bool write() const;
 
 protected:
     virtual void readInfo(QDataStream &) {}

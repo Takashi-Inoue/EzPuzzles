@@ -21,7 +21,7 @@
 
 #include <QDebug>
 
-Board::Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock) :
+Board::Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock) :
     boardInformation(boardInformation),
     pieces(pieces),
     rwlock(rwlock)
@@ -29,7 +29,7 @@ Board::Board(BoardInfoPointer boardInformation, QList<Fifteen::PuzzlePiecePointe
     Q_CHECK_PTR(boardInformation);
 }
 
-QList<Fifteen::PuzzlePiecePointer> Board::slidePiece(const QPoint &from, const QPoint &to)
+QList<FifteenPiecePointer> Board::slidePiece(const QPoint &from, const QPoint &to)
 {
     if (from == to) {
         qDebug() << "Board::slidePiece() | from == to" << from << to;
@@ -41,13 +41,13 @@ QList<Fifteen::PuzzlePiecePointer> Board::slidePiece(const QPoint &from, const Q
         return {};
     }
 
-    Fifteen::PieceMover mover(pieces, boardInformation->countX());
+    Fifteen::PieceMover mover(pieces, boardInformation->xCount());
 
     return from.x() == to.x() ? mover.slideVertical(from, to)
                               : mover.slideHorizontal(from, to);
 }
 
-QList<Fifteen::PuzzlePiecePointer> Board::swapPiece(const QPoint &from, const QPoint &to)
+QList<FifteenPiecePointer> Board::swapPiece(const QPoint &from, const QPoint &to)
 {
     auto &pieceFrom = getPiece(from);
     auto &pieceTo = getPiece(to);
@@ -96,7 +96,7 @@ BoardInfoPointer Board::boardInfo() const
     return boardInformation;
 }
 
-Fifteen::PuzzlePiecePointer &Board::getPiece(const QPoint &pos)
+FifteenPiecePointer &Board::getPiece(const QPoint &pos)
 {
-    return pieces[pos.y() * boardInformation->countX() + pos.x()];
+    return pieces[pos.y() * boardInformation->xCount() + pos.x()];
 }

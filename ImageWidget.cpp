@@ -53,13 +53,13 @@ void ImageWidget::replaceSubWidget(int index, QSharedPointer<ISubWidget> subWidg
 
 const QPixmap &ImageWidget::originalPixmap() const
 {
+    Q_ASSERT(!m_pixmap.isNull());
+
     return m_pixmap;
 }
 
 QRect ImageWidget::imageRect() const
 {
-    Q_ASSERT(!m_pixmap.isNull());
-
     return m_imageRectangle;
 }
 
@@ -67,7 +67,7 @@ double ImageWidget::imageScale() const
 {
     Q_ASSERT(!m_pixmap.isNull());
 
-    return double(imageRect().width()) / m_pixmap.width();
+    return double(m_imageRectangle.width()) / m_pixmap.width();
 }
 
 void ImageWidget::paintEvent(QPaintEvent *event)
@@ -81,11 +81,6 @@ void ImageWidget::paintEvent(QPaintEvent *event)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
     calcImageRect();
-
-    if (m_imageRectangle.size() == size()) {
-        painter.drawPixmap(0, 0, m_pixmap);
-        return;
-    }
 
     painter.drawPixmap(m_imageRectangle, m_pixmap, m_pixmap.rect());
 
@@ -154,8 +149,6 @@ void ImageWidget::calcImageRect()
 
     pixSize.scale(size(), Qt::KeepAspectRatio);
 
-    m_imageRectangle.setTop((size().height() - pixSize.height()) / 2);
-    m_imageRectangle.setLeft((size().width()  - pixSize.width())  / 2);
-
     m_imageRectangle.setSize(pixSize);
+    m_imageRectangle.moveCenter(rect().center());
 }

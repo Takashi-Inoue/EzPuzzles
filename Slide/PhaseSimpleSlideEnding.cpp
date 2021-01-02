@@ -22,27 +22,27 @@
 
 namespace Slide {
 
-PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<Fifteen::PuzzlePiecePointer> &pieces,
+PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces,
                                                QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase) :
     pieces(pieces),
     nextPhase(nextPhase),
     nowFrame(0)
 {
     for (auto &piece : pieces) {
-        auto compositeEffect = std::make_shared<Effect::CompositeEffect>();
+        auto compositeEffect = QSharedPointer<Effect::CompositeEffect>::create();
 
         compositeEffect->addEffect(piece->effect());
 
         const QRectF &rect = boardInfo->rectFromPiecePos(piece->pos().defaultPos());
-        compositeEffect->addEffect(std::make_shared<Effect::GraduallyImage>(graduallyFrames, graduallyFrames, sourcePixmap, rect));
+        compositeEffect->addEffect(QSharedPointer<Effect::GraduallyImage>::create(graduallyFrames, graduallyFrames, sourcePixmap, rect));
 
         piece->setEffect(compositeEffect);
     }
 
-    Fifteen::PuzzlePiecePointer &blankPiece = pieces[blankPos.y() * boardInfo->countX() + blankPos.x()];
+    FifteenPiecePointer &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
     const QRectF &rect = boardInfo->rectFromPiecePos(blankPiece->pos().defaultPos());
 
-    blankPiece->setEffect(std::make_shared<Effect::GraduallyImage>(0, graduallyFrames, sourcePixmap, rect));
+    blankPiece->setEffect(QSharedPointer<Effect::GraduallyImage>::create(0, graduallyFrames, sourcePixmap, rect));
 }
 
 void PhaseSimpleSlideEnding::click(const QPoint &)

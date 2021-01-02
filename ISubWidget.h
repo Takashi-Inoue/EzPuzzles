@@ -38,6 +38,7 @@ public:
     virtual void mouseEnter(QEvent *) = 0;
     virtual void mouseLeave(QEvent *) = 0;
     virtual QPoint pos() const = 0;
+    virtual QPoint posOnImage() const = 0;
 
 signals:
     void updated();

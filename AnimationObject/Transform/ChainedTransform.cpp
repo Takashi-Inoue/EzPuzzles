@@ -20,24 +20,22 @@
 
 namespace Transform {
 
-ChainedTransform::ChainedTransform() :
-    AbstractTransform(0),
-    index(INT_MAX)
+ChainedTransform::ChainedTransform()
+    : AbstractTransform(0)
 {
-
 }
 
 void ChainedTransform::addTransform(TransformPointer transform)
 {
     Q_CHECK_PTR(transform);
 
-    transforms << transform;
+    m_transforms << transform;
 }
 
 bool ChainedTransform::onTickFrame()
 {
-    for (int lim = transforms.size(); index < lim; ++index) {
-        if (transforms[index]->onTickFrame())
+    for (qsizetype lim = m_transforms.size(); m_index < lim; ++m_index) {
+        if (m_transforms[m_index]->onTickFrame())
             return true;
     }
 
@@ -46,13 +44,13 @@ bool ChainedTransform::onTickFrame()
 
 void ChainedTransform::skipAnimation()
 {
-    for (auto &transform : transforms)
+    for (TransformPointer &transform : m_transforms)
         transform->skipAnimation();
 }
 
 bool ChainedTransform::isLoopAnimation()
 {
-    for (auto &transform : transforms) {
+    for (TransformPointer &transform : m_transforms) {
         if (transform->isLoopAnimation())
             return true;
     }
@@ -62,26 +60,26 @@ bool ChainedTransform::isLoopAnimation()
 
 bool ChainedTransform::isFinishedAnimation()
 {
-    return index >= transforms.size();
+    return m_index >= m_transforms.size();
 }
 
 void ChainedTransform::start(const QSizeF &size)
 {
-    if (transforms.isEmpty())
+    if (m_transforms.isEmpty())
         return;
 
-    index = 0;
+    m_index = 0;
 
-    for (auto &transform : transforms)
+    for (TransformPointer &transform : m_transforms)
         transform->start(size);
 }
 
 QTransform ChainedTransform::transform() const
 {
-    if (index >= transforms.size())
+    if (m_index >= m_transforms.size())
         return QTransform();
 
-    return transforms[index]->transform();
+    return m_transforms[m_index]->transform();
 }
 
 } // Transform

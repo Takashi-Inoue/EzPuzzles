@@ -25,23 +25,23 @@
 class BoardInformation
 {
 public:
-    BoardInformation(const QSize &countXY, const QSize &pixelSize);
+    BoardInformation(const QSize &xyCount, const QSize &pixelSize);
 
     QRectF rectFromPiecePos(const QPoint &piecePos) const;
     QPoint piecePosFromPixelPos(const QPoint &pixelPos) const;
 
-    int countX() const;
-    int countY() const;
-    QSize countXY() const;
+    int xCount() const;
+    int yCount() const;
+    QSize xyCount() const;
     int pieceCount() const;
 
     const QSize &boardPixelSize() const;
 
 private:
-    QSize m_countXY;
+    QSize m_xyCount;
     QSize m_pixelSize;
 };
 
-typedef QSharedPointer<BoardInformation> BoardInfoPointer;
+using BoardInfoPointer = QSharedPointer<BoardInformation>;
 
 #endif // BOARDINFORMATION_H

@@ -21,15 +21,15 @@
 
 namespace Transform {
 
-Expand::Expand(ExpandType expandType, int totalFrameCount) :
-    AbstractTransform(totalFrameCount),
-    expandType(expandType)
+Expand::Expand(ExpandType expandType, int totalFrameCount)
+    : AbstractTransform(totalFrameCount)
+    , m_expandType(expandType)
 {
 }
 
 void Expand::start(const QSizeF &size)
 {
-    maxSize = size;
+    m_maxSize = size;
 
     AbstractAnimationObject::resetFrame();
 }
@@ -49,9 +49,9 @@ QTransform Expand::transform() const
 
 Expand::Scale Expand::calcScale() const
 {
-    double frameRatio = nowFrame() / totalFrames();
+    const double frameRatio = nowFrame() / totalFrames();
 
-    switch (expandType) {
+    switch (m_expandType) {
     case LeftToRight :
     case RightToLeft :
     case HorizontalFromCenter :
@@ -67,33 +67,30 @@ Expand::Scale Expand::calcScale() const
 
     case VerticalToCenter :
         return Scale(1, 1 - frameRatio);
-
-    default:
-        return Scale(1, 1);
     }
 }
 
-QPointF Expand::calcPos(const Expand::Scale &scale) const
+QPointF Expand::calcPos(const Scale &scale) const
 {
-    if ((expandType == LeftToRight) | (expandType == TopToBottom))
+    if ((m_expandType == LeftToRight) | (m_expandType == TopToBottom))
         return QPointF(0, 0);
 
-    QSizeF newSize(maxSize.width() * scale.first, maxSize.height() * scale.second);
+    QSizeF newSize(m_maxSize.width() * scale.first, m_maxSize.height() * scale.second);
 
-    switch (expandType) {
+    switch (m_expandType) {
     case RightToLeft:
-        return QPointF(maxSize.width() - newSize.width(), 0);
+        return QPointF(m_maxSize.width() - newSize.width(), 0);
 
     case BottomToTop:
-        return QPointF(0, maxSize.height() - newSize.height());
+        return QPointF(0, m_maxSize.height() - newSize.height());
 
     case HorizontalToCenter:
     case HorizontalFromCenter:
-        return QPointF((maxSize.width() - newSize.width()) / 2, 0);
+        return QPointF((m_maxSize.width() - newSize.width()) / 2, 0);
 
     case VerticalToCenter:
     case VerticalFromCenter:
-        return QPointF(0, (maxSize.height() - newSize.height()) / 2);
+        return QPointF(0, (m_maxSize.height() - newSize.height()) / 2);
 
     default:
         return QPointF(0, 0);

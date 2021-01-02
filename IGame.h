@@ -28,7 +28,7 @@ class SourceImage;
 
 #include <QObject>
 #include <QSize>
-#include <QStringList>
+#include <QString>
 
 class IGame : public QObject
 {
@@ -39,7 +39,7 @@ public:
     virtual GameID gameID() const = 0;
 
     virtual QSharedPointer<IGame> cloneAsNewGame() const = 0;
-    virtual void save(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
+    virtual void save(QStringView saveDirPath, const QSize &screenshotSize) const = 0;
 
     virtual void onTickFrame() = 0;
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
@@ -53,7 +53,7 @@ signals:
     void informationUpdated();
 
 protected:
-    virtual void saveScreenshot(const QString &saveDirPath, const QSize &screenshotSize) const = 0;
+    virtual void saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const = 0;
 
 private:
     IGame(const IGame &) = delete;

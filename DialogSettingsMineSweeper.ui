@@ -6,17 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>543</height>
+    <width>443</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="spacing">
-    <number>9</number>
-   </property>
    <item>
     <widget class="QFrame" name="frame">
      <property name="minimumSize">
@@ -66,25 +63,21 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Cell size    </string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_2">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Cell size    </string>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0" rowspan="2">
         <widget class="QFrame" name="frameCellSize">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -129,49 +122,41 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <widget class="QLabel" name="labelPixels">
-             <property name="text">
-              <string>pixels</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelCells">
-             <property name="text">
-              <string>cells</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QSlider" name="pieceSizeSlider">
-           <property name="minimum">
-            <number>16</number>
-           </property>
-           <property name="maximum">
-            <number>64</number>
-           </property>
-           <property name="pageStep">
-            <number>8</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="tickPosition">
-            <enum>QSlider::TicksAbove</enum>
-           </property>
-           <property name="tickInterval">
-            <number>8</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="0" column="1">
+        <widget class="QLabel" name="labelPixels">
+         <property name="text">
+          <string>pixels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="labelCells">
+         <property name="text">
+          <string>cells</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QSlider" name="sliderPieceSize">
+         <property name="minimum">
+          <number>16</number>
+         </property>
+         <property name="maximum">
+          <number>64</number>
+         </property>
+         <property name="pageStep">
+          <number>8</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
+         </property>
+         <property name="tickInterval">
+          <number>8</number>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -279,7 +264,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>pieceSizeSlider</tabstop>
   <tabstop>spinBoxMineCount</tabstop>
   <tabstop>pushButtonEasy</tabstop>
   <tabstop>pushButtonNormal</tabstop>
@@ -296,8 +280,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>533</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -312,8 +296,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>533</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -321,5 +305,75 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>sliderPieceSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogSettingsMineSweeper</receiver>
+   <slot>updateBlockPiece(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>418</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>442</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderPieceSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogSettingsMineSweeper</receiver>
+   <slot>updateLabels(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>143</x>
+     <y>412</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>441</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderPieceSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogSettingsMineSweeper</receiver>
+   <slot>updateMineMax(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>414</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>441</x>
+     <y>380</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderPieceSize</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>DialogSettingsMineSweeper</receiver>
+   <slot>updateSubFrame(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>444</x>
+     <y>332</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>updateLabels(int)</slot>
+  <slot>updateMineMax(int)</slot>
+  <slot>updateSubFrame(int)</slot>
+  <slot>updateBlockPiece(int)</slot>
+ </slots>
 </ui>

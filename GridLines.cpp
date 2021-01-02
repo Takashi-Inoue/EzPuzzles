@@ -31,6 +31,11 @@ GridLines::GridLines(const QRectF &rect, ushort vLineCount, ushort hLineCount)
         createLines();
 }
 
+GridLines::GridLines(ushort vLineCount, ushort hLineCount)
+    : GridLines(QRectF(), vLineCount, hLineCount)
+{
+}
+
 void GridLines::setRect(const QRectF &rect)
 {
     Q_ASSERT(rect.isValid());

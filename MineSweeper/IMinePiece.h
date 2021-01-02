@@ -21,7 +21,6 @@
 
 #include "ISwitchPiece.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
-#include <memory>
 
 namespace MineSweeper {
 
@@ -48,7 +47,7 @@ public:
     virtual int numberOfAroundMines() const = 0;
 };
 
-typedef std::shared_ptr<IMinePiece> MinePiecePointer;
+using MinePiecePointer = QSharedPointer<IMinePiece>;
 
 } // MineSweeper
 

@@ -44,7 +44,7 @@ public:
     FinalImagePointer finalImage() const override;
     BoardInfoPointer boardInfo() const override;
 
-    bool save(const QString &fileName) const override;
+    bool save(QStringView fileName) const override;
 
 protected:
     void initPieces();
@@ -55,7 +55,7 @@ protected:
 
     std::shared_ptr<QReadWriteLock> m_rwlock;
 
-    QList<Fifteen::PuzzlePiecePointer> m_pieces;
+    QList<FifteenPiecePointer> m_pieces;
     SourceImage m_sourceImg;
     BoardPointer m_board;
     UniquePosition m_swapTargetPos;

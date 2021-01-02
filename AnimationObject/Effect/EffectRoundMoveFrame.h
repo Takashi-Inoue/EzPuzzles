@@ -37,7 +37,6 @@ public:
 
     RoundMoveFrame(int width, const QColor &outer1, const QColor &inner1, const QColor &outer2, const QColor &inner2,
                    Qt::Edge startEdge, double startPoint, Direction direction, int totalFrameCount, bool isLoop);
-    ~RoundMoveFrame() = default;
 
     // AbstractEffect
     void draw(QPainter &painter, const QRectF &rect) override;

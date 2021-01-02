@@ -27,15 +27,15 @@ CompositeEffect::CompositeEffect() :
 
 void CompositeEffect::addEffect(EffectPointer effect)
 {
-    if (!effects.contains(effect))
-        effects << effect;
+    if (!m_effects.contains(effect))
+        m_effects << effect;
 }
 
 bool CompositeEffect::onTickFrame()
 {
     bool isChanged = false;
 
-    for (const auto &effect : effects)
+    for (const EffectPointer &effect : m_effects)
         isChanged |= effect->onTickFrame();
 
     return isChanged;
@@ -43,13 +43,13 @@ bool CompositeEffect::onTickFrame()
 
 void CompositeEffect::skipAnimation()
 {
-    for (const auto &effect : effects)
+    for (const EffectPointer &effect : m_effects)
         effect->skipAnimation();
 }
 
 bool CompositeEffect::isLoopAnimation()
 {
-    for (const auto &effect : effects) {
+    for (const EffectPointer &effect : m_effects) {
         if (effect->isLoopAnimation())
             return true;
     }
@@ -59,7 +59,7 @@ bool CompositeEffect::isLoopAnimation()
 
 bool CompositeEffect::isFinishedAnimation()
 {
-    for (const auto &effect : effects) {
+    for (const EffectPointer &effect : m_effects) {
         if (!effect->isFinishedAnimation())
             return false;
     }
@@ -69,7 +69,7 @@ bool CompositeEffect::isFinishedAnimation()
 
 void CompositeEffect::draw(QPainter &painter, const QRectF &rect)
 {
-    for (const auto &effect : effects)
+    for (const EffectPointer &effect : m_effects)
         effect->draw(painter, rect);
 }
 
