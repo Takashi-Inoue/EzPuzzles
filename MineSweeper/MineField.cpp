@@ -49,6 +49,8 @@ MineField::MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
                 explodedPos << QPoint(int(x), int(y));
         }
     }
+
+    setOpenedPieceOpacity();
 }
 
 void MineField::open(const QPoint &pos)
@@ -79,6 +81,7 @@ void MineField::open(const QPoint &pos)
     }
 
     lockMines(openedPointsNearMines);
+    setOpenedPieceOpacity();
 }
 
 int MineField::openedCount() const
@@ -188,8 +191,16 @@ void MineField::openChaining(const QPoint &pos, QList<QPoint> &openedPointsNearM
         for (const QPoint &pos : positions) {
             MinePiecePointer &piece = pieces[pos.y()][pos.x()];
 
-            if (piece->isOpen() || piece->isMine())
+            if (piece->isMine()) {
                 continue;
+            } else if (piece->isOpen()) {
+                if (piece->isNearMine()) {
+                    openedPointsNearMines << pos;
+                    gatherAroundPointsToLock(pos, openedPointsNearMines);
+                }
+
+                continue;
+            }
 
             piece->open();
 
@@ -202,6 +213,16 @@ void MineField::openChaining(const QPoint &pos, QList<QPoint> &openedPointsNearM
                 gatherAroundPointsToLock(pos, openedPointsNearMines);
             }
         }
+    }
+}
+
+void MineField::setOpenedPieceOpacity()
+{
+    double opacity = openedRate() / 2.0 + 0.5;
+
+    for (auto &horizontal : pieces) {
+        for (auto &piece : horizontal)
+            piece->setOpenPieceOpacity(opacity);
     }
 }
 

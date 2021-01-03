@@ -52,6 +52,8 @@ private:
     void lockMinesInAround(int x, int y);
     void openChaining(const QPoint &pos, QList<QPoint> &openedPointsNearMines);
 
+    void setOpenedPieceOpacity();
+
     int totalPieceCount() const;
     int safePiecesCount() const;
 

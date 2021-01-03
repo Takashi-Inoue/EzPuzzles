@@ -28,6 +28,7 @@ class SubFrame : public ISubWidget
 {
 public:
     SubFrame(const QRect &subFrameRect);
+    SubFrame(const QRect &subFrameRect, bool adjustMaxWidth, bool adjustMaxHeight);
 
     void draw(QPainter &) override;
     void mousePress(QMouseEvent *) override;
@@ -40,10 +41,13 @@ public:
 
 protected:
     void correctPosition();
+    void correctSize();
 
     QRect m_subFrameRect;
     QRect m_maxRect;
     Dragger m_dragger;
+
+    QPair<bool, bool> m_sizeMaximized;
 };
 
 #endif // SUBFRAME_H

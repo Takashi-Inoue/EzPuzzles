@@ -22,20 +22,22 @@
 #include <QDebug>
 
 SubFrame::SubFrame(const QRect &subFrameRect) :
-    m_subFrameRect(subFrameRect)
+    SubFrame(subFrameRect, false, false)
+{
+}
+
+SubFrame::SubFrame(const QRect &subFrameRect, bool adjustMaxWidth, bool adjustMaxHeight)
+    : m_subFrameRect(subFrameRect)
+    , m_sizeMaximized(adjustMaxWidth, adjustMaxHeight)
 {
     Q_ASSERT(subFrameRect.isValid());
 }
 
 void SubFrame::draw(QPainter &painter)
 {
-    if (m_maxRect != painter.clipBoundingRect()) {
+    if (m_maxRect != painter.clipBoundingRect().toRect()) {
         m_maxRect = painter.clipBoundingRect().toRect();
-
-        if (m_maxRect.width() < m_subFrameRect.width() || m_maxRect.height() < m_subFrameRect.height())
-            qWarning() << "The SubFrame will protrude. SubFrame =" << m_subFrameRect << "Max =" << m_maxRect;
-
-        correctPosition();
+        correctSize();
     }
 
     painter.setPen(Qt::red);
@@ -54,6 +56,9 @@ void SubFrame::mouseRelease(QMouseEvent *event)
 
 void SubFrame::mouseMove(QMouseEvent *event)
 {
+    if (m_sizeMaximized.first & m_sizeMaximized.second)
+        return;
+
     m_dragger.mouseMove(event->pos());
 
     if (!m_dragger.isDragging())
@@ -78,20 +83,48 @@ QPoint SubFrame::posOnImage() const
 
 void SubFrame::correctPosition()
 {
-    if (m_subFrameRect.size() == m_maxRect.size()) {
-        m_subFrameRect.moveTopLeft(m_maxRect.topLeft());
-        return;
-    }
+    if (m_subFrameRect.width() == m_maxRect.width())
+        m_subFrameRect.moveLeft(m_maxRect.left());
+
+    if (m_subFrameRect.height() == m_maxRect.height())
+        m_subFrameRect.moveTop(m_maxRect.top());
 
     if (m_subFrameRect.left() < m_maxRect.left())
         m_subFrameRect.moveLeft(m_maxRect.left());
 
     if (m_subFrameRect.right() > m_maxRect.right())
-        m_subFrameRect.moveRight(m_maxRect.right() - 1);
+        m_subFrameRect.moveRight(m_maxRect.right());
 
     if (m_subFrameRect.top() < m_maxRect.top())
         m_subFrameRect.moveTop(m_maxRect.top());
 
     if (m_subFrameRect.bottom() > m_maxRect.bottom())
-        m_subFrameRect.moveBottom(m_maxRect.bottom() - 1);
+        m_subFrameRect.moveBottom(m_maxRect.bottom());
+}
+
+void SubFrame::correctSize()
+{
+    if (m_sizeMaximized.first & m_sizeMaximized.second) {
+        m_subFrameRect = m_maxRect;
+
+        return;
+    }
+
+    if (m_sizeMaximized.first ^ m_sizeMaximized.second) {
+        m_subFrameRect.setSize(m_subFrameRect.size().scaled(m_maxRect.size(), Qt::KeepAspectRatio));
+        correctPosition();
+
+        return;
+    }
+
+    const QPoint offset = m_maxRect.topLeft() - m_subFrameRect.topLeft();
+
+    if (m_maxRect.contains(m_subFrameRect.translated(offset))) {
+        correctPosition();
+    } else {
+        qWarning() << "The SubFrame will protrude. SubFrame =" << m_subFrameRect << "Max =" << m_maxRect;
+
+        m_subFrameRect.setSize(m_subFrameRect.size().scaled(m_maxRect.size(), Qt::KeepAspectRatio));
+        m_subFrameRect.setTopLeft(m_maxRect.topLeft());
+    }
 }
