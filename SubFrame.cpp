@@ -21,27 +21,49 @@
 #include <QPainter>
 #include <QDebug>
 
-SubFrame::SubFrame(const QRect &subFrameRect) :
-    SubFrame(subFrameRect, false, false)
+SubFrame::SubFrame(const QSize &frameSize, const QSize &boundingSize, bool adjustContents)
+    : m_subFrameRect(QPoint(0, 0), frameSize)
+    , m_boundingSize(boundingSize)
+    , m_adjustContents(adjustContents)
 {
-}
-
-SubFrame::SubFrame(const QRect &subFrameRect, bool adjustMaxWidth, bool adjustMaxHeight)
-    : m_subFrameRect(subFrameRect)
-    , m_sizeMaximized(adjustMaxWidth, adjustMaxHeight)
-{
-    Q_ASSERT(subFrameRect.isValid());
+    Q_ASSERT((frameSize.width()  <= m_boundingSize.width())
+           & (frameSize.height() <= m_boundingSize.height()));
 }
 
 void SubFrame::draw(QPainter &painter)
 {
-    if (m_maxRect != painter.clipBoundingRect().toRect()) {
-        m_maxRect = painter.clipBoundingRect().toRect();
-        correctSize();
+    painter.save();
+
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
+    painter.setPen(Qt::red);
+
+    QRect destRect = painter.clipBoundingRect().toRect();
+
+    if (m_destRect != destRect) {
+        m_destRect = destRect;
+
+        QSize scaledSize = m_boundingSize.scaled(destRect.size(), Qt::KeepAspectRatio);
+
+        m_scale = qreal(scaledSize.width()) / m_boundingSize.width();
     }
 
-    painter.setPen(Qt::red);
-    painter.drawRect(m_subFrameRect);
+    QRectF drawRect = m_subFrameRect;
+
+    if (m_adjustContents) {
+        qreal lRatio = m_subFrameRect.left()   / qreal(m_boundingSize.width() - 1);
+        qreal rRatio = m_subFrameRect.right()  / qreal(m_boundingSize.width() - 1);
+        qreal tRatio = m_subFrameRect.top()    / qreal(m_boundingSize.height() - 1);
+        qreal bRatio = m_subFrameRect.bottom() / qreal(m_boundingSize.height() - 1);
+
+        drawRect.setLeft  (lRatio * (m_destRect.width()  - 1));
+        drawRect.setRight (rRatio * (m_destRect.width()  - 1));
+        drawRect.setTop   (tRatio * (m_destRect.height() - 1));
+        drawRect.setBottom(bRatio * (m_destRect.height() - 1));
+    }
+
+    painter.drawRect(drawRect.translated(m_destRect.topLeft()));
+
+    painter.restore();
 }
 
 void SubFrame::mousePress(QMouseEvent *event)
@@ -56,15 +78,17 @@ void SubFrame::mouseRelease(QMouseEvent *event)
 
 void SubFrame::mouseMove(QMouseEvent *event)
 {
-    if (m_sizeMaximized.first & m_sizeMaximized.second)
-        return;
-
     m_dragger.mouseMove(event->pos());
 
     if (!m_dragger.isDragging())
         return;
 
-    m_subFrameRect.moveTopLeft(m_subFrameRect.topLeft() + m_dragger.sub());
+    QPoint offset = m_dragger.sub();
+
+    if (m_adjustContents)
+        offset /= m_scale;
+
+    m_subFrameRect.moveTopLeft(m_subFrameRect.topLeft() + offset);
 
     correctPosition();
 
@@ -76,55 +100,26 @@ QPoint SubFrame::pos() const
     return m_subFrameRect.topLeft();
 }
 
-QPoint SubFrame::posOnImage() const
-{
-    return m_subFrameRect.topLeft() - m_maxRect.topLeft();
-}
-
 void SubFrame::correctPosition()
 {
-    if (m_subFrameRect.width() == m_maxRect.width())
-        m_subFrameRect.moveLeft(m_maxRect.left());
-
-    if (m_subFrameRect.height() == m_maxRect.height())
-        m_subFrameRect.moveTop(m_maxRect.top());
-
-    if (m_subFrameRect.left() < m_maxRect.left())
-        m_subFrameRect.moveLeft(m_maxRect.left());
-
-    if (m_subFrameRect.right() > m_maxRect.right())
-        m_subFrameRect.moveRight(m_maxRect.right());
-
-    if (m_subFrameRect.top() < m_maxRect.top())
-        m_subFrameRect.moveTop(m_maxRect.top());
-
-    if (m_subFrameRect.bottom() > m_maxRect.bottom())
-        m_subFrameRect.moveBottom(m_maxRect.bottom());
-}
-
-void SubFrame::correctSize()
-{
-    if (m_sizeMaximized.first & m_sizeMaximized.second) {
-        m_subFrameRect = m_maxRect;
-
+    if (!m_adjustContents)
         return;
-    }
 
-    if (m_sizeMaximized.first ^ m_sizeMaximized.second) {
-        m_subFrameRect.setSize(m_subFrameRect.size().scaled(m_maxRect.size(), Qt::KeepAspectRatio));
-        correctPosition();
+    if (m_subFrameRect.width() == m_boundingSize.width())
+        m_subFrameRect.moveLeft(0);
 
-        return;
-    }
+    if (m_subFrameRect.height() == m_boundingSize.height())
+        m_subFrameRect.moveTop(0);
 
-    const QPoint offset = m_maxRect.topLeft() - m_subFrameRect.topLeft();
+    if (m_subFrameRect.left() < 0)
+        m_subFrameRect.moveLeft(0);
 
-    if (m_maxRect.contains(m_subFrameRect.translated(offset))) {
-        correctPosition();
-    } else {
-        qWarning() << "The SubFrame will protrude. SubFrame =" << m_subFrameRect << "Max =" << m_maxRect;
+    if (m_subFrameRect.right() >= m_boundingSize.width())
+        m_subFrameRect.moveRight(m_boundingSize.width() - 1);
 
-        m_subFrameRect.setSize(m_subFrameRect.size().scaled(m_maxRect.size(), Qt::KeepAspectRatio));
-        m_subFrameRect.setTopLeft(m_maxRect.topLeft());
-    }
+    if (m_subFrameRect.top() < 0)
+        m_subFrameRect.moveTop(0);
+
+    if (m_subFrameRect.bottom() >= m_boundingSize.height())
+        m_subFrameRect.moveBottom(m_boundingSize.height() - 1);
 }

@@ -36,7 +36,6 @@ public:
     void mouseEnter(QEvent *) override {}
     void mouseLeave(QEvent *) override;
     QPoint pos() const override;
-    QPoint posOnImage() const override;
 
     void setCellCount(ushort vCellCount, ushort hCellCount);
     const QPoint &selectedCellPos() const;

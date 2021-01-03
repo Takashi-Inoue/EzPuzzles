@@ -115,11 +115,6 @@ QPoint CellSelectionGrid::pos() const
     return QPoint(0, 0);
 }
 
-QPoint CellSelectionGrid::posOnImage() const
-{
-    return QPoint(0, 0);
-}
-
 void CellSelectionGrid::setCellCount(ushort vCellCount, ushort hCellCount)
 {
     m_gridLines = GridLines(vCellCount - 1, hCellCount - 1);

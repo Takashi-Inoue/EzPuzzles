@@ -56,7 +56,7 @@ QSharedPointer<IGame> DialogSettingsMineSweeper::buildGame() const
     QSize boardXYCount(xyCount());
 
     QSize fieldPixelSize(boardXYCount * ui->sliderPieceSize->value());
-    QPoint tl = m_subFrame->posOnImage() / ui->imageWidget->imageScale();
+    QPoint tl = m_subFrame->pos();
 
     QPixmap pixmap = ui->imageWidget->originalPixmap().copy(QRect(tl, fieldPixelSize));
 
@@ -125,22 +125,9 @@ void DialogSettingsMineSweeper::updateMineMax(int piecePixelSide)
 
 void DialogSettingsMineSweeper::updateSubFrame(int piecePixelSide)
 {
-    QSize fieldSize = xyCount() * piecePixelSide;
-    QSize frameSize = fieldSize * ui->imageWidget->imageScale();
+    QSize frameSize = xyCount() * piecePixelSide;
 
-    if (frameSize.isEmpty())
-        return;
-
-    QSize originalPixmapSize = ui->imageWidget->originalPixmap().size();
-    bool hAdjustMax = fieldSize.width()  == originalPixmapSize.width();
-    bool vAdjustMax = fieldSize.height() == originalPixmapSize.height();
-
-    QPoint tl = (m_subFrame == nullptr) ? QPoint(0, 0)
-                                        : m_subFrame->pos();
-
-    QRect frameRect(tl, frameSize);
-
-    m_subFrame = QSharedPointer<SubFrame>::create(frameRect, hAdjustMax, vAdjustMax);
+    m_subFrame = QSharedPointer<SubFrame>::create(frameSize, ui->imageWidget->originalPixmap().size(), true);
 
     ui->imageWidget->replaceSubWidget(0, m_subFrame);
 }
