@@ -21,13 +21,16 @@
 #include <QPainter>
 #include <QDebug>
 
-SubFrame::SubFrame(const QSize &frameSize, const QSize &boundingSize, bool adjustContents)
-    : m_subFrameRect(QPoint(0, 0), frameSize)
-    , m_boundingSize(boundingSize)
+SubFrame::SubFrame(const QSize &frameSize, const QSize &boundingSize, bool adjustContents
+                 , const QPoint &framePos)
+    : m_boundingSize(boundingSize)
     , m_adjustContents(adjustContents)
+    , m_subFrameRect(framePos, frameSize)
 {
     Q_ASSERT((frameSize.width()  <= m_boundingSize.width())
            & (frameSize.height() <= m_boundingSize.height()));
+
+    correctPosition();
 }
 
 void SubFrame::draw(QPainter &painter)
@@ -39,13 +42,7 @@ void SubFrame::draw(QPainter &painter)
 
     QRect destRect = painter.clipBoundingRect().toRect();
 
-    if (m_destRect != destRect) {
-        m_destRect = destRect;
-
-        QSize scaledSize = m_boundingSize.scaled(destRect.size(), Qt::KeepAspectRatio);
-
-        m_scale = qreal(scaledSize.width()) / m_boundingSize.width();
-    }
+    m_destSize = destRect.size();
 
     QRectF drawRect = m_subFrameRect;
 
@@ -55,13 +52,13 @@ void SubFrame::draw(QPainter &painter)
         qreal tRatio = m_subFrameRect.top()    / qreal(m_boundingSize.height() - 1);
         qreal bRatio = m_subFrameRect.bottom() / qreal(m_boundingSize.height() - 1);
 
-        drawRect.setLeft  (lRatio * (m_destRect.width()  - 1));
-        drawRect.setRight (rRatio * (m_destRect.width()  - 1));
-        drawRect.setTop   (tRatio * (m_destRect.height() - 1));
-        drawRect.setBottom(bRatio * (m_destRect.height() - 1));
+        drawRect.setLeft  (lRatio * (m_destSize.width()  - 1));
+        drawRect.setRight (rRatio * (m_destSize.width()  - 1));
+        drawRect.setTop   (tRatio * (m_destSize.height() - 1));
+        drawRect.setBottom(bRatio * (m_destSize.height() - 1));
     }
 
-    painter.drawRect(drawRect.translated(m_destRect.topLeft()));
+    painter.drawRect(drawRect.translated(destRect.topLeft()));
 
     painter.restore();
 }
@@ -85,8 +82,11 @@ void SubFrame::mouseMove(QMouseEvent *event)
 
     QPoint offset = m_dragger.sub();
 
-    if (m_adjustContents)
-        offset /= m_scale;
+    if (m_adjustContents) {
+        QSize scaledSize = m_boundingSize.scaled(m_destSize, Qt::KeepAspectRatio);
+
+        offset = offset * m_boundingSize.width() / scaledSize.width();
+    }
 
     m_subFrameRect.moveTopLeft(m_subFrameRect.topLeft() + offset);
 

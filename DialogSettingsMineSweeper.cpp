@@ -126,8 +126,10 @@ void DialogSettingsMineSweeper::updateMineMax(int piecePixelSide)
 void DialogSettingsMineSweeper::updateSubFrame(int piecePixelSide)
 {
     QSize frameSize = xyCount() * piecePixelSide;
+    QSize boundingSize = ui->imageWidget->originalPixmap().size();
+    QPoint pos = (m_subFrame != nullptr) ? m_subFrame->pos() : QPoint(0, 0);
 
-    m_subFrame = QSharedPointer<SubFrame>::create(frameSize, ui->imageWidget->originalPixmap().size(), true);
+    m_subFrame = QSharedPointer<SubFrame>::create(frameSize, boundingSize, true, pos);
 
     ui->imageWidget->replaceSubWidget(0, m_subFrame);
 }
