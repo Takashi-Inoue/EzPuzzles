@@ -19,22 +19,18 @@
 #ifndef SAFEPIECE_H
 #define SAFEPIECE_H
 
-#include "IMinePiece.h"
-
-#include <memory>
+#include "AbstractMinePiece.h"
 
 namespace MineSweeper {
 
-class SafePiece : public IMinePiece
+class SafePiece : public AbstractMinePiece
 {
 public:
-    SafePiece(int numOfAroundMines, const QRect &destRect, const QPixmap &pixmap, const QRect &sourceRect);
+    SafePiece(int countAroundMines, const QRect &destRect, const QPixmap &pixmap
+            , const QRect &sourceRect);
 
     // IMinePiece
-    void draw(QPainter &painter) override;
     void setOpenPieceOpacity(double opacity) override;
-    void setEffect(EffectPointer effect) override;
-    void onTickFrame() override;
 
     void open() override;
     void lock() override;
@@ -45,22 +41,20 @@ public:
     bool isNearMine() const override;
     bool isWall() const override;
 
-    int numberOfAroundMines() const override;
+    int countAroundMines() const override;
 
 protected:
+    // AbstractMinePiece
+    void drawImpl(QPainter &painter) override;
+
     void fillRect(QPainter &painter);
 
-    std::unique_ptr<ISwitchPiece> switchImagePiece;
-    IPiece *numberPiece;
+    QScopedPointer<ISwitchPiece> m_switchImagePiece;
+    QSharedPointer<IPiece> m_numberPiece;
 
-    int numOfAroundMines;
-    QRect rect;
-    double openOpacity;
-    double oldOpacity;
-
-    EffectPointer effect;
-
-    bool isChanged;
+    int m_countAroundMines;
+    double m_openOpacity = 1.0;
+    double m_oldOpacity = 1.0;
 };
 
 } // MineSweeper

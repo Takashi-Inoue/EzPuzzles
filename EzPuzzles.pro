@@ -118,6 +118,7 @@ HEADERS  += MainWindow.h \
     ImageWidget/CellSelectionGrid.h \
     ImageWidget/ImageWidget.h \
     ImageWidget/SubFrame.h \
+    MineSweeper/AbstractMinePiece.h \
     MineSweeper/MinePiece.h \
     MineSweeper/WallPiece.h \
     Dragger.h \

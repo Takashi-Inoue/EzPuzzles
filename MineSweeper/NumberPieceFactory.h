@@ -19,9 +19,9 @@
 #ifndef NUMBERPIECEFACTORY_H
 #define NUMBERPIECEFACTORY_H
 
-#include <QMap>
-#include <QVector>
-#include <memory>
+#include <QHash>
+#include <QList>
+#include <QSharedPointer>
 
 class IPiece;
 class QSize;
@@ -30,23 +30,21 @@ namespace MineSweeper {
 
 class NumberPieceFactory
 {
-public:
-    NumberPieceFactory() = default;
-    ~NumberPieceFactory() = default;
-
-    static IPiece *getPiece(int number, const QSize &size);
-
-private:
-    typedef std::shared_ptr<IPiece> PiecePointer;
-    typedef QVector<PiecePointer> PieceList;
-    typedef QPair<int, int> keyPair;
-
-    static QMap<keyPair, PieceList> piecesMap;
-
     NumberPieceFactory(const NumberPieceFactory &) = delete;
     NumberPieceFactory(NumberPieceFactory &&) = delete;
     NumberPieceFactory &operator=(const NumberPieceFactory &) = delete;
     NumberPieceFactory &operator=(NumberPieceFactory &&) = delete;
+public:
+    NumberPieceFactory() = default;
+    ~NumberPieceFactory() = default;
+
+    static QSharedPointer<IPiece> getPiece(int number, const QSize &size);
+
+private:
+    using PiecePointer =QSharedPointer<IPiece>;
+    using PieceList = QList<PiecePointer>;
+
+    static QHash<QSize, PieceList> m_piecesHash;
 };
 
 } // MineSweeper

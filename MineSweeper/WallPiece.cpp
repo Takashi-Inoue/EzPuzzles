@@ -45,7 +45,7 @@ bool WallPiece::isWall() const
     return true;
 }
 
-int WallPiece::numberOfAroundMines() const
+int WallPiece::countAroundMines() const
 {
     return 0;
 }

@@ -19,24 +19,19 @@
 #ifndef MAINPIECE_H
 #define MAINPIECE_H
 
-#include "IMinePiece.h"
-#include <memory>
+#include "AbstractMinePiece.h"
 
-class BlockPiece;
+class IPiece;
 
 namespace MineSweeper {
 
-class MinePiece : public IMinePiece
+class MinePiece : public AbstractMinePiece
 {
 public:
-    MinePiece(const QRect &rect);
-    ~MinePiece() = default;
+    MinePiece(const QRect &destRect);
 
     // IMinePiece
-    void draw(QPainter &painter) override;
     void setOpenPieceOpacity(double /*opacity*/) override {}
-    void setEffect(EffectPointer) override;
-    void onTickFrame() override;
 
     void open() override;
     void lock() override;
@@ -47,17 +42,15 @@ public:
     bool isNearMine() const override;
     bool isWall() const override;
 
-    int numberOfAroundMines() const override;
+    int countAroundMines() const override;
+
+protected:
+    void drawImpl(QPainter &painter) override;
 
 private:
-    std::unique_ptr<IPiece> blockPiece;
-    bool isOpened;
-    bool isLocked;
-    QRect rect;
-
-    EffectPointer effect;
-
-    bool isChanged;
+    QScopedPointer<IPiece> m_blockPiece;
+    bool m_isOpened;
+    bool m_isLocked;
 };
 
 } // MineSweeper

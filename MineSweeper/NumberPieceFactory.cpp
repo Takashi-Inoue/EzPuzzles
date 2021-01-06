@@ -23,34 +23,34 @@
 
 namespace MineSweeper {
 
-const QList<QColor> NumColor = {
-    QColor(  0,   0, 255),
-    QColor(  0, 160,   0),
-    QColor(255,   0,   0),
-    QColor(  0,   0, 128),
-    QColor(128,   0,   0),
-    QColor(  0, 128, 128),
-    QColor( 64,  64,   0),
-    QColor(  0,   0,   0),
-};
+QHash<QSize, NumberPieceFactory::PieceList> NumberPieceFactory::m_piecesHash;
 
-QMap<NumberPieceFactory::keyPair, NumberPieceFactory::PieceList> NumberPieceFactory::piecesMap;
-
-IPiece *NumberPieceFactory::getPiece(int number, const QSize &size)
+QSharedPointer<IPiece> NumberPieceFactory::getPiece(int number, const QSize &size)
 {
-    Q_ASSERT(number >= 0 && number <= NumColor.size());
+    static const QList<QColor> numberColors = {
+        QColor(  0,   0, 255),
+        QColor(  0, 160,   0),
+        QColor(255,   0,   0),
+        QColor(  0,   0, 128),
+        QColor(128,   0,   0),
+        QColor(  0, 128, 128),
+        QColor( 64,  64,   0),
+        QColor(  0,   0,   0),
+    };
 
-    auto &pieceList = piecesMap[keyPair(size.width(), size.height())];
+    Q_ASSERT(number >= 1 && number <= numberColors.size());
+
+    PieceList &pieceList = m_piecesHash[size];
 
     if (pieceList.isEmpty())
-        pieceList.resize(NumColor.size());
+        pieceList.resize(numberColors.size());
 
-    auto &piece = pieceList[number - 1];
+    PiecePointer &piece = pieceList[number - 1];
 
     if (piece == nullptr)
-        piece = std::make_shared<NumberPiece>(number, NumColor.at(number - 1), size);
+        piece = QSharedPointer<NumberPiece>::create(number, numberColors[number - 1], size);
 
-    return piece.get();
+    return piece;
 }
 
 } // MineSweeper

@@ -44,7 +44,7 @@ public:
     virtual bool isNearMine() const = 0;
     virtual bool isWall() const = 0;
 
-    virtual int numberOfAroundMines() const = 0;
+    virtual int countAroundMines() const = 0;
 };
 
 using MinePiecePointer = QSharedPointer<IMinePiece>;

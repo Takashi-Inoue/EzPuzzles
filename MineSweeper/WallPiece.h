@@ -43,7 +43,7 @@ public:
     bool isNearMine() const override;
     bool isWall() const override;
 
-    int numberOfAroundMines() const override;
+    int countAroundMines() const override;
 };
 
 } // MineSweeper

@@ -51,7 +51,7 @@ QList<int> PiecesFactory::toIntList(const MinePiece2DList &pieces)
         for (int x = 1; x < xMax; ++x) {
             const MinePiecePointer &piece = pieces[y][x];
 
-            int value = piece->isMine() ? m_mineID : piece->numberOfAroundMines();
+            int value = piece->isMine() ? m_mineID : piece->countAroundMines();
 
             if (piece->isLock())
                 value |= m_lockFlag;

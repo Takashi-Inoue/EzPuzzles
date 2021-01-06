@@ -22,72 +22,48 @@
 
 namespace MineSweeper {
 
-MinePiece::MinePiece(const QRect &rect) :
-    blockPiece(new BlockPiece(rect.size())),
-    isOpened(false),
-    isLocked(false),
-    rect(rect),
-    isChanged(true)
+MinePiece::MinePiece(const QRect &destRect)
+    : AbstractMinePiece(destRect)
+    , m_blockPiece(new BlockPiece(destRect.size()))
+    , m_isOpened(false)
+    , m_isLocked(false)
 {
-}
-
-void MinePiece::draw(QPainter &painter)
-{
-    if (!isChanged)
-        return;
-
-    painter.save();
-    painter.setOpacity(1.0);
-
-    blockPiece->draw(painter, rect);
-
-    if (effect != nullptr)
-        effect->draw(painter, rect);
-
-    painter.restore();
-
-    isChanged = false;
-}
-
-void MinePiece::setEffect(EffectPointer effect)
-{
-    this->effect = effect;
-}
-
-void MinePiece::onTickFrame()
-{
-    if (effect != nullptr)
-        isChanged |= effect->onTickFrame();
 }
 
 void MinePiece::open()
 {
-    if (isOpened | isLocked)
+    if (m_isOpened | m_isLocked)
         return;
 
-    blockPiece.reset(new BlockPiece(rect.size(), QColor(224, 128, 128), QColor(192, 96, 96), QColor(96, 0, 0)));
-    isOpened = true;
-    isChanged = true;
+    auto blockPiece = new BlockPiece(m_destRect.size()
+                                   , QColor("#E08080"), QColor("#C06060"), QColor("#600000"));
+
+    m_blockPiece.reset(blockPiece);
+    m_isOpened = true;
+    m_isChanged = true;
 }
 
 void MinePiece::lock()
 {
-    if (isOpen())
+    if (m_isOpened)
         return;
 
-    blockPiece.reset(new BlockPiece(rect.size(), QColor(160, 160, 255), QColor(128, 128, 224), QColor(32, 32, 128)));
-    isLocked = true;
-    isChanged = true;
+    auto blockPiece = new BlockPiece(m_destRect.size()
+                                   , QColor("#A0A0FF"), QColor("#8080E0"), QColor("#202080"));
+
+    m_blockPiece.reset(blockPiece);
+    m_isLocked = true;
+    m_isChanged = true;
 }
 
 bool MinePiece::isOpen() const
 {
-    return isOpened;
+    return m_isOpened;
 }
 
 bool MinePiece::isLock() const
 {
-    return isLocked;
+    return m_isLocked;
 }
 
 bool MinePiece::isMine() const
@@ -105,9 +81,19 @@ bool MinePiece::isWall() const
     return false;
 }
 
-int MinePiece::numberOfAroundMines() const
+int MinePiece::countAroundMines() const
 {
     return 0;
+}
+
+void MinePiece::drawImpl(QPainter &painter)
+{
+    painter.setOpacity(1.0);
+
+    m_blockPiece->draw(painter, m_destRect);
+
+    if (m_effect != nullptr)
+        m_effect->draw(painter, m_destRect);
 }
 
 } // MineSweeper
