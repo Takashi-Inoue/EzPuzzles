@@ -19,7 +19,7 @@
 #ifndef GAMEWIDGET_H
 #define GAMEWIDGET_H
 
-#include "ImageWidget.h"
+#include "ImageWidget/ImageWidget.h"
 
 class IGame;
 

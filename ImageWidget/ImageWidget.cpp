@@ -18,44 +18,58 @@
  */
 #include "ImageWidget.h"
 
-#include "ISubWidget.h"
+#include "AbstractSubWidget.h"
 
 #include <QPainter>
 #include <QMouseEvent>
 #include <QDebug>
 
-void ImageWidget::setPixmap(const QPixmap &pixmap)
+int ImageWidget::addSubWidget(QSharedPointer<AbstractSubWidget> subWidget)
 {
-    m_pixmap = pixmap;
+    m_subWidgets << subWidget;
+
+    connect(subWidget.get(), &AbstractSubWidget::updated, this, qOverload<>(&QWidget::repaint));
+
+    return int(m_subWidgets.size() - 1);
 }
 
-void ImageWidget::addSubWidget(QSharedPointer<ISubWidget> subWidget)
+int ImageWidget::replaceSubWidget(int index, QSharedPointer<AbstractSubWidget> subWidget)
 {
-    m_subWidgets.push_back(subWidget);
+    if (subWidget == nullptr)
+        return -1;
 
-    connect(subWidget.get(), &ISubWidget::updated, this, qOverload<>(&QWidget::repaint));
-}
-
-void ImageWidget::replaceSubWidget(int index, QSharedPointer<ISubWidget> subWidget)
-{
-    if (m_subWidgets.empty()) {
-        addSubWidget(subWidget);
-        return;
-    }
-
-    Q_ASSERT(index >= 0 && index < m_subWidgets.size());
+    if (index == -1 || index >= m_subWidgets.size())
+        return addSubWidget(subWidget);
 
     m_subWidgets[index]->disconnect();
     m_subWidgets[index] = subWidget;
 
-    connect(subWidget.get(), &ISubWidget::updated, this, qOverload<>(&QWidget::repaint));
+    connect(subWidget.get(), &AbstractSubWidget::updated, this, qOverload<>(&QWidget::repaint));
+
+    return index;
+}
+
+QSharedPointer<AbstractSubWidget> ImageWidget::subWidget(int index) const
+{
+    if (uint(index) < uint(m_subWidgets.size()))
+        return m_subWidgets[index];
+
+    return nullptr;
+}
+
+bool ImageWidget::hasImage() const
+{
+    return !m_pixmap.isNull();
 }
 
 const QPixmap &ImageWidget::originalPixmap() const
 {
-    Q_ASSERT(!m_pixmap.isNull());
-
     return m_pixmap;
+}
+
+QString ImageWidget::imageFullPathName() const
+{
+    return m_imageFullPathName;
 }
 
 QRect ImageWidget::imageRect() const
@@ -70,9 +84,25 @@ double ImageWidget::imageScale() const
     return double(m_imageRectangle.width()) / m_pixmap.width();
 }
 
+void ImageWidget::setImage(QStringView imageFullPathName)
+{
+    QImage image(imageFullPathName.toString());
+
+    if (image.isNull())
+        return;
+
+    m_imageFullPathName = imageFullPathName.toString();
+
+    m_pixmap = QPixmap::fromImage(image);
+
+    repaint();
+
+    emit imageChanged();
+}
+
 void ImageWidget::paintEvent(QPaintEvent *event)
 {
-    QWidget::paintEvent(event);
+    QFrame::paintEvent(event);
 
     if (m_pixmap.isNull())
         return;
@@ -146,8 +176,9 @@ void ImageWidget::calcImageRect()
     }
 
     QSize pixSize = m_pixmap.size();
+    int frame2Width = frameWidth() * 2;
 
-    pixSize.scale(size(), Qt::KeepAspectRatio);
+    pixSize.scale(size() - QSize(frame2Width, frame2Width), Qt::KeepAspectRatio);
 
     m_imageRectangle.setSize(pixSize);
     m_imageRectangle.moveCenter(rect().center());

@@ -24,7 +24,7 @@
 #include <QList>
 #include <QSharedPointer>
 
-class ISubWidget;
+class AbstractSubWidget;
 
 class ImageWidget : public QFrame
 {
@@ -33,13 +33,21 @@ class ImageWidget : public QFrame
 public:
     using QFrame::QFrame;
 
-    virtual void setPixmap(const QPixmap &pixmap);
-    void addSubWidget(QSharedPointer<ISubWidget> subWidget);
-    void replaceSubWidget(int index, QSharedPointer<ISubWidget> subWidget);
+    int addSubWidget(QSharedPointer<AbstractSubWidget> subWidget);
+    int replaceSubWidget(int index = -1, QSharedPointer<AbstractSubWidget> subWidget = nullptr);
+    QSharedPointer<AbstractSubWidget> subWidget(int index) const;
 
+    bool hasImage() const;
     const QPixmap &originalPixmap() const;
+    QString imageFullPathName() const;
     QRect imageRect() const;
     double imageScale() const;
+
+signals:
+    void imageChanged();
+
+public slots:
+    void setImage(QStringView imageFullPathName);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -51,12 +59,13 @@ protected:
     void leaveEvent(QEvent *event) override;
 
     QPixmap m_pixmap;
+    QString m_imageFullPathName;
     QRect m_imageRectangle;
 
 private:
     void calcImageRect();
 
-    QList<QSharedPointer<ISubWidget>> m_subWidgets;
+    QList<QSharedPointer<AbstractSubWidget>> m_subWidgets;
 };
 
 #endif // IMAGEWIDGET_H

@@ -16,31 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ISUBWIDGET_H
-#define ISUBWIDGET_H
+#ifndef IWIDGETGAMESETTINGS_H
+#define IWIDGETGAMESETTINGS_H
 
-#include <QObject>
-#include <QMouseEvent>
+#include <QSharedPointer>
 
-class QPainter;
-class QPoint;
+class IGame;
 
-class ISubWidget : public QObject
+class IWidgetGameSettings
 {
-    Q_OBJECT
 public:
-    using QObject::QObject;
+    IWidgetGameSettings() = default;
+    virtual ~IWidgetGameSettings() = default;
 
-    virtual void draw(QPainter &) = 0;
-    virtual void mousePress(QMouseEvent *) = 0;
-    virtual void mouseRelease(QMouseEvent *) = 0;
-    virtual void mouseMove(QMouseEvent *) = 0;
-    virtual void mouseEnter(QEvent *) = 0;
-    virtual void mouseLeave(QEvent *) = 0;
-    virtual QPoint pos() const = 0;
-
-signals:
-    void updated();
+    virtual QSharedPointer<IGame> buildGame() const = 0;
 };
 
-#endif // ISUBWIDGET_H
+#endif // IWIDGETGAMESETTINGS_H

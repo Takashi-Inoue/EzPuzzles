@@ -24,42 +24,13 @@
 #include <QDebug>
 
 CellSelectionGrid::CellSelectionGrid(ushort vCellCount, ushort hCellCount, QObject *parent)
-    : ISubWidget(parent)
+    : AbstractSubWidget(parent)
     , m_gridLines(vCellCount - 1, hCellCount - 1)
     , m_isPressed(false)
     , m_onMouseCell(invalidCell())
     , m_selectedCell(vCellCount - 1, hCellCount - 1)
     , m_isRandomSelect(false)
 {
-}
-
-void CellSelectionGrid::draw(QPainter &painter)
-{
-    QRectF wholeRect = painter.clipBoundingRect();
-
-    if (wholeRect.isEmpty())
-        wholeRect = painter.viewport();
-
-    m_gridLines.setRect(wholeRect);
-
-    painter.save();
-    painter.setPen(QColor(255, 0, 0, 128));
-
-    m_gridLines.draw(painter);
-
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-
-    if (m_onMouseCell != invalidCell())
-        drawOnMouseEffect(painter);
-
-    painter.setPen(Qt::black);
-
-    if (m_isRandomSelect)
-        painter.fillRect(wholeRect, Qt::DiagCrossPattern);
-    else if (m_selectedCell != invalidCell())
-        painter.fillRect(m_gridLines.cellRect(m_selectedCell), Qt::DiagCrossPattern);
-
-    painter.restore();
 }
 
 void CellSelectionGrid::mousePress(QMouseEvent *event)
@@ -141,6 +112,35 @@ void CellSelectionGrid::setRandomSelection(bool isRandom)
     m_isRandomSelect = isRandom;
 
     emit updated();
+}
+
+void CellSelectionGrid::drawImpl(QPainter &painter)
+{
+    QRectF wholeRect = painter.clipBoundingRect();
+
+    if (wholeRect.isEmpty())
+        wholeRect = painter.viewport();
+
+    m_gridLines.setRect(wholeRect);
+
+    painter.save();
+    painter.setPen(QColor(255, 0, 0, 128));
+
+    m_gridLines.draw(painter);
+
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+
+    if (m_onMouseCell != invalidCell())
+        drawOnMouseEffect(painter);
+
+    painter.setPen(Qt::black);
+
+    if (m_isRandomSelect)
+        painter.fillRect(wholeRect, Qt::DiagCrossPattern);
+    else if (m_selectedCell != invalidCell())
+        painter.fillRect(m_gridLines.cellRect(m_selectedCell), Qt::DiagCrossPattern);
+
+    painter.restore();
 }
 
 void CellSelectionGrid::drawOnMouseEffect(QPainter &painter)

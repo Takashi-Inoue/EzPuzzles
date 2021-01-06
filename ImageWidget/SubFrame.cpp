@@ -33,36 +33,6 @@ SubFrame::SubFrame(const QSize &frameSize, const QSize &boundingSize, bool adjus
     correctPosition();
 }
 
-void SubFrame::draw(QPainter &painter)
-{
-    painter.save();
-
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
-    painter.setPen(Qt::red);
-
-    QRect destRect = painter.clipBoundingRect().toRect();
-
-    m_destSize = destRect.size();
-
-    QRectF drawRect = m_subFrameRect;
-
-    if (m_adjustContents) {
-        qreal lRatio = m_subFrameRect.left()   / qreal(m_boundingSize.width() - 1);
-        qreal rRatio = m_subFrameRect.right()  / qreal(m_boundingSize.width() - 1);
-        qreal tRatio = m_subFrameRect.top()    / qreal(m_boundingSize.height() - 1);
-        qreal bRatio = m_subFrameRect.bottom() / qreal(m_boundingSize.height() - 1);
-
-        drawRect.setLeft  (lRatio * (m_destSize.width()  - 1));
-        drawRect.setRight (rRatio * (m_destSize.width()  - 1));
-        drawRect.setTop   (tRatio * (m_destSize.height() - 1));
-        drawRect.setBottom(bRatio * (m_destSize.height() - 1));
-    }
-
-    painter.drawRect(drawRect.translated(destRect.topLeft()));
-
-    painter.restore();
-}
-
 void SubFrame::mousePress(QMouseEvent *event)
 {
     m_dragger.mouseDown(event->pos());
@@ -98,6 +68,36 @@ void SubFrame::mouseMove(QMouseEvent *event)
 QPoint SubFrame::pos() const
 {
     return m_subFrameRect.topLeft();
+}
+
+void SubFrame::drawImpl(QPainter &painter)
+{
+    painter.save();
+
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
+    painter.setPen(Qt::red);
+
+    QRect destRect = painter.clipBoundingRect().toRect();
+
+    m_destSize = destRect.size();
+
+    QRectF drawRect = m_subFrameRect;
+
+    if (m_adjustContents) {
+        qreal lRatio = m_subFrameRect.left()   / qreal(m_boundingSize.width() - 1);
+        qreal rRatio = m_subFrameRect.right()  / qreal(m_boundingSize.width() - 1);
+        qreal tRatio = m_subFrameRect.top()    / qreal(m_boundingSize.height() - 1);
+        qreal bRatio = m_subFrameRect.bottom() / qreal(m_boundingSize.height() - 1);
+
+        drawRect.setLeft  (lRatio * (m_destSize.width()  - 1));
+        drawRect.setRight (rRatio * (m_destSize.width()  - 1));
+        drawRect.setTop   (tRatio * (m_destSize.height() - 1));
+        drawRect.setBottom(bRatio * (m_destSize.height() - 1));
+    }
+
+    painter.drawRect(drawRect.translated(destRect.topLeft()));
+
+    painter.restore();
 }
 
 void SubFrame::correctPosition()

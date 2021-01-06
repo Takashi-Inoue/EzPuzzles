@@ -30,7 +30,7 @@
 class IGame;
 class BoardInformation;
 
-class AbstractSaveData : public QObject
+class AbstractSaveData : public QObject // for Signals & Slots
 {
     Q_OBJECT
 public:

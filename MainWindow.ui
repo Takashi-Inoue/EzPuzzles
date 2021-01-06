@@ -102,7 +102,6 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNewGame"/>
-   <addaction name="actionFromCurrentImage"/>
    <addaction name="actionSaveLoad"/>
    <addaction name="separator"/>
    <addaction name="actionRestart"/>
@@ -141,18 +140,6 @@
    </property>
    <property name="text">
     <string>Final image</string>
-   </property>
-  </action>
-  <action name="actionFromCurrentImage">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="resource.qrc">
-     <normaloff>:/icons/fromCurrent</normaloff>:/icons/fromCurrent</iconset>
-   </property>
-   <property name="text">
-    <string>New Game (&amp;current image)</string>
    </property>
   </action>
   <action name="actionRestart">
@@ -293,38 +280,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionOpenImage</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>startGameWithNewImage()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>353</x>
-     <y>279</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionFromHistory</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>startGameFromImageHistory()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>353</x>
-     <y>279</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionLoad</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
@@ -358,8 +313,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>startGameWithNewImage()</slot>
-  <slot>startGameFromImageHistory()</slot>
   <slot>saveGame()</slot>
   <slot>loadGame()</slot>
  </slots>

@@ -37,7 +37,10 @@ void MineSweeperFinalImage::draw(QPainter &painter)
 {
     painter.save();
 
-    painter.setOpacity(m_mineField->openedRate());
+    qreal maxOpacity = qMax(0.0, 1.0 - m_mineField->missedCount() * 0.15);
+
+    painter.setOpacity(maxOpacity * m_mineField->openedRate() * m_mineField->openedRate());
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
 
     QRect destRect = drawFinalImage(painter);
 
@@ -47,16 +50,12 @@ void MineSweeperFinalImage::draw(QPainter &painter)
     double scale = destRect.width() / double(m_pixmap.width());
 
     for (const QPointF &center : explodedCenters()) {
-        auto itr = std::find_if(m_matrixPairs.begin(), m_matrixPairs.end()
-                              , [&](const TransformPair &matrixPair)
-        {
-            return matrixPair.first == center.toPoint();
-        });
+        auto itr = m_matrixHash.find(center.toPoint());
 
-        if (itr == m_matrixPairs.end())
-            itr = m_matrixPairs.insert(itr, TransformPair(center.toPoint(), createTransform()));
+        if (itr == m_matrixHash.end())
+            itr = m_matrixHash.insert(center.toPoint(), createTransform());
 
-        QPixmap holeImg = m_holeImg.transformed(itr->second);
+        QPixmap holeImg = m_holeImg.transformed(itr.value());
 
         QSizeF holeImgDestSize = holeImg.size() * scale;
 
@@ -65,6 +64,7 @@ void MineSweeperFinalImage::draw(QPainter &painter)
 
         QPointF holeTL(center * scale - QPointF(divW, divH) + destRect.topLeft());
 
+        painter.setCompositionMode(QPainter::CompositionMode_Multiply);
         painter.drawPixmap(QRectF(holeTL, holeImgDestSize), holeImg, holeImg.rect());
     }
 

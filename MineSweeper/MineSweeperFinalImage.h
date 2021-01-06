@@ -23,6 +23,8 @@
 #include "BoardInformation.h"
 #include "MineField.h"
 
+#include <QHash>
+
 namespace MineSweeper {
 
 class MineSweeperFinalImage : public FinalImage
@@ -41,9 +43,7 @@ private:
     BoardInfoPointer m_boardInfo;
     QPixmap m_holeImg;
 
-    using TransformPair = QPair<QPoint, QTransform>;
-
-    QList<TransformPair> m_matrixPairs;
+    QHash<QPoint, QTransform> m_matrixHash;
 };
 
 } // MineSweeper

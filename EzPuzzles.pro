@@ -19,22 +19,21 @@ TRANSLATIONS += ezpz_ja.ts
 SOURCES += main.cpp\
     AbstractSaveData.cpp \
     Application.cpp \
-    CellSelectionGrid.cpp \
     ImageHistory.cpp \
-        MainWindow.cpp \
+    ImageWidget/CellSelectionGrid.cpp \
+    ImageWidget/ImageWidget.cpp \
+    ImageWidget/SubFrame.cpp \
+    MainWindow.cpp \
     FormFinalImage.cpp \
-    DialogSettingsFifteen.cpp \
-    ImageWidget.cpp \
     GameWidget.cpp \
-    DialogGameStart.cpp \
-    DialogSettingsMineSweeper.cpp \
     MineSweeper/MinePiece.cpp \
     MineSweeper/WallPiece.cpp \
     Dragger.cpp \
-    SubFrame.cpp \
     ImagePiece.cpp \
     NumberPiece.cpp \
     BlockPiece.cpp \
+    SelectImage/ActionSelectImageFromHistory.cpp \
+    SelectImage/ActionSelectImageFromLocal.cpp \
     SwitchImagePiece.cpp \
     MineSweeper/SafePiece.cpp \
     MineSweeper/NumberPieceFactory.cpp \
@@ -98,32 +97,40 @@ SOURCES += main.cpp\
     AnimationObject/Effect/EffectGraduallyImage.cpp \
     AnimationObject/Transform/WaitTransform.cpp \
     AnimationObject/Effect/TimeLimitedEffect.cpp \
+    widgets/DialogStartGame.cpp \
+    widgets/FormSettingsLikeFifteen.cpp \
+    widgets/FormSettingsMineSweeper.cpp \
+    widgets/FrameImageSelector.cpp \
     widgets/ListWidgetImageHistory.cpp \
     widgets/ListWidgetImages.cpp
 
 HEADERS  += MainWindow.h \
     AbstractSaveData.h \
     Application.h \
-    CellSelectionGrid.h \
     FormFinalImage.h \
-    DialogSettingsFifteen.h \
+    IWidgetGameSettings.h \
     ImageHistory.h \
-    ImageWidget.h \
     GameWidget.h \
     IGame.h \
     IShuffler.h \
     IPiece.h \
-    DialogGameStart.h \
-    DialogSettingsMineSweeper.h \
+    ImageWidget/AbstractSubWidget.h \
+    ImageWidget/CellSelectionGrid.h \
+    ImageWidget/ImageWidget.h \
+    ImageWidget/SubFrame.h \
     MineSweeper/MinePiece.h \
     MineSweeper/WallPiece.h \
-    ISubWidget.h \
     Dragger.h \
-    SubFrame.h \
     ImagePiece.h \
     NumberPiece.h \
     ISwitchPiece.h \
     BlockPiece.h \
+    SelectImage/AbstractSelectImageAction.h \
+    SelectImage/AbstractSelectImageToolButton.h \
+    SelectImage/ActionSelectImageFromHistory.h \
+    SelectImage/ActionSelectImageFromLocal.h \
+    SelectImage/ToolButtonSelectImageFromHistory.h \
+    SelectImage/ToolButtonSelectImageFromLocal.h \
     SwitchImagePiece.h \
     MineSweeper/IMinePiece.h \
     MineSweeper/SafePiece.h \
@@ -148,7 +155,6 @@ HEADERS  += MainWindow.h \
     fifteen/FifteenPieceMover.h \
     GameID.h \
     fifteen/FifteenSwapShuffler.h \
-    IDialogGameSettings.h \
     BrokenSaveData.h \
     UnknownSaveData.h \
     AnimationObject/AbstractAnimationObject.h \
@@ -197,15 +203,20 @@ HEADERS  += MainWindow.h \
     AnimationObject/Effect/EffectGraduallyImage.h \
     AnimationObject/Transform/WaitTransform.h \
     AnimationObject/Effect/TimeLimitedEffect.h \
+    widgets/DialogStartGame.h \
+    widgets/FormSettingsLikeFifteen.h \
+    widgets/FormSettingsMineSweeper.h \
+    widgets/FrameImageSelector.h \
     widgets/ListWidgetImageHistory.h \
     widgets/ListWidgetImages.h
 
 FORMS    += MainWindow.ui \
-    DialogSettingsFifteen.ui \
-    DialogGameStart.ui \
-    DialogSettingsMineSweeper.ui \
     DialogImageHistory.ui \
-    DialogSavedata.ui
+    DialogSavedata.ui \
+    widgets/DialogStartGame.ui \
+    widgets/FormSettingsLikeFifteen.ui \
+    widgets/FormSettingsMineSweeper.ui \
+    widgets/FrameImageSelector.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

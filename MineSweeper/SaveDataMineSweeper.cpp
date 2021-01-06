@@ -92,7 +92,7 @@ QStringList SaveDataMineSweeper::informations() const
         QStringLiteral("%1/%2 opened (%3%), %4 missed")
                 .arg(m_openedCount).arg(safePieceCount).arg(openRate, 0, 'f', 2).arg(m_missedCount),
         QString(),
-        QStringLiteral("Autolock naked mines : %1").arg(autoLock),
+        QStringLiteral("Check explicit mines : %1").arg(autoLock),
     };
 }
 

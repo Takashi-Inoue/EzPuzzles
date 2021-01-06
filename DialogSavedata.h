@@ -71,6 +71,8 @@ private:
 
     QSharedPointer<AbstractSaveData> saveDataFromListItem(const QListWidgetItem *item) const;
 
+    void updateLabeInformations(QSharedPointer<AbstractSaveData> savedata);
+
     void showAllSaveData();
     void showSpecifiedTypeData(ShownData shownDataType);
 

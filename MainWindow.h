@@ -46,12 +46,9 @@ protected:
 
 private slots:
     void on_actionNewGame_triggered();
-    void on_actionFromCurrentImage_triggered();
     void on_actionRestart_triggered();
     void on_actionSaveLoad_triggered();
 
-    void startGameWithNewImage();
-    void startGameFromImageHistory();
     void saveGame();
     void loadGame();
     void onTickFrameTimer(QReadWriteLock *lock, QWaitCondition *wait);
@@ -59,7 +56,6 @@ private slots:
 
 private:
     void updateImageHistory(const QString &lastImagePath) const;
-    QSharedPointer<IGame> createNewGame(const SourceImage &sourceImage);
     void startNewGame(QSharedPointer<IGame> newGame);
 
     Ui::MainWindow *ui;

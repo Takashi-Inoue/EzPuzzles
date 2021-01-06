@@ -1,102 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DialogSettingsMineSweeper</class>
- <widget class="QDialog" name="DialogSettingsMineSweeper">
+ <class>FormSettingsMineSweeper</class>
+ <widget class="QWidget" name="FormSettingsMineSweeper">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>443</width>
-    <height>554</height>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QFrame" name="frame">
-     <property name="minimumSize">
-      <size>
-       <width>320</width>
-       <height>320</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="ImageWidget" name="imageWidget">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="lineWidth">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Image size</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelImageSize">
-       <property name="text">
-        <string>pixels</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="2" column="1" colspan="2">
@@ -218,195 +135,182 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBoxMineCount">
+       <property name="accelerated">
+        <bool>true</bool>
+       </property>
        <property name="minimum">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="maximum">
         <number>99999</number>
+       </property>
+       <property name="value">
+        <number>0</number>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonEasy">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Easy</string>
        </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroupMineRatio</string>
+       </attribute>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonNormal">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Normal</string>
        </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroupMineRatio</string>
+       </attribute>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonHard">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Hard</string>
        </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroupMineRatio</string>
+       </attribute>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonMax">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>Max</string>
        </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroupMineRatio</string>
+       </attribute>
       </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
    <item>
     <widget class="QCheckBox" name="checkBoxAutoLock">
      <property name="text">
-      <string>Check naked mines automatically (protect from missclick)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <string>Check explicit mines automatically.</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ImageWidget</class>
-   <extends>QFrame</extends>
-   <header>ImageWidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
- <tabstops>
-  <tabstop>spinBoxMineCount</tabstop>
-  <tabstop>pushButtonEasy</tabstop>
-  <tabstop>pushButtonNormal</tabstop>
-  <tabstop>pushButtonHard</tabstop>
-  <tabstop>pushButtonMax</tabstop>
-  <tabstop>checkBoxAutoLock</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>DialogSettingsMineSweeper</receiver>
-   <slot>accept()</slot>
+   <sender>buttonGroupMineRatio</sender>
+   <signal>buttonClicked(QAbstractButton*)</signal>
+   <receiver>FormSettingsMineSweeper</receiver>
+   <slot>onRatioButtonClicked(QAbstractButton*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
-     <y>533</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>DialogSettingsMineSweeper</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>325</x>
-     <y>533</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>221</x>
+     <y>85</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>sliderPieceSize</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>DialogSettingsMineSweeper</receiver>
-   <slot>updateBlockPiece(int)</slot>
+   <receiver>FormSettingsMineSweeper</receiver>
+   <slot>updateLabels()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>92</x>
-     <y>418</y>
+     <x>260</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
-     <x>442</x>
-     <y>354</y>
+     <x>221</x>
+     <y>85</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>sliderPieceSize</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>DialogSettingsMineSweeper</receiver>
-   <slot>updateLabels(int)</slot>
+   <receiver>FormSettingsMineSweeper</receiver>
+   <slot>updateMineMax()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>143</x>
-     <y>412</y>
+     <x>260</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
-     <x>441</x>
-     <y>343</y>
+     <x>221</x>
+     <y>85</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>sliderPieceSize</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>DialogSettingsMineSweeper</receiver>
-   <slot>updateMineMax(int)</slot>
+   <receiver>FormSettingsMineSweeper</receiver>
+   <slot>updateSubFrame()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>173</x>
-     <y>414</y>
+     <x>260</x>
+     <y>83</y>
     </hint>
     <hint type="destinationlabel">
-     <x>441</x>
-     <y>380</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sliderPieceSize</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>DialogSettingsMineSweeper</receiver>
-   <slot>updateSubFrame(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>118</x>
-     <y>409</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>444</x>
-     <y>332</y>
+     <x>221</x>
+     <y>85</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>updateLabels(int)</slot>
-  <slot>updateMineMax(int)</slot>
-  <slot>updateSubFrame(int)</slot>
+  <slot>onRatioButtonClicked(QAbstractButton*)</slot>
   <slot>updateBlockPiece(int)</slot>
+  <slot>updateLabels()</slot>
+  <slot>updateMineMax()</slot>
+  <slot>updateSubFrame()</slot>
  </slots>
+ <buttongroups>
+  <buttongroup name="buttonGroupMineRatio"/>
+ </buttongroups>
 </ui>

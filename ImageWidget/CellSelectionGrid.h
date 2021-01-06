@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -16,38 +16,47 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SUBFRAME_H
-#define SUBFRAME_H
+#ifndef CELLSELECTIONGRID_H
+#define CELLSELECTIONGRID_H
 
-#include "ISubWidget.h"
-#include "Dragger.h"
+#include "AbstractSubWidget.h"
+#include "GridLines.h"
+#include <QList>
+#include <QPen>
 
-#include <QRect>
-
-class SubFrame : public ISubWidget
+class CellSelectionGrid : public AbstractSubWidget
 {
 public:
-    SubFrame(const QSize &frameSize, const QSize &boundingSize, bool adjustContents = true
-           , const QPoint &framePos = {0, 0});
+    CellSelectionGrid(ushort vCellCount, ushort hCellCount, QObject *parent = nullptr);
 
-    void draw(QPainter &) override;
     void mousePress(QMouseEvent *) override;
     void mouseRelease(QMouseEvent *) override;
     void mouseMove(QMouseEvent *) override;
     void mouseEnter(QEvent *) override {}
-    void mouseLeave(QEvent *) override {}
+    void mouseLeave(QEvent *) override;
     QPoint pos() const override;
 
+    void setCellCount(ushort vCellCount, ushort hCellCount);
+    const QPoint &selectedCellPos() const;
+
+public slots:
+    void setRandomSelection(bool isRandom);
+
 protected:
-    void correctPosition();
+    void drawImpl(QPainter &) override;
 
-    const QSize m_boundingSize;
-    const bool m_adjustContents;
+private:
+    constexpr QPoint invalidCell() const {return QPoint(-1, -1);}
 
-    QRect m_subFrameRect;
-    QSize m_destSize;
+    void drawOnMouseEffect(QPainter &painter);
 
-    Dragger m_dragger;
+    GridLines m_gridLines;
+
+    bool m_isPressed;
+    QPoint m_onMouseCell;
+    QPoint m_selectedCell;
+
+    bool m_isRandomSelect;
 };
 
-#endif // SUBFRAME_H
+#endif // GRIDSPLITTER_H

@@ -20,8 +20,6 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-#include "DialogGameStart.h"
-#include "DialogImageHistory.h"
 #include "DialogSavedata.h"
 #include "FormFinalImage.h"
 
@@ -32,7 +30,8 @@
 #include "ImageHistory.h"
 #include "SourceImage.h"
 
-#include <QFileDialog>
+#include "widgets/DialogStartGame.h"
+
 #include <QThread>
 #include <QDebug>
 
@@ -77,22 +76,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionNewGame_triggered()
 {
-    static QMenu *menu;
+    QString currentImage = (m_game != nullptr) ? m_game->sourceImage().fullPath()
+                                               : QString();
 
-    if (menu == nullptr) {
-        menu = new QMenu(this);
-        menu->addActions({ui->actionOpenImage, ui->actionFromHistory});
-    }
+    DialogStartGame dialog(currentImage, this);
 
-    menu->popup(QCursor::pos());
-}
+    if (dialog.exec() == QDialog::Rejected)
+        return;
 
-void MainWindow::on_actionFromCurrentImage_triggered()
-{
-    auto newGame = createNewGame(SourceImage(m_game->sourceImage().fullPath()));
+    QSharedPointer<IGame> game = dialog.buildGame();
 
-    if (newGame != nullptr)
-        startNewGame(newGame);
+    if (game == nullptr)
+        return;
+
+    startNewGame(game);
+    updateImageHistory(game->sourceImage().fullPath());
 }
 
 void MainWindow::on_actionRestart_triggered()
@@ -110,50 +108,6 @@ void MainWindow::on_actionSaveLoad_triggered()
     }
 
     menu->popup(QCursor::pos());
-}
-
-void MainWindow::startGameWithNewImage()
-{
-    QString imagePath = QFileDialog::getOpenFileName(
-                            this
-                          , QStringLiteral("Open image..."), QStringLiteral("")
-                          , QStringLiteral("Images (*.png *.bmp *.jpg *.jpeg)"));
-
-    SourceImage sourceImage(imagePath);
-
-    if (sourceImage.isNull())
-        return;
-
-    auto newGame = createNewGame(sourceImage);
-
-    if (newGame == nullptr)
-        return;
-
-    startNewGame(newGame);
-    updateImageHistory(imagePath);
-}
-
-void MainWindow::startGameFromImageHistory()
-{
-    DialogImageHistory dialog(this);
-
-    if (dialog.exec() != QDialog::Accepted)
-        return;
-
-    QString imagePath = dialog.selectedImagePath();
-
-    SourceImage sourceImage(imagePath);
-
-    if (sourceImage.isNull())
-        return;
-
-    auto newGame = createNewGame(sourceImage);
-
-    if (newGame == nullptr)
-        return;
-
-    startNewGame(newGame);
-    updateImageHistory(imagePath);
 }
 
 void MainWindow::saveGame()
@@ -211,16 +165,6 @@ void MainWindow::updateImageHistory(const QString &lastImagePath) const
     history.save();
 }
 
-QSharedPointer<IGame> MainWindow::createNewGame(const SourceImage &sourceImage)
-{
-    DialogGameStart dialog(sourceImage, this);
-
-    if (dialog.exec() == QDialog::Rejected)
-        return nullptr;
-
-    return dialog.buildGame();
-}
-
 void MainWindow::startNewGame(QSharedPointer<IGame> newGame)
 {
     Q_CHECK_PTR(newGame);
@@ -239,10 +183,8 @@ void MainWindow::startNewGame(QSharedPointer<IGame> newGame)
     ui->gameWidget->resize(newGame->maxFieldSize());
     ui->gameWidget->setGame(newGame);
 
-    ui->actionFromCurrentImage->setEnabled(true);
     ui->actionRestart->setEnabled(true);
     ui->actionSave->setEnabled(true);
 
     m_game = newGame;
 }
-

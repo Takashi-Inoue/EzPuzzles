@@ -164,7 +164,9 @@ void DialogSavedata::onSaveInfoLoaded(QString savedataName, QSharedPointer<Abstr
 
     item->setText(lastModified);
     item->setIcon(gameInfo->gameTypeIcon());
-    item->setData(Qt::UserRole, QVariant::fromValue<QSharedPointer<AbstractSaveData>>(gameInfo));
+    item->setData(Qt::UserRole, QVariant::fromValue<>(gameInfo));
+
+    updateLabeInformations(gameInfo);
 }
 
 void DialogSavedata::setUIState()
@@ -187,13 +189,9 @@ void DialogSavedata::onDataSelected(int row)
     if (row == -1)
         return;
 
-    ui->imageWidget->setPixmap(QPixmap::fromImage(QImage(thumbnailPathName(row))));
-    ui->imageWidget->repaint();
+    ui->imageWidget->setImage(thumbnailPathName(row));
 
-    QSharedPointer<AbstractSaveData> savedata = saveDataFromListItem(ui->listWidget->item(row));
-
-    if (savedata != nullptr)
-        ui->labelInformations->setText(savedata->informations().join('\n'));
+    updateLabeInformations(saveDataFromListItem(ui->listWidget->item(row)));
 }
 
 void DialogSavedata::on_comboBox_currentIndexChanged(int index)
@@ -237,6 +235,12 @@ QString DialogSavedata::thumbnailPathName(int row) const
 QSharedPointer<AbstractSaveData> DialogSavedata::saveDataFromListItem(const QListWidgetItem *item) const
 {
     return item->data(Qt::UserRole).value<QSharedPointer<AbstractSaveData>>();
+}
+
+void DialogSavedata::updateLabeInformations(QSharedPointer<AbstractSaveData> savedata)
+{
+    if (savedata != nullptr)
+        ui->labelInformations->setText(savedata->informations().join('\n'));
 }
 
 void DialogSavedata::showAllSaveData()
