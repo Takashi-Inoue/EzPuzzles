@@ -19,10 +19,10 @@
 #ifndef SIMPLESLIDEPHASEREADY_H
 #define SIMPLESLIDEPHASEREADY_H
 
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "SourceImage.h"
 
-class PhaseShowFinalImage : public IPhase
+class PhaseShowFinalImage : public AbstractPhase
 {
     Q_OBJECT
 public:
@@ -37,7 +37,6 @@ public:
 
 private:
     SourceImage m_sourceImage;
-    PhaseType m_nextPhaseType;
 };
 
 #endif // SIMPLESLIDEPHASEREADY_H

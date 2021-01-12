@@ -20,7 +20,7 @@
 #define ABSTRACTSAVEDATA_H
 
 #include "Application.h"
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "SourceImage.h"
 
 #include <QStringList>
@@ -37,7 +37,7 @@ public:
     AbstractSaveData(QStringView fileName, QObject *parent = nullptr);
     AbstractSaveData(QStringView fileName, QString sourceImageFullPathName
                    , QPixmap sourceImagePixmap, QSize boardXYCount
-                   , IPhase::PhaseType currentPhase, QObject *parent = nullptr);
+                   , AbstractPhase::PhaseType currentPhase, QObject *parent = nullptr);
 
     virtual Application::GameType gameType() const = 0;
     virtual QIcon gameTypeIcon() const = 0;
@@ -48,7 +48,7 @@ public:
 
     QSharedPointer<BoardInformation> boardInformation() const;
 
-    IPhase::PhaseType currentPhase() const;
+    AbstractPhase::PhaseType currentPhase() const;
     bool isValid() const;
 
     SourceImage sourceImage() const;
@@ -67,7 +67,7 @@ protected:
     QString m_sourceImageFullPathName;
     QPixmap m_sourceImagePixmap;
     QSize m_boardXYCount;
-    IPhase::PhaseType m_currentPhase;
+    AbstractPhase::PhaseType m_currentPhase;
 
     bool m_isSavedataValid = false;
 };

@@ -230,7 +230,7 @@
    <item>
     <widget class="QCheckBox" name="checkBoxAutoLock">
      <property name="text">
-      <string>Check explicit mines automatically.</string>
+      <string>Autolock explicit mines.</string>
      </property>
     </widget>
    </item>

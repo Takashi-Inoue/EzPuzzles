@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -17,13 +17,15 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Board.h"
-#include "fifteen/FifteenPieceMover.h"
+#include "FifteenPieceMover.h"
 
 #include <QDebug>
 
+namespace Fifteen {
+
 Board::Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock) :
     boardInformation(boardInformation),
-    pieces(pieces),
+    m_pieces(pieces),
     rwlock(rwlock)
 {
     Q_CHECK_PTR(boardInformation);
@@ -41,7 +43,7 @@ QList<FifteenPiecePointer> Board::slidePiece(const QPoint &from, const QPoint &t
         return {};
     }
 
-    Fifteen::PieceMover mover(pieces, boardInformation->xCount());
+    Fifteen::PieceMover mover(m_pieces, boardInformation->xCount());
 
     return from.x() == to.x() ? mover.slideVertical(from, to)
                               : mover.slideHorizontal(from, to);
@@ -49,8 +51,8 @@ QList<FifteenPiecePointer> Board::slidePiece(const QPoint &from, const QPoint &t
 
 QList<FifteenPiecePointer> Board::swapPiece(const QPoint &from, const QPoint &to)
 {
-    auto &pieceFrom = getPiece(from);
-    auto &pieceTo = getPiece(to);
+    auto &pieceFrom = piece(from);
+    auto &pieceTo = piece(to);
 
     pieceFrom.swap(pieceTo);
 
@@ -62,28 +64,33 @@ QList<FifteenPiecePointer> Board::swapPiece(const QPoint &from, const QPoint &to
 
 void Board::draw(QPainter &painter)
 {
-    for (auto &piece : pieces) {
+    for (auto &piece : m_pieces) {
         rwlock->lockForRead();
         piece->draw(painter);
         rwlock->unlock();
     }
 }
 
+void Board::execOperation(QSharedPointer<IOperationForPieces> operation)
+{
+    operation->exec(m_pieces);
+}
+
 void Board::onTickFrame()
 {
-    for (auto &piece : pieces)
+    for (auto &piece : m_pieces)
         piece->onTickFrame();
 }
 
 void Board::skipPiecesAnimation()
 {
-    for (auto &piece : pieces)
+    for (auto &piece : m_pieces)
         piece->skipAnimation();
 }
 
-bool Board::isClearerd() const
+bool Board::isCleared() const
 {
-    for (const auto &piece : pieces) {
+    for (const auto &piece : m_pieces) {
         if (!piece->pos().isCorrect())
             return false;
     }
@@ -96,7 +103,9 @@ BoardInfoPointer Board::boardInfo() const
     return boardInformation;
 }
 
-FifteenPiecePointer &Board::getPiece(const QPoint &pos)
+FifteenPiecePointer &Board::piece(const QPoint &piecePos)
 {
-    return pieces[pos.y() * boardInformation->xCount() + pos.x()];
+    return m_pieces[piecePos.y() * boardInformation->xCount() + piecePos.x()];
 }
+
+} // namespace Fifteen

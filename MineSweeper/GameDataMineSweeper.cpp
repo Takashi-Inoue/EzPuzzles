@@ -30,7 +30,7 @@ GameDataMineSweeper::GameDataMineSweeper(const SourceImage &sourceImage, const Q
     sourceImg(sourceImage),
     boardInformation(QSharedPointer<BoardInformation>::create(countXY, sourceImage.size())),
     mineCount(mineCount),
-    currentPhaseType(IPhase::PhaseReady),
+    currentPhaseType(AbstractPhase::PhaseReady),
     m_isAutoLock(isAutoLock)
 {
     // Initializing pieces is in createPhase
@@ -45,14 +45,11 @@ GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSaveda
 {
     Q_ASSERT(loadedSavedata.isValid());
 
-    PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount, m_isAutoLock);
+    PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount);
     pieces = factory.toPieces(loadedSavedata.piecesAsIntList());
 
     mineField = MineFieldPointer::create(pieces, m_isAutoLock, mineCount
                                        , loadedSavedata.openedCount(), loadedSavedata.missedCount());
-
-    finalImg = QSharedPointer<MineSweeperFinalImage>::create(
-                   sourceImg.pixmap(), mineField, boardInformation);
 }
 
 GameDataPointer GameDataMineSweeper::cloneAsNewGame() const
@@ -66,38 +63,33 @@ QString GameDataMineSweeper::gameName() const
     return Application::gameName(Application::MineSweeper);
 }
 
-PhasePointer GameDataMineSweeper::createPhase(IPhase::PhaseType phaseType)
+PhasePointer GameDataMineSweeper::createPhase(AbstractPhase::PhaseType phaseType)
 {
     currentPhaseType = phaseType;
 
     switch (phaseType) {
-    case IPhase::PhaseReady: {
-        PiecesFactory factory(sourceImg.pixmap(), boardInformation, mineCount, m_isAutoLock);
-        pieces = factory.createPieces();
-
+    case AbstractPhase::PhaseReady: {
+        pieces = PiecesFactory(sourceImg.pixmap(), boardInformation, mineCount).createPieces();
         mineField = MineFieldPointer::create(pieces, m_isAutoLock, mineCount);
-
-        finalImg = QSharedPointer<MineSweeperFinalImage>::create(
-                       sourceImg.pixmap(), mineField, boardInformation);
     } // through to case IPhase::PhaseGaming
     [[fallthrough]];
 
-    case IPhase::PhasePreGame:
-    case IPhase::PhaseGaming:
-        currentPhaseType = IPhase::PhaseGaming;
-        return QSharedPointer<PhaseMineSweeperGaming>::create(mineField, pieces, IPhase::PhaseEnding);
+    case AbstractPhase::PhasePreGame:
+    case AbstractPhase::PhaseGaming:
+        currentPhaseType = AbstractPhase::PhaseGaming;
+        return QSharedPointer<PhaseMineSweeperGaming>::create(mineField, AbstractPhase::PhaseEnding);
 
-    case IPhase::PhaseEnding:
-        return QSharedPointer<PhaseMineSweeperEnding>::create(boardInformation, pieces, sourceImg, IPhase::PhaseCleared);
+    case AbstractPhase::PhaseEnding:
+        return QSharedPointer<PhaseMineSweeperEnding>::create(boardInformation, pieces, sourceImg, AbstractPhase::PhaseCleared);
 
-    case IPhase::PhaseCleared:
-        return QSharedPointer<PhaseCleared>::create(sourceImg, IPhase::PhaseReady);
+    case AbstractPhase::PhaseCleared:
+        return QSharedPointer<PhaseCleared>::create(sourceImg, AbstractPhase::PhaseReady);
     }
 
     return nullptr;
 }
 
-IPhase::PhaseType GameDataMineSweeper::currentPhase() const
+AbstractPhase::PhaseType GameDataMineSweeper::currentPhase() const
 {
     return currentPhaseType;
 }
@@ -109,7 +101,7 @@ const SourceImage &GameDataMineSweeper::sourceImage() const
 
 FinalImagePointer GameDataMineSweeper::finalImage() const
 {
-    return finalImg;
+    return nullptr;
 }
 
 BoardInfoPointer GameDataMineSweeper::boardInfo() const

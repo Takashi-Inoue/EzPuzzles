@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -19,17 +19,18 @@
 #ifndef PHASESIMPLESWAPENDING_H
 #define PHASESIMPLESWAPENDING_H
 
-#include "IPhase.h"
-#include "fifteen/PuzzlePiece.h"
+#include "AbstractPhase.h"
+#include "Fifteen/Board.h"
+#include "Fifteen/PuzzlePiece.h"
 
 #include <random>
 
 namespace Swap {
 
-class PhaseSimpleSwapEnding : public IPhase
+class PhaseSimpleSwapEnding : public AbstractPhase
 {
 public:
-    PhaseSimpleSwapEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces, PhaseType nextPhase);
+    PhaseSimpleSwapEnding(BoardPointer board, PhaseType nextPhase, QObject *parent = nullptr);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -39,15 +40,11 @@ public:
     QString information() const override;
 
 private:
-    static const int maxWaitFrames = 40;
-    static const int quarterExpandFrames = 5;
+    static const int m_maxWaitFrames = 40;
+    static const int m_quarterExpandFrames = 5;
 
-    BoardInfoPointer boardInfo;
-    QList<FifteenPiecePointer> &pieces;
-    PhaseType nextPhase;
-    int nowFrame;
-
-    std::mt19937 mt;
+    BoardPointer m_board;
+    int m_nowFrame = 0;
 };
 
 } // Swap

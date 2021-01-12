@@ -37,8 +37,8 @@ public:
     void open() override {}
     void lock() override {}
 
-    bool isOpen() const override;
-    bool isLock() const override;
+    bool isOpened() const override;
+    bool isLocked() const override;
     bool isMine() const override;
     bool isNearMine() const override;
     bool isWall() const override;

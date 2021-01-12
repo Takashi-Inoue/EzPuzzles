@@ -18,8 +18,9 @@
  */
 #include "FinalImage.h"
 
-FinalImage::FinalImage(QPixmap pixmap) :
-    m_pixmap(pixmap)
+FinalImage::FinalImage(QPixmap pixmap, QObject *parent)
+    : QObject(parent)
+    , m_pixmap(pixmap)
 {
     Q_ASSERT(!pixmap.isNull());
 }
@@ -29,13 +30,19 @@ void FinalImage::draw(QPainter &painter)
     drawFinalImage(painter);
 }
 
-QRect FinalImage::drawFinalImage(QPainter &painter) const
+QRect FinalImage::drawRect(QPainter &painter) const
 {
     QSize destSize = m_pixmap.size().scaled(painter.viewport().size(), Qt::KeepAspectRatio);
-    QPoint tl((painter.viewport().width()  - destSize.width())  / 2
-            , (painter.viewport().height() - destSize.height()) / 2);
+    QRect destRect({0, 0}, destSize);
 
-    QRect destRect(tl, destSize);
+    destRect.moveCenter(painter.viewport().center());
+
+    return destRect;
+}
+
+QRect FinalImage::drawFinalImage(QPainter &painter) const
+{
+    QRect destRect = drawRect(painter);
 
     painter.drawPixmap(destRect, m_pixmap, m_pixmap.rect());
 

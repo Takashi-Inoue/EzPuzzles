@@ -32,6 +32,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *) override;
+//    void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *) override;
 
     QSharedPointer<IGame> m_game;

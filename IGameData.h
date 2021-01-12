@@ -19,7 +19,7 @@
 #ifndef IGAMEDATA_H
 #define IGAMEDATA_H
 
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "BoardInformation.h"
 #include "FinalImage.h"
 #include "SourceImage.h"
@@ -37,8 +37,8 @@ public:
     virtual GameDataPointer cloneAsNewGame() const = 0;
 
     virtual QString gameName() const = 0;
-    virtual PhasePointer createPhase(IPhase::PhaseType) = 0;
-    virtual IPhase::PhaseType currentPhase() const = 0;
+    virtual PhasePointer createPhase(AbstractPhase::PhaseType) = 0;
+    virtual AbstractPhase::PhaseType currentPhase() const = 0;
     virtual const SourceImage &sourceImage() const = 0;
     virtual FinalImagePointer finalImage() const = 0;
     virtual BoardInfoPointer boardInfo() const = 0;

@@ -20,9 +20,9 @@
 #include "CommonPhase/PhaseShowFinalImage.h"
 #include "CommonPhase/PhaseShuffle.h"
 #include "CommonPhase/PhaseCleared.h"
-#include "fifteen/FifteenSwapShuffler.h"
-#include "fifteen/SimplePiecesFactory.h"
-#include "fifteen/SlideBlankPiece.h"
+#include "Fifteen/FifteenSwapShuffler.h"
+#include "Fifteen/SimplePiecesFactory.h"
+#include "Fifteen/SlideBlankPiece.h"
 #include "PhaseSimpleSwapEnding.h"
 #include "PhaseSimpleSwapGaming.h"
 #include "AnimationObject/Animation/AnimationWarpMove.h"
@@ -39,9 +39,9 @@ namespace Swap {
 GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosition &swapTargetPos, const QSize &xyCount) :
     m_rwlock(std::make_shared<QReadWriteLock>()),
     m_sourceImg(img),
-    m_board(std::make_shared<Board>(QSharedPointer<BoardInformation>::create(xyCount, img.size()), m_pieces, m_rwlock)),
+    m_board(QSharedPointer<Fifteen::Board>::create(QSharedPointer<BoardInformation>::create(xyCount, img.size()), m_pieces, m_rwlock)),
     m_swapTargetPos(swapTargetPos),
-    m_currentPhaseType(IPhase::PhaseReady)
+    m_currentPhaseType(AbstractPhase::PhaseReady)
 {
     Q_ASSERT(!img.isNull());
 }
@@ -49,7 +49,7 @@ GameDataSimpleSwap::GameDataSimpleSwap(const SourceImage &img, const UniquePosit
 GameDataSimpleSwap::GameDataSimpleSwap(const SaveDataSimpleSwap &loadedSaveData) :
     m_rwlock(std::make_shared<QReadWriteLock>()),
     m_sourceImg(loadedSaveData.sourceImage()),
-    m_board(std::make_shared<Board>(loadedSaveData.boardInformation(), m_pieces, m_rwlock)),
+    m_board(QSharedPointer<Fifteen::Board>::create(loadedSaveData.boardInformation(), m_pieces, m_rwlock)),
     m_swapTargetPos(loadedSaveData.specifiedPosition()),
     m_currentPhaseType(loadedSaveData.currentPhase())
 {
@@ -72,35 +72,35 @@ QString GameDataSimpleSwap::gameName() const
     return Application::gameName(Application::SimpleSwap);
 }
 
-PhasePointer GameDataSimpleSwap::createPhase(IPhase::PhaseType phaseType)
+PhasePointer GameDataSimpleSwap::createPhase(AbstractPhase::PhaseType phaseType)
 {
     m_currentPhaseType = phaseType;
 
-    if (phaseType == IPhase::PhaseReady) {
+    if (phaseType == AbstractPhase::PhaseReady) {
         initPieces();
-        return QSharedPointer<PhaseShowFinalImage>::create(m_sourceImg, IPhase::PhasePreGame);
+        return QSharedPointer<PhaseShowFinalImage>::create(m_sourceImg, AbstractPhase::PhasePreGame);
     }
 
-    if (phaseType == IPhase::PhasePreGame)
-        return QSharedPointer<PhaseShuffle>::create(m_board, QSharedPointer<Fifteen::SwapShuffler>::create(m_pieces, m_board->boardInfo(), m_rwlock), IPhase::PhaseGaming);
+    if (phaseType == AbstractPhase::PhasePreGame)
+        return QSharedPointer<PhaseShuffle>::create(m_board, QSharedPointer<Fifteen::SwapShuffler>::create(m_pieces, m_board->boardInfo(), m_rwlock), AbstractPhase::PhaseGaming);
 
-    if (phaseType == IPhase::PhaseGaming)
-        return QSharedPointer<PhaseSimpleSwapGaming>::create(m_board, m_pieces, m_swapTargetPos.selectedPosition(), IPhase::PhaseEnding, warpWaitCount * 2);
+    if (phaseType == AbstractPhase::PhaseGaming)
+        return QSharedPointer<PhaseSimpleSwapGaming>::create(m_board, m_swapTargetPos.selectedPosition(), AbstractPhase::PhaseEnding, warpWaitCount * 2);
 
-    if (phaseType == IPhase::PhaseEnding)
-        return QSharedPointer<PhaseSimpleSwapEnding>::create(m_board->boardInfo(), m_pieces, IPhase::PhaseCleared);
+    if (phaseType == AbstractPhase::PhaseEnding)
+        return QSharedPointer<PhaseSimpleSwapEnding>::create(m_board, AbstractPhase::PhaseCleared);
 
-    if (phaseType == IPhase::PhaseCleared)
-        return QSharedPointer<PhaseCleared>::create(m_sourceImg, IPhase::PhaseReady);
+    if (phaseType == AbstractPhase::PhaseCleared)
+        return QSharedPointer<PhaseCleared>::create(m_sourceImg, AbstractPhase::PhaseReady);
 
     qDebug() << "no such phase type" << phaseType;
 
-    m_currentPhaseType = IPhase::PhaseReady;
+    m_currentPhaseType = AbstractPhase::PhaseReady;
 
-    return QSharedPointer<PhaseShowFinalImage>::create(m_sourceImg, IPhase::PhasePreGame);
+    return QSharedPointer<PhaseShowFinalImage>::create(m_sourceImg, AbstractPhase::PhasePreGame);
 }
 
-IPhase::PhaseType GameDataSimpleSwap::currentPhase() const
+AbstractPhase::PhaseType GameDataSimpleSwap::currentPhase() const
 {
     return m_currentPhaseType;
 }
@@ -122,7 +122,7 @@ BoardInfoPointer GameDataSimpleSwap::boardInfo() const
 
 bool GameDataSimpleSwap::save(QStringView fileName) const
 {
-    if (m_currentPhaseType == IPhase::PhaseCleared)
+    if (m_currentPhaseType == AbstractPhase::PhaseCleared)
         return m_sourceImg.saveImage();
 
     QList<QPoint> defaultPositions;

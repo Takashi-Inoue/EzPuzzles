@@ -20,7 +20,7 @@
 #define GAMEDATASIMPLESWAP_H
 
 #include "IGameData.h"
-#include "Board.h"
+#include "Fifteen/Board.h"
 #include "UniquePosition.h"
 
 #include <QReadWriteLock>
@@ -38,8 +38,8 @@ public:
     // IGameData
     GameDataPointer cloneAsNewGame() const override;
     QString gameName() const override;
-    PhasePointer createPhase(IPhase::PhaseType) override;
-    IPhase::PhaseType currentPhase() const override;
+    PhasePointer createPhase(AbstractPhase::PhaseType) override;
+    AbstractPhase::PhaseType currentPhase() const override;
     const SourceImage &sourceImage() const override;
     FinalImagePointer finalImage() const override;
     BoardInfoPointer boardInfo() const override;
@@ -59,7 +59,7 @@ protected:
     SourceImage m_sourceImg;
     BoardPointer m_board;
     UniquePosition m_swapTargetPos;
-    IPhase::PhaseType m_currentPhaseType;
+    AbstractPhase::PhaseType m_currentPhaseType;
 };
 
 } // Swap

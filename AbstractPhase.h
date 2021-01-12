@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef IPHASE_H
-#define IPHASE_H
+#ifndef ABSTRACTPHASE_H
+#define ABSTRACTPHASE_H
 
 #include <QPainter>
 #include <QSharedPointer>
 #include <QString>
 
-class IPhase : public QObject
+class AbstractPhase : public QObject
 {
     Q_OBJECT
 public:
@@ -37,7 +37,10 @@ public:
 
     Q_ENUM(PhaseType)
 
-    using QObject::QObject;
+    AbstractPhase(PhaseType nextPhaseType, QObject *parent = nullptr)
+        : QObject(parent)
+        , m_nextPhaseType(nextPhaseType)
+    {}
 
     virtual void click(const QPoint &) = 0;
     virtual void onTickFrame() = 0;
@@ -47,9 +50,12 @@ public:
     virtual QString information() const = 0;
 
 signals:
-    void toNextPhase(IPhase::PhaseType);
+    void toNextPhase(AbstractPhase::PhaseType);
+
+protected:
+    const PhaseType m_nextPhaseType = PhaseReady;
 };
 
-using PhasePointer = QSharedPointer<IPhase>;
+using PhasePointer = QSharedPointer<AbstractPhase>;
 
-#endif // IPHASE_H
+#endif // ABSTRACTPHASE_H

@@ -46,6 +46,13 @@ void GameWidget::paintEvent(QPaintEvent *event)
     m_game->draw(painter);
 }
 
+//void GameWidget::mouseMoveEvent(QMouseEvent *event)
+//{
+//    ImageWidget::mouseMoveEvent(event);
+
+//    qDebug() << "mouseMove";
+//}
+
 void GameWidget::mousePressEvent(QMouseEvent *event)
 {
     ImageWidget::mousePressEvent(event);

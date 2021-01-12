@@ -42,15 +42,20 @@ public:
     virtual void save(QStringView saveDirPath, const QSize &screenshotSize) const = 0;
 
     virtual void onTickFrame() = 0;
+
     virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
+
     virtual void draw(QPainter &dest) = 0;
-    virtual QSize maxFieldSize() const = 0;
     virtual void drawFinalImage(QPainter &dest) const = 0;
+
+    virtual bool hasFinalImage() const = 0;
+    virtual QSize maxFieldSize() const = 0;
     virtual QString shortInformation() const = 0;
     virtual const SourceImage &sourceImage() const = 0;
 
 signals:
-    void informationUpdated();
+    void finalImageUpdated();
+    void informationUpdated(QString);
 
 protected:
     virtual void saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const = 0;

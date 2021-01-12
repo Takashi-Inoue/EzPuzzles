@@ -17,32 +17,30 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSwapGaming.h"
-#include "fifteen/FifteenPieceMover.h"
+#include "Fifteen/FifteenPieceMover.h"
 #include "AnimationObject/Effect/CompositeEffect.h"
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
-#include "fifteen/EffectSwapper.h"
+#include "Fifteen/EffectSwapper.h"
 
 namespace Swap {
 
-PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<FifteenPiecePointer> &pieces,
-                                             const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent) :
-    IPhase(parent),
-    board(board),
-    pieces(pieces),
-    swapTargetPos(swapTargetPos),
-    nextPhase(nextPhase),
-    totalMoveFrame(totalMoveFrame),
-    isGameCleared(false)
+PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, const QPoint &swapTargetPos
+                                           , PhaseType nextPhase, int totalMoveFrame, QObject *parent)
+    : AbstractPhase(nextPhase, parent)
+    , m_swapTargetPos(swapTargetPos)
+    , m_board(board)
+    , m_totalMoveFrame(totalMoveFrame)
 {
     Q_ASSERT(totalMoveFrame >= 0);
 
-
     auto graduallyFrame = QSharedPointer<Effect::GraduallyBlinkFrame>::create(
-                              8, QColor(255, 128, 64, 224), QColor(255, 255, 64, 0), QColor(255, 255, 64, 224), QColor(255, 128, 64, 0), 240, true);
+                              8
+                            , QColor("#E0FF8040"), QColor("#00FFFF40")
+                            , QColor("#E0FFFF40"), QColor("#00FF8040"), 240, true);
 
     auto compositeEffect = QSharedPointer<Effect::CompositeEffect>::create();
 
-    auto piece = getPiece(swapTargetPos);
+    FifteenPiecePointer &piece = board->piece(swapTargetPos);
 
     compositeEffect->addEffect(piece->effect());
     compositeEffect->addEffect(graduallyFrame);
@@ -52,39 +50,39 @@ PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, QList<FifteenPi
 
 void PhaseSimpleSwapGaming::click(const QPoint &clickedPiecePos)
 {
-    if (isGameCleared | (clickedPiecePos == swapTargetPos))
+    if (m_isGameCleared | (clickedPiecePos == m_swapTargetPos))
         return;
 
-    board->swapPiece(swapTargetPos, clickedPiecePos);
+    m_board->swapPiece(m_swapTargetPos, clickedPiecePos);
 
-    frameOperations << std::make_shared<Fifteen::EffectSwapper>(getPiece(swapTargetPos), getPiece(clickedPiecePos), totalMoveFrame / 2);
+    m_effects << QSharedPointer<Fifteen::EffectSwapper>::create(
+                           m_board->piece(m_swapTargetPos), m_board->piece(clickedPiecePos)
+                         , m_totalMoveFrame / 2);
 
-    isGameCleared = board->isClearerd();
+    m_isGameCleared = m_board->isCleared();
 }
 
 void PhaseSimpleSwapGaming::onTickFrame()
 {
-    board->onTickFrame();
+    m_board->onTickFrame();
 
-    auto itr = frameOperations.begin();
-    auto end = frameOperations.end();
+    auto itr = std::remove_if(m_effects.begin(), m_effects.end()
+                            , [](QSharedPointer<IAnimationObject> &animation)
+    {
+        return !animation->onTickFrame();
+    });
 
-    for (; itr < end; ++itr) {
-        if (!(*itr)->onTickFrame()) {
-            itr = frameOperations.erase(itr);
-            end = frameOperations.end();
-        }
-    }
+    m_effects.erase(itr, m_effects.end());
 
-    if (isGameCleared) {
-        if (--totalMoveFrame == 0)
-            emit toNextPhase(nextPhase);
+    if (m_isGameCleared) {
+        if (--m_totalMoveFrame == 0)
+            emit toNextPhase(m_nextPhaseType);
     }
 }
 
 void PhaseSimpleSwapGaming::draw(QPainter &painter)
 {
-    board->draw(painter);
+    m_board->draw(painter);
 }
 
 bool PhaseSimpleSwapGaming::canSave() const
@@ -99,12 +97,11 @@ bool PhaseSimpleSwapGaming::canLoad() const
 
 QString PhaseSimpleSwapGaming::information() const
 {
-    return QString("Swap Position [%1, %2]").arg(swapTargetPos.x() + 1).arg(swapTargetPos.y() + 1);
-}
+    QSize xyCount = m_board->boardInfo()->xyCount();
 
-FifteenPiecePointer &PhaseSimpleSwapGaming::getPiece(const QPoint &pos)
-{
-    return pieces[pos.y() * board->boardInfo()->xCount() + pos.x()];
+    return QStringLiteral("%1 x %2, Swap Position [%3, %4]")
+            .arg(xyCount.width()).arg(xyCount.height())
+            .arg(m_swapTargetPos.x() + 1).arg(m_swapTargetPos.y() + 1);
 }
 
 } // Swap

@@ -19,29 +19,27 @@
 #ifndef PHASEMINESWEEPERGAMING_H
 #define PHASEMINESWEEPERGAMING_H
 
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "MineField.h"
 
 #include <QVector>
 
 namespace MineSweeper {
 
-class PhaseMineSweeperGaming : public IPhase
+class PhaseMineSweeperGaming : public AbstractPhase
 {
 public:
-    PhaseMineSweeperGaming(MineFieldPointer mineField, QVector<QVector<MinePiecePointer>> &pieces, PhaseType nextPhase);
+    PhaseMineSweeperGaming(MineFieldPointer mineField, PhaseType nextPhase, QObject *parent = nullptr);
 
     void click(const QPoint &clickedPiecePos) override;
-    void onTickFrame() override;
+    void onTickFrame() override {}
     void draw(QPainter &) override;
     bool canSave() const override;
     bool canLoad() const override;
     QString information() const override;
 
 private:
-    MineFieldPointer mineField;
-    QVector<QVector<MinePiecePointer>> &pieces;
-    PhaseType nextPhase;
+    MineFieldPointer m_mineField;
 };
 
 } // MineSweeper

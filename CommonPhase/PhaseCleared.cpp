@@ -20,9 +20,8 @@
 #include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 
 PhaseCleared::PhaseCleared(const SourceImage &image, PhaseType nextPhase, QObject *parent)
-    : IPhase(parent)
+    : AbstractPhase(nextPhase, parent)
     , m_sourceImage(image)
-    , m_nextPhaseType(nextPhase)
     , m_effect(new Effect::GraduallyBlinkFrame(10, QColor(255, 224, 96, 224), QColor(255, 255, 96, 0)
                                                  , QColor(255, 255, 96, 32),  QColor(255, 255, 96, 0)
                                                  , 240, true))

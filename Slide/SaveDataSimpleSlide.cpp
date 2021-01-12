@@ -35,7 +35,7 @@ SaveDataSimpleSlide::SaveDataSimpleSlide(QStringView fileName, QObject *parent)
 SaveDataSimpleSlide::SaveDataSimpleSlide(QStringView fileName, const QSize &boardXYCount
                                        , const UniquePosition &specifiedPosition
                                        , const SourceImage &sourceImage
-                                       , IPhase::PhaseType currentPhase
+                                       , AbstractPhase::PhaseType currentPhase
                                        , const QList<QPoint> &defaultPositions
                                        , const QPoint &currentBlankPos, QObject *parent)
     : SaveDataFifteen(fileName, boardXYCount, specifiedPosition, sourceImage

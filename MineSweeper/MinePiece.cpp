@@ -45,7 +45,7 @@ void MinePiece::open()
 
 void MinePiece::lock()
 {
-    if (m_isOpened)
+    if (m_isOpened | m_isLocked)
         return;
 
     auto blockPiece = new BlockPiece(m_destRect.size()
@@ -56,12 +56,12 @@ void MinePiece::lock()
     m_isChanged = true;
 }
 
-bool MinePiece::isOpen() const
+bool MinePiece::isOpened() const
 {
     return m_isOpened;
 }
 
-bool MinePiece::isLock() const
+bool MinePiece::isLocked() const
 {
     return m_isLocked;
 }

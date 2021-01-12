@@ -19,15 +19,15 @@
 #ifndef PHASESIMPLESLIDEENDING_H
 #define PHASESIMPLESLIDEENDING_H
 
-#include "IPhase.h"
-#include "fifteen/PuzzlePiece.h"
+#include "AbstractPhase.h"
+#include "Fifteen/PuzzlePiece.h"
 
 namespace Slide {
 
-class PhaseSimpleSlideEnding : public IPhase
+class PhaseSimpleSlideEnding : public AbstractPhase
 {
 public:
-    PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces, QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase);
+    PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces, QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase, QObject *parent = nullptr);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -40,7 +40,6 @@ private:
     static const int graduallyFrames = 60;
 
     QList<FifteenPiecePointer> &pieces;
-    PhaseType nextPhase;
 
     int nowFrame;
 };

@@ -20,13 +20,9 @@
 
 #include <QDebug>
 
-GameCore::GameCore(GameDataPointer gameData) :
-    m_gameData(gameData),
-    m_backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
+GameCore::GameCore(GameDataPointer gameData)
+    : GameCore(gameData, GameID())
 {
-    Q_CHECK_PTR(gameData);
-
-    changePhase(gameData->currentPhase());
 }
 
 GameCore::GameCore(GameDataPointer gameData, GameID id) :
@@ -35,6 +31,11 @@ GameCore::GameCore(GameDataPointer gameData, GameID id) :
     m_backBuffer(QPixmap(gameData->boardInfo()->boardPixelSize()))
 {
     Q_CHECK_PTR(gameData);
+
+    if (hasFinalImage()) {
+        connect(gameData->finalImage().get(), &FinalImage::requestRepaint
+              , this, &IGame::finalImageUpdated);
+    }
 
     changePhase(gameData->currentPhase());
 }
@@ -76,7 +77,7 @@ void GameCore::click(const QSize &fieldSize, const QPoint &cursorPos)
 {
     m_phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
 
-    emit informationUpdated();
+    emit informationUpdated(shortInformation());
 }
 
 void GameCore::draw(QPainter &dest)
@@ -92,17 +93,22 @@ void GameCore::draw(QPainter &dest)
     dest.restore();
 }
 
-QSize GameCore::maxFieldSize() const
-{
-    return m_backBuffer.size();
-}
-
 void GameCore::drawFinalImage(QPainter &dest) const
 {
     FinalImagePointer finalImage = m_gameData->finalImage();
 
     if (finalImage != nullptr)
         finalImage->draw(dest);
+}
+
+bool GameCore::hasFinalImage() const
+{
+    return true;
+}
+
+QSize GameCore::maxFieldSize() const
+{
+    return m_backBuffer.size();
 }
 
 QString GameCore::shortInformation() const
@@ -115,7 +121,7 @@ const SourceImage &GameCore::sourceImage() const
     return m_gameData->sourceImage();
 }
 
-void GameCore::changePhase(IPhase::PhaseType phaseType)
+void GameCore::changePhase(AbstractPhase::PhaseType phaseType)
 {
     qDebug() << "changePhase" << phaseType;
 
@@ -124,9 +130,9 @@ void GameCore::changePhase(IPhase::PhaseType phaseType)
 
     m_phase = m_gameData->createPhase(phaseType);
 
-    connect(m_phase.get(), &IPhase::toNextPhase, this, &GameCore::changePhase);
+    connect(m_phase.get(), &AbstractPhase::toNextPhase, this, &GameCore::changePhase);
 
-    emit informationUpdated();
+    emit informationUpdated(shortInformation());
 }
 
 void GameCore::saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const

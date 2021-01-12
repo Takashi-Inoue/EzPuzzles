@@ -23,9 +23,9 @@
 namespace Slide {
 
 PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces,
-                                               QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase) :
+                                               QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase, QObject *parent) :
+    AbstractPhase(nextPhase, parent),
     pieces(pieces),
-    nextPhase(nextPhase),
     nowFrame(0)
 {
     for (auto &piece : pieces) {
@@ -47,7 +47,7 @@ PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList
 
 void PhaseSimpleSlideEnding::click(const QPoint &)
 {
-    emit toNextPhase(nextPhase);
+    emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseSimpleSlideEnding::onTickFrame()
@@ -56,7 +56,7 @@ void PhaseSimpleSlideEnding::onTickFrame()
         piece->onTickFrame();
 
     if (++nowFrame > graduallyFrames * 2)
-        emit toNextPhase(nextPhase);
+        emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseSimpleSlideEnding::draw(QPainter &painter)

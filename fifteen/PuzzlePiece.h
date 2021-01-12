@@ -34,7 +34,6 @@ class PuzzlePiece : public IPuzzlePiece
 {
 public:
     PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage);
-    ~PuzzlePiece() = default;
 
     // IPuzzlePiece
     void onTickFrame() override;

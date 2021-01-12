@@ -19,9 +19,8 @@
 #include "PhaseShowFinalImage.h"
 
 PhaseShowFinalImage::PhaseShowFinalImage(const SourceImage &img, PhaseType nextPhase, QObject *parent)
-    : IPhase(parent)
+    : AbstractPhase(nextPhase, parent)
     , m_sourceImage(img)
-    , m_nextPhaseType(nextPhase)
 {
     Q_ASSERT(!img.isNull());
 }

@@ -36,7 +36,7 @@ SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, QObject *parent)
 SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, const QSize &boardXYCount
                                        , int mineCount, int openedCount, int missedCount
                                        , bool isAutoLock, SourceImage sourceImage
-                                       , IPhase::PhaseType currentPhaseType
+                                       , AbstractPhase::PhaseType currentPhaseType
                                        , const QList<int> &pieces, QObject *parent)
     : AbstractSaveData(fileName, sourceImage.fullPath(), sourceImage.pixmap()
                      , boardXYCount, currentPhaseType, parent)
@@ -92,7 +92,7 @@ QStringList SaveDataMineSweeper::informations() const
         QStringLiteral("%1/%2 opened (%3%), %4 missed")
                 .arg(m_openedCount).arg(safePieceCount).arg(openRate, 0, 'f', 2).arg(m_missedCount),
         QString(),
-        QStringLiteral("Check explicit mines : %1").arg(autoLock),
+        QStringLiteral("Autolock explicit mines : %1").arg(autoLock),
     };
 }
 

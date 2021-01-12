@@ -31,7 +31,7 @@ class PiecesFactory
 {
 public:
     PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation, int mineCount
-                , bool isKeepMinesPositions);
+                );
     ~PiecesFactory() = default;
 
     using MinePiece2DList = QList<QList<MinePiecePointer>>;
@@ -40,7 +40,6 @@ public:
     MinePiece2DList toPieces(const QList<int> &intList);
 
     MinePiece2DList createPieces();
-    const QList<QPoint> &minesPositions() const;
 
 private:
     static constexpr int m_openFlag = (1 << 8);
@@ -62,9 +61,6 @@ private:
     QPixmap m_sourcePixmap;
     BoardInfoPointer m_boardInformation;
     int m_mineCount;
-    bool m_isKeepMinesPositions;
-
-    QList<QPoint> m_minesPositions;
 };
 
 } // MineSweeper

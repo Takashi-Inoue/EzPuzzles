@@ -19,11 +19,11 @@
 #ifndef SIMPLESLIDEPHASEPREGAME_H
 #define SIMPLESLIDEPHASEPREGAME_H
 
-#include "IPhase.h"
-#include "Board.h"
-#include "fifteen/FifteenAbstractShuffler.h"
+#include "AbstractPhase.h"
+#include "Fifteen/Board.h"
+#include "Fifteen/FifteenAbstractShuffler.h"
 
-class PhaseShuffle : public IPhase
+class PhaseShuffle : public AbstractPhase
 {
     Q_OBJECT
 public:
@@ -43,7 +43,6 @@ private slots:
 private:
     BoardPointer m_board;
     ShufflerPtr m_shuffler;
-    PhaseType m_nextPhaseType;
 
     bool m_isEnableDraw;
 };

@@ -17,16 +17,15 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSlideGaming.h"
-#include "fifteen/FifteenPieceMover.h"
+#include "Fifteen/FifteenPieceMover.h"
 
 namespace Slide {
 
 PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, const QPoint &defaultBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
-    IPhase(parent),
+    AbstractPhase(nextPhase, parent),
     board(board),
     currentBlankPos(currentBlankPos),
     defaultBlankPos(defaultBlankPos),
-    nextPhase(nextPhase),
     slideFrameCount(slideFrameCount),
     isGameCleared(false)
 {
@@ -45,7 +44,7 @@ void PhaseSimpleSlideGaming::click(const QPoint &clickedPiecePos)
 
     currentBlankPos = clickedPiecePos;
 
-    isGameCleared = board->isClearerd();
+    isGameCleared = board->isCleared();
 }
 
 void PhaseSimpleSlideGaming::onTickFrame()
@@ -54,7 +53,7 @@ void PhaseSimpleSlideGaming::onTickFrame()
 
     if (isGameCleared) {
         if (--slideFrameCount == 0)
-            emit toNextPhase(nextPhase);
+            emit toNextPhase(m_nextPhaseType);
     }
 }
 
@@ -75,8 +74,12 @@ bool PhaseSimpleSlideGaming::canLoad() const
 
 QString PhaseSimpleSlideGaming::information() const
 {
-    return QString("Blank Position Default[%1, %2] : Current[%3, %4]").arg(defaultBlankPos.x() + 1).arg(defaultBlankPos.y() + 1)
-                                                                      .arg(currentBlankPos.x() + 1).arg(currentBlankPos.y() + 1);
+    QSize xyCount = board->boardInfo()->xyCount();
+
+    return QStringLiteral("%1 x %2, Blank Position Default[%3, %4] : Current[%5, %6]")
+            .arg(xyCount.width()).arg(xyCount.height())
+            .arg(defaultBlankPos.x() + 1).arg(defaultBlankPos.y() + 1)
+            .arg(currentBlankPos.x() + 1).arg(currentBlankPos.y() + 1);
 }
 
 } // Slide

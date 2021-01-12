@@ -38,15 +38,19 @@ public:
     void save(QStringView saveDirPath, const QSize &screenshotSize) const override;
 
     void onTickFrame() override;
+
     void click(const QSize &fieldSize, const QPoint &cursorPos) override;
+
     void draw(QPainter &dest) override;
-    QSize maxFieldSize() const override;
     void drawFinalImage(QPainter &dest) const override;
+
+    bool hasFinalImage() const override;
+    QSize maxFieldSize() const override;
     QString shortInformation() const override;
     const SourceImage &sourceImage() const override;
 
 protected slots:
-    void changePhase(IPhase::PhaseType phaseType);
+    void changePhase(AbstractPhase::PhaseType phaseType);
 
 protected:
     void saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const override;

@@ -17,199 +17,201 @@ CONFIG += c++17
 TRANSLATIONS += ezpz_ja.ts
 
 SOURCES += main.cpp\
-    AbstractSaveData.cpp \
-    Application.cpp \
-    ImageHistory.cpp \
-    ImageWidget/CellSelectionGrid.cpp \
-    ImageWidget/ImageWidget.cpp \
-    ImageWidget/SubFrame.cpp \
-    MainWindow.cpp \
-    FormFinalImage.cpp \
-    GameWidget.cpp \
-    MineSweeper/MinePiece.cpp \
-    MineSweeper/WallPiece.cpp \
-    Dragger.cpp \
-    ImagePiece.cpp \
-    NumberPiece.cpp \
-    BlockPiece.cpp \
-    SelectImage/ActionSelectImageFromHistory.cpp \
-    SelectImage/ActionSelectImageFromLocal.cpp \
-    SwitchImagePiece.cpp \
-    MineSweeper/SafePiece.cpp \
-    MineSweeper/NumberPieceFactory.cpp \
-    ThreadFrameTimer.cpp \
-    ThreadGameInfoLoader.cpp \
-    ThreadImageLoader.cpp \
-    ThreadOperation.cpp \
-    ImageFragmentPiece.cpp \
-    DialogImageHistory.cpp \
-    StringListHistory.cpp \
-    DialogSavedata.cpp \
-    SourceImage.cpp \
-    commands/RemoveListWidgetItem.cpp \
-    fifteen/PuzzlePiece.cpp \
-    MineSweeper/MinePiecesFactory.cpp \
-    fifteen/SaveDataFifteen.cpp \
-    fifteen/SimplePiecesFactory.cpp \
-    fifteen/FifteenSlideShuffler.cpp \
-    fifteen/FifteenPieceMover.cpp \
-    GameID.cpp \
-    fifteen/FifteenSwapShuffler.cpp \
-    BrokenSaveData.cpp \
-    UnknownSaveData.cpp \
     AnimationObject/AbstractAnimationObject.cpp \
     AnimationObject/Animation/AnimationLineMove.cpp \
     AnimationObject/Animation/AnimationWarpMove.cpp \
-    AnimationObject/Effect/EffectSimpleFrame.cpp \
-    AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp \
-    BoardInformation.cpp \
-    Position.cpp \
-    fifteen/SlideBlankPiece.cpp \
     AnimationObject/Effect/CompositeEffect.cpp \
-    GridLines.cpp \
-    UniquePosition.cpp \
+    AnimationObject/Effect/EffectGraduallyBlinkFrame.cpp \
+    AnimationObject/Effect/EffectGraduallyImage.cpp \
+    AnimationObject/Effect/EffectRoundMoveFrame.cpp \
+    AnimationObject/Effect/EffectSimpleFrame.cpp \
+    AnimationObject/Effect/TimeLimitedEffect.cpp \
+    AnimationObject/Transform/AbstractTransform.cpp \
+    AnimationObject/Transform/ChainedTransform.cpp \
+    AnimationObject/Transform/TransformExpand.cpp \
+    AnimationObject/Transform/WaitTransform.cpp \
+    commands/RemoveListWidgetItem.cpp \
+    CommonPhase/PhaseCleared.cpp \
     CommonPhase/PhaseShowFinalImage.cpp \
     CommonPhase/PhaseShuffle.cpp \
-    CommonPhase/PhaseCleared.cpp \
-    Slide/PhaseSimpleSlideGaming.cpp \
-    Board.cpp \
-    Slide/GameDataSimpleSlide.cpp \
-    Slide/SaveDataSimpleSlide.cpp \
-    Slide/PhaseSimpleSlideEnding.cpp \
-    AnimationObject/Effect/EffectRoundMoveFrame.cpp \
-    Swap/GameDataSimpleSwap.cpp \
-    Swap/SaveDataSimpleSwap.cpp \
-    Swap/PhaseSimpleSwapEnding.cpp \
-    Swap/PhaseSimpleSwapGaming.cpp \
-    GameCore.cpp \
-    MineSweeper/PhaseMineSweeperGaming.cpp \
+    Fifteen/Board.cpp \
+    Fifteen/EffectSwapper.cpp \
+    Fifteen/FifteenPieceMover.cpp \
+    Fifteen/FifteenSlideShuffler.cpp \
+    Fifteen/FifteenSwapShuffler.cpp \
+    Fifteen/PuzzlePiece.cpp \
+    Fifteen/SaveDataFifteen.cpp \
+    Fifteen/SimplePiecesFactory.cpp \
+    Fifteen/SlideBlankPiece.cpp \
+    ImageWidget/CellSelectionGrid.cpp \
+    ImageWidget/ImageWidget.cpp \
+    ImageWidget/SubFrame.cpp \
+    MineSweeper/GameCoreMineSweeper.cpp \
     MineSweeper/GameDataMineSweeper.cpp \
     MineSweeper/MineField.cpp \
-    MineSweeper/SaveDataMineSweeper.cpp \
-    MineSweeper/GameCoreMineSweeper.cpp \
-    FinalImage.cpp \
-    MineSweeper/MineSweeperFinalImage.cpp \
-    AnimationObject/Transform/TransformExpand.cpp \
-    AnimationObject/Transform/ChainedTransform.cpp \
-    AnimationObject/Transform/AbstractTransform.cpp \
-    fifteen/EffectSwapper.cpp \
+    MineSweeper/MinePiece.cpp \
+    MineSweeper/MinePiecesFactory.cpp \
+    MineSweeper/NumberPieceFactory.cpp \
     MineSweeper/PhaseMineSweeperEnding.cpp \
-    AnimationObject/Effect/EffectGraduallyImage.cpp \
-    AnimationObject/Transform/WaitTransform.cpp \
-    AnimationObject/Effect/TimeLimitedEffect.cpp \
+    MineSweeper/PhaseMineSweeperGaming.cpp \
+    MineSweeper/SafePiece.cpp \
+    MineSweeper/SaveDataMineSweeper.cpp \
+    MineSweeper/WallPiece.cpp \
+    SelectImage/ActionSelectImageFromHistory.cpp \
+    SelectImage/ActionSelectImageFromLocal.cpp \
+    Slide/GameDataSimpleSlide.cpp \
+    Slide/PhaseSimpleSlideEnding.cpp \
+    Slide/PhaseSimpleSlideGaming.cpp \
+    Slide/SaveDataSimpleSlide.cpp \
+    Swap/GameDataSimpleSwap.cpp \
+    Swap/PhaseSimpleSwapEnding.cpp \
+    Swap/PhaseSimpleSwapGaming.cpp \
+    Swap/SaveDataSimpleSwap.cpp \
+    Swap/SwapOperationSetEndingEffect.cpp \
     widgets/DialogStartGame.cpp \
     widgets/FormSettingsLikeFifteen.cpp \
     widgets/FormSettingsMineSweeper.cpp \
     widgets/FrameImageSelector.cpp \
     widgets/ListWidgetImageHistory.cpp \
-    widgets/ListWidgetImages.cpp
+    widgets/ListWidgetImages.cpp \
+    AbstractSaveData.cpp \
+    Application.cpp \
+    BlockPiece.cpp \
+    BoardInformation.cpp \
+    BrokenSaveData.cpp \
+    DialogImageHistory.cpp \
+    DialogSavedata.cpp \
+    Dragger.cpp \
+    FinalImage.cpp \
+    FormFinalImage.cpp \
+    GameCore.cpp \
+    GameID.cpp \
+    GameWidget.cpp \
+    GridLines.cpp \
+    ImageFragmentPiece.cpp \
+    ImageHistory.cpp \
+    ImagePiece.cpp \
+    MainWindow.cpp \
+    NumberPiece.cpp \
+    Position.cpp \
+    SourceImage.cpp \
+    StringListHistory.cpp \
+    SwitchImagePiece.cpp \
+    ThreadFrameTimer.cpp \
+    ThreadGameInfoLoader.cpp \
+    ThreadImageLoader.cpp \
+    ThreadOperation.cpp \
+    UniquePosition.cpp \
+    UnknownSaveData.cpp
+
 
 HEADERS  += MainWindow.h \
-    AbstractSaveData.h \
-    Application.h \
-    FormFinalImage.h \
-    IWidgetGameSettings.h \
-    ImageHistory.h \
-    GameWidget.h \
-    IGame.h \
-    IShuffler.h \
-    IPiece.h \
+    AnimationObject/AbstractAnimationObject.h \
+    AnimationObject/Animation/AbstractAnimation.h \
+    AnimationObject/Animation/AnimationLineMove.h \
+    AnimationObject/Animation/AnimationWarpMove.h \
+    AnimationObject/Effect/AbstractEffect.h \
+    AnimationObject/Effect/CompositeEffect.h \
+    AnimationObject/Effect/EffectGraduallyBlinkFrame.h \
+    AnimationObject/Effect/EffectGraduallyImage.h \
+    AnimationObject/Effect/EffectRoundMoveFrame.h \
+    AnimationObject/Effect/EffectSimpleFrame.h \
+    AnimationObject/Effect/TimeLimitedEffect.h \
+    AnimationObject/IAnimationObject.h \
+    AnimationObject/Transform/AbstractTransform.h \
+    AnimationObject/Transform/ChainedTransform.h \
+    AnimationObject/Transform/TransformExpand.h \
+    AnimationObject/Transform/WaitTransform.h \
+    commands/RemoveListWidgetItem.h \
+    CommonPhase/PhaseCleared.h \
+    CommonPhase/PhaseShowFinalImage.h \
+    CommonPhase/PhaseShuffle.h \
+    Fifteen/Board.h \
+    Fifteen/EffectSwapper.h \
+    Fifteen/FifteenAbstractShuffler.h \
+    Fifteen/FifteenPieceMover.h \
+    Fifteen/FifteenSlideShuffler.h \
+    Fifteen/FifteenSwapShuffler.h \
+    Fifteen/IOperationForPieces.h \
+    Fifteen/IPuzzlePiece.h \
+    Fifteen/PuzzlePiece.h \
+    Fifteen/SaveDataFifteen.h \
+    Fifteen/SimplePiecesFactory.h \
+    Fifteen/SlideBlankPiece.h \
     ImageWidget/AbstractSubWidget.h \
     ImageWidget/CellSelectionGrid.h \
     ImageWidget/ImageWidget.h \
     ImageWidget/SubFrame.h \
     MineSweeper/AbstractMinePiece.h \
+    MineSweeper/GameCoreMineSweeper.h \
+    MineSweeper/GameDataMineSweeper.h \
+    MineSweeper/IMinePiece.h \
+    MineSweeper/MineField.h \
     MineSweeper/MinePiece.h \
+    MineSweeper/MinePiecesFactory.h \
+    MineSweeper/NumberPieceFactory.h \
+    MineSweeper/PhaseMineSweeperEnding.h \
+    MineSweeper/PhaseMineSweeperGaming.h \
+    MineSweeper/SafePiece.h \
+    MineSweeper/SaveDataMineSweeper.h \
     MineSweeper/WallPiece.h \
-    Dragger.h \
-    ImagePiece.h \
-    NumberPiece.h \
-    ISwitchPiece.h \
-    BlockPiece.h \
     SelectImage/AbstractSelectImageAction.h \
     SelectImage/AbstractSelectImageToolButton.h \
     SelectImage/ActionSelectImageFromHistory.h \
     SelectImage/ActionSelectImageFromLocal.h \
     SelectImage/ToolButtonSelectImageFromHistory.h \
     SelectImage/ToolButtonSelectImageFromLocal.h \
-    SwitchImagePiece.h \
-    MineSweeper/IMinePiece.h \
-    MineSweeper/SafePiece.h \
-    MineSweeper/NumberPieceFactory.h \
-    ThreadFrameTimer.h \
-    ThreadGameInfoLoader.h \
-    ThreadImageLoader.h \
-    ThreadOperation.h \
-    ImageFragmentPiece.h \
-    Utility.h \
-    DialogImageHistory.h \
-    StringListHistory.h \
-    DialogSavedata.h \
-    SourceImage.h \
-    commands/RemoveListWidgetItem.h \
-    fifteen/IPuzzlePiece.h \
-    fifteen/PuzzlePiece.h \
-    MineSweeper/MinePiecesFactory.h \
-    fifteen/SaveDataFifteen.h \
-    fifteen/SimplePiecesFactory.h \
-    fifteen/FifteenSlideShuffler.h \
-    fifteen/FifteenPieceMover.h \
-    GameID.h \
-    fifteen/FifteenSwapShuffler.h \
-    BrokenSaveData.h \
-    UnknownSaveData.h \
-    AnimationObject/AbstractAnimationObject.h \
-    AnimationObject/IAnimationObject.h \
-    AnimationObject/Animation/AbstractAnimation.h \
-    AnimationObject/Effect/AbstractEffect.h \
-    AnimationObject/Animation/AnimationLineMove.h \
-    AnimationObject/Animation/AnimationWarpMove.h \
-    AnimationObject/Effect/EffectSimpleFrame.h \
-    AnimationObject/Effect/EffectGraduallyBlinkFrame.h \
-    BoardInformation.h \
-    Position.h \
-    fifteen/SlideBlankPiece.h \
-    fifteen/FifteenAbstractShuffler.h \
-    AnimationObject/Effect/CompositeEffect.h \
-    GridLines.h \
-    UniquePosition.h \
-    IPhase.h \
-    IGameData.h \
-    CommonPhase/PhaseShowFinalImage.h \
-    CommonPhase/PhaseShuffle.h \
-    CommonPhase/PhaseCleared.h \
-    Slide/PhaseSimpleSlideGaming.h \
-    Board.h \
     Slide/GameDataSimpleSlide.h \
-    Slide/SaveDataSimpleSlide.h \
     Slide/PhaseSimpleSlideEnding.h \
-    AnimationObject/Effect/EffectRoundMoveFrame.h \
+    Slide/PhaseSimpleSlideGaming.h \
+    Slide/SaveDataSimpleSlide.h \
     Swap/GameDataSimpleSwap.h \
-    Swap/SaveDataSimpleSwap.h \
     Swap/PhaseSimpleSwapEnding.h \
     Swap/PhaseSimpleSwapGaming.h \
-    GameCore.h \
-    MineSweeper/PhaseMineSweeperGaming.h \
-    MineSweeper/GameDataMineSweeper.h \
-    MineSweeper/MineField.h \
-    MineSweeper/SaveDataMineSweeper.h \
-    MineSweeper/GameCoreMineSweeper.h \
-    FinalImage.h \
-    MineSweeper/MineSweeperFinalImage.h \
-    AnimationObject/Transform/AbstractTransform.h \
-    AnimationObject/Transform/TransformExpand.h \
-    AnimationObject/Transform/ChainedTransform.h \
-    fifteen/EffectSwapper.h \
-    MineSweeper/PhaseMineSweeperEnding.h \
-    AnimationObject/Effect/EffectGraduallyImage.h \
-    AnimationObject/Transform/WaitTransform.h \
-    AnimationObject/Effect/TimeLimitedEffect.h \
+    Swap/SaveDataSimpleSwap.h \
+    Swap/SwapOperationSetEndingEffect.h \
     widgets/DialogStartGame.h \
     widgets/FormSettingsLikeFifteen.h \
     widgets/FormSettingsMineSweeper.h \
     widgets/FrameImageSelector.h \
     widgets/ListWidgetImageHistory.h \
-    widgets/ListWidgetImages.h
+    widgets/ListWidgetImages.h \
+    AbstractPhase.h \
+    AbstractSaveData.h \
+    Application.h \
+    BlockPiece.h \
+    BoardInformation.h \
+    BrokenSaveData.h \
+    DialogImageHistory.h \
+    DialogSavedata.h \
+    Dragger.h \
+    FinalImage.h \
+    FormFinalImage.h \
+    GameCore.h \
+    GameID.h \
+    GameWidget.h \
+    GridLines.h \
+    IGame.h \
+    IGameData.h \
+    ImageFragmentPiece.h \
+    ImageHistory.h \
+    ImagePiece.h \
+    IPiece.h \
+    IShuffler.h \
+    ISwitchPiece.h \
+    IWidgetGameSettings.h \
+    NumberPiece.h \
+    Position.h \
+    SourceImage.h \
+    StringListHistory.h \
+    SwitchImagePiece.h \
+    ThreadFrameTimer.h \
+    ThreadGameInfoLoader.h \
+    ThreadImageLoader.h \
+    ThreadOperation.h \
+    UniquePosition.h \
+    UnknownSaveData.h \
+    Utility.h
 
 FORMS    += MainWindow.ui \
     DialogImageHistory.ui \

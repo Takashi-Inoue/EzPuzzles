@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -20,11 +20,14 @@
 #define BOARD_H
 
 #include "BoardInformation.h"
-#include "fifteen/PuzzlePiece.h"
+
+#include "IOperationForPieces.h"
+#include "PuzzlePiece.h"
 
 #include <QPainter>
 #include <QReadWriteLock>
-#include <memory>
+
+namespace Fifteen {
 
 class Board
 {
@@ -37,23 +40,26 @@ public:
     QList<FifteenPiecePointer> swapPiece(const QPoint &from, const QPoint &to);
 
     void draw(QPainter &painter);
+    void execOperation(QSharedPointer<IOperationForPieces> operation);
     void onTickFrame();
     void skipPiecesAnimation();
 
-    bool isClearerd() const;
+    bool isCleared() const;
 
     BoardInfoPointer boardInfo() const;
+    FifteenPiecePointer &piece(const QPoint &piecePos);
 
 protected:
     void addAnimationPieces(QList<FifteenPiecePointer> pieces);
-    FifteenPiecePointer &getPiece(const QPoint &pos);
 
     BoardInfoPointer boardInformation;
-    QList<FifteenPiecePointer> &pieces;
+    QList<FifteenPiecePointer> &m_pieces;
 
     std::shared_ptr<QReadWriteLock> rwlock;
 };
 
-typedef std::shared_ptr<Board> BoardPointer;
+} // namespace Fifteen
+
+using BoardPointer = QSharedPointer<Fifteen::Board>;
 
 #endif // BOARD_H

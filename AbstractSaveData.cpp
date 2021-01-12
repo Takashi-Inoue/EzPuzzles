@@ -26,14 +26,14 @@
 AbstractSaveData::AbstractSaveData(QStringView fileName, QObject *parent)
     : QObject(parent)
     , m_fileName(fileName.toString())
-    , m_currentPhase(IPhase::PhaseReady)
+    , m_currentPhase(AbstractPhase::PhaseReady)
 {
     Q_ASSERT(!fileName.isEmpty());
 }
 
 AbstractSaveData::AbstractSaveData(QStringView fileName, QString sourceImageFullPathName
                                  , QPixmap sourceImagePixmap, QSize boardXYCount
-                                 , IPhase::PhaseType currentPhase, QObject *parent)
+                                 , AbstractPhase::PhaseType currentPhase, QObject *parent)
     : QObject(parent)
     , m_fileName(fileName.toString())
     , m_sourceImageFullPathName(sourceImageFullPathName)
@@ -63,7 +63,7 @@ QSharedPointer<BoardInformation> AbstractSaveData::boardInformation() const
     return QSharedPointer<BoardInformation>::create(m_boardXYCount, m_sourceImagePixmap.size());
 }
 
-IPhase::PhaseType AbstractSaveData::currentPhase() const
+AbstractPhase::PhaseType AbstractSaveData::currentPhase() const
 {
     return m_currentPhase;
 }

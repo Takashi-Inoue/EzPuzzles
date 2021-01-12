@@ -26,15 +26,17 @@
 
 namespace MineSweeper {
 
-class MineField
+class MineField : public QObject
 {
+    Q_OBJECT
 public:
     using MinePiece2DList = QList<QList<MinePiecePointer>>;
 
-    MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount);
+    MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount, QObject *parent = nullptr);
     MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
-            , int openedCount, int missedCount);
+            , int openedCount, int missedCount, QObject *parent = nullptr);
 
+    void draw(QPainter &painter);
     void open(const QPoint &pos);
 
     int openedCount() const;
@@ -46,6 +48,9 @@ public:
 
     QString information() const;
     const QList<QPoint> &explodedPositions() const;
+
+signals:
+    void openedRateChanged(qreal rate);
 
 private:
     void lockMines(QList<QPoint> &pointsToCheckToLock);

@@ -22,15 +22,19 @@
 #include <QPainter>
 #include <QSharedPointer>
 
-class FinalImage
+class FinalImage : public QObject
 {
+    Q_OBJECT
 public:
-    FinalImage(QPixmap pixmap);
-    virtual ~FinalImage() = default;
+    FinalImage(QPixmap pixmap, QObject *parent = nullptr);
 
     virtual void draw(QPainter &painter);
 
+signals:
+    void requestRepaint();
+
 protected:
+    QRect drawRect(QPainter &painter) const;
     QRect drawFinalImage(QPainter &painter) const;
 
     QPixmap m_pixmap;

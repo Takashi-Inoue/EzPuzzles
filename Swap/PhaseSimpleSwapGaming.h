@@ -19,20 +19,19 @@
 #ifndef PHASESIMPLESWAPGAMING_H
 #define PHASESIMPLESWAPGAMING_H
 
-#include "IPhase.h"
-#include "Board.h"
-#include "fifteen/PuzzlePiece.h"
+#include "AbstractPhase.h"
+#include "Fifteen/Board.h"
+#include "Fifteen/PuzzlePiece.h"
 #include "AnimationObject/IAnimationObject.h"
 
 namespace Swap {
 
-class PhaseSimpleSwapGaming : public IPhase
+class PhaseSimpleSwapGaming : public AbstractPhase
 {
     Q_OBJECT
 public:
-    PhaseSimpleSwapGaming(BoardPointer board, QList<FifteenPiecePointer> &pieces,
-                          const QPoint &swapTargetPos, PhaseType nextPhase, int totalMoveFrame, QObject *parent = 0);
-    ~PhaseSimpleSwapGaming() = default;
+    PhaseSimpleSwapGaming(BoardPointer board, const QPoint &swapTargetPos, PhaseType nextPhase
+                        , int totalMoveFrame, QObject *parent = nullptr);
 
     void click(const QPoint &clickedPiecePos) override;
     void onTickFrame() override;
@@ -42,16 +41,13 @@ public:
     QString information() const override;
 
 protected:
-    FifteenPiecePointer &getPiece(const QPoint &pos);
+    const QPoint m_swapTargetPos;
 
-    BoardPointer board;
-    QList<FifteenPiecePointer> &pieces;
-    QPoint swapTargetPos;
-    PhaseType nextPhase;
-    int totalMoveFrame;
-    bool isGameCleared;
+    BoardPointer m_board;
+    int m_totalMoveFrame;
+    bool m_isGameCleared = false;
 
-    QList<std::shared_ptr<IAnimationObject>> frameOperations;
+    QList<QSharedPointer<IAnimationObject>> m_effects;
 };
 
 } // Swap

@@ -19,7 +19,7 @@
 #ifndef SAVEDATASIMPLESWAP_H
 #define SAVEDATASIMPLESWAP_H
 
-#include "fifteen/SaveDataFifteen.h"
+#include "Fifteen/SaveDataFifteen.h"
 
 #include <QIcon>
 #include <QList>

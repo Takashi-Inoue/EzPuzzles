@@ -22,10 +22,10 @@
 
 namespace MineSweeper {
 
-PhaseMineSweeperEnding::PhaseMineSweeperEnding(BoardInfoPointer boardInfo, QVector<QVector<MinePiecePointer>> &pieces, SourceImage sourceImage, PhaseType nextPhase) :
+PhaseMineSweeperEnding::PhaseMineSweeperEnding(BoardInfoPointer boardInfo, QVector<QVector<MinePiecePointer>> &pieces, SourceImage sourceImage, PhaseType nextPhase, QObject *parent) :
+    AbstractPhase(nextPhase, parent),
     pieces(pieces),
     sourceImage(sourceImage),
-    nextPhase(nextPhase),
     nowFrame(0),
     mt(std::random_device()())
 {
@@ -43,7 +43,7 @@ void PhaseMineSweeperEnding::onTickFrame()
     }
 
     if (++nowFrame > (maxWaitFrame + eraseFrames * 3))
-        toNextPhase(nextPhase);
+        toNextPhase(m_nextPhaseType);
 }
 
 void PhaseMineSweeperEnding::draw(QPainter &painter)

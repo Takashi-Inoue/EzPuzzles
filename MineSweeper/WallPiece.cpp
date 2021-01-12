@@ -20,12 +20,12 @@
 
 namespace MineSweeper {
 
-bool WallPiece::isOpen() const
+bool WallPiece::isOpened() const
 {
     return true;
 }
 
-bool WallPiece::isLock() const
+bool WallPiece::isLocked() const
 {
     return true;
 }

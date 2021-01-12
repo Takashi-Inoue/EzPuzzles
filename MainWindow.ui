@@ -249,7 +249,7 @@
   </connection>
   <connection>
    <sender>actionFinalImage</sender>
-   <signal>triggered(bool)</signal>
+   <signal>toggled(bool)</signal>
    <receiver>dockWidget</receiver>
    <slot>setVisible(bool)</slot>
    <hints>

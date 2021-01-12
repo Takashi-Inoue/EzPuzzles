@@ -19,13 +19,13 @@
 #ifndef PHASECLEARED_H
 #define PHASECLEARED_H
 
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
 #include "SourceImage.h"
 
 #include <QScopedPointer>
 
-class PhaseCleared : public IPhase
+class PhaseCleared : public AbstractPhase
 {
     Q_OBJECT
 public:
@@ -40,7 +40,6 @@ public:
 
 private:
     SourceImage m_sourceImage;
-    PhaseType m_nextPhaseType;
     QScopedPointer<Effect::AbstractEffect> m_effect;
 };
 

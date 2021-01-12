@@ -28,11 +28,10 @@
 namespace MineSweeper {
 
 PiecesFactory::PiecesFactory(const QPixmap &sourcePixmap, BoardInfoPointer boardInformation
-                           , int mineCount, bool isKeepMinesPositions)
+                           , int mineCount)
     : m_sourcePixmap(sourcePixmap)
     , m_boardInformation(boardInformation)
     , m_mineCount(mineCount)
-    , m_isKeepMinesPositions(isKeepMinesPositions)
 {
     Q_ASSERT(!sourcePixmap.isNull());
     Q_ASSERT(mineCount > 0 && mineCount < boardInformation->pieceCount());
@@ -53,10 +52,10 @@ QList<int> PiecesFactory::toIntList(const MinePiece2DList &pieces)
 
             int value = piece->isMine() ? m_mineID : piece->countAroundMines();
 
-            if (piece->isLock())
+            if (piece->isLocked())
                 value |= m_lockFlag;
 
-            result << (piece->isOpen() ? (value | m_openFlag) : value);
+            result << (piece->isOpened() ? (value | m_openFlag) : value);
         }
     }
 
@@ -65,8 +64,6 @@ QList<int> PiecesFactory::toIntList(const MinePiece2DList &pieces)
 
 PiecesFactory::MinePiece2DList PiecesFactory::toPieces(const QList<int> &intList)
 {
-    m_minesPositions.clear();
-
     MinePiece2DList pieces = createNullPiecesList();
 
     createWallPieces(pieces);
@@ -78,7 +75,6 @@ PiecesFactory::MinePiece2DList PiecesFactory::toPieces(const QList<int> &intList
 
         if ((num & m_mineID) > 8) { // 8 == Max mines around
             createMinePiece(pieces, x, y);
-            m_minesPositions << QPoint(x, y);
         } else {
             createSafePiece(pieces, x, y, num & m_mineID);
         }
@@ -102,11 +98,6 @@ PiecesFactory::MinePiece2DList PiecesFactory::createPieces()
     createSafePieces(pieces);
 
     return pieces;
-}
-
-const QList<QPoint> &PiecesFactory::minesPositions() const
-{
-    return m_minesPositions;
 }
 
 PiecesFactory::MinePiece2DList PiecesFactory::createNullPiecesList() const
@@ -159,9 +150,6 @@ void PiecesFactory::createMinePiece(MinePiece2DList &pieces, int x, int y)
                          m_boardInformation->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect());
 
     pieces[y][x] = minePiece;
-
-    if (m_isKeepMinesPositions)
-        m_minesPositions << QPoint(x, y);
 }
 
 void PiecesFactory::createSafePieces(MinePiece2DList &pieces) const

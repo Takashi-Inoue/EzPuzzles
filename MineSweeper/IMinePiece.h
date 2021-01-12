@@ -38,8 +38,8 @@ public:
     virtual void open() = 0;
     virtual void lock() = 0;
 
-    virtual bool isOpen() const = 0;
-    virtual bool isLock() const = 0;
+    virtual bool isOpened() const = 0;
+    virtual bool isLocked() const = 0;
     virtual bool isMine() const = 0;
     virtual bool isNearMine() const = 0;
     virtual bool isWall() const = 0;

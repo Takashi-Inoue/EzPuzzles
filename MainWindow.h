@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -45,6 +45,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
+    void on_actionFinalImage_triggered(bool checked);
     void on_actionNewGame_triggered();
     void on_actionRestart_triggered();
     void on_actionSaveLoad_triggered();
@@ -62,6 +63,8 @@ private:
 
     ThreadFrameTimer *m_threadFrameTimer;
     QSharedPointer<IGame> m_game;
+
+    bool m_isFinalImageShownFromUser = true;
 };
 
 #endif // MAINWINDOW_H

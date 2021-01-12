@@ -20,41 +20,29 @@
 
 namespace MineSweeper {
 
-PhaseMineSweeperGaming::PhaseMineSweeperGaming(MineFieldPointer mineField, QVector<QVector<MinePiecePointer>> &pieces, PhaseType nextPhase) :
-    mineField(mineField),
-    pieces(pieces),
-    nextPhase(nextPhase)
+PhaseMineSweeperGaming::PhaseMineSweeperGaming(MineFieldPointer mineField, PhaseType nextPhase, QObject *parent)
+    : AbstractPhase(nextPhase, parent)
+    , m_mineField(mineField)
 {
     Q_CHECK_PTR(mineField);
 }
 
 void PhaseMineSweeperGaming::click(const QPoint &clickedPiecePos)
 {
-    if (mineField->isAllOpened() & !mineField->isNoMissed()) {
-        emit toNextPhase(IPhase::PhaseReady);
+    if (m_mineField->isAllOpened() & !m_mineField->isNoMissed()) {
+        emit toNextPhase(AbstractPhase::PhaseReady);
         return;
     }
 
-    mineField->open(clickedPiecePos);
+    m_mineField->open(clickedPiecePos);
 
-    if (mineField->isAllOpened() & mineField->isNoMissed())
-        emit toNextPhase(nextPhase);
-}
-
-void PhaseMineSweeperGaming::onTickFrame()
-{
-//    for (auto &horizontal : pieces) {
-//        for (auto &piece : horizontal)
-//            piece->onTickFrame();
-//    }
+    if (m_mineField->isAllOpened() & m_mineField->isNoMissed())
+        emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseMineSweeperGaming::draw(QPainter &painter)
 {
-    for (auto &horizontal : pieces) {
-        for (auto &piece : horizontal)
-            piece->draw(painter);
-    }
+    m_mineField->draw(painter);
 }
 
 bool PhaseMineSweeperGaming::canSave() const
@@ -69,7 +57,7 @@ bool PhaseMineSweeperGaming::canLoad() const
 
 QString PhaseMineSweeperGaming::information() const
 {
-    return mineField->information();
+    return m_mineField->information();
 }
 
 } // MineSweeper

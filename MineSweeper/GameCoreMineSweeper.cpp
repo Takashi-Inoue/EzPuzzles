@@ -20,16 +20,6 @@
 
 namespace MineSweeper {
 
-GameCoreMineSweeper::GameCoreMineSweeper(GameDataPointer gameData) :
-    GameCore(gameData)
-{
-}
-
-GameCoreMineSweeper::GameCoreMineSweeper(GameDataPointer gameData, GameID id) :
-    GameCore(gameData, id)
-{
-}
-
 QSharedPointer<IGame> GameCoreMineSweeper::cloneAsNewGame() const
 {
     auto game = new GameCoreMineSweeper(m_gameData->cloneAsNewGame());
@@ -45,7 +35,12 @@ void GameCoreMineSweeper::click(const QSize &fieldSize, const QPoint &cursorPos)
 
     m_phase->click(piecePos + QPoint(1, 1));
 
-    emit informationUpdated();
+    emit informationUpdated(shortInformation());
+}
+
+bool GameCoreMineSweeper::hasFinalImage() const
+{
+    return false;
 }
 
 } // MineSweeper

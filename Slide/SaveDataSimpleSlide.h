@@ -19,10 +19,10 @@
 #ifndef SAVEDATASIMPLESLIDE_H
 #define SAVEDATASIMPLESLIDE_H
 
-#include "fifteen/SaveDataFifteen.h"
+#include "Fifteen/SaveDataFifteen.h"
 #include "SourceImage.h"
 #include "UniquePosition.h"
-#include "IPhase.h"
+#include "AbstractPhase.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -37,7 +37,7 @@ public:
     SaveDataSimpleSlide(QStringView fileName, QObject *parent = nullptr);
     SaveDataSimpleSlide(QStringView fileName, const QSize &boardXYCount
                       , const UniquePosition &specifiedPosition, const SourceImage &sourceImage
-                      , IPhase::PhaseType currentPhase, const QList<QPoint> &defaultPositions
+                      , AbstractPhase::PhaseType currentPhase, const QList<QPoint> &defaultPositions
                       , const QPoint &currentBlankPos, QObject *parent = nullptr);
 
     Application::GameType gameType() const override;

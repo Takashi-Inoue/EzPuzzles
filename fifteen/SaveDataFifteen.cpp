@@ -36,7 +36,7 @@ SaveDataFifteen::SaveDataFifteen(QStringView fileName, QObject *parent)
 SaveDataFifteen::SaveDataFifteen(QStringView fileName, const QSize &boardXYCount
                                , const UniquePosition &specifiedPosition
                                , const SourceImage &sourceImage
-                               , IPhase::PhaseType currentPhase
+                               , AbstractPhase::PhaseType currentPhase
                                , const QList<QPoint> &defaultPositions, QObject *parent)
     : AbstractSaveData(fileName, sourceImage.fullPath(), sourceImage.pixmap()
                      , boardXYCount, currentPhase, parent)

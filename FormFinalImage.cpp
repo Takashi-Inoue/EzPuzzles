@@ -32,8 +32,18 @@ FormFinalImage::FormFinalImage(QWidget *parent)
 
 void FormFinalImage::setGame(QSharedPointer<IGame> game)
 {
-    if (m_game != game)
-        m_game = game;
+    if (m_game == game)
+        return;
+
+    if (m_game != nullptr)
+        m_game->disconnect();
+
+    m_game = game;
+
+    setWindowTitle(m_game->shortInformation());
+
+    connect(m_game.get(), &IGame::informationUpdated, this, &QWidget::setWindowTitle);
+    connect(m_game.get(), &IGame::finalImageUpdated, this, qOverload<>(&QWidget::repaint));
 }
 
 void FormFinalImage::paintEvent(QPaintEvent *event)
@@ -48,5 +58,4 @@ void FormFinalImage::paintEvent(QPaintEvent *event)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
     m_game->drawFinalImage(painter);
-    setWindowTitle(m_game->shortInformation());
 }

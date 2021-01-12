@@ -21,7 +21,7 @@
 
 #include "AbstractSaveData.h"
 #include "SourceImage.h"
-#include "IPhase.h"
+#include "AbstractPhase.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -35,7 +35,7 @@ public:
     SaveDataMineSweeper(QStringView fileName, QObject *parent = nullptr);
     SaveDataMineSweeper(QStringView fileName, const QSize &boardXYCount, int mineCount
                       , int openedCount, int missedCount, bool isAutoLock
-                      , SourceImage sourceImage, IPhase::PhaseType currentPhaseType
+                      , SourceImage sourceImage, AbstractPhase::PhaseType currentPhaseType
                       , const QList<int> &pieces, QObject *parent = nullptr);
 
     Application::GameType gameType() const override;

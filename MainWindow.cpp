@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gameWidget->resize(1, 1);
 
     connect(ui->widgetFinalImage, &QWidget::windowTitleChanged, ui->dockWidget, &QWidget::setWindowTitle);
-    connect(ui->widgetFinalImage, &QWidget::windowTitleChanged, this, &MainWindow::updateTitle);
 
     connect(m_threadFrameTimer, &ThreadFrameTimer::tick, this, &MainWindow::onTickFrameTimer);
 
@@ -72,6 +71,11 @@ void MainWindow::closeEvent(QCloseEvent *)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionFinalImage_triggered(bool checked)
+{
+    m_isFinalImageShownFromUser = checked;
 }
 
 void MainWindow::on_actionNewGame_triggered()
@@ -131,6 +135,7 @@ void MainWindow::loadGame()
     if (game == nullptr)
         return;
 
+    updateTitle(game->shortInformation());
     startNewGame(game);
     updateImageHistory(game->sourceImage().fullPath());
 }
@@ -175,16 +180,24 @@ void MainWindow::startNewGame(QSharedPointer<IGame> newGame)
     if (m_game != nullptr)
         m_game->disconnect();
 
-    ui->widgetFinalImage->setGame(newGame);
-    ui->widgetFinalImage->repaint();
+    bool hasFinalImage = newGame->hasFinalImage();
 
-    connect(newGame.get(), &IGame::informationUpdated, ui->widgetFinalImage, qOverload<>(&QWidget::repaint));
+    ui->actionFinalImage->setChecked(m_isFinalImageShownFromUser & hasFinalImage);
+    ui->actionFinalImage->setEnabled(hasFinalImage);
+    ui->widgetFinalImage->setEnabled(hasFinalImage);
+
+    if (hasFinalImage) {
+        ui->widgetFinalImage->setGame(newGame);
+        ui->widgetFinalImage->repaint();
+    }
 
     ui->gameWidget->resize(newGame->maxFieldSize());
     ui->gameWidget->setGame(newGame);
 
     ui->actionRestart->setEnabled(true);
     ui->actionSave->setEnabled(true);
+
+    connect(newGame.get(), &IGame::informationUpdated, this, &MainWindow::updateTitle);
 
     m_game = newGame;
 }

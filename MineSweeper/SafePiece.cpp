@@ -74,12 +74,12 @@ void SafePiece::lock()
     m_isChanged = true;
 }
 
-bool SafePiece::isOpen() const
+bool SafePiece::isOpened() const
 {
     return m_switchImagePiece->isOpen();
 }
 
-bool SafePiece::isLock() const
+bool SafePiece::isLocked() const
 {
     return m_switchImagePiece->isLock();
 }
@@ -106,7 +106,7 @@ int SafePiece::countAroundMines() const
 
 void SafePiece::drawImpl(QPainter &painter)
 {
-    if (isOpen()) {
+    if (isOpened()) {
         fillRect(painter);
         painter.setOpacity(m_openOpacity);
     }
@@ -115,7 +115,7 @@ void SafePiece::drawImpl(QPainter &painter)
 
     painter.setOpacity(1);
 
-    if (m_numberPiece != nullptr && isOpen())
+    if (m_numberPiece != nullptr && isOpened())
         m_numberPiece->draw(painter, m_destRect);
 
     if (m_effect != nullptr)

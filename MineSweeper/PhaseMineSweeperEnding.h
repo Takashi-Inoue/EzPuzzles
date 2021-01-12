@@ -19,7 +19,7 @@
 #ifndef PHASEMINESWEEPERENDING_H
 #define PHASEMINESWEEPERENDING_H
 
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "IMinePiece.h"
 #include "BoardInformation.h"
 #include "SourceImage.h"
@@ -28,10 +28,11 @@
 
 namespace MineSweeper {
 
-class PhaseMineSweeperEnding : public IPhase
+class PhaseMineSweeperEnding : public AbstractPhase
 {
 public:
-    PhaseMineSweeperEnding(BoardInfoPointer boardInfo, QVector<QVector<MinePiecePointer>> &pieces, SourceImage sourceImage, PhaseType nextPhase);
+    PhaseMineSweeperEnding(BoardInfoPointer boardInfo, QVector<QVector<MinePiecePointer>> &pieces
+                         , SourceImage sourceImage, PhaseType nextPhase, QObject *parent = nullptr);
 
     // IPhase
     void click(const QPoint &) override {}
@@ -49,7 +50,6 @@ private:
 
     QVector<QVector<MinePiecePointer>> &pieces;
     SourceImage sourceImage;
-    PhaseType nextPhase;
 
     int nowFrame;
 

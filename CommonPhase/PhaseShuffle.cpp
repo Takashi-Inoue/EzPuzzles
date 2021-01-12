@@ -17,7 +17,7 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseShuffle.h"
-#include "fifteen/FifteenSlideShuffler.h"
+#include "Fifteen/FifteenSlideShuffler.h"
 
 #include <QThread>
 
@@ -25,10 +25,9 @@ extern QThread gameThread;
 
 PhaseShuffle::PhaseShuffle(BoardPointer board, ShufflerPtr shuffler
                          , PhaseType nextPhaseType, QObject *parent)
-    : IPhase(parent)
+    : AbstractPhase(nextPhaseType, parent)
     , m_board(board)
     , m_shuffler(shuffler)
-    , m_nextPhaseType(nextPhaseType)
     , m_isEnableDraw(true)
 {
     shuffler->moveToThread(&gameThread);

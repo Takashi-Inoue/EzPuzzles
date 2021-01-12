@@ -22,7 +22,7 @@
 
 #include "AbstractSaveData.h"
 
-#include "IPhase.h"
+#include "AbstractPhase.h"
 #include "UniquePosition.h"
 
 namespace Fifteen {
@@ -33,7 +33,7 @@ public:
     SaveDataFifteen(QStringView fileName, QObject *parent = nullptr);
     SaveDataFifteen(QStringView fileName, const QSize &boardXYCount
                   , const UniquePosition &specifiedPosition, const SourceImage &sourceImage
-                  , IPhase::PhaseType currentPhase, const QList<QPoint> &defaultPositions
+                  , AbstractPhase::PhaseType currentPhase, const QList<QPoint> &defaultPositions
                   , QObject *parent = nullptr);
 
     // Need to define in inherited class

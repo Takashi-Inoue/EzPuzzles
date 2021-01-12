@@ -19,18 +19,17 @@
 #ifndef PHASESIMPLESLIDEGAMING_H
 #define PHASESIMPLESLIDEGAMING_H
 
-#include "IPhase.h"
-#include "Board.h"
-#include "fifteen/PuzzlePiece.h"
+#include "AbstractPhase.h"
+#include "Fifteen/Board.h"
+#include "Fifteen/PuzzlePiece.h"
 
 namespace Slide {
 
-class PhaseSimpleSlideGaming : public IPhase
+class PhaseSimpleSlideGaming : public AbstractPhase
 {
     Q_OBJECT
 public:
     PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, const QPoint &defaultBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent = 0);
-    ~PhaseSimpleSlideGaming() = default;
 
     void click(const QPoint &clickedPiecePos) override;
     void onTickFrame() override;
@@ -43,7 +42,6 @@ protected:
     BoardPointer board;
     QPoint &currentBlankPos;
     const QPoint defaultBlankPos;
-    PhaseType nextPhase;
     int slideFrameCount;
     bool isGameCleared;
 };
