@@ -235,7 +235,7 @@ DISTFILES += \
     gameCore.qmodel \
     Games.qmodel
 
-VERSION = 0.1.0.0
-#RC_ICONS = res/images/icon.ico
+VERSION = 0.2.0.0
+RC_ICONS = res/icons/icon.ico
 QMAKE_TARGET_PRODUCT = EzPuzzles
-QMAKE_TARGET_COPYRIGHT = "Copyright 2016 Takashi Inoue"
+QMAKE_TARGET_COPYRIGHT = "Copyright 2016-2021 Takashi Inoue"

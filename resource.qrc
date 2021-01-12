@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="images/hole">res/images/hole.png</file>
         <file alias="icons/all">res/icons/iconAll.png</file>
         <file alias="icons/mine">res/icons/iconMine.png</file>
         <file alias="icons/slide">res/icons/iconSimpleSlide.png</file>
