@@ -20,7 +20,10 @@
 #include "DialogStartGame.h"
 #include "ui_DialogStartGame.h"
 
+#include "Application.h"
 #include "ImageWidget/ImageWidget.h"
+
+#include <QSettings>
 
 DialogStartGame::DialogStartGame(QWidget *parent)
     : DialogStartGame(QString(), parent)
@@ -32,6 +35,12 @@ DialogStartGame::DialogStartGame(QStringView imageFullPathName, QWidget *parent)
     , ui(new Ui::DialogStartGame)
 {
     ui->setupUi(this);
+
+    QVariant savedGeometry = QSettings(Application::iniFilePathName(), QSettings::IniFormat)
+                             .value(m_geometryKey);
+
+    if (savedGeometry.isValid())
+        restoreGeometry(savedGeometry.toByteArray());
 
     auto imageWidget = findChild<ImageWidget *>();
 
@@ -57,4 +66,12 @@ QSharedPointer<IGame> DialogStartGame::buildGame() const
         return ui->formSettingsMineSweeper->buildGame();
 
     return nullptr;
+}
+
+void DialogStartGame::done(int result)
+{
+    QSettings(Application::iniFilePathName(), QSettings::IniFormat)
+             .setValue(m_geometryKey, saveGeometry());
+
+    QDialog::done(result);
 }

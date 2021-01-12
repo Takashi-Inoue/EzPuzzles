@@ -39,7 +39,12 @@ public:
 
     QSharedPointer<IGame> buildGame() const;
 
+protected:
+    void done(int result) override;
+
 private:
+    static constexpr char m_geometryKey[] = "DialogStartGame_Geometry";
+
     Ui::DialogStartGame *ui;
 };
 

@@ -32,6 +32,7 @@
 
 #include "widgets/DialogStartGame.h"
 
+#include <QSettings>
 #include <QThread>
 #include <QDebug>
 
@@ -48,6 +49,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
+    QSettings settings(Application::iniFilePathName(), QSettings::IniFormat);
+
+    QVariant savedGeometry = settings.value(m_geometryKey);
+    QVariant savedState = settings.value(m_windowStateKey);
+
+    if (savedGeometry.isValid())
+        restoreGeometry(savedGeometry.toByteArray());
+
+    if (savedState.isValid())
+        restoreState(savedState.toByteArray());
+
     ui->gameWidget->resize(1, 1);
 
     connect(ui->widgetFinalImage, &QWidget::windowTitleChanged, ui->dockWidget, &QWidget::setWindowTitle);
@@ -61,6 +73,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::closeEvent(QCloseEvent *)
 {
+    QSettings settings(Application::iniFilePathName(), QSettings::IniFormat);
+
+    settings.setValue(m_geometryKey, saveGeometry());
+    settings.setValue(m_windowStateKey, saveState());
+
     m_threadFrameTimer->stop();
     m_threadFrameTimer->wait();
 

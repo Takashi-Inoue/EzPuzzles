@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QPainter>
+#include <QSettings>
 #include <QStyledItemDelegate>
 #include <QDebug>
 
@@ -116,6 +117,12 @@ DialogSavedata::DialogSavedata(QWidget *parent)
     int pixelSize = ui->labelInformations->fontInfo().pixelSize();
     ui->frameLabel->setMinimumWidth(pixelSize * 20);
 
+    QVariant savedGeometry = QSettings(Application::iniFilePathName(), QSettings::IniFormat)
+                             .value(m_geometryKey);
+
+    if (savedGeometry.isValid())
+        restoreGeometry(savedGeometry.toByteArray());
+
     m_threadInfoLoader->setSaveDataNames(m_savedataNames);
     connect(m_threadInfoLoader, &ThreadGameInfoLoader::loaded, this, &DialogSavedata::onSaveInfoLoaded);
     m_threadInfoLoader->start();
@@ -142,6 +149,14 @@ QSharedPointer<IGame> DialogSavedata::loadGame() const
         return nullptr;
 
     return savedata->loadGame();
+}
+
+void DialogSavedata::done(int result)
+{
+    QSettings(Application::iniFilePathName(), QSettings::IniFormat)
+             .setValue(m_geometryKey, saveGeometry());
+
+    QDialog::done(result);
 }
 
 void DialogSavedata::showEvent(QShowEvent *event)

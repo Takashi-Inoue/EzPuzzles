@@ -56,6 +56,9 @@ private slots:
     void updateTitle(QString);
 
 private:
+    static constexpr char m_geometryKey[] = "MainWindow_Geometry";
+    static constexpr char m_windowStateKey[] = "MainWindow_WindowState";
+
     void updateImageHistory(const QString &lastImagePath) const;
     void startNewGame(QSharedPointer<IGame> newGame);
 

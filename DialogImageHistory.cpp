@@ -85,7 +85,7 @@ void DialogImageHistory::done(int result)
     }
 
     QSettings(Application::iniFilePathName(), QSettings::IniFormat)
-            .setValue(m_geometryKey, saveGeometry());
+             .setValue(m_geometryKey, saveGeometry());
 
     QDialog::done(result);
 }

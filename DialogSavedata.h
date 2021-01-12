@@ -46,6 +46,7 @@ public:
     QSharedPointer<IGame> loadGame() const;
 
 protected:
+    void done(int result) override;
     void showEvent(QShowEvent *event) override;
 
 private slots:
@@ -65,6 +66,8 @@ private:
         simpleSwap,
         mineSweeper,
     };
+
+    static constexpr char m_geometryKey[] = "DialogSavedata_Geometry";
 
     QString saveDataPathName(int row) const;
     QString thumbnailPathName(int row) const;
