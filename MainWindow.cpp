@@ -197,6 +197,8 @@ void MainWindow::startNewGame(QSharedPointer<IGame> newGame)
     ui->actionRestart->setEnabled(true);
     ui->actionSave->setEnabled(true);
 
+    updateTitle(newGame->shortInformation());
+
     connect(newGame.get(), &IGame::informationUpdated, this, &MainWindow::updateTitle);
 
     m_game = newGame;

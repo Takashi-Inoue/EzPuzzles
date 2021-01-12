@@ -124,17 +124,4 @@ double GameDataMineSweeper::openedRate() const
     return mineField->openedRate();
 }
 
-QList<QPointF> GameDataMineSweeper::explodedCenters() const
-{
-    QList<QPointF> centers;
-
-    for (const auto &piecePos : mineField->explodedPositions()) {
-        const auto &rect = boardInformation->rectFromPiecePos(piecePos - QPoint(1, 1));
-
-        centers << rect.center();
-    }
-
-    return centers;
-}
-
 } // MineSweeper

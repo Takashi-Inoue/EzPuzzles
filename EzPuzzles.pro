@@ -30,6 +30,7 @@ SOURCES += main.cpp\
     AnimationObject/Transform/ChainedTransform.cpp \
     AnimationObject/Transform/TransformExpand.cpp \
     AnimationObject/Transform/WaitTransform.cpp \
+    MineSweeper/Savers.cpp \
     commands/RemoveListWidgetItem.cpp \
     CommonPhase/PhaseCleared.cpp \
     CommonPhase/PhaseShowFinalImage.cpp \
@@ -122,6 +123,7 @@ HEADERS  += MainWindow.h \
     AnimationObject/Transform/ChainedTransform.h \
     AnimationObject/Transform/TransformExpand.h \
     AnimationObject/Transform/WaitTransform.h \
+    MineSweeper/Savers.h \
     commands/RemoveListWidgetItem.h \
     CommonPhase/PhaseCleared.h \
     CommonPhase/PhaseShowFinalImage.h \

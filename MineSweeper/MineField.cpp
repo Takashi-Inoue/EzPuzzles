@@ -18,6 +18,7 @@
  */
 #include "MineField.h"
 #include "SaveDataMineSweeper.h"
+#include "Savers.h"
 
 #include <QElapsedTimer>
 
@@ -37,21 +38,27 @@ MineField::MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
     , m_missedCount(missedCount)
     , m_isAutoLock(isAutoLock)
 {
-    setOpenedPieceOpacity();
+    int besideMineCount = 0;
 
-    if (m_missedCount <= 0)
-        return;
+    for (qsizetype y = 1, yLim = pieces.size() - 1; y < yLim; ++y) {
+        QList<MinePiecePointer> &horizontal = pieces[y];
 
-    for (qsizetype y = 0, ylim = pieces.size(); y < ylim; ++y) {
-        const QList<MinePiecePointer> &horizontal = pieces[y];
-
-        for (qsizetype x = 0, xlim = horizontal.size(); x < xlim; ++x) {
+        for (qsizetype x = 1, xLim = horizontal.size() - 1; x < xLim; ++x) {
             const MinePiecePointer &piece = horizontal[x];
 
-            if (piece->isMine() && piece->isOpened())
-                explodedPos << QPoint(int(x), int(y));
+            if (!piece->isMine() && piece->isNearMine())
+                ++besideMineCount;
         }
     }
+
+    const uchar maxSavers = uchar(mineRatio() * 10 + m_mineCount / 500.0);
+    const ushort requiredPoints = (maxSavers == 0)
+                                  ? 0 : ushort((besideMineCount * 0.3) / (maxSavers + 1));
+
+    m_savers = QSharedPointer<Savers>::create(maxSavers, requiredPoints);
+
+    if (m_openedCount > 0)
+        setOpenedPieceOpacity();
 }
 
 void MineField::draw(QPainter &painter)
@@ -70,19 +77,37 @@ void MineField::open(const QPoint &pos)
 
     MinePiecePointer &piece = pieces[pos.y()][pos.x()];
 
-    if (piece->isOpened() | piece->isLocked())
+    if (piece->isLocked())
         return;
+
+    if (piece->isOpened()) {
+        if (piece->isMine() && m_savers->hasSaver()) {
+            piece->lock();
+            m_savers->consume();
+            --m_missedCount;
+        }
+
+        return;
+    }
 
     QList<QPoint> openedPointsNearMines;
 
     piece->open();
 
     if (piece->isMine()) {
-        ++m_missedCount;
-        explodedPos << pos;
-    } else {
-        ++m_openedCount;
+        if (m_savers->hasSaver()) {
+            piece->lock();
+            m_savers->consume();
+        } else {
+            ++m_missedCount;
+            m_savers->clear();
+        }
+
+        return;
     }
+
+    ++m_openedCount;
+    m_savers->incrementPoint();
 
     if (!piece->isNearMine()) {
         openChaining(pos, openedPointsNearMines);
@@ -133,15 +158,10 @@ QString MineField::information() const
 {
     double safeCount = safePiecesCount();
 
-    return QString("%1/%2 %3% opend, %4 missed").arg(m_openedCount)
-                                                .arg(safeCount)
-                                                .arg(openedRate() * 100, 0, 'f', 2)
-                                                .arg(m_missedCount);
-}
-
-const QList<QPoint> &MineField::explodedPositions() const
-{
-    return explodedPos;
+    return QString("%1/%2 %3% opend, %4 missed | %5")
+            .arg(m_openedCount).arg(safeCount).arg(openedRate() * 100, 0, 'f', 2)
+            .arg(m_missedCount)
+            .arg(m_savers->information());
 }
 
 void MineField::lockMines(QList<QPoint> &pointsToCheckToLock)
@@ -190,7 +210,7 @@ void MineField::lockMinesInAround(int x, int y)
 
     if (closedPieceCount == mines.size()) {
         for (MinePiecePointer &mine : mines) {
-            if (!mine->isLocked())
+            if (!mine->isOpened() && !mine->isLocked())
                 mine->lock();
         }
     }

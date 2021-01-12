@@ -26,6 +26,8 @@
 
 namespace MineSweeper {
 
+class Savers;
+
 class MineField : public QObject
 {
     Q_OBJECT
@@ -47,7 +49,6 @@ public:
     bool isNoMissed() const;
 
     QString information() const;
-    const QList<QPoint> &explodedPositions() const;
 
 signals:
     void openedRateChanged(qreal rate);
@@ -72,7 +73,7 @@ private:
 
     bool m_isAutoLock;
 
-    QList<QPoint> explodedPos;
+    QSharedPointer<Savers> m_savers;
 };
 
 using MineFieldPointer = QSharedPointer<MineField>;

@@ -45,7 +45,7 @@ void MinePiece::open()
 
 void MinePiece::lock()
 {
-    if (m_isOpened | m_isLocked)
+    if (m_isLocked)
         return;
 
     auto blockPiece = new BlockPiece(m_destRect.size()

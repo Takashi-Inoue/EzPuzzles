@@ -44,7 +44,6 @@ public:
     bool save(QStringView fileName) const override;
 
     double openedRate() const;
-    QList<QPointF> explodedCenters() const;
 
 private:
     SourceImage sourceImg;
