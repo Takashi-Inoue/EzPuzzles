@@ -22,37 +22,28 @@
 #include "FifteenAbstractShuffler.h"
 #include "IPuzzlePiece.h"
 
-#include <random>
-
 namespace Fifteen {
 
 class SlideShuffler : public AbstractShuffler
 {
 public:
-    SlideShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces);
-    ~SlideShuffler() = default;
+    SlideShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos);
 
-protected:
-    // ThreadOperation
-    QString className() const override;
-    void execImpl() override;
+    void exec() override;
 
 private:
-    enum Direction {
+    enum Direction : char { // Don't change each values.
         left = -2,
         top = -1,
         right = 2,
         bottom = 1
     };
 
-    Direction nextDirection(Direction from) const;
-    Direction reverse(Direction dir) const;
     bool isHorizontal(Direction dir) const;
+    Direction nextDirection(Direction from) const;
     QPoint nextBlankPosition(Direction to) const;
 
-    QPoint &blankPos;
-
-    mutable std::mt19937 mt;
+    QPoint &m_blankPos;
 };
 
 } // Fifteen

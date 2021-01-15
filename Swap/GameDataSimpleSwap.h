@@ -53,8 +53,6 @@ protected:
 
     static const unsigned char warpWaitCount = 6;
 
-    std::shared_ptr<QReadWriteLock> m_rwlock;
-
     QList<FifteenPiecePointer> m_pieces;
     SourceImage m_sourceImg;
     BoardPointer m_board;

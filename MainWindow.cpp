@@ -38,8 +38,6 @@
 
 #include <QMenu>
 
-QThread gameThread;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -67,8 +65,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_threadFrameTimer, &ThreadFrameTimer::tick, this, &MainWindow::onTickFrameTimer);
 
     m_threadFrameTimer->start();
-
-    gameThread.start();
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -80,9 +76,6 @@ void MainWindow::closeEvent(QCloseEvent *)
 
     m_threadFrameTimer->stop();
     m_threadFrameTimer->wait();
-
-    gameThread.quit();
-    gameThread.wait();
 }
 
 MainWindow::~MainWindow()

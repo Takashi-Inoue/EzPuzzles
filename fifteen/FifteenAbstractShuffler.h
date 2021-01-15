@@ -19,37 +19,29 @@
 #ifndef FIFTEENABSTRACTSHUFFLER_H
 #define FIFTEENABSTRACTSHUFFLER_H
 
-#include "ThreadOperation.h"
 #include "BoardInformation.h"
 #include "IPuzzlePiece.h"
 
 #include <QList>
-#include <QPoint>
-#include <QReadWriteLock>
-#include <memory>
 
 namespace Fifteen {
 
-class AbstractShuffler : public ThreadOperation
+class AbstractShuffler
 {
-    Q_OBJECT
 public:
-    explicit AbstractShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces, QObject *parent = 0) :
-        ThreadOperation(parent),
-        pieces(pieces),
-        boardInfo(boardInfo),
-        rwlock(rwlockForPieces)
+    explicit AbstractShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo)
+        : m_pieces(pieces)
+        , m_boardInfo(boardInfo)
     {
-        Q_CHECK_PTR(rwlockForPieces);
     }
 
     virtual ~AbstractShuffler() = default;
 
-protected:
-    QList<FifteenPiecePointer> &pieces;
-    BoardInfoPointer boardInfo;
+    virtual void exec() = 0;
 
-    std::shared_ptr<QReadWriteLock> rwlock;
+protected:
+    QList<FifteenPiecePointer> &m_pieces;
+    BoardInfoPointer m_boardInfo;
 };
 
 } // Fifteen

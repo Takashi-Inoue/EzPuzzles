@@ -26,7 +26,7 @@ namespace MineSweeper {
 
 MinePiece::MinePiece(const QRect &destRect)
     : AbstractMinePiece(destRect)
-    , m_openedPiece(BlockPiece::create(destRect.size(), BlockPiece::Colors::red))
+    , m_openedPiece(BlockPiece::create(destRect.size(), BlockPiece::red))
     , m_isLocked(false)
 {
 }
@@ -44,7 +44,7 @@ void MinePiece::lock()
     if (m_isLocked)
         return;
 
-    m_closedPiece = BlockPiece::create(m_destRect.size(), BlockPiece::Colors::blue);
+    m_closedPiece = BlockPiece::create(m_destRect.size(), BlockPiece::blue);
     m_isLocked = true;
     m_isOpened = false;
     m_isChanged = true;

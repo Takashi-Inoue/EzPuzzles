@@ -32,7 +32,7 @@ namespace Fifteen {
 class Board
 {
 public:
-    Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock);
+    Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces);
     ~Board() = default;
 
 public:
@@ -54,8 +54,6 @@ protected:
 
     BoardInfoPointer boardInformation;
     QList<FifteenPiecePointer> &m_pieces;
-
-    std::shared_ptr<QReadWriteLock> rwlock;
 };
 
 } // namespace Fifteen

@@ -35,7 +35,6 @@ SOURCES += main.cpp\
     commands/RemoveListWidgetItem.cpp \
     CommonPhase/PhaseCleared.cpp \
     CommonPhase/PhaseShowFinalImage.cpp \
-    CommonPhase/PhaseShuffle.cpp \
     Fifteen/Board.cpp \
     Fifteen/EffectSwapper.cpp \
     Fifteen/FifteenPieceMover.cpp \
@@ -101,7 +100,6 @@ SOURCES += main.cpp\
     ThreadFrameTimer.cpp \
     ThreadGameInfoLoader.cpp \
     ThreadImageLoader.cpp \
-    ThreadOperation.cpp \
     UniquePosition.cpp \
     UnknownSaveData.cpp
 
@@ -127,7 +125,6 @@ HEADERS  += MainWindow.h \
     commands/RemoveListWidgetItem.h \
     CommonPhase/PhaseCleared.h \
     CommonPhase/PhaseShowFinalImage.h \
-    CommonPhase/PhaseShuffle.h \
     Fifteen/Board.h \
     Fifteen/EffectSwapper.h \
     Fifteen/FifteenAbstractShuffler.h \
@@ -208,7 +205,6 @@ HEADERS  += MainWindow.h \
     ThreadFrameTimer.h \
     ThreadGameInfoLoader.h \
     ThreadImageLoader.h \
-    ThreadOperation.h \
     UniquePosition.h \
     UnknownSaveData.h \
     Utility.h

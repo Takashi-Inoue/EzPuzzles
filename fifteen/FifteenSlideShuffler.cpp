@@ -17,120 +17,89 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "FifteenSlideShuffler.h"
-#include "FifteenPieceMover.h"
 #include "Utility.h"
+
+#include <QRandomGenerator>
 
 namespace Fifteen {
 
-SlideShuffler::SlideShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, QPoint &blankPos, std::shared_ptr<QReadWriteLock> rwlockForPieces) :
-    AbstractShuffler(pieces, boardInfo, rwlockForPieces),
-    blankPos(blankPos),
-    mt(std::random_device()())
+SlideShuffler::SlideShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo
+                           , QPoint &blankPos)
+    : AbstractShuffler(pieces, boardInfo)
+    , m_blankPos(blankPos)
 {
 }
 
-QString SlideShuffler::className() const
+void SlideShuffler::exec()
 {
-    return "SlideShuffler";
-}
+    Q_ASSERT(!m_pieces.isEmpty());
+    Q_ASSERT(m_boardInfo != nullptr);
 
-void SlideShuffler::execImpl()
-{
-    Q_ASSERT(!pieces.isEmpty());
-    Q_ASSERT(boardInfo != nullptr);
+    Direction from = Direction::right;
 
-    QList<QPoint> changedPos;
-
-    Direction from = right;
-
-    for (int i = 0, lim = boardInfo->xCount() * boardInfo->yCount() * 4; i < lim; ++i) {
+    for (int i = 0, lim = m_boardInfo->pieceCount() * 4; i < lim; ++i) {
         Direction to = nextDirection(from);
-        QPoint nextPos = nextBlankPosition(to);
+        QPoint nextBlankPos = nextBlankPosition(to);
 
-        rwlock->lockForWrite();
+        auto slider = isHorizontal(to) ? &Utility::slideHorizontal2Dlist<FifteenPiecePointer>
+                                       : &Utility::slideVertical2Dlist<FifteenPiecePointer>;
 
-        changedPos = isHorizontal(to) ? Utility::slideHorizontal2Dlist<FifteenPiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos)
-                                      : Utility::slideVertical2Dlist<FifteenPiecePointer>(pieces, boardInfo->xCount(), blankPos, nextPos);
-        blankPos = nextPos;
-        from = reverse(to);
+        QList<QPoint> changedPos = slider(m_pieces, m_boardInfo->xCount(), m_blankPos, nextBlankPos);
 
-        for (const auto &pos : changedPos) {
-            auto &piece = pieces[pos.y() * boardInfo->xCount() + pos.x()];
+        m_blankPos = nextBlankPos;
+        from = Direction(-to);
+
+        for (const QPoint &pos : changedPos) {
+            FifteenPiecePointer &piece = m_pieces[pos.y() * m_boardInfo->xCount() + pos.x()];
 
             piece->setPosWithoutAnimation(pos);
         }
-
-        rwlock->unlock();
-
-        if (isStopped())
-            return;
     }
 }
 
-SlideShuffler::Direction SlideShuffler::nextDirection(SlideShuffler::Direction from) const
+bool SlideShuffler::isHorizontal(Direction dir) const
 {
-    QList<Direction> dirs;
-
-    switch (from) {
-    case top:
-    case bottom:
-        if (blankPos.x() > 0)
-            dirs << left;
-
-        if (blankPos.x() < boardInfo->xCount() - 1)
-            dirs << right;
-
-        break;
-
-    case left:
-    case right:
-        if (blankPos.y() > 0)
-            dirs << top;
-
-        if (blankPos.y() < boardInfo->yCount() - 1)
-            dirs << bottom;
-
-        break;
-    }
-
-    if (dirs.size() == 1)
-        return dirs.first();
-
-    return dirs.at(mt() % dirs.size());
+    return char(dir) % 2 == 0;
 }
 
-SlideShuffler::Direction SlideShuffler::reverse(SlideShuffler::Direction dir) const
+SlideShuffler::Direction SlideShuffler::nextDirection(Direction from) const
 {
-    return static_cast<Direction>(-dir);
+    auto randomDirection = [](int pos, int max) -> char
+    {
+        if (pos == 0)
+            return 1;
+        else if (pos == max)
+            return -1;
+
+        return (QRandomGenerator::global()->bounded(2) == 0) ? 1 : -1;
+    };
+
+    return isHorizontal(from) ? Direction(randomDirection(m_blankPos.y(), m_boardInfo->yCount() - 1))
+                              : Direction(randomDirection(m_blankPos.x(), m_boardInfo->xCount() - 1) * 2);
 }
 
-bool SlideShuffler::isHorizontal(SlideShuffler::Direction dir) const
+QPoint SlideShuffler::nextBlankPosition(Direction to) const
 {
-    return ((dir == left) | (dir == right));
-}
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+    QPoint next(m_blankPos);
 
-QPoint SlideShuffler::nextBlankPosition(SlideShuffler::Direction to) const
-{
-    QPoint next(blankPos);
+    switch (to) {
+    case Direction::left:
+        next.rx() = randomGenerator->bounded(m_blankPos.x());
+        return next;
 
-    if (to == left) {
-        next.rx() = mt() % blankPos.x();
+    case Direction::right:
+        next.rx() = randomGenerator->bounded(m_blankPos.x() + 1, m_boardInfo->xCount());
+        return next;
+
+    case Direction::top:
+        next.ry() = randomGenerator->bounded(m_blankPos.y());
+        return next;
+
+    case Direction::bottom:
+        next.ry() = randomGenerator->bounded(m_blankPos.y() + 1, m_boardInfo->yCount());
         return next;
     }
-
-    if (to == right) {
-        next.rx() += (mt() % (boardInfo->xCount() - blankPos.x() - 1) + 1);
-        return next;
-    }
-
-    if (to == top) {
-        next.ry() = mt() % blankPos.y();
-        return next;
-    }
-
-    // bottom
-    next.ry() += (mt() % (boardInfo->yCount() - blankPos.y() - 1) + 1);
-    return next;
 }
 
 } // Fifteen

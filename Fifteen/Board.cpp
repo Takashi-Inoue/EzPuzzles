@@ -23,10 +23,9 @@
 
 namespace Fifteen {
 
-Board::Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces, std::shared_ptr<QReadWriteLock> rwlock) :
-    boardInformation(boardInformation),
-    m_pieces(pieces),
-    rwlock(rwlock)
+Board::Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces)
+    : boardInformation(boardInformation)
+    , m_pieces(pieces)
 {
     Q_CHECK_PTR(boardInformation);
 }
@@ -64,11 +63,8 @@ QList<FifteenPiecePointer> Board::swapPiece(const QPoint &from, const QPoint &to
 
 void Board::draw(QPainter &painter)
 {
-    for (auto &piece : m_pieces) {
-        rwlock->lockForRead();
+    for (auto &piece : m_pieces)
         piece->draw(painter);
-        rwlock->unlock();
-    }
 }
 
 void Board::execOperation(QSharedPointer<IOperationForPieces> operation)

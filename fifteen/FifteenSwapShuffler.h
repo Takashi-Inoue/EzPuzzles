@@ -23,23 +23,14 @@
 #include "IPuzzlePiece.h"
 #include "BoardInformation.h"
 
-#include <random>
-
 namespace Fifteen {
 
 class SwapShuffler : public AbstractShuffler
 {
 public:
-    SwapShuffler(QList<FifteenPiecePointer> &pieces, BoardInfoPointer boardInfo, std::shared_ptr<QReadWriteLock> rwlockForPieces);
-    ~SwapShuffler() = default;
+    using AbstractShuffler::AbstractShuffler;
 
-protected:
-    // ThreadOperation
-    QString className() const override;
-    void execImpl() override;
-
-private:
-    mutable std::mt19937 mt;
+    void exec() override;
 };
 
 } // Fifteen

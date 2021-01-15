@@ -55,8 +55,6 @@ protected:
 
     static const unsigned char slideFrameCount = 20;
 
-    std::shared_ptr<QReadWriteLock> rwlock;
-
     QList<FifteenPiecePointer> pieces;
     FifteenPiecePointer finalPiece;
     SourceImage sourceImg;
