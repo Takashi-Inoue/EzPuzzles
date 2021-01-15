@@ -32,6 +32,8 @@ public:
     PhaseMineSweeperGaming(MineFieldPointer mineField, PhaseType nextPhase, QObject *parent = nullptr);
 
     void click(const QPoint &clickedPiecePos) override;
+    void press(const QPoint &clickedPiecePos) override;
+    void release(const QPoint &clickedPiecePos) override;
     void onTickFrame() override {}
     void draw(QPainter &) override;
     bool canSave() const override;

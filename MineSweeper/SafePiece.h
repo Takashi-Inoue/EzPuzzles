@@ -32,10 +32,8 @@ public:
     // IMinePiece
     void setOpenPieceOpacity(double opacity) override;
 
-    void open() override;
-    void lock() override;
+    void lock() override {}
 
-    bool isOpened() const override;
     bool isLocked() const override;
     bool isMine() const override;
     bool isNearMine() const override;
@@ -45,11 +43,11 @@ public:
 
 protected:
     // AbstractMinePiece
-    void drawImpl(QPainter &painter) override;
+    void drawOpenedPiece(QPainter &painter) const override;
 
-    void fillRect(QPainter &painter);
+    void fillRect(QPainter &painter) const;
 
-    QScopedPointer<ISwitchPiece> m_switchImagePiece;
+    QScopedPointer<IPiece> m_imagePiece;
     QSharedPointer<IPiece> m_numberPiece;
 
     int m_countAroundMines;

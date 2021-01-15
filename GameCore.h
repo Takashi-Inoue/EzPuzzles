@@ -39,7 +39,9 @@ public:
 
     void onTickFrame() override;
 
-    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
+    void mouseMove(const QSize &/*fieldSize*/, const QPoint &/*cursorPos*/) override {}
+    void mousePress(const QSize &fieldSize, const QPoint &cursorPos) override;
+    void mouseRelease(const QSize &fieldSize, const QPoint &cursorPos) override;
 
     void draw(QPainter &dest) override;
     void drawFinalImage(QPainter &dest) const override;
@@ -54,12 +56,14 @@ protected slots:
 
 protected:
     void saveScreenshot(QStringView saveDirPath, const QSize &screenshotSize) const override;
-    QPoint piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const;
+    virtual QPoint piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const;
 
     PhasePointer m_phase;
     GameDataPointer m_gameData;
 
     GameID m_gameId;
+
+    QPoint m_pressedPiecePos = QPoint(-9, -9);
 
 private:
     QPixmap m_backBuffer;

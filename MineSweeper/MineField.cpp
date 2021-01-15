@@ -75,6 +75,12 @@ void MineField::open(const QPoint &pos)
 {
     Q_ASSERT(!pieces.isEmpty());
 
+    if ((pos.y() <= 0 || pieces.size()    - 1 <= pos.y())
+     || (pos.x() <= 0 || pieces[0].size() - 1 <= pos.x()))
+    {
+        return;
+    }
+
     MinePiecePointer &piece = pieces[pos.y()][pos.x()];
 
     if (piece->isLocked())
@@ -120,6 +126,32 @@ void MineField::open(const QPoint &pos)
 
     lockMines(openedPointsNearMines);
     setOpenedPieceOpacity();
+}
+
+void MineField::press(const QPoint &pos)
+{
+    Q_ASSERT(!pieces.isEmpty());
+
+    if ((pos.y() <= 0 || pieces.size()    - 1 <= pos.y())
+     || (pos.x() <= 0 || pieces[0].size() - 1 <= pos.x()))
+    {
+        return;
+    }
+
+    pieces[pos.y()][pos.x()]->press();
+}
+
+void MineField::release(const QPoint &pos)
+{
+    Q_ASSERT(!pieces.isEmpty());
+
+    if ((pos.y() <= 0 || pieces.size()    - 1 <= pos.y())
+     || (pos.x() <= 0 || pieces[0].size() - 1 <= pos.x()))
+    {
+        return;
+    }
+
+    pieces[pos.y()][pos.x()]->release();
 }
 
 int MineField::openedCount() const

@@ -21,47 +21,34 @@
 #define ABSTRACTMINEPIECE_H
 
 #include "IMinePiece.h"
+#include "IPiece.h"
 
 namespace MineSweeper {
 
 class AbstractMinePiece : public IMinePiece
 {
 public:
-    AbstractMinePiece(const QRect &destRect)
-        : m_destRect(destRect)
-    {}
+    AbstractMinePiece(const QRect &destRect);
 
-    void draw(QPainter &painter) override
-    {
-        if (!m_isChanged)
-            return;
+    void draw(QPainter &painter) override;
+    void setEffect(EffectPointer effect) override;
+    void onTickFrame() override;
 
-        painter.save();
+    bool isOpened() const override;
 
-        drawImpl(painter);
-
-        painter.restore();
-
-        m_isChanged = false;
-    }
-
-    void setEffect(EffectPointer effect) override
-    {
-        if (m_effect != effect)
-            m_effect = effect;
-    }
-
-    void onTickFrame() override
-    {
-        if (m_effect != nullptr)
-            m_isChanged |= m_effect->onTickFrame();
-    }
+    void open() override;
+    void press() override;
+    void release() override;
 
 protected:
-    virtual void drawImpl(QPainter &painter) = 0;
+    virtual void drawClosedPiece(QPainter &painter) const;
+    virtual void drawOpenedPiece(QPainter &painter) const = 0;
 
+    QSharedPointer<IPiece> m_closedPiece;
     QRect m_destRect;
     EffectPointer m_effect;
+
+    bool m_isOpened = false;
     bool m_isChanged = true;
 };
 

@@ -46,16 +46,26 @@ void GameWidget::paintEvent(QPaintEvent *event)
     m_game->draw(painter);
 }
 
-//void GameWidget::mouseMoveEvent(QMouseEvent *event)
-//{
-//    ImageWidget::mouseMoveEvent(event);
+void GameWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    ImageWidget::mouseMoveEvent(event);
 
-//    qDebug() << "mouseMove";
-//}
+    if (m_game)
+        m_game->mouseMove(size(), event->pos());
+}
 
 void GameWidget::mousePressEvent(QMouseEvent *event)
 {
     ImageWidget::mousePressEvent(event);
 
-    m_game->click(size(), event->pos());
+    if (m_game)
+        m_game->mousePress(size(), event->pos());
+}
+
+void GameWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    ImageWidget::mouseReleaseEvent(event);
+
+    if (m_game)
+        m_game->mouseRelease(size(), event->pos());
 }

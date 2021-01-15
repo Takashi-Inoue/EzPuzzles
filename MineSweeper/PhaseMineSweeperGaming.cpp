@@ -18,6 +18,8 @@
  */
 #include "PhaseMineSweeperGaming.h"
 
+#include <QDebug>
+
 namespace MineSweeper {
 
 PhaseMineSweeperGaming::PhaseMineSweeperGaming(MineFieldPointer mineField, PhaseType nextPhase, QObject *parent)
@@ -38,6 +40,16 @@ void PhaseMineSweeperGaming::click(const QPoint &clickedPiecePos)
 
     if (m_mineField->isAllOpened() & m_mineField->isNoMissed())
         emit toNextPhase(m_nextPhaseType);
+}
+
+void PhaseMineSweeperGaming::press(const QPoint &clickedPiecePos)
+{
+    m_mineField->press(clickedPiecePos);
+}
+
+void PhaseMineSweeperGaming::release(const QPoint &clickedPiecePos)
+{
+    m_mineField->release(clickedPiecePos);
 }
 
 void PhaseMineSweeperGaming::draw(QPainter &painter)

@@ -43,7 +43,9 @@ public:
 
     virtual void onTickFrame() = 0;
 
-    virtual void click(const QSize &fieldSize, const QPoint &cursorPos) = 0;
+    virtual void mouseMove(const QSize &fieldSize, const QPoint &cursorPos) = 0;
+    virtual void mousePress(const QSize &fieldSize, const QPoint &cursorPos) = 0;
+    virtual void mouseRelease(const QSize &fieldSize, const QPoint &cursorPos) = 0;
 
     virtual void draw(QPainter &dest) = 0;
     virtual void drawFinalImage(QPainter &dest) const = 0;

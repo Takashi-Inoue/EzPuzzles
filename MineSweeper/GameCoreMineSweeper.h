@@ -33,9 +33,14 @@ public:
     using GameCore::GameCore;
 
     QSharedPointer<IGame> cloneAsNewGame() const override;
-    void click(const QSize &fieldSize, const QPoint &cursorPos) override;
+    void mouseMove(const QSize &/*fieldSize*/, const QPoint &/*cursorPos*/) override;
+    void mousePress(const QSize &fieldSize, const QPoint &cursorPos) override;
+    void mouseRelease(const QSize &fieldSize, const QPoint &cursorPos) override;
 
     bool hasFinalImage() const override;
+
+protected:
+    QPoint piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const override;
 };
 
 } // MineSweeper

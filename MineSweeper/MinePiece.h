@@ -35,8 +35,9 @@ public:
 
     void open() override;
     void lock() override;
+    void press() override;
+    void release() override;
 
-    bool isOpened() const override;
     bool isLocked() const override;
     bool isMine() const override;
     bool isNearMine() const override;
@@ -45,11 +46,10 @@ public:
     int countAroundMines() const override;
 
 protected:
-    void drawImpl(QPainter &painter) override;
+    void drawOpenedPiece(QPainter &painter) const override;
 
 private:
-    QScopedPointer<IPiece> m_blockPiece;
-    bool m_isOpened;
+    QSharedPointer<IPiece> m_openedPiece;
     bool m_isLocked;
 };
 

@@ -73,11 +73,22 @@ void GameCore::onTickFrame()
     m_phase->onTickFrame();
 }
 
-void GameCore::click(const QSize &fieldSize, const QPoint &cursorPos)
+void GameCore::mousePress(const QSize &fieldSize, const QPoint &cursorPos)
 {
-    m_phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
+    m_pressedPiecePos = piecePosFromCursorPos(fieldSize, cursorPos);
+}
 
-    emit informationUpdated(shortInformation());
+void GameCore::mouseRelease(const QSize &fieldSize, const QPoint &cursorPos)
+{
+    QPoint releasedPiecePos = piecePosFromCursorPos(fieldSize, cursorPos);
+
+    if (m_pressedPiecePos == releasedPiecePos) {
+        m_phase->click(releasedPiecePos);
+
+        emit informationUpdated(shortInformation());
+    }
+
+    m_pressedPiecePos = QPoint(-1, -1);
 }
 
 void GameCore::draw(QPainter &dest)

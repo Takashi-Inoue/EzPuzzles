@@ -40,6 +40,8 @@ public:
 
     void draw(QPainter &painter);
     void open(const QPoint &pos);
+    void press(const QPoint &pos);
+    void release(const QPoint &pos);
 
     int openedCount() const;
     int missedCount() const;

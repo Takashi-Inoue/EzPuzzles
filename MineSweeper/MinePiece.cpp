@@ -20,27 +20,23 @@
 
 #include "BlockPiece.h"
 
+#include <QDebug>
+
 namespace MineSweeper {
 
 MinePiece::MinePiece(const QRect &destRect)
     : AbstractMinePiece(destRect)
-    , m_blockPiece(new BlockPiece(destRect.size()))
-    , m_isOpened(false)
+    , m_openedPiece(BlockPiece::create(destRect.size(), BlockPiece::Colors::red))
     , m_isLocked(false)
 {
 }
 
 void MinePiece::open()
 {
-    if (m_isOpened | m_isLocked)
+    if (m_isLocked)
         return;
 
-    auto blockPiece = new BlockPiece(m_destRect.size()
-                                   , QColor("#E08080"), QColor("#C06060"), QColor("#600000"));
-
-    m_blockPiece.reset(blockPiece);
-    m_isOpened = true;
-    m_isChanged = true;
+    AbstractMinePiece::open();
 }
 
 void MinePiece::lock()
@@ -48,17 +44,22 @@ void MinePiece::lock()
     if (m_isLocked)
         return;
 
-    auto blockPiece = new BlockPiece(m_destRect.size()
-                                   , QColor("#A0A0FF"), QColor("#8080E0"), QColor("#202080"));
-
-    m_blockPiece.reset(blockPiece);
+    m_closedPiece = BlockPiece::create(m_destRect.size(), BlockPiece::Colors::blue);
     m_isLocked = true;
+    m_isOpened = false;
     m_isChanged = true;
 }
 
-bool MinePiece::isOpened() const
+void MinePiece::press()
 {
-    return m_isOpened;
+    if (!m_isLocked)
+        AbstractMinePiece::press();
+}
+
+void MinePiece::release()
+{
+    if (!m_isLocked)
+        AbstractMinePiece::release();
 }
 
 bool MinePiece::isLocked() const
@@ -86,11 +87,11 @@ int MinePiece::countAroundMines() const
     return 0;
 }
 
-void MinePiece::drawImpl(QPainter &painter)
+void MinePiece::drawOpenedPiece(QPainter &painter) const
 {
     painter.setOpacity(1.0);
 
-    m_blockPiece->draw(painter, m_destRect);
+    m_openedPiece->draw(painter, m_destRect);
 
     if (m_effect != nullptr)
         m_effect->draw(painter, m_destRect);

@@ -19,7 +19,6 @@
 #ifndef IMINEPIECE_H
 #define IMINEPIECE_H
 
-#include "ISwitchPiece.h"
 #include "AnimationObject/Effect/AbstractEffect.h"
 
 namespace MineSweeper {
@@ -37,6 +36,8 @@ public:
 
     virtual void open() = 0;
     virtual void lock() = 0;
+    virtual void press() = 0;
+    virtual void release() = 0;
 
     virtual bool isOpened() const = 0;
     virtual bool isLocked() const = 0;

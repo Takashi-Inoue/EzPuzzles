@@ -21,29 +21,45 @@
 #include <QPainter>
 #include <QDebug>
 
-QMap<BlockPiece::Info, QPixmap> BlockPiece::m_pixmapMap;
-
-BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor lightLine, QColor darkLine)
-    : m_foregroundColor(foreground)
-    , m_lightLineColor(lightLine)
-    , m_darkLineColor(darkLine)
+BlockPiece::BlockPiece(const QSize &size, QColor foreground, QColor inner, QColor outer)
+    : m_pixmap(createPixmap(size, foreground, inner, outer))
 {
-    if (size.isEmpty())
-        return;
+    Q_ASSERT(!size.isEmpty());
+}
 
-    Info info(size, foreground.rgba(), lightLine.rgba(), darkLine.rgba());
+QSharedPointer<BlockPiece> BlockPiece::create(const QSize &size, BlockPiece::Colors color)
+{
+    static const QHash<Colors, QList<QColor>> colorHash = {
+        {gray,        {QColor("#E0E0E0"), QColor("#C0C0C0"), QColor("#606060")}},
+        {grayPressed, {QColor("#C0C0C0"), QColor("#D0D0D0"), QColor("#606060")}},
+        {red,         {QColor("#E08080"), QColor("#C06060"), QColor("#600000")}},
+        {blue,        {QColor("#A0A0FF"), QColor("#8080E0"), QColor("#202080")}},
+    };
 
-    m_pixmap = m_pixmapMap[info];
+    const QList<QColor> &colors = colorHash[color];
 
-    if (!m_pixmap.isNull())
-        return;
+    return create(size, colors[0], colors[1], colors[2]);
+}
 
-    m_pixmap = QPixmap(size);
+QSharedPointer<BlockPiece> BlockPiece::create(const QSize &size, QColor foreground
+                                            , QColor inner, QColor outer)
+{
+    static QMap<Info, QSharedPointer<BlockPiece>> pieceMap;
 
-    QPainter painter(&m_pixmap);
-    drawPiece(painter, m_pixmap.size());
+    Info info(size, foreground.rgba(), inner.rgba(), outer.rgba());
 
-    m_pixmapMap[info] = m_pixmap;
+    QSharedPointer<BlockPiece> &piece = pieceMap[info];
+
+    if (piece == nullptr) {
+        qDebug() << QStringLiteral("create BlockPiece: size=%1, fore=%2, inner=%3, outer=%4")
+                    .arg(size.width())
+                    .arg(foreground.name(QColor::HexArgb), inner.name(QColor::HexArgb), outer.name(QColor::HexArgb));
+
+        auto newPiece = new BlockPiece(size, foreground, inner, outer);
+        piece = QSharedPointer<BlockPiece>(newPiece);
+    }
+
+    return piece;
 }
 
 void BlockPiece::draw(QPainter &painter, const QPointF &pos)
@@ -56,22 +72,27 @@ void BlockPiece::draw(QPainter &painter, const QRectF &rect)
     painter.drawPixmap(rect, m_pixmap, m_pixmap.rect());
 }
 
-void BlockPiece::drawPiece(QPainter &painter, const QSize &targetSize)
+QPixmap BlockPiece::createPixmap(const QSize &size, QColor foreground, QColor inner, QColor outer) const
 {
+    QPixmap pixmap(size);
+    QPainter painter(&pixmap);
     QPoint pos(0, 0);
 
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
     painter.setOpacity(1.0);
 
-    painter.fillRect(QRect(pos, targetSize - QSize(1, 1)), m_foregroundColor);
+    painter.fillRect(QRect(pos, size - QSize(1, 1)), foreground);
 
-    painter.setPen(m_darkLineColor);
-    painter.drawRect(QRect(pos, targetSize - QSize(1, 1)));
+    painter.setPen(outer);
+    painter.drawRect(QRect(pos, size - QSize(1, 1)));
 
-    painter.setPen(m_lightLineColor);
-    painter.drawRect(QRect(pos + QPoint(1, 1), targetSize - QSize(3, 3)));
+    painter.setPen(inner);
+    painter.drawRect(QRect(pos + QPoint(1, 1), size - QSize(3, 3)));
+
+    return pixmap;
 }
 
+// class BlockPiece::Info
 BlockPiece::Info::Info(const QSize &size, QRgb rgba1, QRgb rgba2, QRgb rgba3)
     : m_sizeInt(size.width())
     , m_color1(rgba1)

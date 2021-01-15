@@ -18,6 +18,8 @@
  */
 #include "BoardInformation.h"
 
+#include <QDebug>
+
 BoardInformation::BoardInformation(const QSize &xyCount, const QSize &pixelSize) :
     m_xyCount(xyCount),
     m_pixelSize(pixelSize)
@@ -39,8 +41,11 @@ QRectF BoardInformation::rectFromPiecePos(const QPoint &piecePos) const
 
 QPoint BoardInformation::piecePosFromPixelPos(const QPoint &pixelPos) const
 {
-    return QPoint((pixelPos.x() * int(xCount())) / m_pixelSize.width(),
-                  (pixelPos.y() * int(yCount())) / m_pixelSize.height());
+    if (pixelPos.x() < 0 || pixelPos.y() < 0)
+        return QPoint(-9, -9);
+
+    return QPoint((pixelPos.x() * xCount()) / m_pixelSize.width(),
+                  (pixelPos.y() * yCount()) / m_pixelSize.height());
 }
 
 int BoardInformation::xCount() const

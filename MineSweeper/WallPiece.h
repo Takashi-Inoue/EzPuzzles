@@ -36,6 +36,8 @@ public:
 
     void open() override {}
     void lock() override {}
+    void press() override {}
+    void release() override {}
 
     bool isOpened() const override;
     bool isLocked() const override;

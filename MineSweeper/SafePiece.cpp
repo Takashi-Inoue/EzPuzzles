@@ -18,7 +18,7 @@
  */
 #include "SafePiece.h"
 
-#include "SwitchImagePiece.h"
+#include "ImageFragmentPiece.h"
 #include "NumberPieceFactory.h"
 
 namespace MineSweeper {
@@ -26,7 +26,7 @@ namespace MineSweeper {
 SafePiece::SafePiece(int countAroundMines, const QRect &destRect, const QPixmap &pixmap
                    , const QRect &sourceRect)
     : AbstractMinePiece(destRect)
-    , m_switchImagePiece(new SwitchImagePiece(pixmap, sourceRect))
+    , m_imagePiece(new ImageFragmentPiece(pixmap, sourceRect))
     , m_countAroundMines(countAroundMines)
 {
     Q_ASSERT(countAroundMines >= 0 && countAroundMines < 9);
@@ -44,44 +44,17 @@ void SafePiece::setOpenPieceOpacity(double opacity)
 
     m_openOpacity = opacity;
 
-    double div = opacity - m_oldOpacity;
+    double sub = qAbs(opacity - m_oldOpacity);
 
-    div = (div >= 0) ? div : -div;
-
-    if ((div > 0.01) | (opacity == 1.0)) {
+    if ((sub > 0.01) | (opacity == 1.0)) {
         m_oldOpacity = opacity;
         m_isChanged = true;
     }
 }
 
-void SafePiece::open()
-{
-    if (m_switchImagePiece->isOpen())
-        return;
-
-    m_switchImagePiece->open();
-
-    m_isChanged = true;
-}
-
-void SafePiece::lock()
-{
-    if (m_switchImagePiece->isLock())
-        return;
-
-    m_switchImagePiece->lock();
-
-    m_isChanged = true;
-}
-
-bool SafePiece::isOpened() const
-{
-    return m_switchImagePiece->isOpen();
-}
-
 bool SafePiece::isLocked() const
 {
-    return m_switchImagePiece->isLock();
+    return false;
 }
 
 bool SafePiece::isMine() const
@@ -104,25 +77,23 @@ int SafePiece::countAroundMines() const
     return m_countAroundMines;
 }
 
-void SafePiece::drawImpl(QPainter &painter)
+void SafePiece::drawOpenedPiece(QPainter &painter) const
 {
-    if (isOpened()) {
-        fillRect(painter);
-        painter.setOpacity(m_openOpacity);
-    }
+    fillRect(painter);
+    painter.setOpacity(m_openOpacity);
 
-    m_switchImagePiece->draw(painter, m_destRect);
+    m_imagePiece->draw(painter, m_destRect);
 
     painter.setOpacity(1);
 
-    if (m_numberPiece != nullptr && isOpened())
+    if (m_numberPiece)
         m_numberPiece->draw(painter, m_destRect);
 
-    if (m_effect != nullptr)
+    if (m_effect)
         m_effect->draw(painter, m_destRect);
 }
 
-void SafePiece::fillRect(QPainter &painter)
+void SafePiece::fillRect(QPainter &painter) const
 {
     painter.setOpacity(1);
 

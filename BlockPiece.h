@@ -25,8 +25,13 @@
 
 class BlockPiece : public IPiece
 {
+    BlockPiece(const QSize &size = QSize(0, 0), QColor foreground = QColor(224, 224, 224), QColor inner = QColor(192, 192, 192), QColor outer = QColor(96, 96, 96));
 public:
-    BlockPiece(const QSize &size = QSize(0, 0), QColor foreground = QColor(224, 224, 224), QColor lightLine = QColor(192, 192, 192), QColor darkLine = QColor(96, 96, 96));
+    enum Colors {gray, grayPressed, blue, red};
+
+    static QSharedPointer<BlockPiece> create(const QSize &size, Colors color);
+    static QSharedPointer<BlockPiece> create(const QSize &size, QColor foreground
+                                           , QColor inner, QColor outer);
 
     // IPiece
     void draw(QPainter &painter, const QPointF &pos) override;
@@ -47,13 +52,7 @@ protected:
         uint m_color2;
     };
 
-    static QMap<Info, QPixmap> m_pixmapMap;
-
-    void drawPiece(QPainter &painter, const QSize &targetSize);
-
-    QColor m_foregroundColor;
-    QColor m_lightLineColor;
-    QColor m_darkLineColor;
+    QPixmap createPixmap(const QSize &size, QColor foreground, QColor inner, QColor outer) const;
 
     QPixmap m_pixmap;
 };

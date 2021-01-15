@@ -43,6 +43,8 @@ public:
     {}
 
     virtual void click(const QPoint &) = 0;
+    virtual void press(const QPoint &) {}
+    virtual void release(const QPoint &) {}
     virtual void onTickFrame() = 0;
     virtual void draw(QPainter &) = 0;
     virtual bool canSave() const = 0;

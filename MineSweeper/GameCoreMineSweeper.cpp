@@ -18,6 +18,8 @@
  */
 #include "GameCoreMineSweeper.h"
 
+#include <QDebug>
+
 namespace MineSweeper {
 
 QSharedPointer<IGame> GameCoreMineSweeper::cloneAsNewGame() const
@@ -29,11 +31,27 @@ QSharedPointer<IGame> GameCoreMineSweeper::cloneAsNewGame() const
     return QSharedPointer<IGame>(game);
 }
 
-void GameCoreMineSweeper::click(const QSize &fieldSize, const QPoint &cursorPos)
+void GameCoreMineSweeper::mouseMove(const QSize &fieldSize, const QPoint &cursorPos)
 {
-    const auto &piecePos = piecePosFromCursorPos(fieldSize, cursorPos);
+    QPoint pressedPiecePos = piecePosFromCursorPos(fieldSize, cursorPos);
 
-    m_phase->click(piecePos + QPoint(1, 1));
+    if (pressedPiecePos == m_pressedPiecePos)
+        return;
+
+    m_phase->release(m_pressedPiecePos);
+    m_phase->press(pressedPiecePos);
+
+    m_pressedPiecePos = pressedPiecePos;
+}
+
+void GameCoreMineSweeper::mousePress(const QSize &fieldSize, const QPoint &cursorPos)
+{
+    mouseMove(fieldSize, cursorPos);
+}
+
+void GameCoreMineSweeper::mouseRelease(const QSize &fieldSize, const QPoint &cursorPos)
+{
+    m_phase->click(piecePosFromCursorPos(fieldSize, cursorPos));
 
     emit informationUpdated(shortInformation());
 }
@@ -41,6 +59,11 @@ void GameCoreMineSweeper::click(const QSize &fieldSize, const QPoint &cursorPos)
 bool GameCoreMineSweeper::hasFinalImage() const
 {
     return false;
+}
+
+QPoint GameCoreMineSweeper::piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const
+{
+    return GameCore::piecePosFromCursorPos(fieldSize, cursorPos) + QPoint(1, 1);
 }
 
 } // MineSweeper

@@ -100,7 +100,7 @@ bool FormSettingsMineSweeper::eventFilter(QObject *obj, QEvent *event)
     QPixmap pixmap(pieceSide, pieceSide);
     QPainter painterPixmap(&pixmap);
 
-    BlockPiece(pixmap.size()).draw(painterPixmap, QPointF(0, 0));
+    BlockPiece::create(pixmap.size(), BlockPiece::Colors::gray)->draw(painterPixmap, QPointF(0, 0));
 
     QPointF tl(ui->frameCellSize->width()  - pieceSide
              , ui->frameCellSize->height() - pieceSide);

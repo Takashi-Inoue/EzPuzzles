@@ -30,6 +30,7 @@ SOURCES += main.cpp\
     AnimationObject/Transform/ChainedTransform.cpp \
     AnimationObject/Transform/TransformExpand.cpp \
     AnimationObject/Transform/WaitTransform.cpp \
+    MineSweeper/AbstractMinePiece.cpp \
     MineSweeper/Savers.cpp \
     commands/RemoveListWidgetItem.cpp \
     CommonPhase/PhaseCleared.cpp \
@@ -97,7 +98,6 @@ SOURCES += main.cpp\
     Position.cpp \
     SourceImage.cpp \
     StringListHistory.cpp \
-    SwitchImagePiece.cpp \
     ThreadFrameTimer.cpp \
     ThreadGameInfoLoader.cpp \
     ThreadImageLoader.cpp \
@@ -200,13 +200,11 @@ HEADERS  += MainWindow.h \
     ImagePiece.h \
     IPiece.h \
     IShuffler.h \
-    ISwitchPiece.h \
     IWidgetGameSettings.h \
     NumberPiece.h \
     Position.h \
     SourceImage.h \
     StringListHistory.h \
-    SwitchImagePiece.h \
     ThreadFrameTimer.h \
     ThreadGameInfoLoader.h \
     ThreadImageLoader.h \
