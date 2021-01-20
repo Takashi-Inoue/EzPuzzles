@@ -21,45 +21,43 @@
 
 namespace Slide {
 
-PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(BoardPointer board, QPoint &currentBlankPos, const QPoint &defaultBlankPos, PhaseType nextPhase, int slideFrameCount, QObject *parent) :
+PhaseSimpleSlideGaming::PhaseSimpleSlideGaming(GameBoardPtr board, QPoint &currentBlankPos
+                                             , const QPoint &defaultBlankPos, PhaseType nextPhase
+                                             , QObject *parent) :
     AbstractPhase(nextPhase, parent),
-    board(board),
-    currentBlankPos(currentBlankPos),
-    defaultBlankPos(defaultBlankPos),
-    slideFrameCount(slideFrameCount),
-    isGameCleared(false)
+    m_board(board),
+    m_currentBlankPos(currentBlankPos),
+    m_defaultBlankPos(defaultBlankPos),
+    m_isGameCleared(false)
 {
-    Q_ASSERT(slideFrameCount >= 0);
 }
 
 void PhaseSimpleSlideGaming::click(const QPoint &clickedPiecePos)
 {
-    if (isGameCleared | (clickedPiecePos == currentBlankPos))
+    if (m_isGameCleared | (clickedPiecePos == m_currentBlankPos))
         return;
 
-    if ((clickedPiecePos.x() != currentBlankPos.x()) & (clickedPiecePos.y() != currentBlankPos.y()))
+    if ((clickedPiecePos.x() != m_currentBlankPos.x()) & (clickedPiecePos.y() != m_currentBlankPos.y()))
         return;
 
-    board->slidePiece(currentBlankPos, clickedPiecePos);
+    m_board->movePiece(m_currentBlankPos, clickedPiecePos);
 
-    currentBlankPos = clickedPiecePos;
+    m_currentBlankPos = clickedPiecePos;
 
-    isGameCleared = board->isCleared();
+    m_isGameCleared = m_board->isGameCleared();
 }
 
 void PhaseSimpleSlideGaming::onTickFrame()
 {
-    board->onTickFrame();
+    m_board->onTickFrame();
 
-    if (isGameCleared) {
-        if (--slideFrameCount == 0)
-            emit toNextPhase(m_nextPhaseType);
-    }
+    if (m_isGameCleared && m_board->isFinishedMoving())
+        emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseSimpleSlideGaming::draw(QPainter &painter)
 {
-    board->draw(painter);
+    m_board->draw(painter);
 }
 
 bool PhaseSimpleSlideGaming::canSave() const
@@ -74,12 +72,12 @@ bool PhaseSimpleSlideGaming::canLoad() const
 
 QString PhaseSimpleSlideGaming::information() const
 {
-    QSize xyCount = board->boardInfo()->xyCount();
+    QSize xyCount = m_board->boardInfo()->xyCount();
 
     return QStringLiteral("%1 x %2, Blank Position Default[%3, %4] : Current[%5, %6]")
             .arg(xyCount.width()).arg(xyCount.height())
-            .arg(defaultBlankPos.x() + 1).arg(defaultBlankPos.y() + 1)
-            .arg(currentBlankPos.x() + 1).arg(currentBlankPos.y() + 1);
+            .arg(m_defaultBlankPos.x() + 1).arg(m_defaultBlankPos.y() + 1)
+            .arg(m_currentBlankPos.x() + 1).arg(m_currentBlankPos.y() + 1);
 }
 
 } // Slide

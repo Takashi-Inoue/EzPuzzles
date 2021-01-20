@@ -114,7 +114,7 @@ void GameCore::drawFinalImage(QPainter &dest) const
 
 bool GameCore::hasFinalImage() const
 {
-    return true;
+    return m_gameData->finalImage() != nullptr;
 }
 
 QSize GameCore::maxFieldSize() const

@@ -17,32 +17,17 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSlideEnding.h"
-#include "AnimationObject/Effect/CompositeEffect.h"
-#include "AnimationObject/Effect/EffectGraduallyImage.h"
+
+#include <QDebug>
 
 namespace Slide {
 
-PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(BoardInfoPointer boardInfo, QList<FifteenPiecePointer> &pieces,
-                                               QPixmap sourcePixmap, const QPoint &blankPos, PhaseType nextPhase, QObject *parent) :
-    AbstractPhase(nextPhase, parent),
-    pieces(pieces),
-    nowFrame(0)
+PhaseSimpleSlideEnding::PhaseSimpleSlideEnding(QSharedPointer<Fifteen::IBoard> board
+                                             , PhaseType nextPhase, QObject *parent)
+    : AbstractPhase(nextPhase, parent)
+    , m_board(board)
 {
-    for (auto &piece : pieces) {
-        auto compositeEffect = QSharedPointer<Effect::CompositeEffect>::create();
-
-        compositeEffect->addEffect(piece->effect());
-
-        const QRectF &rect = boardInfo->rectFromPiecePos(piece->pos().defaultPos());
-        compositeEffect->addEffect(QSharedPointer<Effect::GraduallyImage>::create(graduallyFrames, graduallyFrames, sourcePixmap, rect));
-
-        piece->setEffect(compositeEffect);
-    }
-
-    FifteenPiecePointer &blankPiece = pieces[blankPos.y() * boardInfo->xCount() + blankPos.x()];
-    const QRectF &rect = boardInfo->rectFromPiecePos(blankPiece->pos().defaultPos());
-
-    blankPiece->setEffect(QSharedPointer<Effect::GraduallyImage>::create(0, graduallyFrames, sourcePixmap, rect));
+    Q_CHECK_PTR(board);
 }
 
 void PhaseSimpleSlideEnding::click(const QPoint &)
@@ -52,17 +37,13 @@ void PhaseSimpleSlideEnding::click(const QPoint &)
 
 void PhaseSimpleSlideEnding::onTickFrame()
 {
-    for (auto &piece : pieces)
-        piece->onTickFrame();
-
-    if (++nowFrame > graduallyFrames * 2)
+    if (!m_board->onTickFrame())
         emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseSimpleSlideEnding::draw(QPainter &painter)
 {
-    for (auto &piece : pieces)
-        piece->draw(painter);
+    m_board->draw(painter);
 }
 
 bool PhaseSimpleSlideEnding::canSave() const
@@ -77,7 +58,7 @@ bool PhaseSimpleSlideEnding::canLoad() const
 
 QString PhaseSimpleSlideEnding::information() const
 {
-    return "Clear!";
+    return QStringLiteral("Clear!");
 }
 
 } // Slide

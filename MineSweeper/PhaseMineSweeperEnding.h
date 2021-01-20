@@ -24,8 +24,6 @@
 #include "BoardInformation.h"
 #include "SourceImage.h"
 
-#include <random>
-
 namespace MineSweeper {
 
 class PhaseMineSweeperEnding : public AbstractPhase
@@ -52,8 +50,6 @@ private:
     SourceImage sourceImage;
 
     int nowFrame;
-
-    std::mt19937 mt;
 };
 
 } // MineSweeper

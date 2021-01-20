@@ -20,7 +20,7 @@
 #define GAMEDATASIMPLESLIDE_H
 
 #include "IGameData.h"
-#include "Fifteen/Board.h"
+#include "Fifteen/AbstractGameBoard.h"
 #include "UniquePosition.h"
 
 #include <QReadWriteLock>
@@ -47,21 +47,13 @@ public:
     bool save(QStringView fileName) const override;
 
 protected:
-    void initPieces();
     void createBlankPiece();
-    void setSlideAnimationToPieces();
-    void setEffectToPieces();
-    FifteenPiecePointer &getPiece(const QPoint &pos);
 
-    static const unsigned char slideFrameCount = 20;
-
-    QList<FifteenPiecePointer> pieces;
-    FifteenPiecePointer finalPiece;
-    SourceImage sourceImg;
-    BoardPointer board;
-    UniquePosition defaultBlankPos;
-    QPoint currentBlankPos;
-    AbstractPhase::PhaseType currentPhaseType;
+    SourceImage m_sourceImg;
+    GameBoardPtr m_board;
+    UniquePosition m_defaultBlankPos;
+    QPoint m_currentBlankPos;
+    AbstractPhase::PhaseType m_currentPhaseType;
 };
 
 } // Slide

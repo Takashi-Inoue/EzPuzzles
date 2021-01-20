@@ -56,11 +56,6 @@ void GameCoreMineSweeper::mouseRelease(const QSize &fieldSize, const QPoint &cur
     emit informationUpdated(shortInformation());
 }
 
-bool GameCoreMineSweeper::hasFinalImage() const
-{
-    return false;
-}
-
 QPoint GameCoreMineSweeper::piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const
 {
     return GameCore::piecePosFromCursorPos(fieldSize, cursorPos) + QPoint(1, 1);

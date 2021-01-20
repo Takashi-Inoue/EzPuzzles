@@ -19,37 +19,20 @@
 #ifndef GRADUALLYBLINKFRAME_H
 #define GRADUALLYBLINKFRAME_H
 
-#include "AbstractEffect.h"
+#include "EffectGradualFrame.h"
 #include <QPair>
 #include <QPointF>
 #include <QVector>
 
 namespace Effect {
 
-class GraduallyBlinkFrame : public AbstractEffect
+class GraduallyBlinkFrame : public GradualFrame
 {
 public:
-    GraduallyBlinkFrame(const QColor &outerStart, const QColor &outerEnd
-                      , int totalFrameCount, bool isLoop);
-    GraduallyBlinkFrame(int width, const QColor &outerStart, const QColor &innerStart
-                      , const QColor &outerEnd, const QColor &innerEnd
-                      , int totalFrameCount, bool isLoop);
-
-    // AbstractEffect
-    void draw(QPainter &painter, const QRectF &rect) override;
+    using GradualFrame::GradualFrame;
 
 protected:
-    void drawSingleLineFrame(QPainter &painter, const QRectF &rect) const;
-    void drawGradationFrame(QPainter &painter, const QRectF &rect) const;
-    QColor currentColor(const QColor &start, const QColor &end) const;
-    QList<QList<QPointF>> createEdgesPolygon(const QRectF &rect) const;
-    QList<QPair<QPointF, QPointF>> createGradientsStartStop(const QRectF &rect) const;
-
-    int m_width;
-    QColor m_outerStartColor;
-    QColor m_outerEndColor;
-    QColor m_innerStartColor;
-    QColor m_innerEndColor;
+    QColor currentColor(const QColor &start, const QColor &end) const override;
 };
 
 } // Effect

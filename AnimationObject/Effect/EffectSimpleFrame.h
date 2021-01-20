@@ -19,12 +19,12 @@
 #ifndef SIMPLEFRAME_H
 #define SIMPLEFRAME_H
 
-#include "EffectGraduallyBlinkFrame.h"
+#include "EffectGradualFrame.h"
 #include <QColor>
 
 namespace Effect {
 
-class SimpleFrame : public GraduallyBlinkFrame
+class SimpleFrame : public GradualFrame
 {
 public:
     SimpleFrame(const QColor &color);

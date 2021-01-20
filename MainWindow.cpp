@@ -27,16 +27,15 @@
 #include "GameWidget.h"
 
 #include "Application.h"
+#include "FilterDragWithMiddleButton.h"
 #include "ImageHistory.h"
 #include "SourceImage.h"
 
 #include "widgets/DialogStartGame.h"
 
-#include <QSettings>
-#include <QThread>
-#include <QDebug>
-
 #include <QMenu>
+#include <QSettings>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -58,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (savedState.isValid())
         restoreState(savedState.toByteArray());
 
+    ui->scrollArea->installEventFilter(new FilterDragWithMiddleButton(this));
     ui->gameWidget->resize(1, 1);
 
     connect(ui->widgetFinalImage, &QWidget::windowTitleChanged, ui->dockWidget, &QWidget::setWindowTitle);

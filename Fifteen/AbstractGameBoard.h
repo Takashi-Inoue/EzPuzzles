@@ -16,48 +16,48 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef FIFTEEN_ABSTRACTGAMEBOARD_H
+#define FIFTEEN_ABSTRACTGAMEBOARD_H
 
 #include "BoardInformation.h"
-
-#include "IOperationForPieces.h"
 #include "PuzzlePiece.h"
 
 #include <QPainter>
-#include <QReadWriteLock>
 
 namespace Fifteen {
 
-class Board
+class AbstractGameBoard
 {
 public:
-    Board(BoardInfoPointer boardInformation, QList<FifteenPiecePointer> &pieces);
-    ~Board() = default;
+    AbstractGameBoard(BoardInfoPointer boardInformation);
+    virtual ~AbstractGameBoard() = default;
 
 public:
-    QList<FifteenPiecePointer> slidePiece(const QPoint &from, const QPoint &to);
-    QList<FifteenPiecePointer> swapPiece(const QPoint &from, const QPoint &to);
+    virtual void shufflePieces() = 0;
+    virtual void movePiece(const QPoint &from, const QPoint &to) = 0;
+    virtual int frameCountToMove() const = 0;
+    virtual bool isFinishedMoving() const = 0;
+
+    virtual void initPieces(QPixmap sourcePixmap, const QList<QPoint> &defaultPositions = {});
 
     void draw(QPainter &painter);
-    void execOperation(QSharedPointer<IOperationForPieces> operation);
     void onTickFrame();
     void skipPiecesAnimation();
 
-    bool isCleared() const;
+    bool isGameCleared() const;
 
     BoardInfoPointer boardInfo() const;
+    QList<QPoint> defaultPiecesPos() const;
     FifteenPiecePointer &piece(const QPoint &piecePos);
+    const FifteenPiecePointer &piece(const QPoint &piecePos) const;
 
 protected:
-    void addAnimationPieces(QList<FifteenPiecePointer> pieces);
-
-    BoardInfoPointer boardInformation;
-    QList<FifteenPiecePointer> &m_pieces;
+    BoardInfoPointer m_boardInfo;
+    QList<FifteenPiecePointer> m_pieces;
 };
 
 } // namespace Fifteen
 
-using BoardPointer = QSharedPointer<Fifteen::Board>;
+using GameBoardPtr = QSharedPointer<Fifteen::AbstractGameBoard>;
 
-#endif // BOARD_H
+#endif // FIFTEEN_ABSTRACTBOARD_H

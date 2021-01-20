@@ -17,26 +17,22 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSwapGaming.h"
-#include "Fifteen/FifteenPieceMover.h"
+
+#include "AnimationFactory.h"
 #include "AnimationObject/Effect/CompositeEffect.h"
-#include "AnimationObject/Effect/EffectGraduallyBlinkFrame.h"
 #include "Fifteen/EffectSwapper.h"
 
 namespace Swap {
 
-PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(BoardPointer board, const QPoint &swapTargetPos
-                                           , PhaseType nextPhase, int totalMoveFrame, QObject *parent)
+PhaseSimpleSwapGaming::PhaseSimpleSwapGaming(GameBoardPtr board, const QPoint &swapTargetPos
+                                           , PhaseType nextPhase, QObject *parent)
     : AbstractPhase(nextPhase, parent)
     , m_swapTargetPos(swapTargetPos)
     , m_board(board)
-    , m_totalMoveFrame(totalMoveFrame)
 {
-    Q_ASSERT(totalMoveFrame >= 0);
-
-    auto graduallyFrame = QSharedPointer<Effect::GraduallyBlinkFrame>::create(
-                              8
-                            , QColor("#E0FF8040"), QColor("#00FFFF40")
-                            , QColor("#E0FFFF40"), QColor("#00FF8040"), 240, true);
+    EffectPointer graduallyFrame = AnimationFactory::graduallyBlinkFrame(
+                                       8 , QColor("#E0FF8040"), QColor("#00FFFF40")
+                                         , QColor("#E0FFFF40"), QColor("#00FF8040"), 240);
 
     auto compositeEffect = QSharedPointer<Effect::CompositeEffect>::create();
 
@@ -53,13 +49,13 @@ void PhaseSimpleSwapGaming::click(const QPoint &clickedPiecePos)
     if (m_isGameCleared | (clickedPiecePos == m_swapTargetPos))
         return;
 
-    m_board->swapPiece(m_swapTargetPos, clickedPiecePos);
+    m_board->movePiece(m_swapTargetPos, clickedPiecePos);
 
     m_effects << QSharedPointer<Fifteen::EffectSwapper>::create(
                            m_board->piece(m_swapTargetPos), m_board->piece(clickedPiecePos)
-                         , m_totalMoveFrame / 2);
+                         , m_board->frameCountToMove() / 2);
 
-    m_isGameCleared = m_board->isCleared();
+    m_isGameCleared = m_board->isGameCleared();
 }
 
 void PhaseSimpleSwapGaming::onTickFrame()
@@ -74,10 +70,8 @@ void PhaseSimpleSwapGaming::onTickFrame()
 
     m_effects.erase(itr, m_effects.end());
 
-    if (m_isGameCleared) {
-        if (--m_totalMoveFrame == 0)
-            emit toNextPhase(m_nextPhaseType);
-    }
+    if (m_isGameCleared && m_board->isFinishedMoving())
+        emit toNextPhase(m_nextPhaseType);
 }
 
 void PhaseSimpleSwapGaming::draw(QPainter &painter)

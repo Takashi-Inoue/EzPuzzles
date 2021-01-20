@@ -17,7 +17,11 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseMineSweeperEnding.h"
-#include "AnimationObject/Effect/EffectGraduallyImage.h"
+
+#include "AnimationFactory.h"
+#include "AnimationObject/Effect/ChainedEffect.h"
+
+#include <QRandomGenerator>
 #include <QDebug>
 
 namespace MineSweeper {
@@ -26,8 +30,7 @@ PhaseMineSweeperEnding::PhaseMineSweeperEnding(BoardInfoPointer boardInfo, QVect
     AbstractPhase(nextPhase, parent),
     pieces(pieces),
     sourceImage(sourceImage),
-    nowFrame(0),
-    mt(std::random_device()())
+    nowFrame(0)
 {
     Q_CHECK_PTR(boardInfo);
     Q_ASSERT(!sourceImage.isNull());
@@ -75,24 +78,35 @@ bool PhaseMineSweeperEnding::canLoad() const
 
 QString PhaseMineSweeperEnding::information() const
 {
-    return "Cleared!";
+    return QStringLiteral("Cleared!");
 }
 
 void PhaseMineSweeperEnding::setEffectToPieces(BoardInfoPointer boardInfo)
 {
     Q_ASSERT(pieces.size() > 1);
 
-    for (int y = 1, ylim = pieces.size() - 1; y < ylim; ++y) {
+    QRandomGenerator *randomGenerator = QRandomGenerator::global();
+
+    for (int y = 1, ylim = int(pieces.size() - 1); y < ylim; ++y) {
         auto &horizontal = pieces[y];
 
         Q_ASSERT(horizontal.size() > 1);
 
-        for (int x = 1, xlim = horizontal.size() - 1; x < xlim; ++x) {
+        for (int x = 1, xlim = int(horizontal.size() - 1); x < xlim; ++x) {
             auto &piece = horizontal[x];
 
             if (piece->isMine()) {
-                auto rect = boardInfo->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect();
-                piece->setEffect(QSharedPointer<Effect::GraduallyImage>::create(mt() % maxWaitFrame, eraseFrames, sourceImage.pixmap(), rect));
+                auto chainedEffect = QSharedPointer<Effect::ChainedEffect>::create(false);
+
+                int waitFrames = randomGenerator->bounded(maxWaitFrame);
+                chainedEffect->addEffect(AnimationFactory::waitEffect(waitFrames));
+
+                QRectF rect = boardInfo->rectFromPiecePos(QPoint(x - 1, y - 1));
+                EffectPointer effect = AnimationFactory::graduallyImage(eraseFrames
+                                         , Qt::transparent, sourceImage.pixmap(), rect);
+
+                chainedEffect->addEffect(effect);
+                piece->setEffect(chainedEffect);
 //            } else if (piece->isNearMine()) {
 //                auto rect = boardInfo->rectFromPiecePos(QPoint(x - 1, y - 1)).toRect();
 //                piece->setEffect(QSharedPointer<Effect::GraduallyImage>::create(maxWaitFrame + eraseFrames, eraseFrames, sourceImage.pixmap(), rect));

@@ -15,13 +15,17 @@ SlideBlankPiece::SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defau
 {
 }
 
-void SlideBlankPiece::onTickFrame()
+bool SlideBlankPiece::onTickFrame()
 {
-    oldAnimation->onTickFrame();
-    newAnimation->onTickFrame();
+    bool result = false;
+
+    result |= oldAnimation->onTickFrame();
+    result |= newAnimation->onTickFrame();
 
     if (effectObj != nullptr)
-        effectObj->onTickFrame();
+        result |= effectObj->onTickFrame();
+
+    return result;
 }
 
 void SlideBlankPiece::skipAnimation()
@@ -109,14 +113,19 @@ void SlideBlankPiece::setEffect(EffectPointer effect)
     this->effectObj = effect;
 }
 
-const AnimationPointer &SlideBlankPiece::animation() const
+AnimationPointer SlideBlankPiece::animation() const
 {
     return newAnimation;
 }
 
-const EffectPointer &SlideBlankPiece::effect() const
+EffectPointer SlideBlankPiece::effect() const
 {
     return effectObj;
+}
+
+TransformPointer SlideBlankPiece::transform() const
+{
+    return nullptr;
 }
 
 const Position &SlideBlankPiece::pos() const

@@ -18,139 +18,148 @@
  */
 #include "PuzzlePiece.h"
 #include "ImageFragmentPiece.h"
-#include "SourceImage.h"
 
 #include <QDebug>
 
 namespace Fifteen {
 
-PuzzlePiece::PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage) :
-    imagePiece(std::make_unique<ImageFragmentPiece>(sourceImage, boardInfo->rectFromPiecePos(pieceDefaultPos))),
-    boardInfo(boardInfo),
-    position(pieceDefaultPos),
-    isChanged(false)
+PuzzlePiece::PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos
+                       , const QPixmap &sourceImage)
+    : m_imagePiece(new ImageFragmentPiece(sourceImage, boardInfo->rectFromPiecePos(pieceDefaultPos)))
+    , m_boardInfo(boardInfo)
+    , m_position(pieceDefaultPos)
 {
 }
 
-void PuzzlePiece::onTickFrame()
+bool PuzzlePiece::onTickFrame()
 {
-    if (animObj != nullptr)
-        isChanged |= animObj->onTickFrame();
+    if (m_animation)
+        m_isChanged |= m_animation->onTickFrame();
 
-    if (effectObj != nullptr)
-        isChanged |= effectObj->onTickFrame();
+    if (m_effect)
+        m_isChanged |= m_effect->onTickFrame();
 
-    if (transformObj != nullptr)
-        isChanged |= transformObj->onTickFrame();
+    if (m_transform)
+        m_isChanged |= m_transform->onTickFrame();
+
+    return m_isChanged;
 }
 
 void PuzzlePiece::skipAnimation()
 {
-    isChanged = true;
+    m_isChanged = true;
 
-    if (animObj != nullptr) {
-        animObj->skipAnimation();
-        drawRect = animObj->rect();
+    if (m_animation) {
+        m_animation->skipAnimation();
+        m_drawRect = m_animation->rect();
     }
 
-    if (effectObj != nullptr)
-        effectObj->skipAnimation();
+    if (m_effect)
+        m_effect->skipAnimation();
 
-    if (transformObj != nullptr)
-        transformObj->skipAnimation();
+    if (m_transform)
+        m_transform->skipAnimation();
 }
 
 void PuzzlePiece::draw(QPainter &painter)
 {
-    if (!isChanged)
+    if (!m_isChanged)
         return;
 
     painter.save();
 
-    if (animObj != nullptr) {
-        auto rect = animObj->rect();
+    if (m_animation) {
+        auto rect = m_animation->rect();
 
         if (!rect.isNull())
-            drawRect = rect;
+            m_drawRect = rect;
     }
 
-    if (drawRect.isNull())
-        drawRect = boardInfo->rectFromPiecePos(position.currentPos());
+    if (m_drawRect.isNull())
+        m_drawRect = m_boardInfo->rectFromPiecePos(m_position.currentPos());
 
-    QRectF rect = drawRect;
+    QRectF rect = m_drawRect;
 
-    if (transformObj != nullptr) {
+    if (m_transform) {
         painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, false);
-        painter.fillRect(drawRect, Qt::black);
-        rect = transformObj->mapInRect(drawRect);
+        painter.fillRect(m_drawRect, Qt::black);
+        rect = m_transform->mapInRect(m_drawRect);
         painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     }
 
-    imagePiece->draw(painter, rect);
+    m_imagePiece->draw(painter, rect);
 
-    if (effectObj != nullptr)
-        effectObj->draw(painter, rect);
+    if (m_effect)
+        m_effect->draw(painter, rect);
 
     painter.restore();
 
-    isChanged = false;
+    m_isChanged = false;
 }
 
 void PuzzlePiece::setPos(const QPoint &pos)
 {
-    if (animObj == nullptr) {
+    if (m_animation == nullptr) {
         setPosWithoutAnimation(pos);
 
         return;
     }
 
-    position.setPos(pos);
+    m_position.setPos(pos);
 
-    animObj->start(drawRect, boardInfo->rectFromPiecePos(pos));
+    m_animation->start(m_drawRect, m_boardInfo->rectFromPiecePos(pos));
 
-    if (transformObj != nullptr)
-        transformObj->start(drawRect.size());
+    if (m_transform != nullptr)
+        m_transform->start(m_drawRect.size());
 
-    isChanged = true;
+    m_isChanged = true;
 }
 
 void PuzzlePiece::setPosWithoutAnimation(const QPoint &pos)
 {
-    position.setPos(pos);
+    m_position.setPos(pos);
 
-    drawRect = boardInfo->rectFromPiecePos(pos);
+    m_drawRect = m_boardInfo->rectFromPiecePos(pos);
 
-    isChanged = true;
+    m_isChanged = true;
 }
 
 void PuzzlePiece::setAnimation(AnimationPointer animation)
 {
-    animObj = animation;
+    if (m_animation != animation)
+        m_animation = animation;
 }
 
 void PuzzlePiece::setEffect(EffectPointer effect)
 {
-    effectObj = effect;
+    if (m_effect != effect)
+        m_effect = effect;
 }
 
 void PuzzlePiece::setTransform(TransformPointer transform)
 {
-    transformObj = transform;
+    if (m_transform != transform)
+        m_transform = transform;
 }
 
 const Position &PuzzlePiece::pos() const
 {
-    return position;
+    return m_position;
 }
 
-const AnimationPointer &PuzzlePiece::animation() const
+AnimationPointer PuzzlePiece::animation() const
 {
-    return animObj;
+    return m_animation;
 }
 
-const EffectPointer &PuzzlePiece::effect() const
+EffectPointer PuzzlePiece::effect() const
 {
-    return effectObj;
+    return m_effect;
+}
+
+TransformPointer PuzzlePiece::transform() const
+{
+    return m_transform;
 }
 
 } // Fifteen

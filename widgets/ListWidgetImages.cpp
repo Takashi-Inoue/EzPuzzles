@@ -123,8 +123,23 @@ void ListWidgetImages::onIconSizeChanged()
     m_imageLoader->start();
 }
 
-void ListWidgetImages::onImageLoaded(QString /*imagePathName*/, QVariant data, QPixmap pixmap)
+void ListWidgetImages::onImageLoaded(QString imagePathName, QVariant, QPixmap pixmap)
 {
+    auto findItem = [&]() -> QListWidgetItem * {
+        for (int i = 0, size = count(); i < size; ++i) {
+            QListWidgetItem *listWidgetItem = item(i);
+
+            if (listWidgetItem->data(PathNameRole).toString() == imagePathName)
+                return listWidgetItem;
+        }
+        return nullptr;
+    };
+
+    QListWidgetItem *listItem = findItem();
+
+    if (listItem == nullptr)
+        return;
+
     const int edgeWidth = 5;
 
     QSize thumbAreaSize = iconSize() - QSize(edgeWidth * 2, edgeWidth * 2);
@@ -144,7 +159,7 @@ void ListWidgetImages::onImageLoaded(QString /*imagePathName*/, QVariant data, Q
 
     painter.drawPixmap(thumbnailRect, thumbnail);
 
-    item(data.toInt())->setIcon(QIcon(iconPixmap));
+    listItem->setIcon(QIcon(iconPixmap));
 }
 
 void ListWidgetImages::onLoadingFailed(QString /*imagePathName*/, QVariant data)

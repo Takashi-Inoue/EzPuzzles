@@ -1,5 +1,5 @@
-/*
- * Copyright 2021 Takashi Inoue
+﻿/*
+ * Copyright 2016 Takashi Inoue
  *
  * This file is part of EzPuzzles.
  *
@@ -16,32 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef EFFECTGRADUALIMAGE_H
+#define EFFECTGRADUALIMAGE_H
 
-#ifndef SWAP_OPERATIONSETENDINGEFFECT_H
-#define SWAP_OPERATIONSETENDINGEFFECT_H
+#include "AbstractEffect.h"
 
-#include "Fifteen/IOperationForPieces.h"
+namespace Effect {
 
-#include "BoardInformation.h"
-
-namespace Swap {
-
-class OperationSetEndingEffect : public Fifteen::IOperationForPieces
+class GradualImage : public AbstractEffect
 {
 public:
-    OperationSetEndingEffect(BoardInfoPointer boardInfo);
+    GradualImage(int graduallyFrames, const QColor &background, const QPixmap &pixmap
+               , const QRectF &sourceRect);
 
-    void exec(QList<FifteenPiecePointer> &pieces) override;
+    // IAnimationObject
+    bool onTickFrame() override;
 
-    int totalFrameCount() const;
+    // AbstractEffect
+    void draw(QPainter &, const QRectF &) override;
 
 private:
-    static constexpr int m_maxWaitFrames = 40;
-    static constexpr int m_expandFrames = 5;
+    const int m_graduallyFrames;
+    QColor m_backgroundColor;
+    QPixmap m_pixmap;
+    QRectF m_sourceRect;
 
-    const BoardInfoPointer m_boardInfo;
+    int m_waitCounter;
 };
 
-} // namespace Swap
+} // Effect
 
-#endif // SWAP_OPERATIONSETENDINGEFFECT_H
+#endif // EFFECTGRADUALIMAGE_H

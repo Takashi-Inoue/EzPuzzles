@@ -14,7 +14,7 @@ public:
     SlideBlankPiece(BoardInfoPointer boardInfo, const QPoint &defaultPos, const QBrush &brush, int animationFrames);
 
     // IPuzzlePiece
-    void onTickFrame() override;
+    bool onTickFrame() override;
     void skipAnimation() override;
 
     void draw(QPainter &painter) override;
@@ -23,8 +23,9 @@ public:
     void setAnimation(AnimationPointer) override {}
     void setTransform(TransformPointer) override {}
     void setEffect(EffectPointer) override;
-    const AnimationPointer &animation() const override;
-    const EffectPointer &effect() const override;
+    AnimationPointer animation() const override;
+    EffectPointer effect() const override;
+    TransformPointer transform() const override;
 
     const Position &pos() const override;
 

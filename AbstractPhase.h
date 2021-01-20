@@ -29,7 +29,6 @@ class AbstractPhase : public QObject
 public:
     enum PhaseType : qint8 {
         PhaseReady,
-        PhasePreGame,
         PhaseGaming,
         PhaseEnding,
         PhaseCleared,

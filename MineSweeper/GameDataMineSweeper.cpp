@@ -74,7 +74,6 @@ PhasePointer GameDataMineSweeper::createPhase(AbstractPhase::PhaseType phaseType
     } // through to case IPhase::PhaseGaming
     [[fallthrough]];
 
-    case AbstractPhase::PhasePreGame:
     case AbstractPhase::PhaseGaming:
         currentPhaseType = AbstractPhase::PhaseGaming;
         return QSharedPointer<PhaseMineSweeperGaming>::create(mineField, AbstractPhase::PhaseEnding);

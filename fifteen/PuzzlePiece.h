@@ -19,13 +19,12 @@
 #ifndef PUZZLEPIECE_H
 #define PUZZLEPIECE_H
 
-#include "IPiece.h"
 #include "IPuzzlePiece.h"
-#include "BoardInformation.h"
-#include "Position.h"
-#include <memory>
 
-class ImageFragmentPiece;
+#include "BoardInformation.h"
+#include "IPiece.h"
+#include "Position.h"
+
 class QPixmap;
 
 namespace Fifteen {
@@ -36,7 +35,7 @@ public:
     PuzzlePiece(BoardInfoPointer boardInfo, const QPoint &pieceDefaultPos, const QPixmap &sourceImage);
 
     // IPuzzlePiece
-    void onTickFrame() override;
+    bool onTickFrame() override;
     void skipAnimation() override;
 
     void draw(QPainter &painter) override;
@@ -45,22 +44,23 @@ public:
     void setAnimation(AnimationPointer animation) override;
     void setEffect(EffectPointer effect) override;
     void setTransform(TransformPointer) override;
-    const AnimationPointer &animation() const override;
-    const EffectPointer &effect() const override;
+    AnimationPointer animation() const override;
+    EffectPointer effect() const override;
+    TransformPointer transform() const override;
 
     const Position &pos() const override;
 
 protected:
-    std::unique_ptr<IPiece> imagePiece;
-    BoardInfoPointer boardInfo;
-    Position position;
-    QRectF drawRect;
+    QScopedPointer<IPiece> m_imagePiece;
+    BoardInfoPointer m_boardInfo;
+    Position m_position;
+    QRectF m_drawRect;
 
-    AnimationPointer animObj;
-    EffectPointer effectObj;
-    TransformPointer transformObj;
+    AnimationPointer m_animation;
+    EffectPointer m_effect;
+    TransformPointer m_transform;
 
-    bool isChanged;
+    bool m_isChanged = true;
 };
 
 } // Fifteen

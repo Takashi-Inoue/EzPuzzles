@@ -50,6 +50,9 @@ void GameWidget::mouseMoveEvent(QMouseEvent *event)
 {
     ImageWidget::mouseMoveEvent(event);
 
+    if (event->buttons() & Qt::MiddleButton)
+        return;
+
     if (m_game)
         m_game->mouseMove(size(), event->pos());
 }
@@ -58,6 +61,9 @@ void GameWidget::mousePressEvent(QMouseEvent *event)
 {
     ImageWidget::mousePressEvent(event);
 
+    if (event->buttons() & Qt::MiddleButton)
+        return;
+
     if (m_game)
         m_game->mousePress(size(), event->pos());
 }
@@ -65,6 +71,9 @@ void GameWidget::mousePressEvent(QMouseEvent *event)
 void GameWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     ImageWidget::mouseReleaseEvent(event);
+
+    if (event->button() == Qt::MiddleButton)
+        return;
 
     if (m_game)
         m_game->mouseRelease(size(), event->pos());

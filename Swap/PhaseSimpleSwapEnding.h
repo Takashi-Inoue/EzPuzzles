@@ -20,17 +20,15 @@
 #define PHASESIMPLESWAPENDING_H
 
 #include "AbstractPhase.h"
-#include "Fifteen/Board.h"
-#include "Fifteen/PuzzlePiece.h"
-
-#include <random>
+#include "Fifteen/IBoard.h"
 
 namespace Swap {
 
 class PhaseSimpleSwapEnding : public AbstractPhase
 {
 public:
-    PhaseSimpleSwapEnding(BoardPointer board, PhaseType nextPhase, QObject *parent = nullptr);
+    PhaseSimpleSwapEnding(QSharedPointer<Fifteen::IBoard> board, PhaseType nextPhase
+                        , QObject *parent = nullptr);
 
     void click(const QPoint &) override;
     void onTickFrame() override;
@@ -40,11 +38,7 @@ public:
     QString information() const override;
 
 private:
-    static const int m_maxWaitFrames = 40;
-    static const int m_quarterExpandFrames = 5;
-
-    BoardPointer m_board;
-    int m_nowFrame = 0;
+    QSharedPointer<Fifteen::IBoard> m_board;
 };
 
 } // Swap

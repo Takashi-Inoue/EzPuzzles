@@ -32,8 +32,8 @@ public:
     bool onTickFrame() override;
 
 private:
-    FifteenPiecePointer piece1;
-    FifteenPiecePointer piece2;
+    FifteenPiecePointer m_piece1;
+    FifteenPiecePointer m_piece2;
 };
 
 } // Fifteen

@@ -132,7 +132,7 @@ void ImageWidget::mousePressEvent(QMouseEvent *event)
 {
     QFrame::mousePressEvent(event);
 
-    for (auto &subWidget : m_subWidgets)
+    for (QSharedPointer<AbstractSubWidget> &subWidget : m_subWidgets)
         subWidget->mousePress(event);
 }
 
@@ -140,7 +140,7 @@ void ImageWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     QFrame::mouseReleaseEvent(event);
 
-    for (auto &subWidget : m_subWidgets)
+    for (QSharedPointer<AbstractSubWidget> &subWidget : m_subWidgets)
         subWidget->mouseRelease(event);
 }
 
@@ -148,7 +148,7 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QFrame::mouseMoveEvent(event);
 
-    for (auto &subWidget : m_subWidgets)
+    for (QSharedPointer<AbstractSubWidget> &subWidget : m_subWidgets)
         subWidget->mouseMove(event);
 }
 
@@ -156,7 +156,7 @@ void ImageWidget::enterEvent(QEnterEvent *event)
 {
     QFrame::enterEvent(event);
 
-    for (auto &subWidget : m_subWidgets)
+    for (QSharedPointer<AbstractSubWidget> &subWidget : m_subWidgets)
         subWidget->mouseEnter(event);
 }
 
@@ -164,7 +164,7 @@ void ImageWidget::leaveEvent(QEvent *event)
 {
     QFrame::leaveEvent(event);
 
-    for (auto &subWidget : m_subWidgets)
+    for (QSharedPointer<AbstractSubWidget> &subWidget : m_subWidgets)
         subWidget->mouseLeave(event);
 }
 

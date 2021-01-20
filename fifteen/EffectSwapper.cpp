@@ -20,10 +20,10 @@
 
 namespace Fifteen {
 
-EffectSwapper::EffectSwapper(FifteenPiecePointer piece1, FifteenPiecePointer piece2, int waitFrame) :
-    AbstractAnimationObject(waitFrame, false),
-    piece1(piece1),
-    piece2(piece2)
+EffectSwapper::EffectSwapper(FifteenPiecePointer piece1, FifteenPiecePointer piece2, int waitFrame)
+    : AbstractAnimationObject(waitFrame, false)
+    , m_piece1(piece1)
+    , m_piece2(piece2)
 {
     Q_CHECK_PTR(piece1);
     Q_CHECK_PTR(piece2);
@@ -35,16 +35,16 @@ bool EffectSwapper::onTickFrame()
     if (AbstractAnimationObject::onTickFrame())
         return true;
 
-    if (piece1 == nullptr)
+    if (m_piece1 == nullptr)
         return false;
 
-    auto effect = piece1->effect();
+    auto effect = m_piece1->effect();
 
-    piece1->setEffect(piece2->effect());
-    piece2->setEffect(effect);
+    m_piece1->setEffect(m_piece2->effect());
+    m_piece2->setEffect(effect);
 
-    piece1.reset();
-    piece2.reset();
+    m_piece1.reset();
+    m_piece2.reset();
 
     return false;
 }

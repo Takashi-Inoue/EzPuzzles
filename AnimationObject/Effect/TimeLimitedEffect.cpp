@@ -31,7 +31,9 @@ bool TimeLimitedEffect::onTickFrame()
     if (!AbstractAnimationObject::onTickFrame())
         return false;
 
-    return m_limitedEffect->onTickFrame();
+    m_limitedEffect->onTickFrame();
+
+    return true;
 }
 
 void TimeLimitedEffect::draw(QPainter &painter, const QRectF &rect)

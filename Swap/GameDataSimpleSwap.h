@@ -20,7 +20,7 @@
 #define GAMEDATASIMPLESWAP_H
 
 #include "IGameData.h"
-#include "Fifteen/Board.h"
+#include "Fifteen/AbstractGameBoard.h"
 #include "UniquePosition.h"
 
 #include <QReadWriteLock>
@@ -47,15 +47,8 @@ public:
     bool save(QStringView fileName) const override;
 
 protected:
-    void initPieces();
-    void setAnimationToPieces();
-    void setEffectToPieces();
-
-    static const unsigned char warpWaitCount = 6;
-
-    QList<FifteenPiecePointer> m_pieces;
     SourceImage m_sourceImg;
-    BoardPointer m_board;
+    GameBoardPtr m_board;
     UniquePosition m_swapTargetPos;
     AbstractPhase::PhaseType m_currentPhaseType;
 };

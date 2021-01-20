@@ -18,80 +18,9 @@
  */
 #include "EffectGraduallyBlinkFrame.h"
 
+#include <QDebug>
+
 namespace Effect {
-
-GraduallyBlinkFrame::GraduallyBlinkFrame(const QColor &outerStart, const QColor &outerEnd
-                                       , int totalFrameCount, bool isLoop)
-    : GraduallyBlinkFrame(1, outerStart, outerStart, outerEnd, outerEnd, totalFrameCount, isLoop)
-{
-}
-
-GraduallyBlinkFrame::GraduallyBlinkFrame(int width, const QColor &outerStart, const QColor &innerStart
-                                       , const QColor &outerEnd, const QColor &innerEnd
-                                       , int totalFrameCount, bool isLoop)
-    : AbstractEffect(totalFrameCount, isLoop)
-    , m_width(width)
-    , m_outerStartColor(outerStart)
-    , m_outerEndColor(outerEnd)
-    , m_innerStartColor(innerStart)
-    , m_innerEndColor(innerEnd)
-{
-    Q_ASSERT(width > 0);
-}
-
-void GraduallyBlinkFrame::draw(QPainter &painter, const QRectF &rect)
-{
-    m_width == 1 ? drawSingleLineFrame(painter, rect)
-                 : drawGradationFrame(painter, rect);
-}
-
-void GraduallyBlinkFrame::drawSingleLineFrame(QPainter &painter, const QRectF &rect) const
-{
-    painter.save();
-
-    painter.setRenderHints(QPainter::Antialiasing, false);
-    painter.setClipRect(rect);
-
-    QColor color = currentColor(m_outerStartColor, m_outerEndColor);
-
-    painter.setPen(QPen(color, 1.0));
-    painter.drawRect(rect.marginsRemoved(QMarginsF(0, 0, 1, 1)));
-
-    painter.restore();
-}
-
-void GraduallyBlinkFrame::drawGradationFrame(QPainter &painter, const QRectF &rect) const
-{
-    painter.save();
-
-    painter.setRenderHints(QPainter::Antialiasing);
-    painter.setClipRect(rect);
-    painter.setPen(Qt::transparent);
-
-    QLinearGradient gradient(rect.topLeft(), rect.topLeft() + QPointF(m_width, 0));
-
-    QColor outer = currentColor(m_outerStartColor, m_outerEndColor);
-    QColor inner = currentColor(m_innerStartColor, m_innerEndColor);
-
-    gradient.setColorAt(0, outer);
-    gradient.setColorAt(1, inner);
-
-    // left - top - right - bottom
-    QList<QList<QPointF>> edgesPolygon = createEdgesPolygon(rect);
-    QList<QPair<QPointF, QPointF>> gradientsStartStop = createGradientsStartStop(rect);
-
-    for (int i = 0; i < 4; ++i) {
-        const QPair<QPointF, QPointF> &startStop = gradientsStartStop.at(i);
-
-        gradient.setStart(startStop.first);
-        gradient.setFinalStop(startStop.second);
-
-        painter.setBrush(gradient);
-        painter.drawPolygon(edgesPolygon.at(i));
-    }
-
-    painter.restore();
-}
 
 QColor GraduallyBlinkFrame::currentColor(const QColor &start, const QColor &end) const
 {
@@ -111,48 +40,6 @@ QColor GraduallyBlinkFrame::currentColor(const QColor &start, const QColor &end)
     color.setAlphaF((end.alphaF() - start.alphaF()) * pct + start.alphaF());
 
     return color;
-}
-
-QList<QList<QPointF>> GraduallyBlinkFrame::createEdgesPolygon(const QRectF &rect) const
-{
-    // left - top - right - bottom
-    return {
-        {
-            rect.topLeft(),
-            rect.topLeft()    + QPointF(m_width,  m_width),
-            rect.bottomLeft() + QPointF(m_width, -m_width),
-            rect.bottomLeft(),
-        },
-        {
-            rect.topLeft(),
-            rect.topLeft()  + QPointF( m_width, m_width),
-            rect.topRight() + QPointF(-m_width, m_width),
-            rect.topRight(),
-        },
-        {
-            rect.topRight(),
-            rect.topRight()    + QPointF(-m_width,  m_width),
-            rect.bottomRight() + QPointF(-m_width, -m_width),
-            rect.bottomRight(),
-        },
-        {
-            rect.bottomRight(),
-            rect.bottomRight() + QPointF(-m_width, -m_width),
-            rect.bottomLeft()  + QPointF( m_width, -m_width),
-            rect.bottomLeft(),
-        },
-    };
-}
-
-QList<QPair<QPointF, QPointF>> GraduallyBlinkFrame::createGradientsStartStop(const QRectF &rect) const
-{
-    // left - top - right - bottom
-    return {
-        qMakePair(rect.topLeft(),     rect.topLeft()     + QPointF(m_width, 0)),
-        qMakePair(rect.topLeft(),     rect.topLeft()     + QPointF(0, m_width)),
-        qMakePair(rect.bottomRight(), rect.bottomRight() + QPointF(-m_width, 0)),
-        qMakePair(rect.bottomRight(), rect.bottomRight() + QPointF(0, -m_width)),
-    };
 }
 
 } // Effect

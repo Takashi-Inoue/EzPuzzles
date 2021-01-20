@@ -34,7 +34,7 @@ public:
     IPuzzlePiece() = default;
     virtual ~IPuzzlePiece() = default;
 
-    virtual void onTickFrame() = 0;
+    virtual bool onTickFrame() = 0;
     virtual void skipAnimation() = 0;
 
     virtual void draw(QPainter &) = 0;
@@ -43,8 +43,9 @@ public:
     virtual void setAnimation(AnimationPointer) = 0;
     virtual void setEffect(EffectPointer) = 0;
     virtual void setTransform(TransformPointer) = 0;
-    virtual const AnimationPointer &animation() const = 0;
-    virtual const EffectPointer &effect() const = 0;
+    virtual AnimationPointer animation() const = 0;
+    virtual EffectPointer effect() const = 0;
+    virtual TransformPointer transform() const = 0;
 
     virtual const Position &pos() const = 0;
 };

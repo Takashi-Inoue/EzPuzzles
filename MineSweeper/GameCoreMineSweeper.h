@@ -37,8 +37,6 @@ public:
     void mousePress(const QSize &fieldSize, const QPoint &cursorPos) override;
     void mouseRelease(const QSize &fieldSize, const QPoint &cursorPos) override;
 
-    bool hasFinalImage() const override;
-
 protected:
     QPoint piecePosFromCursorPos(const QSize &fieldSize, const QPoint &cursorPos) const override;
 };

@@ -17,18 +17,15 @@
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "PhaseSimpleSwapEnding.h"
-#include "SwapOperationSetEndingEffect.h"
 
 namespace Swap {
 
-PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(BoardPointer board, PhaseType nextPhase, QObject *parent)
+PhaseSimpleSwapEnding::PhaseSimpleSwapEnding(QSharedPointer<Fifteen::IBoard> board
+                                           , PhaseType nextPhase, QObject *parent)
     : AbstractPhase(nextPhase, parent)
     , m_board(board)
 {
-    auto setEndingEffect = QSharedPointer<OperationSetEndingEffect>::create(board->boardInfo());
-
-    m_nowFrame = setEndingEffect->totalFrameCount();
-    board->execOperation(setEndingEffect);
+    Q_CHECK_PTR(board);
 }
 
 void PhaseSimpleSwapEnding::click(const QPoint &)
@@ -38,9 +35,7 @@ void PhaseSimpleSwapEnding::click(const QPoint &)
 
 void PhaseSimpleSwapEnding::onTickFrame()
 {
-    m_board->onTickFrame();
-
-    if (--m_nowFrame == 0)
+    if (!m_board->onTickFrame())
         emit toNextPhase(m_nextPhaseType);
 }
 

@@ -16,38 +16,40 @@
  * You should have received a copy of the GNU General Public License
  * along with EzPuzzles.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "EffectGraduallyImage.h"
+#include "EffectGradualImage.h"
 #include <QDebug>
 
 namespace Effect {
 
-GraduallyImage::GraduallyImage(int waitFrames, int graduallyFrames, const QPixmap &pixmap
-                             , const QRectF &sourceRect)
-    : AbstractEffect(waitFrames + graduallyFrames, false)
-    , m_waitFrames(waitFrames)
+GradualImage::GradualImage(int graduallyFrames
+                         , const QColor &background, const QPixmap &pixmap, const QRectF &sourceRect)
+    : AbstractEffect(graduallyFrames, false)
     , m_graduallyFrames(graduallyFrames)
+    , m_backgroundColor(background)
     , m_pixmap(pixmap)
     , m_sourceRect(sourceRect)
-    , m_waitCounter(waitFrames)
 {
     Q_ASSERT(sourceRect.isValid());
 }
 
-bool GraduallyImage::onTickFrame()
+bool GradualImage::onTickFrame()
 {
     m_waitCounter = qMax(--m_waitCounter, 0);
 
     return (m_waitCounter == 0) & AbstractEffect::onTickFrame();
 }
 
-void GraduallyImage::draw(QPainter &painter, const QRectF &rect)
+void GradualImage::draw(QPainter &painter, const QRectF &rect)
 {
     if (m_waitCounter != 0)
         return;
 
     painter.save();
-    painter.setOpacity((nowFrame() - m_waitFrames) / m_graduallyFrames);
 
+    painter.setOpacity(1.0);
+    painter.fillRect(rect, m_backgroundColor);
+
+    painter.setOpacity(nowFrame() / m_graduallyFrames);
     painter.drawPixmap(rect, m_pixmap, m_sourceRect);
 
     painter.restore();
