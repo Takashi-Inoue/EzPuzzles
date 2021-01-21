@@ -20,6 +20,7 @@
 #ifndef MINESWEEPER_SAVERS_H
 #define MINESWEEPER_SAVERS_H
 
+#include <QMetaType>
 #include <QString>
 
 namespace MineSweeper {
@@ -37,6 +38,10 @@ public:
     bool hasSaver() const;
     QString information() const;
     uchar maximum() const;
+    QString savedataInfo() const;
+
+    QDataStream &read(QDataStream &in);
+    QDataStream &write(QDataStream &out) const;
 
 private:
     uchar m_maximum;
@@ -47,5 +52,8 @@ private:
 };
 
 } // namespace MineSweeper
+
+QDataStream &operator<<(QDataStream &out, const MineSweeper::Savers &savers);
+QDataStream &operator>>(QDataStream &in, MineSweeper::Savers &savers);
 
 #endif // MINESWEEPER_SAVERS_H

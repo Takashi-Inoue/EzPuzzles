@@ -49,7 +49,8 @@ GameDataMineSweeper::GameDataMineSweeper(const SaveDataMineSweeper &loadedSaveda
     pieces = factory.toPieces(loadedSavedata.piecesAsIntList());
 
     mineField = MineFieldPointer::create(pieces, m_isAutoLock, mineCount
-                                       , loadedSavedata.openedCount(), loadedSavedata.missedCount());
+                                       , loadedSavedata.openedCount(), loadedSavedata.missedCount()
+                                       , loadedSavedata.savers());
 }
 
 GameDataPointer GameDataMineSweeper::cloneAsNewGame() const
@@ -113,7 +114,7 @@ bool GameDataMineSweeper::save(QStringView fileName) const
     SaveDataMineSweeper savedata(fileName, boardInformation->xyCount(), mineCount
                                , mineField->openedCount(), mineField->missedCount()
                                , m_isAutoLock, sourceImg, currentPhaseType
-                               , PiecesFactory::toIntList(pieces));
+                               , PiecesFactory::toIntList(pieces), mineField->savers());
 
     return savedata.write();
 }

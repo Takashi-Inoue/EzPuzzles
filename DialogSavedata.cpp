@@ -181,7 +181,8 @@ void DialogSavedata::onSaveInfoLoaded(QString savedataName, QSharedPointer<Abstr
     item->setIcon(gameInfo->gameTypeIcon());
     item->setData(Qt::UserRole, QVariant::fromValue<>(gameInfo));
 
-    updateLabeInformations(gameInfo);
+    if (index == ui->listWidget->currentRow())
+        updateLabeInformations(gameInfo);
 }
 
 void DialogSavedata::setUIState()

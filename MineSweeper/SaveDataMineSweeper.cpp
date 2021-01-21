@@ -19,6 +19,7 @@
 #include "SaveDataMineSweeper.h"
 #include "GameDataMineSweeper.h"
 #include "GameCoreMineSweeper.h"
+#include "Savers.h"
 
 #include "Application.h"
 
@@ -30,6 +31,7 @@ namespace MineSweeper {
 
 SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, QObject *parent)
     : AbstractSaveData(fileName, parent)
+    , m_savers(QSharedPointer<Savers>::create(0, 0))
 {
 }
 
@@ -37,7 +39,8 @@ SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, const QSize &boar
                                        , int mineCount, int openedCount, int missedCount
                                        , bool isAutoLock, SourceImage sourceImage
                                        , AbstractPhase::PhaseType currentPhaseType
-                                       , const QList<int> &pieces, QObject *parent)
+                                       , const QList<int> &pieces, QSharedPointer<Savers> savers
+                                       , QObject *parent)
     : AbstractSaveData(fileName, sourceImage.fullPath(), sourceImage.pixmap()
                      , boardXYCount, currentPhaseType, parent)
     , m_mineCount(mineCount)
@@ -45,6 +48,7 @@ SaveDataMineSweeper::SaveDataMineSweeper(QStringView fileName, const QSize &boar
     , m_missedCount(missedCount)
     , m_isAutoLock(isAutoLock)
     , m_pieces(pieces)
+    , m_savers(savers)
 {
     Q_ASSERT(!boardXYCount.isEmpty());
 }
@@ -93,6 +97,7 @@ QStringList SaveDataMineSweeper::informations() const
                 .arg(m_openedCount).arg(safePieceCount).arg(openRate, 0, 'f', 2).arg(m_missedCount),
         QString(),
         QStringLiteral("Autolock explicit mines : %1").arg(autoLock),
+        m_savers->savedataInfo(),
     };
 }
 
@@ -116,12 +121,18 @@ QList<int> SaveDataMineSweeper::piecesAsIntList() const
     return m_pieces;
 }
 
+QSharedPointer<Savers> SaveDataMineSweeper::savers() const
+{
+    return m_savers;
+}
+
 void SaveDataMineSweeper::readInfo(QDataStream &stream)
 {
     stream >> m_mineCount;
     stream >> m_openedCount;
     stream >> m_missedCount;
     stream >> m_isAutoLock;
+    stream >> *m_savers;
 
     m_isSavedataValid = (stream.status() == QDataStream::Ok);
 }
@@ -139,6 +150,7 @@ void SaveDataMineSweeper::writeInfo(QDataStream &stream) const
     stream << m_openedCount;
     stream << m_missedCount;
     stream << m_isAutoLock;
+    stream << *m_savers;
 }
 
 void SaveDataMineSweeper::writeOtherData(QDataStream &stream) const

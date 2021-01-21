@@ -36,7 +36,7 @@ public:
 
     MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount, QObject *parent = nullptr);
     MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
-            , int openedCount, int missedCount, QObject *parent = nullptr);
+            , int openedCount, int missedCount, QSharedPointer<Savers> savers, QObject *parent = nullptr);
 
     void draw(QPainter &painter);
     void open(const QPoint &pos);
@@ -49,6 +49,7 @@ public:
     double mineRatio() const;
     bool isAllOpened() const;
     bool isNoMissed() const;
+    QSharedPointer<Savers> savers() const;
 
     QString information() const;
 

@@ -29,6 +29,8 @@
 
 namespace MineSweeper {
 
+class Savers;
+
 class SaveDataMineSweeper : public AbstractSaveData
 {
 public:
@@ -36,7 +38,8 @@ public:
     SaveDataMineSweeper(QStringView fileName, const QSize &boardXYCount, int mineCount
                       , int openedCount, int missedCount, bool isAutoLock
                       , SourceImage sourceImage, AbstractPhase::PhaseType currentPhaseType
-                      , const QList<int> &pieces, QObject *parent = nullptr);
+                      , const QList<int> &pieces, QSharedPointer<Savers> savers
+                      , QObject *parent = nullptr);
 
     Application::GameType gameType() const override;
     QIcon gameTypeIcon() const override;
@@ -51,6 +54,7 @@ public:
     int missedCount() const;
     int openedCount() const;
     QList<int> piecesAsIntList() const;
+    QSharedPointer<Savers> savers() const;
 
 private:
     void readInfo(QDataStream &stream) override;
@@ -63,6 +67,7 @@ private:
     int m_missedCount;
     bool m_isAutoLock;
     QList<int> m_pieces;
+    QSharedPointer<Savers> m_savers;
 };
 
 } // MineSweeper

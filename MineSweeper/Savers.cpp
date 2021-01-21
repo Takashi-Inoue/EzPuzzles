@@ -73,4 +73,39 @@ uchar Savers::maximum() const
     return m_maximum;
 }
 
+QString Savers::savedataInfo() const
+{
+    return QStringLiteral("Savers: obtained (%1 / %2)").arg(m_saversCount).arg(m_maximum);
+}
+
+QDataStream &Savers::read(QDataStream &in)
+{
+    in >> m_maximum
+       >> m_pointsRequiredToObtain
+       >> m_saversCount
+       >> m_currentPoints;
+
+    return in;
+}
+
+QDataStream &Savers::write(QDataStream &out) const
+{
+    out << m_maximum
+        << m_pointsRequiredToObtain
+        << m_saversCount
+        << m_currentPoints;
+
+    return out;
+}
+
 } // namespace MineSweeper
+
+QDataStream &operator<<(QDataStream &out, const MineSweeper::Savers &savers)
+{
+    return savers.write(out);
+}
+
+QDataStream &operator>>(QDataStream &in, MineSweeper::Savers &savers)
+{
+    return savers.read(in);
+}

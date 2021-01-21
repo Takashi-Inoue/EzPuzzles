@@ -25,37 +25,40 @@
 namespace MineSweeper {
 
 MineField::MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount, QObject *parent)
-    : MineField(pieces, isAutoLock, mineCount, 0, 0, parent)
+    : MineField(pieces, isAutoLock, mineCount, 0, 0, nullptr, parent)
 {
 }
 
 MineField::MineField(MinePiece2DList &pieces, bool isAutoLock, int mineCount
-                   , int openedCount, int missedCount, QObject *parent)
+                   , int openedCount, int missedCount, QSharedPointer<Savers> savers, QObject *parent)
     : QObject(parent)
     , pieces(pieces)
     , m_mineCount(mineCount)
     , m_openedCount(openedCount)
     , m_missedCount(missedCount)
     , m_isAutoLock(isAutoLock)
+    , m_savers(savers)
 {
-    int besideMineCount = 0;
+    if (m_savers == nullptr) {
+        int besideMineCount = 0;
 
-    for (qsizetype y = 1, yLim = pieces.size() - 1; y < yLim; ++y) {
-        QList<MinePiecePointer> &horizontal = pieces[y];
+        for (qsizetype y = 1, yLim = pieces.size() - 1; y < yLim; ++y) {
+            QList<MinePiecePointer> &horizontal = pieces[y];
 
-        for (qsizetype x = 1, xLim = horizontal.size() - 1; x < xLim; ++x) {
-            const MinePiecePointer &piece = horizontal[x];
+            for (qsizetype x = 1, xLim = horizontal.size() - 1; x < xLim; ++x) {
+                const MinePiecePointer &piece = horizontal[x];
 
-            if (!piece->isMine() && piece->isNearMine())
-                ++besideMineCount;
+                if (!piece->isMine() && piece->isNearMine())
+                    ++besideMineCount;
+            }
         }
+
+        const uchar maxSavers = uchar(mineRatio() * 10 + m_mineCount / 500.0);
+        const ushort requiredPoints = (maxSavers == 0)
+                                      ? 0 : ushort((besideMineCount * 0.3) / (maxSavers + 1));
+
+        m_savers = QSharedPointer<Savers>::create(maxSavers, requiredPoints);
     }
-
-    const uchar maxSavers = uchar(mineRatio() * 10 + m_mineCount / 500.0);
-    const ushort requiredPoints = (maxSavers == 0)
-                                  ? 0 : ushort((besideMineCount * 0.3) / (maxSavers + 1));
-
-    m_savers = QSharedPointer<Savers>::create(maxSavers, requiredPoints);
 
     if (m_openedCount > 0)
         setOpenedPieceOpacity();
@@ -184,6 +187,11 @@ bool MineField::isAllOpened() const
 bool MineField::isNoMissed() const
 {
     return m_missedCount == 0;
+}
+
+QSharedPointer<Savers> MineField::savers() const
+{
+    return m_savers;
 }
 
 QString MineField::information() const
