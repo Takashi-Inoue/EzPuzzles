@@ -1,4 +1,4 @@
-EzPuzzles v0.2
+EzPuzzles
 ==========
 
 Copyright 2016-2021 Takashi Inoue
